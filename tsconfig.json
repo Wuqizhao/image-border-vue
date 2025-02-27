@@ -5,7 +5,8 @@
 			"@stores/*": [
 				"src/stores"
 			]
-		}
+		},
+		"verbatimModuleSyntax": true
 	},
 	"files": [],
 	"references": [

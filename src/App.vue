@@ -7,8 +7,8 @@
         <h1>配置</h1>
         <div class="btns">
             <el-button @click="selectFile" type="primary">选择文件</el-button>
-            <el-button @click="draw(curFile as File)">绘制</el-button>
-            <el-button type="success" @click="download">下载</el-button>
+            <el-button @click="config.draw(curFile as File, img)">绘制</el-button>
+            <el-button type="success" @click="download(img.export.name)">下载</el-button>
             <el-button @click="print">打印配置</el-button>
         </div>
         <el-tabs v-model="activeName">
@@ -117,13 +117,16 @@
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
-            <el-tab-pane label="水印" name="sixth">
+            <el-tab-pane :label="`水印${curWatermarkIndex}`" name="sixth">
                 <el-form label-width="80px">
                     <el-form-item label="选择样式">
-                        <el-select v-model="curWatermarkIndex" disabled>
+                        <el-select v-model="curWatermarkIndex">
                             <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
                                 :value="index"></el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item lable="背景颜色">
+                        <el-color-picker v-model="config.watermark.bgColor"></el-color-picker>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -132,9 +135,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import Exifr from 'exifr'
-
+import { reactive, ref, watch } from 'vue'
+// import Exifr from 'exifr'
+import { print, download } from './assets/tools'
+import defaultWaterMark from './configs/default'
+import { ElNotification } from 'element-plus'
 
 const img = reactive({
     width: 0,
@@ -150,74 +155,29 @@ const img = reactive({
     exif: {}
 })
 const curFile = ref<File | null>(null)
-// const config1 = reactive({
-//     paddings: {
-//         top: 10, // 图片上边距
-//         right: 10,
-//         left: 10,
-//         bottom: 0
-//     },
-//     watermark: {
-//         model: {
-//             show: true,
-//             color: '#000000',
-//             size: 20
-//         },
-//         params: {
-//             show: true,
-//             color: '#808080',
-//             size: 14
-//         },
-//         time: {
-//             show: true,
-//             color: '#808080',
-//             size: 14
-//         },
-//         paddings: {
-//             lr: 0,
-//             tb: 0
-//         }
-//     }
-// })
-const config = reactive({
-    paddings: {
-        top: 0, // 图片上边距
-        right: 0,
-        left: 0,
-        bottom: 0
-    },
-    watermark: {
-        model: {
-            show: true,
-            color: '#000000',
-            size: 20
-        },
-        params: {
-            show: true,
-            color: '#808080',
-            size: 14
-        },
-        time: {
-            show: true,
-            color: '#808080',
-            size: 14
-        },
-        paddings: {
-            lr: 10,
-            tb: 0
-        }
-    }
-})
-const watermarks = reactive([{
-    name: '默认样式'
-}, {
-    name: '样式1'
-}, {
-    name: '样式2'
-}])
-const curWatermarkIndex = ref<number>(0)
+let config = reactive(defaultWaterMark);
 
+
+const watermarks = reactive([
+    {
+        index: 0,
+        name: '默认样式',
+        config: 'default'
+    },
+    {
+        index: 1,
+        name: '样式1',
+        config: 'watermark1'
+    },
+    {
+        index: 2,
+        name: '样式2',
+        config: 'watermark2'
+    }
+])
+const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('first')
+
 
 const selectFile = () => {
     const input = document.createElement('input')
@@ -228,278 +188,38 @@ const selectFile = () => {
         const target = e.target as HTMLInputElement;
         if (target === null || !target.files) throw new Error('图片不存在...');
         const file = target.files[0];
+        curFile.value = file;
 
-        draw(file);
-        // curFile.value = file;
-        // img.fileName = file.name
-        // img.export.name = 'WM_' + file.name
-        // img.size = (file.size / 1024 / 1024).toFixed(2) + "MB"
-        // img.type = file.type
-        // img.time = formatDate(new Date(file.lastModified))
-
-        // const reader = new FileReader()
-        // reader.readAsDataURL(file)
-        // reader.onload = (e) => {
-        //     const _img = new Image()
-        //     if (e.target === null) throw new Error('图片不存在...');
-        //     _img.src = <string>e.target.result
-        //     _img.onload = async () => {
-        //         // 更新宽高
-        //         img.width = _img.width
-        //         img.height = _img.height
-
-        //         // 使用exifr库读取exifs信息
-        //         const exif = await Exifr.parse(file)
-        //         img.exif = exif
-
-        //         // 获取比例
-        //         const boxScale = img.width / img.height
-        //         // 调整canvasBox容器的比例
-        //         const canvasBox = document.getElementById('canvasBox') as HTMLDivElement
-        //         const canvas = document.getElementById('imgCanvas') as HTMLCanvasElement
-        //         const ctx = canvas.getContext('2d')
-        //         if (ctx) {
-        //             // 计算canvas缩放比例
-        //             const maxSize = Math.max(img.width, img.height);
-        //             const isWidthMax = maxSize == img.width;
-        //             const scale = (isWidthMax ? img.width : img.height) / (isWidthMax ? 900 : 600);
-
-        //             // 修改画布大小
-        //             canvas.width = img.width / scale + config.paddings.left + config.paddings.right
-        //             canvas.height = img.height / scale + config.paddings.top + config.paddings.bottom
-        //             canvas.height += 0.1 * canvas.height
-
-        //             // 打印底部水印的坐标范围
-        //             const rect1 = {
-        //                 x: 0,
-        //                 y: img.height / scale + config.paddings.top + config.paddings.bottom
-        //             };
-        //             const rect2 = {
-        //                 x: canvas.width,
-        //                 y: canvas.height
-        //             };
-        //             console.log('底部水印坐标范围', rect1, rect2);
-
-        //             // 容器适配最终大小
-        //             // if (isWidthMax) {
-        //             //     canvasBox.style.width = `${900 / boxScale}px`
-        //             //     canvasBox.style.height = `600px`
-        //             // }
-        //             // else {
-        //             //     canvasBox.style.width = `${900 / boxScale}px`
-        //             //     canvasBox.style.height = '600px'
-        //             // }
-        //             canvasBox.style.width = `900px`
-        //             canvasBox.style.height = `${900 / boxScale}px`
-        //             // 设置背景颜色
-        //             ctx.fillStyle = 'white';
-        //             ctx.fillRect(0, 0, canvas.width, canvas.height);
-        //             // 绘制图片
-        //             ctx.drawImage(_img, 0 + config.paddings.left, 0 + config.paddings.top, img.width / scale, img.height / scale)
-
-        //             // 绘制型号
-        //             const modelConfig = config.watermark.model;
-        //             if (modelConfig.show) {
-        //                 ctx.save(); // 保存当前绘图状态
-        //                 ctx.font = `bold ${modelConfig.size}px Arial`;
-        //                 ctx.fillStyle = modelConfig.color;
-        //                 ctx.textAlign = 'left';
-        //                 ctx.textBaseline = 'middle';
-        //                 // 高度在1/3处
-        //                 const _y = rect1.y + (rect2.y - rect1.y) / 3
-        //                 ctx.fillText(exif?.Model, config.paddings.left, _y);
-        //                 ctx.restore(); // 恢复之前的绘图状态
-        //             }
-
-        //             // 绘制曝光三要素和焦段参数
-        //             const paramsConfig = config.watermark.params;
-        //             if (paramsConfig.show) {
-        //                 ctx.fillStyle = paramsConfig.color;
-        //                 ctx.font = `${paramsConfig.size}px Arial`;
-        //                 ctx.textBaseline = 'middle';
-        //                 const params = `${convertExposureTime(exif?.ExposureTime)}s  f/${exif?.FNumber}  ISO ${exif?.ISO}  ${exif?.FocalLength}mm`;
-        //                 // 高度在2/3处
-        //                 const _y = rect1.y + 2 * (rect2.y - rect1.y) / 3
-        //                 ctx.fillText(params, config.paddings.left, _y);
-        //             }
-
-
-        //             // 绘制拍摄时间
-        //             const timeConfig = config.watermark.time;
-        //             if (timeConfig.show) {
-        //                 const shotTime = formatDate(new Date(exif?.DateTimeOriginal));
-        //                 ctx.textAlign = 'right';
-        //                 ctx.textBaseline = 'middle';
-        //                 ctx.fillStyle = timeConfig.color;
-        //                 ctx.font = `${timeConfig.size}px Arial`;
-
-        //                 // 在水印范围内垂直居中
-        //                 const _y = (rect2.y + rect1.y) / 2;
-        //                 console.log('水印范围内垂直居中', _y);
-        //                 ctx.fillText(shotTime, canvas.width - config.paddings.right, _y);
-        //             }
-        //             ctx.fillStyle = 'red';
-        //         }
-        //     }
-        // }
-    }
-}
-const download = () => {
-    const canvas = document.getElementById('imgCanvas') as HTMLCanvasElement
-    const a = document.createElement('a')
-    a.href = canvas.toDataURL('image/jpeg', 1)
-    a.download = img.export.name
-    a.click()
-}
-const print = () => {
-    console.log('当前配置：', config);
-    console.log('当前图片信息：', img);
-
-}
-
-// 转换曝光时间的函数
-const convertExposureTime = (exposureTime: number) => {
-    if (exposureTime < 1) {
-        return `1/${Math.round((1 / exposureTime) * 10) / 10}`;
-    } else {
-        return `${exposureTime}`;
+        config.draw(file, img);
     }
 }
 
-// 把Date转换成"YYYY-MM-DD HH:mm:ss"格式
-const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
+// 监听
+watch(curWatermarkIndex, (val) => {
+    // 获取对应的水印
+    const watermark = watermarks.filter(item => item.index == val)
+    console.log(val, watermark[0].config);
 
-const draw = (file: File) => {
-    if (!file) return;
-    curFile.value = file;
-    img.fileName = file.name
-    img.export.name = 'WM_' + file.name
-    img.size = (file.size / 1024 / 1024).toFixed(2) + "MB"
-    img.type = file.type
-    img.time = formatDate(new Date(file.lastModified))
+    // 导入
+    import('./configs/' + watermark[0].config).then(res => {
+        config = reactive(res.default);
+        console.log('config', config);
 
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = (e) => {
-        const _img = new Image()
-        if (e.target === null) throw new Error('图片不存在...');
-        _img.src = <string>e.target.result
-        _img.onload = async () => {
-            // 更新宽高
-            img.width = _img.width
-            img.height = _img.height
-
-            // 使用exifr库读取exifs信息
-            const exif = await Exifr.parse(file)
-            img.exif = exif
-
-            // 获取比例
-            const boxScale = img.width / img.height
-            // 调整canvasBox容器的比例
-            const canvasBox = document.getElementById('canvasBox') as HTMLDivElement
-            const canvas = document.getElementById('imgCanvas') as HTMLCanvasElement
-            const ctx = canvas.getContext('2d')
-            if (ctx) {
-                // 计算canvas缩放比例
-                const maxSize = Math.max(img.width, img.height);
-                const isWidthMax = maxSize == img.width;
-                const scale = (isWidthMax ? img.width : img.height) / (isWidthMax ? 900 : 600);
-
-                // 修改画布大小
-                canvas.width = img.width / scale + config.paddings.left + config.paddings.right
-                canvas.height = img.height / scale + config.paddings.top + config.paddings.bottom
-                canvas.height += 0.1 * canvas.height
-
-                // 打印底部水印的坐标范围
-                const rect1 = {
-                    x: 0,
-                    y: img.height / scale + config.paddings.top + config.paddings.bottom
-                };
-                const rect2 = {
-                    x: canvas.width,
-                    y: canvas.height
-                };
-                console.log('底部水印坐标范围', rect1, rect2);
-
-                // 容器适配最终大小
-                // if (isWidthMax) {
-                //     canvasBox.style.width = `${900 / boxScale}px`
-                //     canvasBox.style.height = `600px`
-                // }
-                // else {
-                //     canvasBox.style.width = `${900 / boxScale}px`
-                //     canvasBox.style.height = '600px'
-                // }
-                canvasBox.style.width = `900px`
-                canvasBox.style.height = `${900 / boxScale}px`
-                // 设置背景颜色
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                // 绘制图片
-                ctx.drawImage(_img, 0 + config.paddings.left, 0 + config.paddings.top, img.width / scale, img.height / scale)
-
-                // 绘制型号
-                const modelConfig = config.watermark.model;
-                if (modelConfig.show) {
-                    ctx.save(); // 保存当前绘图状态
-                    ctx.font = `bold ${modelConfig.size}px Arial`;
-                    ctx.fillStyle = modelConfig.color;
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'middle';
-                    // 高度在1/3处
-                    const _y = rect1.y + (rect2.y - rect1.y) / 3
-                    // 截取厂商
-                    const company = exif?.Model?.split(' ')[0];
-                    // 计算厂商的宽度
-                    const companyWidth = ctx.measureText(company).width;
-
-                    ctx.fillText(company, config.paddings.left + config.watermark.paddings.lr, _y);
-
-                    ctx.font = `${modelConfig.size}px Arial`;
-                    ctx.fillText(exif.Model.replace(company, ''), config.paddings.left + config.watermark.paddings.lr + companyWidth, _y);
-                    ctx.restore(); // 恢复之前的绘图状态
-                }
-
-                // 绘制曝光三要素和焦段参数
-                const paramsConfig = config.watermark.params;
-                if (paramsConfig.show) {
-                    ctx.fillStyle = paramsConfig.color;
-                    ctx.font = `${paramsConfig.size}px Arial`;
-                    ctx.textBaseline = 'middle';
-                    const params = `${convertExposureTime(exif?.ExposureTime)}s  f/${exif?.FNumber}  ISO ${exif?.ISO}  ${exif?.FocalLength}mm`;
-                    // 高度在2/3处
-                    const _y = rect1.y + 2 * (rect2.y - rect1.y) / 3
-                    ctx.fillText(params, config.paddings.left + config.watermark.paddings.lr, _y);
-                }
-
-
-                // 绘制拍摄时间
-                const timeConfig = config.watermark.time;
-                if (timeConfig.show) {
-                    const shotTime = formatDate(new Date(exif?.DateTimeOriginal));
-                    ctx.textAlign = 'right';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillStyle = timeConfig.color;
-                    ctx.font = `${timeConfig.size}px Arial`;
-
-                    // 在水印范围内垂直居中
-                    const _y = (rect2.y + rect1.y) / 2;
-                    console.log('水印范围内垂直居中', _y);
-                    ctx.fillText(shotTime, canvas.width - config.paddings.right - config.watermark.paddings.lr, _y);
-                }
-                ctx.fillStyle = 'red';
-            }
+        if (curFile.value === null) {
+            ElNotification.error({
+                title: '错误',
+                message: '请先选择图片'
+            })
+            return;
         }
-    }
-}
+        config.draw(curFile.value, img);
+    }).catch(err => {
+        ElNotification.error({
+            title: '导入水印配置错误',
+            message: err.message
+        })
+    })
+})
 </script>
 
 <style lang='less' scoped>
