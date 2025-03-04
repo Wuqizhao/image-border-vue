@@ -75,35 +75,14 @@ const config = {
 					canvas.height =
 						img.height / scale + config.paddings.top + config.paddings.bottom;
 
-					// 打印底部水印的坐标范围
-					const rect1 = {
-						x: 0 + config.paddings.left,
-						y:
-							img.height / scale +
-							config.paddings.top +
-							config.paddings.bottom +
-							config.watermark.paddings.tb,
-					};
-					const rect2 = {
-						x: canvas.width - config.paddings.right,
-						y: canvas.height - config.watermark.paddings.tb,
-					};
 					// 绘制背景色
 					if (config.watermark.bgColor) {
 						ctx.fillStyle = config.watermark.bgColor;
 					} else {
 						ctx.fillStyle = "#FFF";
 					}
-					// 绘制水印可绘制区域
-					// ctx.lineWidth = 1;
-					// ctx.strokeStyle = "red";
-					// ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
 
-					// canvasBox.style.width = `900px`;
 					canvasBox.style.height = `${900 / boxScale}px`;
-					// 设置背景颜色
-					// ctx.fillStyle = "white";
-					// ctx.fillRect(0, 0, canvas.width, canvas.height);
 					// 绘制图片
 					ctx.drawImage(
 						_img,
