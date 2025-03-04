@@ -109,10 +109,11 @@ const config = {
 					const modelConfig = config.watermark.model;
 					if (modelConfig.show) {
 						ctx.save(); // 保存当前绘图状态
-						ctx.font = `bold ${modelConfig.size}px Arial`;
+						ctx.font = `bolder ${modelConfig.size}px Arial`;
 						ctx.fillStyle = modelConfig.color;
 						ctx.textAlign = "center";
 						ctx.textBaseline = "middle";
+
 						// 高度在1/3处
 						const _y = rect1.y + (rect2.y - rect1.y) / 3;
 

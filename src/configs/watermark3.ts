@@ -1,33 +1,31 @@
-import { formatDate, convertExposureTime } from "../assets/tools";
+import { formatDate } from "../assets/tools";
 import Exifr from "exifr";
 import type { Img } from "../types";
 
 const config = {
 	paddings: {
-		top: 10, // 图片上边距
-		right: 10,
-		left: 10,
+		top: 0, // 图片上边距
+		right: 0,
+		left: 0,
 		bottom: 0,
 	},
 	watermark: {
 		model: {
 			show: true,
-			color: "#000000",
+			color: "#FFF",
 			size: 20,
 		},
 		params: {
-			show: true,
-			color: "#808080",
-			size: 14,
+			show: false,
 		},
 		time: {
 			show: true,
-			color: "#808080",
+			color: "#FFF",
 			size: 14,
 		},
 		paddings: {
-			lr: 0,
-			tb: 10,
+			lr: 20,
+			tb: 0,
 		},
 		bgColor: "#ff0000",
 	},
@@ -76,8 +74,7 @@ const config = {
 						img.width / scale + config.paddings.left + config.paddings.right;
 					canvas.height =
 						img.height / scale + config.paddings.top + config.paddings.bottom;
-					canvas.height +=
-						0.1 * canvas.height + 2 * config.watermark.paddings.tb;
+					canvas.height += 2 * config.watermark.paddings.tb;
 
 					// 打印底部水印的坐标范围
 					const rect1 = {
@@ -126,7 +123,7 @@ const config = {
 						ctx.textAlign = "left";
 						ctx.textBaseline = "middle";
 						// 高度在1/3处
-						const _y = rect1.y + (rect2.y - rect1.y) / 3;
+						const _y = 0.95 * canvas.height;
 						// 截取厂商
 						const company = exif?.Model?.split(" ")[0];
 						// 计算厂商的宽度
@@ -149,24 +146,6 @@ const config = {
 						ctx.restore(); // 恢复之前的绘图状态
 					}
 
-					// 绘制曝光三要素和焦段参数
-					const paramsConfig = config.watermark.params;
-					if (paramsConfig.show) {
-						ctx.fillStyle = paramsConfig.color;
-						ctx.font = `${paramsConfig.size}px Arial`;
-						ctx.textBaseline = "middle";
-						const params = `${convertExposureTime(exif?.ExposureTime)}s  f/${
-							exif?.FNumber
-						}  ISO ${exif?.ISO}  ${exif?.FocalLength}mm`;
-						// 高度在2/3处
-						const _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
-						ctx.fillText(
-							params,
-							config.paddings.left + config.watermark.paddings.lr,
-							_y
-						);
-					}
-
 					// 绘制拍摄时间
 					const timeConfig = config.watermark.time;
 					if (timeConfig.show) {
@@ -177,7 +156,7 @@ const config = {
 						ctx.font = `${timeConfig.size}px Arial`;
 
 						// 在水印范围内垂直居中
-						const _y = (rect2.y + rect1.y) / 2;
+						const _y = 0.95 * canvas.height;
 						console.log("水印范围内垂直居中", _y);
 						ctx.fillText(
 							shotTime,

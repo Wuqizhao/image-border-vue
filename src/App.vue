@@ -7,9 +7,10 @@
         <h1>配置</h1>
         <div class="btns">
             <el-button @click="selectFile" type="primary">选择文件</el-button>
-            <el-button @click="config.draw(curFile as File, img)">绘制</el-button>
-            <el-button type="success" @click="download(img.export.name)">下载</el-button>
+            <el-button @click="config.draw(curFile as File, img)" :disabled="!curFile" type="warning"
+                plain>绘制</el-button>
             <el-button @click="print">打印配置</el-button>
+            <el-button type="success" @click="download(img.export.name)">下载图片</el-button>
         </div>
         <el-tabs v-model="activeName">
             <el-tab-pane label="基本信息" name="first">
@@ -57,8 +58,7 @@
             <el-tab-pane label="参数" name="third">
                 <el-form label-width="80px">
                     <el-form-item label="显示">
-                        <el-switch v-model="config.watermark.params.show" :active-value="true"
-                            :inactive-value="false"></el-switch>
+                        <el-switch v-model="config.watermark.params.show" :active-value="true" :inactive-value="false"></el-switch>
                     </el-form-item>
                     <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.params.color" />
@@ -108,8 +108,7 @@
                         <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="1000"></el-input-number>
                     </el-form-item>
                     <el-form-item label="上下边距">
-                        <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="1000"
-                            disabled></el-input-number>
+                        <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="1000"></el-input-number>
                     </el-form-item>
 
                     <el-form-item label="操作">
@@ -117,7 +116,7 @@
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
-            <el-tab-pane :label="`水印${curWatermarkIndex}`" name="sixth">
+            <el-tab-pane :label="`水印(下标：${curWatermarkIndex})`" name="sixth">
                 <el-form label-width="80px">
                     <el-form-item label="选择样式">
                         <el-select v-model="curWatermarkIndex">
@@ -173,6 +172,11 @@ const watermarks = reactive([
         index: 2,
         name: '样式2',
         config: 'watermark2'
+    },
+    {
+        index: 3,
+        name: '样式3',
+        config: 'watermark3'
     }
 ])
 const curWatermarkIndex = ref<number>(0)
@@ -213,6 +217,10 @@ watch(curWatermarkIndex, (val) => {
             return;
         }
         config.draw(curFile.value, img);
+        ElNotification.success({
+            title: '绘制成功',
+            message: '请点击下载保存图片'
+        })
     }).catch(err => {
         ElNotification.error({
             title: '导入水印配置错误',
@@ -224,17 +232,15 @@ watch(curWatermarkIndex, (val) => {
 
 <style lang='less' scoped>
 #canvasBox {
-    width: 900px;
+    width: 100%;
     height: 600px;
     overflow: auto;
-    border: 3px solid gainsboro;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
-    // align-items: center;
 
     #imgCanvas {
-        border: 1px solid orange;
+        border: 1px solid gainsboro;
     }
 
     .btns {

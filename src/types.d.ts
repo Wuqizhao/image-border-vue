@@ -1,4 +1,4 @@
-interface Config {
+declare interface Config {
 	paddings: {
 		top: number;
 		right: number;
@@ -21,15 +21,15 @@ interface Config {
 			color: string;
 			size: number;
 		};
-        paddings: {
-            lr: number;
-            tb: number;
-        };
-        bgColor: string;
+		paddings: {
+			lr: number;
+			tb: number;
+		};
+		bgColor: string;
 	};
 }
 
-interface Img {
+declare interface Img {
 	width: number;
 	height: number;
 	fileName: string;
