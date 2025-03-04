@@ -25,7 +25,7 @@ const config = {
 		},
 		paddings: {
 			lr: 20,
-			tb: 0,
+			tb: 30,
 		},
 		bgColor: "#ff0000",
 	},
@@ -74,7 +74,6 @@ const config = {
 						img.width / scale + config.paddings.left + config.paddings.right;
 					canvas.height =
 						img.height / scale + config.paddings.top + config.paddings.bottom;
-					canvas.height += 2 * config.watermark.paddings.tb;
 
 					// 打印底部水印的坐标范围
 					const rect1 = {
@@ -123,7 +122,7 @@ const config = {
 						ctx.textAlign = "left";
 						ctx.textBaseline = "middle";
 						// 高度在1/3处
-						const _y = 0.95 * canvas.height;
+						const _y = canvas.height - config.watermark.paddings.tb;
 						// 截取厂商
 						const company = exif?.Model?.split(" ")[0];
 						// 计算厂商的宽度
@@ -156,7 +155,7 @@ const config = {
 						ctx.font = `${timeConfig.size}px Arial`;
 
 						// 在水印范围内垂直居中
-						const _y = 0.95 * canvas.height;
+						const _y = canvas.height - config.watermark.paddings.tb;
 						console.log("水印范围内垂直居中", _y);
 						ctx.fillText(
 							shotTime,
