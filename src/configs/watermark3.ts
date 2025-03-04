@@ -17,6 +17,8 @@ const config = {
 		},
 		params: {
 			show: false,
+			color: "#FFF",
+			size: 14,
 		},
 		time: {
 			show: true,
@@ -81,6 +83,7 @@ const config = {
 					} else {
 						ctx.fillStyle = "#FFF";
 					}
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 					canvasBox.style.height = `${900 / boxScale}px`;
 					// 绘制图片
@@ -101,7 +104,10 @@ const config = {
 						ctx.textAlign = "left";
 						ctx.textBaseline = "middle";
 						// 高度在1/3处
-						const _y = canvas.height - config.watermark.paddings.tb;
+						const _y =
+							canvas.height -
+							config.watermark.paddings.tb -
+							config.paddings.bottom;
 						// 截取厂商
 						const company = exif?.Model?.split(" ")[0];
 						// 计算厂商的宽度
@@ -134,7 +140,10 @@ const config = {
 						ctx.font = `${timeConfig.size}px Arial`;
 
 						// 在水印范围内垂直居中
-						const _y = canvas.height - config.watermark.paddings.tb;
+						const _y =
+							canvas.height -
+							config.watermark.paddings.tb -
+							config.paddings.bottom;
 						console.log("水印范围内垂直居中", _y);
 						ctx.fillText(
 							shotTime,

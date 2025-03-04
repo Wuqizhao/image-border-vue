@@ -58,7 +58,8 @@
             <el-tab-pane label="参数" name="third">
                 <el-form label-width="80px">
                     <el-form-item label="显示">
-                        <el-switch v-model="config.watermark.params.show" :active-value="true" :inactive-value="false"></el-switch>
+                        <el-switch v-model="config.watermark.params.show" :active-value="true"
+                            :inactive-value="false"></el-switch>
                     </el-form-item>
                     <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.params.color" />
@@ -205,7 +206,21 @@ watch(curWatermarkIndex, (val) => {
     console.log(val, watermark[0].config);
 
     // 导入
-    import('./configs/' + watermark[0].config).then(res => {
+    let configPromise = null;
+    switch (watermark[0].config) {
+        case 'watermark1':
+            configPromise = import('./configs/watermark1');
+            break;
+        case 'watermark2':
+            configPromise = import('./configs/watermark2');
+            break;
+        case 'watermark3':
+            configPromise = import('./configs/watermark3');
+            break;
+        default: configPromise = import('./configs/default');
+            break;
+    }
+    configPromise.then(res => {
         config = reactive(res.default);
         console.log('config', config);
 
