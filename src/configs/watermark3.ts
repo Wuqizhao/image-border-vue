@@ -29,7 +29,7 @@ const config = {
 			lr: 20,
 			tb: 30,
 		},
-		bgColor: "#ff0000",
+		bgColor: "#000000",
 	},
 	draw(file: File, img: Img) {
 		if (!file) return;

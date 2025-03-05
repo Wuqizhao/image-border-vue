@@ -27,9 +27,13 @@ const config = {
 		},
 		paddings: {
 			lr: 0,
-			tb: 10,
+			tb: 15,
 		},
-		bgColor: "#ff0000",
+		bgColor: "#FFF",
+	},
+	radius: {
+		enable: true,
+		size: 10,
 	},
 	draw(file: File, img: Img) {
 		if (!file) return;
@@ -96,18 +100,59 @@ const config = {
 					if (config.watermark.bgColor) {
 						ctx.fillStyle = config.watermark.bgColor;
 					} else {
-						ctx.fillStyle = "#FFF";
+						ctx.fillStyle = "#FFFFFF";
 					}
-					// 绘制水印可绘制区域
-					// ctx.lineWidth = 1;
-					// ctx.strokeStyle = "red";
-					// ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-					// canvasBox.style.width = `900px`;
 					canvasBox.style.height = `${900 / boxScale}px`;
-					// 设置背景颜色
-					// ctx.fillStyle = "white";
-					// ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+					// 绘制圆角图片
+					if (config.radius.enable) {
+						ctx.save();
+						console.log('绘制圆角图片');
+						const radius = config.radius.size;
+						ctx.beginPath();
+						ctx.moveTo(config.paddings.left + radius, config.paddings.top);
+						ctx.lineTo(
+							canvas.width - config.paddings.right - radius,
+							config.paddings.top
+						);
+						ctx.quadraticCurveTo(
+							canvas.width - config.paddings.right,
+							config.paddings.top,
+							canvas.width - config.paddings.right,
+							config.paddings.top + radius
+						);
+						ctx.lineTo(
+							canvas.width - config.paddings.right,
+							img.height / scale + config.paddings.top - radius
+						);
+						ctx.quadraticCurveTo(
+							canvas.width - config.paddings.right,
+							img.height / scale + config.paddings.top,
+							canvas.width - config.paddings.right - radius,
+							img.height / scale + config.paddings.top
+						);
+						ctx.lineTo(
+							config.paddings.left + radius,
+							img.height / scale + config.paddings.top
+						);
+						ctx.quadraticCurveTo(
+							config.paddings.left,
+							img.height / scale + config.paddings.top,
+							config.paddings.left,
+							img.height / scale + config.paddings.top - radius
+						);
+						ctx.lineTo(config.paddings.left, config.paddings.top + radius);
+						ctx.quadraticCurveTo(
+							config.paddings.left,
+							config.paddings.top,
+							config.paddings.left + radius,
+							config.paddings.top
+						);
+						ctx.closePath();
+						ctx.clip();
+					}
 					// 绘制图片
 					ctx.drawImage(
 						_img,
@@ -116,6 +161,7 @@ const config = {
 						img.width / scale,
 						img.height / scale
 					);
+					ctx.restore();
 
 					// 绘制型号
 					const modelConfig = config.watermark.model;

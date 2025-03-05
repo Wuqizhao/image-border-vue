@@ -27,6 +27,16 @@ declare interface Config {
 		};
 		bgColor: string;
 	};
+	radius: {
+		enable: boolean;
+		size: number;
+	};
+	// blur?: {
+	// 	enable: boolean;
+	// 	size: number;
+	// };
+
+	draw(file: File, img: Img): void;
 }
 
 declare interface Img {

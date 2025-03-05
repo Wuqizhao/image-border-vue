@@ -4,7 +4,7 @@
     </div>
 
     <div>
-        <h1>配置</h1>
+        <h2>配置</h2>
         <div class="btns">
             <el-button @click="selectFile" type="primary">选择文件</el-button>
             <el-button @click="config.draw(curFile as File, img)" :disabled="!curFile" type="warning"
@@ -117,7 +117,7 @@
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
-            <el-tab-pane :label="`水印(下标：${curWatermarkIndex})`" name="sixth">
+            <el-tab-pane :label="`水印`" name="sixth">
                 <el-form label-width="80px">
                     <el-form-item label="选择样式">
                         <el-select v-model="curWatermarkIndex">
@@ -125,8 +125,19 @@
                                 :value="index"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item lable="背景颜色">
+                    <el-form-item label="模糊背景">
+                        <el-switch v-model="config.radius.enable" disabled></el-switch>
                         <el-color-picker v-model="config.watermark.bgColor"></el-color-picker>
+                    </el-form-item>
+                    <el-form-item label="模糊量(px)">
+                        <el-input-number v-model="config.radius.size" :min="0" :max="1000"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="圆角(px)">
+                        <el-switch v-model="config.radius.enable"></el-switch>
+                    </el-form-item>
+                    <el-form-item label="圆角大小">
+                        <el-input-number v-model="config.radius.size" :min="0" :max="1000"
+                            :disabled="!config.radius.enable"></el-input-number>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -140,6 +151,7 @@ import { reactive, ref, watch } from 'vue'
 import { print, download } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElNotification } from 'element-plus'
+import type { Config } from './types'
 
 const img = reactive({
     width: 0,
@@ -155,8 +167,7 @@ const img = reactive({
     exif: {}
 })
 const curFile = ref<File | null>(null)
-let config = reactive(defaultWaterMark);
-
+const config = reactive<Config>(defaultWaterMark);
 
 const watermarks = reactive([
     {
@@ -221,7 +232,7 @@ watch(curWatermarkIndex, (val) => {
             break;
     }
     configPromise.then(res => {
-        config = reactive(res.default);
+        Object.assign(config, res.default);
         console.log('config', config);
 
         if (curFile.value === null) {
@@ -252,7 +263,7 @@ watch(curWatermarkIndex, (val) => {
     overflow: auto;
     box-sizing: border-box;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
 
     #imgCanvas {
         border: 1px solid gainsboro;
