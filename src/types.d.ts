@@ -36,7 +36,7 @@ declare interface Config {
 	// 	size: number;
 	// };
 
-	draw(file: File, img: Img): void;
+	draw(file: File, img: Img,config: Config): void;
 }
 
 declare interface Img {

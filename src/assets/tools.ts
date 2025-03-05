@@ -32,4 +32,31 @@ const download = (name: string) => {
 	a.click();
 };
 
-export { print, convertExposureTime, formatDate, download };
+// 深拷贝对象，包含函数
+function deepClone<T>(value: T): T {
+	// 如果值为 null 或者不是对象或函数，则直接返回该值
+	if (value === null || typeof value !== "object") {
+		return value;
+	}
+
+	// 如果是数组
+	if (Array.isArray(value)) {
+		return value.map((item) => deepClone(item)) as T;
+	}
+
+	// 如果是函数
+	if (typeof value === "function") {
+		return value as T;
+	}
+
+	// 如果是普通对象
+	const clone: Record<string, any> = {};
+	for (const key in value) {
+		if (Object.prototype.hasOwnProperty.call(value, key)) {
+			clone[key] = deepClone(value[key]);
+		}
+	}
+	return clone as T;
+}
+
+export { print, convertExposureTime, formatDate, download, deepClone };

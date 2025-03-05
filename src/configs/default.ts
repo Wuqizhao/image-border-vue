@@ -1,6 +1,6 @@
 import { formatDate, convertExposureTime } from "../assets/tools";
 import Exifr from "exifr";
-import type { Img } from "../types";
+import type { Config, Img } from "../types";
 
 const config = {
 	paddings: {
@@ -35,7 +35,7 @@ const config = {
 		enable: true,
 		size: 10,
 	},
-	draw(file: File, img: Img) {
+	draw(file: File, img: Img, config: Config) {
 		if (!file) return;
 		img.fileName = file.name;
 		img.export.name = "WM_" + file.name;
@@ -109,7 +109,7 @@ const config = {
 					// 绘制圆角图片
 					if (config.radius.enable) {
 						ctx.save();
-						console.log('绘制圆角图片');
+						console.log("绘制圆角图片");
 						const radius = config.radius.size;
 						ctx.beginPath();
 						ctx.moveTo(config.paddings.left + radius, config.paddings.top);

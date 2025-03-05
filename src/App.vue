@@ -6,11 +6,11 @@
     <div>
         <h2>配置</h2>
         <div class="btns">
-            <el-button @click="selectFile" type="primary">选择文件</el-button>
-            <el-button @click="config.draw(curFile as File, img)" :disabled="!curFile" type="warning"
-                plain>绘制</el-button>
+            <el-button @click="selectFile" type="primary" plain>选择文件</el-button>
+            <el-button @click="config.draw(curFile as File, img, config)" :disabled="!curFile"
+                type="success">绘制</el-button>
             <el-button @click="print">打印配置</el-button>
-            <el-button type="success" @click="download(img.export.name)">下载图片</el-button>
+            <el-button type="success" plain @click="download(img.export.name)">下载图片</el-button>
         </div>
         <el-tabs v-model="activeName">
             <el-tab-pane label="基本信息" name="first">
@@ -50,9 +50,6 @@
                     <el-form-item label="字号">
                         <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"></el-input-number>
                     </el-form-item>
-                    <el-form-item label="操作">
-                        <el-button type="danger" plain disabled>重置</el-button>
-                    </el-form-item>
                 </el-form>
             </el-tab-pane>
             <el-tab-pane label="参数" name="third">
@@ -67,9 +64,6 @@
                     <el-form-item label="字号">
                         <el-input-number v-model="config.watermark.params.size" :min="12" :max="1000"></el-input-number>
                     </el-form-item>
-                    <el-form-item label="操作">
-                        <el-button type="danger" plain disabled>重置</el-button>
-                    </el-form-item>
                 </el-form>
             </el-tab-pane>
             <el-tab-pane label="时间" name="fourth">
@@ -83,9 +77,6 @@
                     </el-form-item>
                     <el-form-item label="字号">
                         <el-input-number v-model="config.watermark.time.size" :min="12" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="操作">
-                        <el-button type="danger" plain disabled>重置</el-button>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -111,10 +102,6 @@
                     <el-form-item label="上下边距">
                         <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="1000"></el-input-number>
                     </el-form-item>
-
-                    <el-form-item label="操作">
-                        <el-button type="danger" plain disabled>重置</el-button>
-                    </el-form-item>
                 </el-form>
             </el-tab-pane>
             <el-tab-pane :label="`水印`" name="sixth">
@@ -125,14 +112,14 @@
                                 :value="index"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="模糊背景">
+                    <!-- <el-form-item label="模糊背景">
                         <el-switch v-model="config.radius.enable" disabled></el-switch>
                         <el-color-picker v-model="config.watermark.bgColor"></el-color-picker>
                     </el-form-item>
                     <el-form-item label="模糊量(px)">
                         <el-input-number v-model="config.radius.size" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="圆角(px)">
+                    </el-form-item> -->
+                    <el-form-item label="圆角">
                         <el-switch v-model="config.radius.enable"></el-switch>
                     </el-form-item>
                     <el-form-item label="圆角大小">
@@ -142,13 +129,15 @@
                 </el-form>
             </el-tab-pane>
         </el-tabs>
+
+        <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
     </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 // import Exifr from 'exifr'
-import { print, download } from './assets/tools'
+import { print, download, deepClone } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElNotification } from 'element-plus'
 import type { Config } from './types'
@@ -167,7 +156,7 @@ const img = reactive({
     exif: {}
 })
 const curFile = ref<File | null>(null)
-const config = reactive<Config>(defaultWaterMark);
+const config = ref<Config>(defaultWaterMark);
 
 const watermarks = reactive([
     {
@@ -206,12 +195,26 @@ const selectFile = () => {
         const file = target.files[0];
         curFile.value = file;
 
-        config.draw(file, img);
+        config.value.draw(file, img, config.value);
     }
+}
+
+const resetWatermark = () => {
+    importConfig(curWatermarkIndex.value);
+    ElNotification.success({
+        title: '成功',
+        message: '重置成功'
+    })
 }
 
 // 监听
 watch(curWatermarkIndex, (val) => {
+    importConfig(val)
+}, {
+    immediate: true
+})
+
+function importConfig(val: number): void {
     // 获取对应的水印
     const watermark = watermarks.filter(item => item.index == val)
     console.log(val, watermark[0].config);
@@ -232,17 +235,18 @@ watch(curWatermarkIndex, (val) => {
             break;
     }
     configPromise.then(res => {
-        Object.assign(config, res.default);
+        // Object.assign(config, res.default);
+        config.value = deepClone(<Config>res.default);
         console.log('config', config);
 
         if (curFile.value === null) {
             ElNotification.error({
-                title: '错误',
+                title: '绘制失败',
                 message: '请先选择图片'
             })
             return;
         }
-        config.draw(curFile.value, img);
+        config.value.draw(curFile.value, img, config.value);
         ElNotification.success({
             title: '绘制成功',
             message: '请点击下载保存图片'
@@ -253,7 +257,7 @@ watch(curWatermarkIndex, (val) => {
             message: err.message
         })
     })
-})
+}
 </script>
 
 <style lang='less' scoped>
