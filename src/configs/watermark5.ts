@@ -184,10 +184,10 @@ const config = {
 						ctx.font = `bold ${modelConfig.size}px Arial`;
 						ctx.fillStyle = modelConfig.color;
 						ctx.textAlign = "left";
-                        ctx.textBaseline = "top";
-                        
-                        // // 绘制水印范围
-                        // ctx.strokeStyle = 'red';
+						ctx.textBaseline = "top";
+
+						// // 绘制水印范围
+						// ctx.strokeStyle = 'red';
 						// ctx.strokeRect(
 						// 	rect1.x,
 						// 	rect1.y,
@@ -202,7 +202,7 @@ const config = {
 
 						const _y = rect1.y;
 						// 截取厂商
-						const company = exif?.Model?.split(" ")[0];
+						const company = (exif?.Model).toUpperCase().split(" ")[0];
 						// 计算厂商的宽度
 						const companyWidth = ctx.measureText(company).width;
 						// 计算型号宽度
@@ -276,7 +276,7 @@ const config = {
 							// 绘制矩形
 							ctx.strokeRect(
 								canvas.width / 4 + i * (rectWidth + space),
-								_y - rectPadding / 2 - paramsConfig.size / 2,
+								_y - rectPadding / 2 - paramsConfig.size / 2 - 2,
 								rectWidth,
 								paramsConfig.size + rectPadding
 							);
