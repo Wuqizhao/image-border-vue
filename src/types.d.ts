@@ -1,3 +1,5 @@
+import type { Exifr,Tags } from "exifr";
+
 declare interface Config {
 	paddings: {
 		top: number;
@@ -31,12 +33,12 @@ declare interface Config {
 		enable: boolean;
 		size: number;
 	};
-	// blur?: {
-	// 	enable: boolean;
-	// 	size: number;
-	// };
+	blur: {
+		enable: boolean;
+		size: number;
+	};
 
-	draw(file: File, img: Img,config: Config): void;
+	draw(file: File, img: Img, config: Config): void;
 }
 
 declare interface Img {
@@ -50,7 +52,7 @@ declare interface Img {
 		name: string;
 		quality: number;
 	};
-	exif: object;
+	exif: Object
 }
 
 export { Config, Img };

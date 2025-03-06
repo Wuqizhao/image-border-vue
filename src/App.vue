@@ -7,10 +7,12 @@
         <h2>配置</h2>
         <div class="btns">
             <el-button @click="selectFile" type="primary" plain>选择文件</el-button>
+            <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
             <el-button @click="config.draw(curFile as File, img, config)" :disabled="!curFile"
                 type="success">绘制</el-button>
-            <el-button @click="print">打印配置</el-button>
+            <el-button @click="print(config, img)">打印配置</el-button>
             <el-button type="success" plain @click="download(img.export.name)">下载图片</el-button>
+            <!-- <el-button>{{ img.exif?.ExifImageWidth }} * {{ img.exif?.ExifImageHeight }}</el-button> -->
         </div>
         <el-tabs v-model="activeName">
             <el-tab-pane label="基本信息" name="first">
@@ -83,7 +85,10 @@
                     <el-form-item label="字号">
                         <el-input-number v-model="config.watermark.params.size" :min="12" :max="1000"></el-input-number>
                     </el-form-item>
-                    <el-form-item label="字母大写">
+                    <el-form-item label="字母大写(开发中)">
+                        <el-switch disabled :active-value="true" :inactive-value="false"></el-switch>
+                    </el-form-item>
+                    <el-form-item label="等效焦距(开发中)">
                         <el-switch disabled :active-value="true" :inactive-value="false"></el-switch>
                     </el-form-item>
                 </el-form>
@@ -107,14 +112,15 @@
                     <h3>背景</h3>
                 </div>
                 <el-form label-width="80px">
-                    <el-form-item label="颜色">
-                        <el-color-picker v-model="config.watermark.bgColor"></el-color-picker>
-                    </el-form-item>
                     <el-form-item label="模糊">
-                        <el-switch v-model="config.radius.enable" disabled></el-switch>
+                        <el-switch v-model="config.blur.enable"></el-switch>
                     </el-form-item>
                     <el-form-item label="模糊量">
-                        <el-input-number v-model="config.radius.size" :min="0" :max="1000" disabled></el-input-number>
+                        <el-input-number v-model="config.blur.size" :min="0" :max="1000"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="颜色">
+                        <el-color-picker v-model="config.watermark.bgColor"
+                            :disabled="config.blur.enable"></el-color-picker>
                     </el-form-item>
                 </el-form>
                 <div class="config-title">
@@ -125,6 +131,40 @@
                     <el-form-item label="半径">
                         <el-input-number v-model="config.radius.size" :min="0" :max="1000"
                             :disabled="!config.radius.enable"></el-input-number>
+                    </el-form-item>
+                </el-form>
+                <div class="config-title">
+                    <h3>Logo（开发中）</h3>
+                    <el-switch disabled></el-switch>
+                </div>
+                <el-form label-width="80">
+                    <el-form-item label="大小">
+                        <b style="margin-left: 10px;color: gray;">宽度：</b>
+                        <el-input-number disabled :min="0" :max="500"></el-input-number>
+                        <b style="margin-left: 10px;color: gray;">高度：</b>
+                        <el-input-number disabled :min="0" :max="500"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="自动匹配">
+                        <el-switch disabled></el-switch>
+                        <el-select disabled placeholder="选择logo">
+                            <el-option label="徕卡" value="leica"></el-option>
+                            <el-option label="尼康" value="nikon"></el-option>
+                            <el-option label="佳能" value="canon"></el-option>
+                            <el-option label="富士" value="fuji"></el-option>
+                            <el-option label="索尼" value="sony"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                <div class="config-title">
+                    <h3>分割线（开发中）</h3>
+                    <el-switch disabled></el-switch>
+                </div>
+                <el-form label-width="80">
+                    <el-form-item label="颜色">
+                        <el-color-picker disabled></el-color-picker>
+                    </el-form-item>
+                    <el-form-item label="宽度">
+                        <el-input-number disabled :min="1" :max="10"></el-input-number>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -153,8 +193,6 @@
                 </el-form>
             </el-tab-pane>
         </el-tabs>
-
-        <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
     </div>
 </template>
 
@@ -163,9 +201,9 @@ import { reactive, ref, watch } from 'vue'
 import { print, download, deepClone } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElNotification } from 'element-plus'
-import type { Config } from './types'
+import type { Config, Img } from './types'
 
-const img = reactive({
+const img = reactive<Img>({
     width: 0,
     height: 0,
     fileName: '',
@@ -189,18 +227,23 @@ const watermarks = reactive([
     },
     {
         index: 1,
-        name: '样式1',
-        config: 'watermark1'
+        name: '徕卡',
+        config: 'watermark4'
     },
     {
         index: 2,
-        name: '样式2',
+        name: '型号+参数居中',
         config: 'watermark2'
     },
     {
         index: 3,
-        name: '样式3',
+        name: '型号+时间',
         config: 'watermark3'
+    },
+    {
+        index: 4,
+        name: '型号+参数+Logo',
+        config: 'watermark5'
     }
 ])
 const curWatermarkIndex = ref<number>(0)
@@ -253,6 +296,12 @@ function importConfig(val: number): void {
         case 'watermark3':
             configPromise = import('./configs/watermark3');
             break;
+        case 'watermark4':
+            configPromise = import('./configs/watermark4');
+            break;
+        case 'watermark5':
+            configPromise = import('./configs/watermark5');
+            break;
         default: configPromise = import('./configs/default');
             break;
     }
@@ -270,7 +319,7 @@ function importConfig(val: number): void {
         config.value.draw(curFile.value, img, config.value);
         ElNotification.success({
             title: '绘制成功',
-            message: '请点击下载保存图片'
+            message: '可以点击下载保存图片'
         })
     }).catch(err => {
         ElNotification.error({

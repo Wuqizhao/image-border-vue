@@ -4,35 +4,35 @@ import type { Config, Img } from "../types";
 
 const config = {
 	paddings: {
-		top: 10, // 图片上边距
-		right: 10,
-		left: 10,
+		top: 25, // 图片上边距
+		right: 25,
+		left: 25,
 		bottom: 0,
 	},
 	watermark: {
 		model: {
 			show: true,
 			color: "#000000",
-			size: 20,
+			size: 24,
 		},
 		params: {
 			show: true,
-			color: "#808080",
-			size: 14,
+			color: "#000000",
+			size: 18,
 		},
 		time: {
-			show: true,
-			color: "#808080",
+			show: false,
+			color: "#000000",
 			size: 14,
 		},
 		paddings: {
 			lr: 0,
-			tb: 15,
+			tb: 50,
 		},
 		bgColor: "#FFF",
 	},
 	radius: {
-		enable: true,
+		enable: false,
 		size: 10,
 	},
 	blur: {
@@ -85,7 +85,7 @@ const config = {
 					canvas.height =
 						img.height / scale + config.paddings.top + config.paddings.bottom;
 					canvas.height +=
-						0.1 * canvas.height + 2 * config.watermark.paddings.tb;
+						0.2 * canvas.height + 2 * config.watermark.paddings.tb;
 
 					// 打印底部水印的坐标范围
 					const rect1 = {
@@ -102,19 +102,19 @@ const config = {
 					};
 
 					if (config.blur && config.blur.enable) {
-						console.log('背景模糊',config);
+						console.log("背景模糊", config);
 						ctx.save();
 						ctx.filter = `blur(${config.blur.size}px)`;
 						ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
-						console.log('背景模糊', config.blur.size);
+						console.log("背景模糊", config.blur.size);
 						ctx.restore();
 					} else if (config.watermark.bgColor) {
 						ctx.fillStyle = config.watermark.bgColor;
-						console.log('自定义背景颜色');
+						console.log("自定义背景颜色");
 						ctx.fillRect(0, 0, canvas.width, canvas.height);
 					} else {
 						ctx.fillStyle = "#FFFFFF";
-						console.log('默认背景颜色');
+						console.log("默认背景颜色");
 						ctx.fillRect(0, 0, canvas.width, canvas.height);
 					}
 
@@ -184,68 +184,119 @@ const config = {
 						ctx.font = `bold ${modelConfig.size}px Arial`;
 						ctx.fillStyle = modelConfig.color;
 						ctx.textAlign = "left";
-						ctx.textBaseline = "middle";
-						// 高度在1/3处
-						const _y = rect1.y + (rect2.y - rect1.y) / 3;
+                        ctx.textBaseline = "top";
+                        
+                        // // 绘制水印范围
+                        // ctx.strokeStyle = 'red';
+						// ctx.strokeRect(
+						// 	rect1.x,
+						// 	rect1.y,
+						// 	rect2.x - rect1.x,
+						// 	rect2.y - rect1.y
+						// );
+						// // 绘制中心水平线
+						// ctx.beginPath();
+						// ctx.moveTo(0, rect1.y + (rect2.y - rect1.y) / 2);
+						// ctx.lineTo(canvas.width, rect1.y + (rect2.y - rect1.y) / 2);
+						// ctx.stroke();
+
+						const _y = rect1.y;
 						// 截取厂商
 						const company = exif?.Model?.split(" ")[0];
 						// 计算厂商的宽度
 						const companyWidth = ctx.measureText(company).width;
-
-						ctx.fillText(
-							company,
-							config.paddings.left + config.watermark.paddings.lr,
-							_y
-						);
-
+						// 计算型号宽度
 						ctx.font = `${modelConfig.size}px Arial`;
-						ctx.fillText(
-							exif.Model.replace(company, ""),
-							config.paddings.left +
-								config.watermark.paddings.lr +
-								companyWidth,
-							_y
-						);
+						const modelWidth = ctx.measureText(
+							exif.Model.replace(company, "")
+						).width;
+						// 竖线
+						const line = "  |  ";
+						// 计算竖线宽度
+						const lineWidth = ctx.measureText(line).width;
+						// logo
+						const logoSize = {
+							width: 24,
+							height: 24,
+						};
+
+						// 总宽度
+						const totalWidth =
+							companyWidth + modelWidth + lineWidth + logoSize.width;
+
+						// 绘制制造商
+						ctx.font = `bold ${modelConfig.size}px Arial`;
+						ctx.fillText(company, canvas.width / 2 - totalWidth / 2, _y);
+						ctx.font = `${modelConfig.size}px Arial`;
+						// 绘制型号
+						ctx.fillText(exif.Model.replace(company, ""), canvas.width / 2, _y);
+
+						// 绘制LOGO
+						const leicaLogo = new Image();
+						leicaLogo.src = (await import("../assets/leica.png")).default;
+						leicaLogo.onload = () => {
+							// 计算横坐标
+							const logoX = canvas.width / 2 + totalWidth / 2 - logoSize.width;
+							// 计算纵坐标
+							const logoY = _y;
+							ctx.drawImage(
+								leicaLogo,
+								logoX,
+								logoY,
+								logoSize.width,
+								logoSize.height
+							);
+						};
 						ctx.restore(); // 恢复之前的绘图状态
 					}
 
 					// 绘制曝光三要素和焦段参数
 					const paramsConfig = config.watermark.params;
 					if (paramsConfig.show) {
-						ctx.fillStyle = paramsConfig.color;
 						ctx.font = `${paramsConfig.size}px Arial`;
-						ctx.textBaseline = "middle";
-						const params = `${convertExposureTime(exif?.ExposureTime)}s  f/${
-							exif?.FNumber
-						}  ISO ${exif?.ISO}  ${exif?.FocalLengthIn35mmFormat}mm`;
-						// 高度在2/3处
-						const _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
-						ctx.fillText(
-							params,
-							config.paddings.left + config.watermark.paddings.lr,
-							_y
-						);
-					}
 
-					// 绘制拍摄时间
-					const timeConfig = config.watermark.time;
-					if (timeConfig.show) {
-						const shotTime = formatDate(new Date(exif?.DateTimeOriginal));
-						ctx.textAlign = "right";
-						ctx.textBaseline = "middle";
-						ctx.fillStyle = timeConfig.color;
-						ctx.font = `${timeConfig.size}px Arial`;
+						const space = 50; // 参数间隔
+						// 计算单个矩形宽度
+						const rectWidth = (canvas.width / 2 - 3 * space) / 4;
+						// 计算y坐标
+						const _y = rect1.y + (rect2.y - rect1.y) / 2;
 
-						// 在水印范围内垂直居中
-						const _y = (rect2.y + rect1.y) / 2;
-						console.log("水印范围内垂直居中", _y);
-						ctx.fillText(
-							shotTime,
-							canvas.width -
-								config.paddings.right -
-								config.watermark.paddings.lr,
-							_y
-						);
+						const paramsArr = [
+							exif?.FocalLengthIn35mmFormat,
+							convertExposureTime(exif?.ExposureTime),
+							exif?.FNumber,
+							exif?.ISO,
+						];
+						const paramsLabel = ["mm", "F", "S", "ISO"];
+						for (let i = 0; i < 4; i++) {
+							ctx.strokeStyle = "#909090";
+							ctx.lineWidth = 1;
+							// 矩形内边距
+							const rectPadding = 10;
+							// 绘制矩形
+							ctx.strokeRect(
+								canvas.width / 4 + i * (rectWidth + space),
+								_y - rectPadding / 2 - paramsConfig.size / 2,
+								rectWidth,
+								paramsConfig.size + rectPadding
+							);
+							// 计算当前矩形的中心点坐标
+							const centerX =
+								canvas.width / 4 + i * (rectWidth + space) + rectWidth / 2;
+							ctx.textAlign = "center";
+							ctx.textBaseline = "middle";
+							ctx.fillStyle = paramsConfig.color;
+							ctx.fillText(paramsArr[i], centerX, _y);
+							ctx.fillStyle = "gray";
+							ctx.textBaseline = "bottom";
+							ctx.fillText(paramsLabel[i], centerX, rect2.y);
+						}
+
+						// 绘制垂直中心分割线
+						// ctx.beginPath();
+						// ctx.moveTo(canvas.width / 2, 0);
+						// ctx.lineTo(canvas.width / 2, canvas.height);
+						// ctx.stroke();
 					}
 				}
 			};

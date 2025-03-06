@@ -29,7 +29,7 @@ const config = {
 			lr: 10,
 			tb: 0,
 		},
-		bgColor: "#ffffff",
+		bgColor: "#ffffff"
 	},
 	draw(file: File, img: Img) {
 		if (!file) throw new Error("文件不存在");

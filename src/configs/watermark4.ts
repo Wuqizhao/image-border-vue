@@ -4,9 +4,9 @@ import type { Config, Img } from "../types";
 
 const config = {
 	paddings: {
-		top: 10, // 图片上边距
-		right: 10,
-		left: 10,
+		top: 0, // 图片上边距
+		right: 0,
+		left: 0,
 		bottom: 0,
 	},
 	watermark: {
@@ -17,22 +17,22 @@ const config = {
 		},
 		params: {
 			show: true,
-			color: "#808080",
-			size: 14,
+			color: "#000000",
+			size: 20,
 		},
 		time: {
-			show: true,
-			color: "#808080",
+			show: false,
+			color: "#000000",
 			size: 14,
 		},
 		paddings: {
-			lr: 0,
+			lr: 10,
 			tb: 15,
 		},
 		bgColor: "#FFF",
 	},
 	radius: {
-		enable: true,
+		enable: false,
 		size: 10,
 	},
 	blur: {
@@ -102,19 +102,19 @@ const config = {
 					};
 
 					if (config.blur && config.blur.enable) {
-						console.log('背景模糊',config);
+						console.log("背景模糊", config);
 						ctx.save();
 						ctx.filter = `blur(${config.blur.size}px)`;
 						ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
-						console.log('背景模糊', config.blur.size);
+						console.log("背景模糊", config.blur.size);
 						ctx.restore();
 					} else if (config.watermark.bgColor) {
 						ctx.fillStyle = config.watermark.bgColor;
-						console.log('自定义背景颜色');
+						console.log("自定义背景颜色");
 						ctx.fillRect(0, 0, canvas.width, canvas.height);
 					} else {
 						ctx.fillStyle = "#FFFFFF";
-						console.log('默认背景颜色');
+						console.log("默认背景颜色");
 						ctx.fillRect(0, 0, canvas.width, canvas.height);
 					}
 
@@ -185,8 +185,7 @@ const config = {
 						ctx.fillStyle = modelConfig.color;
 						ctx.textAlign = "left";
 						ctx.textBaseline = "middle";
-						// 高度在1/3处
-						const _y = rect1.y + (rect2.y - rect1.y) / 3;
+						const _y = rect1.y + (rect2.y - rect1.y) / 2;
 						// 截取厂商
 						const company = exif?.Model?.split(" ")[0];
 						// 计算厂商的宽度
@@ -212,40 +211,64 @@ const config = {
 					// 绘制曝光三要素和焦段参数
 					const paramsConfig = config.watermark.params;
 					if (paramsConfig.show) {
-						ctx.fillStyle = paramsConfig.color;
-						ctx.font = `${paramsConfig.size}px Arial`;
-						ctx.textBaseline = "middle";
-						const params = `${convertExposureTime(exif?.ExposureTime)}s  f/${
+						const params = `${exif?.FocalLengthIn35mmFormat}mm  f/${
 							exif?.FNumber
-						}  ISO ${exif?.ISO}  ${exif?.FocalLengthIn35mmFormat}mm`;
-						// 高度在2/3处
-						const _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
-						ctx.fillText(
-							params,
-							config.paddings.left + config.watermark.paddings.lr,
-							_y
-						);
-					}
-
-					// 绘制拍摄时间
-					const timeConfig = config.watermark.time;
-					if (timeConfig.show) {
-						const shotTime = formatDate(new Date(exif?.DateTimeOriginal));
+						}  ${convertExposureTime(exif?.ExposureTime)}s  ISO${exif?.ISO}`;
 						ctx.textAlign = "right";
 						ctx.textBaseline = "middle";
-						ctx.fillStyle = timeConfig.color;
-						ctx.font = `${timeConfig.size}px Arial`;
+						ctx.fillStyle = paramsConfig.color;
+						ctx.font = `bold ${paramsConfig.size}px Arial`;
 
 						// 在水印范围内垂直居中
 						const _y = (rect2.y + rect1.y) / 2;
 						console.log("水印范围内垂直居中", _y);
 						ctx.fillText(
-							shotTime,
+							params,
 							canvas.width -
 								config.paddings.right -
 								config.watermark.paddings.lr,
 							_y
 						);
+
+						const space = 20; // 间隔
+
+						// 绘制竖线
+						const paramsWidth = ctx.measureText(params).width;
+						// 计算横坐标
+						const _x =
+							canvas.width -
+							config.paddings.right -
+							config.watermark.paddings.lr -
+							paramsWidth -
+							space;
+
+						// 绘制LOGO
+						const leicaLogo = new Image();
+						leicaLogo.src = (await import("../assets/leica.png")).default;
+						leicaLogo.onload = () => {
+							const logoSize = {
+								width: 40,
+								height: 40,
+							};
+							// 计算横坐标
+							const logoX = _x - space - logoSize.width;
+							// 计算纵坐标
+							const logoY = _y - logoSize.height / 2;
+							ctx.drawImage(
+								leicaLogo,
+								logoX,
+								logoY,
+								logoSize.width,
+								logoSize.height
+							);
+
+                            // 竖线长度和logo一致
+                            ctx.strokeStyle = "gray";
+							ctx.beginPath();
+							ctx.moveTo(_x, logoY);
+							ctx.lineTo(_x, logoY + logoSize.height);
+							ctx.stroke();
+						};
 					}
 				}
 			};
