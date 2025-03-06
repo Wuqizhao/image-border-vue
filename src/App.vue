@@ -9,7 +9,7 @@
             <el-button @click="selectFile" type="primary" plain>选择文件</el-button>
             <el-button @click="config.draw(curFile as File, img, config)" :disabled="!curFile"
                 type="success">绘制</el-button>
-            <el-button @click="print" style="display: none;">打印配置</el-button>
+            <el-button @click="print">打印配置</el-button>
             <el-button type="success" plain @click="download(img.export.name)">下载图片</el-button>
         </div>
         <el-tabs v-model="activeName">
@@ -39,7 +39,9 @@
                 </el-form>
             </el-tab-pane>
             <el-tab-pane :label="`水印`" name="sixth">
-                <h3>样式</h3>
+                <div class="config-title">
+                    <h3>样式</h3>
+                </div>
                 <el-form label-width="80px">
                     <el-form-item label="选择样式">
                         <el-select v-model="curWatermarkIndex" style="max-width: 200px;" placeholder="请选择水印样式">
@@ -48,27 +50,32 @@
                         </el-select>
                     </el-form-item>
                 </el-form>
-                <h3>型号</h3>
-                <el-form label-width="80px">
-                    <el-form-item label="显示">
-                        <el-switch v-model="config.watermark.model.show" :active-value="true"
-                            :inactive-value="false"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="颜色">
-                        <el-color-picker v-model="config.watermark.model.color" />
-                    </el-form-item>
-                    <el-form-item label="字号">
-                        <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"></el-input-number>
-                    </el-form-item>
-                </el-form>
-                <h3>参数</h3>
-                <el-form label-width="80px">
+                <div class="config-title">
+                    <h3>型号</h3>
+                    <el-switch v-model="config.watermark.model.show" :active-value="true"
+                        :inactive-value="false"></el-switch>
+                </div>
+                <el-form label-width="80px" v-if="config.watermark.model.show">
                     <el-form-item label="文本">
                         <el-input placeholder="暂不支持修改" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="显示">
-                        <el-switch v-model="config.watermark.params.show" :active-value="true"
-                            :inactive-value="false"></el-switch>
+                    <el-form-item label="颜色">
+                        <el-color-picker v-model="config.watermark.model.color"
+                            :disabled="!config.watermark.model.show" />
+                    </el-form-item>
+                    <el-form-item label="字号">
+                        <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"
+                            :disabled="!config.watermark.model.show"></el-input-number>
+                    </el-form-item>
+                </el-form>
+                <div class="config-title">
+                    <h3>参数</h3>
+                    <el-switch v-model="config.watermark.params.show" :active-value="true"
+                        :inactive-value="false"></el-switch>
+                </div>
+                <el-form label-width="80px" v-if="config.watermark.params.show">
+                    <el-form-item label="文本">
+                        <el-input placeholder="暂不支持修改" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.params.color" />
@@ -80,11 +87,14 @@
                         <el-switch disabled :active-value="true" :inactive-value="false"></el-switch>
                     </el-form-item>
                 </el-form>
-                <h3>时间</h3>
-                <el-form label-width="80px">
-                    <el-form-item label="显示">
-                        <el-switch v-model="config.watermark.time.show" :active-value="true"
-                            :inactive-value="false"></el-switch>
+                <div class="config-title">
+                    <h3>时间</h3>
+                    <el-switch v-model="config.watermark.time.show" :active-value="true"
+                        :inactive-value="false"></el-switch>
+                </div>
+                <el-form label-width="80px" v-if="config.watermark.time.show">
+                    <el-form-item label="文本">
+                        <el-input placeholder="暂不支持修改" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.time.color" />
@@ -93,22 +103,26 @@
                         <el-input-number v-model="config.watermark.time.size" :min="12" :max="1000"></el-input-number>
                     </el-form-item>
                 </el-form>
-                <el-form>
+                <div class="config-title">
                     <h3>背景</h3>
-                    <el-form-item label="背景颜色">
+                </div>
+                <el-form label-width="80px">
+                    <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.bgColor"></el-color-picker>
                     </el-form-item>
-                    <el-form-item label="模糊背景">
+                    <el-form-item label="模糊">
                         <el-switch v-model="config.radius.enable" disabled></el-switch>
                     </el-form-item>
-                    <el-form-item label="模糊量(px)">
-                        <el-input-number v-model="config.radius.size" :min="0" :max="1000"></el-input-number>
+                    <el-form-item label="模糊量">
+                        <el-input-number v-model="config.radius.size" :min="0" :max="1000" disabled></el-input-number>
                     </el-form-item>
+                </el-form>
+                <div class="config-title">
                     <h3>圆角</h3>
-                    <el-form-item label="圆角">
-                        <el-switch v-model="config.radius.enable"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="圆角大小">
+                    <el-switch v-model="config.radius.enable"></el-switch>
+                </div>
+                <el-form label-width="80px" v-if="config.radius.enable">
+                    <el-form-item label="半径">
                         <el-input-number v-model="config.radius.size" :min="0" :max="1000"
                             :disabled="!config.radius.enable"></el-input-number>
                     </el-form-item>
@@ -286,5 +300,12 @@ function importConfig(val: number): void {
         padding: 10px;
         gap: 10px;
     }
+}
+
+.config-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 10px;
 }
 </style>
