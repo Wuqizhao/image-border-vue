@@ -39,6 +39,18 @@ const config = {
 		enable: false,
 		size: 10,
 	},
+	logo: {
+		auto: false,
+		show: false,
+		name: "leica",
+		width: 40,
+		height: 40,
+	},
+	divider: {
+		show: false,
+		color: "#808080",
+		width: 2,
+	},
 	draw(file: File, img: Img, config: Config) {
 		if (!file) return;
 		img.fileName = file.name;

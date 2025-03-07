@@ -1,4 +1,4 @@
-import type { Exifr,Tags } from "exifr";
+import type { Exifr, Tags } from "exifr";
 
 declare interface Config {
 	paddings: {
@@ -37,6 +37,18 @@ declare interface Config {
 		enable: boolean;
 		size: number;
 	};
+	logo: {
+		auto: boolean;
+		show: boolean;
+		name: string;
+		width: number;
+		height: number;
+	};
+	divider: {
+		show: boolean;
+		color: string;
+		width: number;
+	};
 
 	draw(file: File, img: Img, config: Config): void;
 }
@@ -52,7 +64,7 @@ declare interface Img {
 		name: string;
 		quality: number;
 	};
-	exif: Object
+	exif: Object;
 }
 
 export { Config, Img };

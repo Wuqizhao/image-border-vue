@@ -59,4 +59,29 @@ function deepClone<T>(value: T): T {
 	return clone as T;
 }
 
-export { print, convertExposureTime, formatDate, download, deepClone };
+// 定义相机品牌
+const cameraBrands = [
+	{ name: "佳能", logo: "canon" },
+	{ name: "尼康", logo: "nikon" },
+	{ name: "索尼", logo: "sony" },
+	{ name: "富士", logo: "fuji" },
+	{ name: "松下", logo: "panasonic" },
+	{ name: "小米", logo: "xiaomi" },
+	{ name: "适马", logo: "sigma" },
+	{ name: "徕卡", logo: "leica" },
+	{ name: "哈苏", logo: "hasselblad" },
+	{ name: "蔡司", logo: "zeiss" },
+	{ name: "奥林巴斯", logo: "olympus" },
+	{ name: "耐克", logo: "nike" },
+	{ name: "央视新闻", logo: "cctv" },
+	{ name: "BBC", logo: "bbc" },
+];
+
+export {
+	print,
+	convertExposureTime,
+	formatDate,
+	download,
+	deepClone,
+	cameraBrands,
+};

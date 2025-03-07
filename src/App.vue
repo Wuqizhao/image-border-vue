@@ -134,37 +134,34 @@
                     </el-form-item>
                 </el-form>
                 <div class="config-title">
-                    <h3>Logo（开发中）</h3>
-                    <el-switch disabled></el-switch>
+                    <h3>Logo</h3>
+                    <el-switch v-model="config.logo.show"></el-switch>
                 </div>
-                <el-form label-width="80">
+                <el-form label-width="80" v-if="config.logo.show">
+                    <el-form-item label="自动匹配">
+                        <el-switch v-model="config.logo.auto" disabled></el-switch>
+                        <b style="margin: 0 10px;">手动选择：</b>
+                        <el-select placeholder="选择logo" style="width: 200px;" v-model="config.logo.name">
+                            <el-option v-for="item in cameraBrands" :label="item.name" :value="item.logo"></el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="大小">
                         <b style="margin-left: 10px;color: gray;">宽度：</b>
-                        <el-input-number disabled :min="0" :max="500"></el-input-number>
+                        <el-input-number v-model="config.logo.width" :min="0" :max="500"></el-input-number>
                         <b style="margin-left: 10px;color: gray;">高度：</b>
-                        <el-input-number disabled :min="0" :max="500"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="自动匹配">
-                        <el-switch disabled></el-switch>
-                        <el-select disabled placeholder="选择logo">
-                            <el-option label="徕卡" value="leica"></el-option>
-                            <el-option label="尼康" value="nikon"></el-option>
-                            <el-option label="佳能" value="canon"></el-option>
-                            <el-option label="富士" value="fuji"></el-option>
-                            <el-option label="索尼" value="sony"></el-option>
-                        </el-select>
+                        <el-input-number v-model="config.logo.height" :min="0" :max="500"></el-input-number>
                     </el-form-item>
                 </el-form>
                 <div class="config-title">
-                    <h3>分割线（开发中）</h3>
-                    <el-switch disabled></el-switch>
+                    <h3>分割线</h3>
+                    <el-switch v-model="config.divider.show"></el-switch>
                 </div>
-                <el-form label-width="80">
+                <el-form label-width="80" v-if="config.divider.show">
                     <el-form-item label="颜色">
-                        <el-color-picker disabled></el-color-picker>
+                        <el-color-picker v-model="config.divider.color"></el-color-picker>
                     </el-form-item>
                     <el-form-item label="宽度">
-                        <el-input-number disabled :min="1" :max="10"></el-input-number>
+                        <el-input-number v-model="config.divider.width" :min="1" :max="10"></el-input-number>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -198,7 +195,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import { print, download, deepClone } from './assets/tools'
+import { print, download, deepClone, cameraBrands } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElNotification } from 'element-plus'
 import type { Config, Img } from './types'

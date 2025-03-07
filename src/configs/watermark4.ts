@@ -39,6 +39,18 @@ const config = {
 		enable: false,
 		size: 10,
 	},
+	logo: {
+		auto: false,
+		show: true,
+		width: 40,
+		height: 40,
+		name: "leica",
+	},
+	divider: {
+		show: true,
+		color: "#808080",
+		width: 2,
+	},
 	draw(file: File, img: Img, config: Config) {
 		if (!file) return;
 		img.fileName = file.name;
@@ -243,32 +255,33 @@ const config = {
 							space;
 
 						// 绘制LOGO
-						const leicaLogo = new Image();
-						leicaLogo.src = (await import("../assets/leica.png")).default;
-						leicaLogo.onload = () => {
-							const logoSize = {
-								width: 40,
-								height: 40,
-							};
-							// 计算横坐标
-							const logoX = _x - space - logoSize.width;
-							// 计算纵坐标
-							const logoY = _y - logoSize.height / 2;
-							ctx.drawImage(
-								leicaLogo,
-								logoX,
-								logoY,
-								logoSize.width,
-								logoSize.height
-							);
+						if (config.logo.show) {
+							const leicaLogo = new Image();
+							leicaLogo.src = (
+								await import(`../assets/${config.logo.name}.png`)
+							).default;
+							leicaLogo.onload = () => {
+								// 计算横坐标
+								const logoX = _x - space - config.logo.width;
+								// 计算纵坐标
+								const logoY = _y - config.logo.height / 2;
+								ctx.drawImage(
+									leicaLogo,
+									logoX,
+									logoY,
+									config.logo.width,
+									config.logo.height
+								);
 
-                            // 竖线长度和logo一致
-                            ctx.strokeStyle = "gray";
-							ctx.beginPath();
-							ctx.moveTo(_x, logoY);
-							ctx.lineTo(_x, logoY + logoSize.height);
-							ctx.stroke();
-						};
+								// 竖线长度和logo一致
+								ctx.strokeStyle = config.divider.color;
+								ctx.lineWidth = config.divider.width;
+								ctx.beginPath();
+								ctx.moveTo(_x, logoY);
+								ctx.lineTo(_x, logoY + config.logo.height);
+								ctx.stroke();
+							};
+						}
 					}
 				}
 			};

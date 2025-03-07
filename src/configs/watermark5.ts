@@ -13,7 +13,7 @@ const config = {
 		model: {
 			show: true,
 			color: "#000000",
-			size: 24,
+			size: 28,
 		},
 		params: {
 			show: true,
@@ -186,50 +186,84 @@ const config = {
 						ctx.textAlign = "left";
 						ctx.textBaseline = "top";
 
-						// // 绘制水印范围
-						// ctx.strokeStyle = 'red';
+						// 绘制水印范围
+						// ctx.strokeStyle = "red";
 						// ctx.strokeRect(
 						// 	rect1.x,
 						// 	rect1.y,
 						// 	rect2.x - rect1.x,
 						// 	rect2.y - rect1.y
 						// );
-						// // 绘制中心水平线
+						// 绘制中心水平线
 						// ctx.beginPath();
 						// ctx.moveTo(0, rect1.y + (rect2.y - rect1.y) / 2);
 						// ctx.lineTo(canvas.width, rect1.y + (rect2.y - rect1.y) / 2);
 						// ctx.stroke();
+						// 绘制垂直中心分割线
+						// ctx.beginPath();
+						// ctx.moveTo(canvas.width / 2, 0);
+						// ctx.lineTo(canvas.width / 2, canvas.height);
+						// ctx.stroke();
 
 						const _y = rect1.y;
 						// 截取厂商
-						const company = (exif?.Model).toUpperCase().split(" ")[0];
+						const company = (exif?.Model).split(" ")[0];
+						const companyUppercase = company.toUpperCase();
 						// 计算厂商的宽度
-						const companyWidth = ctx.measureText(company).width;
+						const companyWidth = ctx.measureText(companyUppercase).width;
 						// 计算型号宽度
 						ctx.font = `${modelConfig.size}px Arial`;
-						const modelWidth = ctx.measureText(
-							exif.Model.replace(company, "")
-						).width;
+						const model = exif.Model.replace(company, "");
+						const modelWidth = ctx.measureText(model).width;
 						// 竖线
 						const line = "  |  ";
 						// 计算竖线宽度
 						const lineWidth = ctx.measureText(line).width;
 						// logo
 						const logoSize = {
-							width: 24,
-							height: 24,
+							width: 28,
+							height: 28,
 						};
 
 						// 总宽度
 						const totalWidth =
 							companyWidth + modelWidth + lineWidth + logoSize.width;
+						// 绘制范围
+						// ctx.strokeStyle = "green";
+						// ctx.strokeRect(
+						// 	canvas.width / 2 - totalWidth / 2,
+						// 	_y,
+						// 	totalWidth,
+						// 	modelConfig.size
+						// );
 
 						// 绘制制造商
 						ctx.font = `bold ${modelConfig.size}px Arial`;
 						ctx.fillText(company, canvas.width / 2 - totalWidth / 2, _y);
 						ctx.font = `${modelConfig.size}px Arial`;
 						// 绘制型号
-						ctx.fillText(exif.Model.replace(company, ""), canvas.width / 2, _y);
+						ctx.fillText(
+							model,
+							canvas.width / 2 - totalWidth / 2 + companyWidth,
+							_y
+						);
+
+						// 绘制型号的范围
+						// ctx.strokeStyle = "blue";
+						// ctx.strokeRect(
+						// 	canvas.width / 2 - totalWidth / 2 + companyWidth,
+						// 	_y,
+						// 	modelWidth,
+						// 	modelConfig.size
+						// );
+
+						// 绘制分割线
+						ctx.fillStyle = "#CDC9C9";
+						ctx.fillText(
+							line,
+							canvas.width / 2 - totalWidth / 2 + companyWidth + modelWidth,
+							_y
+						);
 
 						// 绘制LOGO
 						const leicaLogo = new Image();
@@ -263,20 +297,23 @@ const config = {
 
 						const paramsArr = [
 							exif?.FocalLengthIn35mmFormat,
-							convertExposureTime(exif?.ExposureTime),
 							exif?.FNumber,
+							convertExposureTime(exif?.ExposureTime),
 							exif?.ISO,
 						];
 						const paramsLabel = ["mm", "F", "S", "ISO"];
 						for (let i = 0; i < 4; i++) {
-							ctx.strokeStyle = "#909090";
+							ctx.strokeStyle = "#DCDCDC";
 							ctx.lineWidth = 1;
 							// 矩形内边距
 							const rectPadding = 10;
+							// 矩形线条宽度
+							const lineWidth = 2;
+							ctx.lineWidth = lineWidth;
 							// 绘制矩形
 							ctx.strokeRect(
 								canvas.width / 4 + i * (rectWidth + space),
-								_y - rectPadding / 2 - paramsConfig.size / 2 - 2,
+								_y - rectPadding,
 								rectWidth,
 								paramsConfig.size + rectPadding
 							);
@@ -286,17 +323,15 @@ const config = {
 							ctx.textAlign = "center";
 							ctx.textBaseline = "middle";
 							ctx.fillStyle = paramsConfig.color;
-							ctx.fillText(paramsArr[i], centerX, _y);
+							ctx.fillText(
+								paramsArr[i],
+								centerX,
+								_y + paramsConfig.size / 2 - rectPadding / 2 + lineWidth
+							);
 							ctx.fillStyle = "gray";
 							ctx.textBaseline = "bottom";
 							ctx.fillText(paramsLabel[i], centerX, rect2.y);
 						}
-
-						// 绘制垂直中心分割线
-						// ctx.beginPath();
-						// ctx.moveTo(canvas.width / 2, 0);
-						// ctx.lineTo(canvas.width / 2, canvas.height);
-						// ctx.stroke();
 					}
 				}
 			};
