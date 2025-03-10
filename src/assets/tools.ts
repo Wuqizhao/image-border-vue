@@ -13,7 +13,7 @@ const convertExposureTime = (exposureTime: number) => {
 };
 
 // 把Date转换成"YYYY-MM-DD HH:mm:ss"格式
-const formatDate = (date: Date) => {
+const formatDateDefault = (date: Date) => {
 	const year = date.getFullYear();
 	const month = String(date.getMonth() + 1).padStart(2, "0");
 	const day = String(date.getDate()).padStart(2, "0");
@@ -22,6 +22,34 @@ const formatDate = (date: Date) => {
 	const seconds = String(date.getSeconds()).padStart(2, "0");
 	return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
+
+// ./assets/dateUtils.ts
+
+function formatDate(date: Date, format: string): string {
+    const o: { [key: string]: number } = {
+        'M+': date.getMonth() + 1, // 月份
+        'd+': date.getDate(),    // 日
+        'H+': date.getHours(),   // 小时
+        'm+': date.getMinutes(), // 分
+        's+': date.getSeconds(), // 秒
+        'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+        'S': date.getMilliseconds() // 毫秒
+    };
+
+    if (/(y+)/.test(format)) {
+        format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+
+    for (const k in o) {
+        if (new RegExp('(' + k + ')').test(format)) {
+            const match = RegExp.$1;
+            const value = o[k];
+            format = format.replace(match, match.length === 1 ? value.toString() : ('00' + value).substr(('' + value).length));
+        }
+    }
+
+    return format;
+}
 
 const download = (name: string) => {
 	const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
@@ -80,8 +108,9 @@ const cameraBrands = [
 export {
 	print,
 	convertExposureTime,
-	formatDate,
+	formatDateDefault,
 	download,
 	deepClone,
 	cameraBrands,
+	formatDate
 };

@@ -17,11 +17,16 @@ declare interface Config {
 			show: boolean;
 			color: string;
 			size: number;
+			// 使用等效焦距
+			useEquivalentFocalLength: boolean;
+			// 字母大写
+			letterUpperCase: boolean;
 		};
 		time: {
 			show: boolean;
 			color: string;
 			size: number;
+			format: string;
 		};
 		paddings: {
 			lr: number;
@@ -38,6 +43,7 @@ declare interface Config {
 		size: number;
 	};
 	logo: {
+		enable: boolean;
 		auto: boolean;
 		show: boolean;
 		name: string;
@@ -45,6 +51,7 @@ declare interface Config {
 		height: number;
 	};
 	divider: {
+		enable: boolean; // 是否支持
 		show: boolean;
 		color: string;
 		width: number;
@@ -57,7 +64,7 @@ declare interface Config {
 		y: number;
 	};
 
-	draw(file: File, img: Img, config: Config): void;
+	draw: (file: File, img: Img, config: Config) => void;
 }
 
 declare interface Img {
