@@ -36,7 +36,7 @@
                     </el-form-item>
                     <el-form-item label="导出质量">
                         <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
-                            show-input disabled></el-slider>
+                            show-input></el-slider>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -164,6 +164,24 @@
                         <el-input-number v-model="config.divider.width" :min="1" :max="10"></el-input-number>
                     </el-form-item>
                 </el-form>
+                <div class="config-title">
+                    <h3>图片阴影</h3>
+                    <el-switch v-model="config.shadow.show"></el-switch>
+                </div>
+                <el-form label-width="80">
+                    <el-form-item label="颜色">
+                        <el-color-picker v-model="config.shadow.color"></el-color-picker>
+                    </el-form-item>
+                    <el-form-item label="大小">
+                        <el-input-number v-model="config.shadow.size" :min="1" :max="500"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="水平偏移">
+                        <el-input-number v-model="config.shadow.x" :min="-1000" :max="1000"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="垂直偏移">
+                        <el-input-number v-model="config.shadow.y" :min="-1000" :max="1000"></el-input-number>
+                    </el-form-item>
+                </el-form>
             </el-tab-pane>
             <el-tab-pane label="边距" name="firth">
                 <el-form label-width="80px">
@@ -222,26 +240,26 @@ const watermarks = reactive([
         name: '默认样式',
         config: 'default'
     },
-    {
-        index: 1,
-        name: '徕卡',
-        config: 'watermark4'
-    },
-    {
-        index: 2,
-        name: '型号+参数居中',
-        config: 'watermark2'
-    },
-    {
-        index: 3,
-        name: '型号+时间',
-        config: 'watermark3'
-    },
-    {
-        index: 4,
-        name: '型号+参数+Logo',
-        config: 'watermark5'
-    }
+    // {
+    //     index: 1,
+    //     name: '徕卡',
+    //     config: 'watermark4'
+    // },
+    // {
+    //     index: 2,
+    //     name: '型号+参数居中',
+    //     config: 'watermark2'
+    // },
+    // {
+    //     index: 3,
+    //     name: '型号+时间',
+    //     config: 'watermark3'
+    // },
+    // {
+    //     index: 4,
+    //     name: '型号+参数+Logo',
+    //     config: 'watermark5'
+    // }
 ])
 const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('first')

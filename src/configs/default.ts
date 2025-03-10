@@ -4,40 +4,40 @@ import type { Config, Img } from "../types";
 
 const config = {
 	paddings: {
-		top: 10, // 图片上边距
-		right: 10,
-		left: 10,
+		top: 100, // 图片上边距
+		right: 100,
+		left: 100,
 		bottom: 0,
 	},
 	watermark: {
 		model: {
 			show: true,
 			color: "#000000",
-			size: 20,
+			size: 120,
 		},
 		params: {
 			show: true,
 			color: "#808080",
-			size: 14,
+			size: 100,
 		},
 		time: {
 			show: true,
 			color: "#808080",
-			size: 14,
+			size: 100,
 		},
 		paddings: {
 			lr: 0,
-			tb: 15,
+			tb: 100,
 		},
 		bgColor: "#FFF",
 	},
 	radius: {
 		enable: true,
-		size: 10,
+		size: 80,
 	},
 	blur: {
 		enable: false,
-		size: 10,
+		size: 100,
 	},
 	logo: {
 		auto: false,
@@ -50,6 +50,13 @@ const config = {
 		show: false,
 		color: "#808080",
 		width: 2,
+	},
+	shadow: {
+		show: false,
+		color: "#808080",
+		x: 20,
+		y: 20,
+		size: 2,
 	},
 	draw(file: File, img: Img, config: Config) {
 		if (!file) return;
@@ -85,17 +92,15 @@ const config = {
 				) as HTMLCanvasElement;
 				const ctx = canvas.getContext("2d");
 				if (ctx) {
-					// 计算canvas缩放比例
-					const maxSize = Math.max(img.width, img.height);
-					const isWidthMax = maxSize == img.width;
-					const scale =
-						(isWidthMax ? img.width : img.height) / (isWidthMax ? 900 : 600);
+					const scale = img.export.quality;
+					const realImgWidth = img.width * scale;
+					const realImgHeight = img.height * scale;
 
 					// 修改画布大小
 					canvas.width =
-						img.width / scale + config.paddings.left + config.paddings.right;
+						realImgWidth + config.paddings.left + config.paddings.right;
 					canvas.height =
-						img.height / scale + config.paddings.top + config.paddings.bottom;
+						realImgHeight + config.paddings.top + config.paddings.bottom;
 					canvas.height +=
 						0.1 * canvas.height + 2 * config.watermark.paddings.tb;
 
@@ -103,7 +108,7 @@ const config = {
 					const rect1 = {
 						x: 0 + config.paddings.left,
 						y:
-							img.height / scale +
+							realImgHeight +
 							config.paddings.top +
 							config.paddings.bottom +
 							config.watermark.paddings.tb,
@@ -114,23 +119,49 @@ const config = {
 					};
 
 					if (config.blur && config.blur.enable) {
-						console.log('背景模糊',config);
+						console.log("背景模糊", config);
 						ctx.save();
 						ctx.filter = `blur(${config.blur.size}px)`;
 						ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
-						console.log('背景模糊', config.blur.size);
+						console.log("背景模糊", config.blur.size);
 						ctx.restore();
 					} else if (config.watermark.bgColor) {
 						ctx.fillStyle = config.watermark.bgColor;
-						console.log('自定义背景颜色');
+						console.log("自定义背景颜色");
 						ctx.fillRect(0, 0, canvas.width, canvas.height);
 					} else {
 						ctx.fillStyle = "#FFFFFF";
-						console.log('默认背景颜色');
+						console.log("默认背景颜色");
 						ctx.fillRect(0, 0, canvas.width, canvas.height);
 					}
 
 					canvasBox.style.height = `${900 / boxScale}px`;
+
+					// 绘制阴影
+					if (config.shadow.show) {
+						console.log("绘制阴影。。。。。。。。。。");
+						ctx.save();
+						// 绘制矩形阴影
+						ctx.fillStyle = config.shadow.color;
+						// 模糊
+						ctx.filter = `blur(${config.shadow.size}px)`;
+
+						ctx.fillRect(
+							config.paddings.left + config.shadow.x - config.shadow.size,
+							config.paddings.top + config.shadow.y - config.shadow.size,
+							realImgWidth + config.shadow.size,
+							realImgHeight + config.shadow.size
+						);
+
+						console.log(
+							"阴影范围：",
+							config.paddings.left + config.shadow.x - config.shadow.size,
+							config.paddings.top + config.shadow.y - config.shadow.size,
+							realImgWidth + config.shadow.size,
+							realImgHeight + config.shadow.size
+						);
+						ctx.restore();
+					}
 
 					// 绘制圆角图片
 					if (config.radius.enable) {
@@ -151,23 +182,23 @@ const config = {
 						);
 						ctx.lineTo(
 							canvas.width - config.paddings.right,
-							img.height / scale + config.paddings.top - radius
+							realImgHeight + config.paddings.top - radius
 						);
 						ctx.quadraticCurveTo(
 							canvas.width - config.paddings.right,
-							img.height / scale + config.paddings.top,
+							realImgHeight + config.paddings.top,
 							canvas.width - config.paddings.right - radius,
-							img.height / scale + config.paddings.top
+							realImgHeight + config.paddings.top
 						);
 						ctx.lineTo(
 							config.paddings.left + radius,
-							img.height / scale + config.paddings.top
+							realImgHeight + config.paddings.top
 						);
 						ctx.quadraticCurveTo(
 							config.paddings.left,
-							img.height / scale + config.paddings.top,
+							realImgHeight + config.paddings.top,
 							config.paddings.left,
-							img.height / scale + config.paddings.top - radius
+							realImgHeight + config.paddings.top - radius
 						);
 						ctx.lineTo(config.paddings.left, config.paddings.top + radius);
 						ctx.quadraticCurveTo(
@@ -179,13 +210,21 @@ const config = {
 						ctx.closePath();
 						ctx.clip();
 					}
+
 					// 绘制图片
 					ctx.drawImage(
 						_img,
 						0 + config.paddings.left,
 						0 + config.paddings.top,
-						img.width / scale,
-						img.height / scale
+						realImgWidth,
+						realImgHeight
+					);
+					console.log(
+						"图片范围：",
+						0 + config.paddings.left,
+						0 + config.paddings.top,
+						realImgWidth,
+						realImgHeight
 					);
 					ctx.restore();
 

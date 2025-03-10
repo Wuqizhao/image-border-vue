@@ -49,6 +49,13 @@ declare interface Config {
 		color: string;
 		width: number;
 	};
+	shadow: {
+		show: boolean;
+		color: string;
+		size: number;
+		x: number;
+		y: number;
+	};
 
 	draw(file: File, img: Img, config: Config): void;
 }
