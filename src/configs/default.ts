@@ -1,7 +1,6 @@
 import {
-	formatDate,
 	convertExposureTime,
-	formatDateDefault,
+	formatDate,
 } from "../assets/tools";
 import Exifr from "exifr";
 import type { Config, Img } from "../types";
@@ -77,7 +76,7 @@ const doDraw = (file: File, img: Img, config: Config) => {
 	img.export.name = "WM_" + file.name;
 	img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
 	img.type = file.type;
-	img.time = formatDateDefault(new Date(file.lastModified));
+	img.time = formatDate(new Date(file.lastModified));
 
 	const reader = new FileReader();
 	reader.readAsDataURL(file);
