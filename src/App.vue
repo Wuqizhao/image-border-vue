@@ -320,7 +320,7 @@ watch(curWatermarkIndex, (newIndex) => {
     immediate: true
 })
 
-watchThrottled([config, curFile, curWatermarkIndex, img], () => {
+watchThrottled([config, curFile, curWatermarkIndex], () => {
     handleDraw();
 }, { throttle: 1000, deep: true })
 
