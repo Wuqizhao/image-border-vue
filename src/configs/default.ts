@@ -96,7 +96,7 @@ const config: Config = {
 			color: "#000000",
 			size: 150,
 			replaceZ: true,
-			italic: true,
+			italic: false,
 			bold: true,
 		},
 		params: {
