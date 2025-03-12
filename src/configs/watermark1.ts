@@ -1,15 +1,14 @@
 import type { Config, DrawFun } from "../types";
 
 const doDraw: DrawFun = (img, config, context) => {
-	console.log('开始绘制徕卡样式');
-	const { watermark, paddings: imgPaddings } = config;
+	console.log("开始绘制徕卡样式");
+	const { watermark } = config;
 	const {
 		model: modelConfig,
 		params: paramsConfig,
 		time: timeConfig,
-		paddings: watermarkPaddings,
 	} = watermark;
-	const { ctx, canvas, rect1, rect2 } = context;
+	const { ctx, rect1, rect2 } = context;
 
 	// 绘制型号
 	if (modelConfig.show) {

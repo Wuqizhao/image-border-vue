@@ -22,7 +22,7 @@
                         <el-input v-model="img.size" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="分辨率">
-                        <el-input :value="img.exif?.ExifImageWidth + ' × ' + img.exif?.ExifImageHeight"
+                        <el-input :value="(img.exif?.ExifImageWidth || 0) + ' × ' + (img.exif?.ExifImageHeight || 0)"
                             disabled></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型">
@@ -34,7 +34,7 @@
                     </el-form-item>
                     <h3>导出配置</h3>
                     <el-form-item label="文件名">
-                        <el-input v-model="img.export.name"></el-input>
+                        <el-input v-model="img.export.name" :disabled="!curFile"></el-input>
                     </el-form-item>
                     <el-form-item label="导出质量">
                         <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
@@ -257,7 +257,7 @@ import type { Config, Img } from './types'
 import { watchThrottled } from '@vueuse/core'
 import Exifr from "exifr";
 
-const img = reactive<Img>({
+const defaultImgValue = {
     width: 0,
     height: 0,
     fileName: '',
@@ -272,7 +272,8 @@ const img = reactive<Img>({
     modelText: '',
     paramsText: '',
     timeText: ''
-})
+};
+const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
 const config = ref<Config>(defaultWaterMark);
 
@@ -290,11 +291,23 @@ const selectFile = () => {
         if (target === null || !target.files) throw new Error('图片不存在...');
         const file = target.files[0];
         curFile.value = file;
+
+        // 更新基本信息
+        img.fileName = file.name;
+        img.export.name = img.export.name || "WM_" + file.name;
+        img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
+        img.type = file.type;
+        img.time = formatDate(new Date(file.lastModified));
+
+        img.modelText = '';
+        img.paramsText = '';
+        img.timeText = '';
     }
 }
 
 const resetWatermark = () => {
     importConfig(curWatermarkIndex.value);
+
 
     ElMessage.success({
         message: "已重置水印样式",
@@ -302,8 +315,14 @@ const resetWatermark = () => {
 }
 
 // 监听
-watch(curWatermarkIndex, (val) => {
-    importConfig(val)
+watch([curWatermarkIndex, curFile], ([newIndex, newFile]) => {
+    if (newIndex !== curWatermarkIndex.value) {
+        importConfig(newIndex)
+    }
+
+    if (newFile !== curFile.value) {
+        resetWatermark();
+    }
 }, {
     immediate: true
 })
@@ -325,12 +344,7 @@ function handleDraw() {
         bgColor
     } = watermark;
 
-    // 更新基本信息
-    img.fileName = file.name;
-    img.export.name = img.export.name || "WM_" + file.name;
-    img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
-    img.type = file.type;
-    img.time = formatDate(new Date(file.lastModified));
+
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
