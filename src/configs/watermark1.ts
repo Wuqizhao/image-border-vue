@@ -104,6 +104,7 @@ const config: Config = {
 		show: true,
 		color: "#808080",
 		width: 2,
+		scale: 1,
 	},
 	shadow: {
 		show: false,
