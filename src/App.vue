@@ -535,7 +535,7 @@ function importConfig(val: number): void {
     }
     configPromise.then(res => {
         config.value = deepClone(<Config>res.default);
-        ElMessage.success('导入成功');
+        ElMessage.success('配置导入成功');
     }).catch(err => {
         ElNotification.error({
             title: '导入水印配置出错',
