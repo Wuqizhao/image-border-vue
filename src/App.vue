@@ -144,11 +144,11 @@
                                             :value="item.logo"></el-option>
                                     </el-select>
                                 </el-form-item>
-                                <el-form-item label="大小">
-                                    <b style="margin-left: 10px;color: gray;">宽度：</b>
-                                    <el-input-number v-model="config.logo.width" :min="0" :max="500"></el-input-number>
-                                    <b style="margin-left: 10px;color: gray;">高度：</b>
-                                    <el-input-number v-model="config.logo.height" :min="0" :max="500"></el-input-number>
+                                <el-form-item label="宽度">
+                                    <el-input-number v-model="config.logo.width" :min="0" :max="500" :step="10"></el-input-number>
+                                </el-form-item>
+                                <el-form-item label="高度">
+                                    <el-input-number v-model="config.logo.height" :min="0" :max="500" :step="10"></el-input-number>
                                 </el-form-item>
                             </div>
                         </el-form>
@@ -167,6 +167,10 @@
                                 <el-form-item label="宽度">
                                     <el-input-number v-model="config.divider.width" :min="1"
                                         :max="1000"></el-input-number>
+                                </el-form-item>
+                                <el-form-item label="长度缩放">
+                                    <el-input-number v-model="config.divider.scale" :min="0"
+                                        :max="50" :step="0.01"></el-input-number>
                                 </el-form-item>
                             </div>
                         </el-form>
@@ -228,25 +232,25 @@
                     <el-form label-width="80px">
                         <h3>图片边距</h3>
                         <el-form-item label="上边距">
-                            <el-input-number v-model="config.paddings.top" :min="0" :max="1000"></el-input-number>
+                            <el-input-number v-model="config.paddings.top" :min="0" :max="1000" :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="右边距">
-                            <el-input-number v-model="config.paddings.right" :min="0" :max="1000"></el-input-number>
+                            <el-input-number v-model="config.paddings.right" :min="0" :max="1000" :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="左边距">
-                            <el-input-number v-model="config.paddings.left" :min="0" :max="1000"></el-input-number>
+                            <el-input-number v-model="config.paddings.left" :min="0" :max="1000" :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="下边距">
-                            <el-input-number v-model="config.paddings.bottom" :min="0" :max="1000"></el-input-number>
+                            <el-input-number v-model="config.paddings.bottom" :min="0" :max="1000" :step="10"></el-input-number>
                         </el-form-item>
                         <h3>水印边距</h3>
                         <el-form-item label="左右边距">
                             <el-input-number v-model="config.watermark.paddings.lr" :min="0"
-                                :max="1000"></el-input-number>
+                                :max="1000" :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="上下边距">
                             <el-input-number v-model="config.watermark.paddings.tb" :min="0"
-                                :max="1000"></el-input-number>
+                                :max="1000" :step="10"></el-input-number>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
@@ -376,6 +380,17 @@ function handleDraw() {
             img.height = _img.height;
             // 使用exifr库读取exifs信息
             const exif = await Exifr.parse(file);
+
+            if (exif?.Make === undefined) {
+                ElNotification({
+                    title: '错误',
+                    message: '未读取到相机Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
+                    type: 'error',
+                });
+                curFile.value = null;
+                return;
+            }
+
             img.exif = exif;
             img.modelText = img.modelText ? img.modelText : img.exif?.Model;
             img.paramsText = img.paramsText
@@ -559,7 +574,7 @@ function importConfig(val: number): void {
     }
     configPromise.then(res => {
         config.value = deepClone(<Config>res.default);
-        ElMessage.success('配置导入成功');
+        ElMessage.success('配置导入成功~');
     }).catch(err => {
         ElNotification.error({
             title: '导入水印配置出错',

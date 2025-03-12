@@ -94,6 +94,7 @@ const cameraBrands = [
 	{ name: "小米", logo: "xiaomi" },
 	{ name: "华为", logo: "huawei" },
 	{ name: "苹果", logo: "apple" },
+	{ name: "OPPO", logo: "oppo" },
 	{ name: "适马", logo: "sigma" },
 	{ name: "徕卡", logo: "leica" },
 	{ name: "哈苏", logo: "hasselblad" },
@@ -121,7 +122,7 @@ const watermarkList = [
 	},
 	{
 		index: 1,
-		name: "徕卡",
+		name: "小米徕卡",
 		config: "watermark4",
 	},
 	// {

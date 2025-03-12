@@ -93,12 +93,15 @@ const doDraw: DrawFun = async (img, config, context) => {
 		};
 	}
 	if (dividerConfig.show) {
-		// 竖线长度和logo一致
 		ctx.strokeStyle = dividerConfig.color;
 		ctx.lineWidth = dividerConfig.width;
+
+		const _h = Math.min(logoConfig.height, paramsConfig.size) * dividerConfig.scale;
+		const centerY = rect1.y + (rect2.y - rect1.y) / 2;
+
 		ctx.beginPath();
-		ctx.moveTo(_x, logoY);
-		ctx.lineTo(_x, logoY + config.logo.height);
+		ctx.moveTo(_x, centerY - _h / 2);
+		ctx.lineTo(_x, centerY + _h / 2);
 		ctx.stroke();
 	}
 };
@@ -161,6 +164,7 @@ const config: Config = {
 		show: true,
 		color: "rgb(208, 208, 208)",
 		width: 20,
+		scale: 1,
 	},
 	shadow: {
 		show: false,

@@ -60,6 +60,7 @@ declare interface Config {
 		show: boolean;
 		color: string;
 		width: number;
+		scale: number;// 缩放倍数
 	};
 	shadow: {
 		show: boolean;
