@@ -12,6 +12,9 @@ declare interface Config {
 			show: boolean;
 			color: string;
 			size: number;
+			replaceZ: boolean;
+			italic: boolean; // 斜体
+			bold: boolean; // 加粗
 		};
 		params: {
 			show: boolean;
@@ -63,8 +66,22 @@ declare interface Config {
 		x: number;
 		y: number;
 	};
+	draw: DrawFun;
+}
 
-	draw: (file: File, img: Img, config: Config) => void;
+declare type DrawFun = (img: Img, config: Config, context: Context) => void;
+declare interface Context {
+	ctx: CanvasRenderingContext2D;
+	canvas: HTMLCanvasElement;
+	rect1: {
+		x: number;
+		y: number;
+	};
+
+	rect2: {
+		x: number;
+		y: number;
+	};
 }
 
 declare interface Img {
@@ -78,7 +95,10 @@ declare interface Img {
 		name: string;
 		quality: number;
 	};
-	exif: Object;
+	exif: any;
+	modelText: string;
+	paramsText: string;
+	timeText: string;
 }
 
-export { Config, Img };
+export { Config, Img, DrawFun };

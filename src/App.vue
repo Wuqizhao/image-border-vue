@@ -8,11 +8,9 @@
         <div class="btns">
             <el-button @click="selectFile" type="primary" plain>选择文件</el-button>
             <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-            <el-button @click="config.draw(curFile as File, img, config)" :disabled="!curFile"
-                type="success">绘制</el-button>
             <el-button @click="print(config, img)">打印配置</el-button>
+            <el-button @click="handleDraw" :disabled="!curFile" type="success">绘制</el-button>
             <el-button type="success" plain @click="download(img.export.name)">下载图片</el-button>
-            <!-- <el-button>{{ img.exif?.ExifImageWidth }} * {{ img.exif?.ExifImageHeight }}</el-button> -->
         </div>
         <el-tabs v-model="activeName">
             <el-tab-pane label="基本信息" name="first">
@@ -22,6 +20,10 @@
                     </el-form-item>
                     <el-form-item label="文件大小">
                         <el-input v-model="img.size" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="分辨率">
+                        <el-input :value="img.exif?.ExifImageWidth + ' × ' + img.exif?.ExifImageHeight"
+                            disabled></el-input>
                     </el-form-item>
                     <el-form-item label="文件类型">
                         <el-input v-model="img.type" disabled>
@@ -59,7 +61,7 @@
                 </div>
                 <el-form label-width="80px" v-if="config.watermark.model.show">
                     <el-form-item label="文本">
-                        <el-input placeholder="暂不支持修改" disabled></el-input>
+                        <el-input placeholder="留空则自动读取" v-model="img.modelText" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.model.color"
@@ -69,6 +71,15 @@
                         <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"
                             :disabled="!config.watermark.model.show"></el-input-number>
                     </el-form-item>
+                    <el-form-item label="加粗">
+                        <el-switch v-model="config.watermark.model.bold"></el-switch>
+                    </el-form-item>
+                    <el-form-item label="斜体文字">
+                        <el-switch v-model="config.watermark.model.italic"></el-switch>
+                    </el-form-item>
+                    <el-form-item label="替换Z为ℤ">
+                        <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
+                    </el-form-item>
                 </el-form>
                 <div class="config-title">
                     <h3>参数</h3>
@@ -77,7 +88,7 @@
                 </div>
                 <el-form label-width="80px" v-if="config.watermark.params.show">
                     <el-form-item label="文本">
-                        <el-input placeholder="暂不支持修改" disabled></el-input>
+                        <el-input placeholder="留空则自动读取" v-model="img.paramsText" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.params.color" />
@@ -101,7 +112,7 @@
                 </div>
                 <el-form label-width="80px" v-if="config.watermark.time.show">
                     <el-form-item label="文本">
-                        <el-input placeholder="暂不支持修改" disabled></el-input>
+                        <el-input placeholder="留空则自动读取" v-model="img.timeText" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="颜色">
                         <el-color-picker v-model="config.watermark.time.color" />
@@ -228,10 +239,12 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import { print, download, deepClone, cameraBrands } from './assets/tools'
+import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime } from './assets/tools'
 import defaultWaterMark from './configs/default'
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
+import { watchThrottled } from '@vueuse/core'
+import Exifr from "exifr";
 
 const img = reactive<Img>({
     width: 0,
@@ -244,7 +257,10 @@ const img = reactive<Img>({
         name: '',
         quality: 1,
     },
-    exif: {}
+    exif: {},
+    modelText: '',
+    paramsText: '',
+    timeText: ''
 })
 const curFile = ref<File | null>(null)
 const config = ref<Config>(defaultWaterMark);
@@ -289,17 +305,15 @@ const selectFile = () => {
         if (target === null || !target.files) throw new Error('图片不存在...');
         const file = target.files[0];
         curFile.value = file;
-
-        config.value.draw(file, img, config.value);
     }
 }
 
 const resetWatermark = () => {
     importConfig(curWatermarkIndex.value);
-    ElNotification.success({
-        title: '成功',
-        message: '重置成功'
-    })
+
+    ElMessage.success({
+        message: "已重置水印样式",
+    });
 }
 
 // 监听
@@ -309,51 +323,228 @@ watch(curWatermarkIndex, (val) => {
     immediate: true
 })
 
+watchThrottled([config, curFile], () => {
+    handleDraw();
+}, { throttle: 1500, deep: true })
+
+
+function handleDraw() {
+    const file = curFile.value;
+    if (!file) return;
+
+    const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig } = config.value;
+    const {
+        params: paramsConfig,
+        time: timeConfig,
+        paddings: watermarkPaddings,
+        bgColor
+    } = watermark;
+
+    // 更新基本信息
+    img.fileName = file.name;
+    img.export.name = img.export.name || "WM_" + file.name;
+    img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
+    img.type = file.type;
+    img.time = formatDate(new Date(file.lastModified));
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+        const _img = new Image();
+        if (e.target === null) throw new Error("图片不存在...");
+        _img.src = <string>e.target.result;
+
+        _img.onload = async () => {
+            // 更新宽高
+            img.width = _img.width;
+            img.height = _img.height;
+            // 使用exifr库读取exifs信息
+            const exif = await Exifr.parse(file);
+            img.exif = exif;
+            img.modelText = img.modelText ? img.modelText : img.exif?.Model;
+            img.paramsText = img.paramsText
+                ? img.paramsText
+                : `${convertExposureTime(exif?.ExposureTime)}s  f/${exif?.FNumber
+                }  ISO ${exif?.ISO}  ${paramsConfig.useEquivalentFocalLength
+                    ? exif?.FocalLengthIn35mmFormat
+                    : exif?.FocalLength
+                }mm`;
+            img.timeText = img.timeText
+                ? img.timeText
+                : formatDate(
+                    new Date(img.exif?.DateTimeOriginal as number),
+                    timeConfig.format
+                );
+
+            // 获取比例
+            const boxScale = img.width / img.height;
+            const canvasBox = document.getElementById("canvasBox") as HTMLDivElement;
+            const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                ElMessage.error({
+                    message: "没有找到画布",
+                });
+                return;
+            }
+
+            const scale = img.export.quality;
+            const realImgWidth = img.width * scale;
+            const realImgHeight = img.height * scale;
+
+            // 修改画布大小
+            canvas.width =
+                realImgWidth + imgPaddings.left + imgPaddings.right;
+            canvas.height =
+                realImgHeight + imgPaddings.top + imgPaddings.bottom;
+            canvas.height += 0.1 * canvas.height + 2 * watermarkPaddings.tb;
+
+
+
+
+            // 底部水印的坐标范围
+            const rect1 = {
+                x: imgPaddings.left,
+                y: realImgHeight +
+                    imgPaddings.top +
+                    imgPaddings.bottom +
+                    watermarkPaddings.tb,
+            };
+            const rect2 = {
+                x: canvas.width - imgPaddings.right,
+                y: canvas.height - watermarkPaddings.tb,
+            };
+
+            if (blurConfig.enable) {
+                ctx.save();
+                ctx.filter = `blur(${blurConfig.size}px)`;
+                ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
+                ctx.restore();
+            } else if (bgColor) {
+                ctx.fillStyle = bgColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            canvasBox.style.height = `${900 / boxScale}px`;
+
+
+            // 绘制阴影
+            if (shadowConfig.show) {
+                ctx.save();
+                // 绘制矩形阴影
+                ctx.fillStyle = shadowConfig.color;
+                // 模糊
+                ctx.filter = `blur(${shadowConfig.size}px)`;
+
+                ctx.fillRect(
+                    imgPaddings.left + shadowConfig.x - shadowConfig.size,
+                    imgPaddings.top + shadowConfig.y - shadowConfig.size,
+                    realImgWidth + shadowConfig.size,
+                    realImgHeight + shadowConfig.size
+                );
+                ctx.restore();
+            }
+
+            // 绘制圆角图片
+            if (radiusConfig.enable) {
+                ctx.save();
+                const radius = radiusConfig.size;
+                ctx.beginPath();
+                ctx.moveTo(imgPaddings.left + radius, imgPaddings.top);
+                ctx.lineTo(
+                    canvas.width - imgPaddings.right - radius,
+                    imgPaddings.top
+                );
+                ctx.quadraticCurveTo(
+                    canvas.width - imgPaddings.right,
+                    imgPaddings.top,
+                    canvas.width - imgPaddings.right,
+                    imgPaddings.top + radius
+                );
+                ctx.lineTo(
+                    canvas.width - imgPaddings.right,
+                    realImgHeight + imgPaddings.top - radius
+                );
+                ctx.quadraticCurveTo(
+                    canvas.width - imgPaddings.right,
+                    realImgHeight + imgPaddings.top,
+                    canvas.width - imgPaddings.right - radius,
+                    realImgHeight + imgPaddings.top
+                );
+                ctx.lineTo(
+                    imgPaddings.left + radius,
+                    realImgHeight + imgPaddings.top
+                );
+                ctx.quadraticCurveTo(
+                    imgPaddings.left,
+                    realImgHeight + imgPaddings.top,
+                    imgPaddings.left,
+                    realImgHeight + imgPaddings.top - radius
+                );
+                ctx.lineTo(imgPaddings.left, imgPaddings.top + radius);
+                ctx.quadraticCurveTo(
+                    imgPaddings.left,
+                    imgPaddings.top,
+                    imgPaddings.left + radius,
+                    imgPaddings.top
+                );
+                ctx.closePath();
+                ctx.clip();
+            }
+
+            // 绘制图片
+            ctx.drawImage(
+                _img,
+                imgPaddings.left,
+                imgPaddings.top,
+                realImgWidth,
+                realImgHeight
+            );
+
+            ctx.restore();
+            config.value.draw(img, config.value, {
+                ctx: ctx,
+                canvas: canvas,
+                rect1: rect1,
+                rect2: rect2
+            });
+        }
+    }
+}
+
 function importConfig(val: number): void {
     // 获取对应的水印
     const watermark = watermarks.filter(item => item.index == val)
-    console.log(val, watermark[0].config);
 
     // 导入
     let configPromise = null;
     switch (watermark[0].config) {
-        case 'watermark1':
-            configPromise = import('./configs/watermark1');
-            break;
-        case 'watermark2':
-            configPromise = import('./configs/watermark2');
-            break;
-        case 'watermark3':
-            configPromise = import('./configs/watermark3');
-            break;
-        case 'watermark4':
-            configPromise = import('./configs/watermark4');
-            break;
-        case 'watermark5':
-            configPromise = import('./configs/watermark5');
-            break;
+        // case 'watermark1':
+        //     configPromise = import('./configs/watermark1');
+        //     break;
+        // case 'watermark2':
+        //     configPromise = import('./configs/watermark2.ts1');
+        //     break;
+        // case 'watermark3':
+        //     configPromise = import('./configs/watermark3');
+        //     break;
+        // case 'watermark4':
+        //     configPromise = import('./configs/watermark4');
+        //     break;
+        // case 'watermark5':
+        //     configPromise = import('./configs/watermark5');
+        //     break;
         default: configPromise = import('./configs/default');
             break;
     }
     configPromise.then(res => {
         config.value = deepClone(<Config>res.default);
-        console.log('config', config);
-
-        if (curFile.value === null) {
-            ElNotification.error({
-                title: '绘制失败',
-                message: '请先选择图片'
-            })
-            return;
-        }
-        config.value.draw(curFile.value, img, config.value);
-        ElNotification.success({
-            title: '绘制成功',
-            message: '可以点击下载保存图片'
-        })
     }).catch(err => {
         ElNotification.error({
-            title: '导入水印配置错误',
+            title: '导入水印配置出错',
             message: err.message
         })
     })
@@ -363,7 +554,7 @@ function importConfig(val: number): void {
 <style lang='less' scoped>
 #canvasBox {
     width: 100%;
-    height: 600px;
+    max-height: 500px;
     overflow: auto;
     box-sizing: border-box;
     display: flex;
