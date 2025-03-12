@@ -92,13 +92,17 @@ const cameraBrands = [
 	{ name: "富士", logo: "fuji" },
 	{ name: "松下", logo: "panasonic" },
 	{ name: "小米", logo: "xiaomi" },
+	{ name: "苹果", logo: "apple" },
 	{ name: "适马", logo: "sigma" },
 	{ name: "徕卡", logo: "leica" },
 	{ name: "哈苏", logo: "hasselblad" },
 	{ name: "蔡司", logo: "zeiss" },
 	{ name: "奥林巴斯", logo: "olympus" },
 	{ name: "耐克", logo: "nike" },
-	{ name: "央视新闻", logo: "cctv" },
+	{ name: "南极人", logo: "njr" },
+	{ name: "拼多多", logo: "pdd" },
+	{ name: "央视新闻", logo: "ysxw" },
+	{ name: "CCTV", logo: "cctv" },
 	{ name: "BBC", logo: "bbc" },
 ];
 
