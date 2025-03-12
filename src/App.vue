@@ -1,249 +1,270 @@
 <template>
-    <div id="canvasBox">
-        <canvas id="imgCanvas"></canvas>
-    </div>
-
-    <div style="padding: 10px 0px;">
-        <div class="btns" style="position: sticky;top: 0;left: 0px;">
-            <el-button @click="selectFile" type="primary" plain>选择文件</el-button>
-            <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-            <el-button @click="print(config, img)" style="display: none;">打印配置</el-button>
-            <el-button @click="handleDraw" :disabled="!curFile" type="success">绘制</el-button>
-            <el-button type="success" plain @click="download(img.export.name)">下载图片</el-button>
+    <div class="box">
+        <div id="canvasBox">
+            <canvas id="imgCanvas" v-if="curFile"></canvas>
+            <el-empty description="请先选择图片~" v-else></el-empty>
         </div>
-        <el-tabs v-model="activeName">
-            <el-tab-pane label="基本信息" name="first">
-                <el-form label-width="80px">
-                    <el-form-item label="文件名">
-                        <el-input v-model="img.fileName" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="文件大小">
-                        <el-input v-model="img.size" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="分辨率">
-                        <el-input :value="(img.exif?.ExifImageWidth || 0) + ' × ' + (img.exif?.ExifImageHeight || 0)"
-                            disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="文件类型">
-                        <el-input v-model="img.type" disabled>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item label="修改时间">
-                        <el-input v-model="img.time" disabled></el-input>
-                    </el-form-item>
-                    <h3>导出配置</h3>
-                    <el-form-item label="文件名">
-                        <el-input v-model="img.export.name" :disabled="!curFile"></el-input>
-                    </el-form-item>
-                    <el-form-item label="导出质量">
-                        <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
-                            show-input></el-slider>
-                    </el-form-item>
-                </el-form>
-            </el-tab-pane>
-            <el-tab-pane :label="`水印`" name="sixth">
-                <div class="config-title">
-                    <h3>样式</h3>
-                </div>
-                <el-form label-width="80px">
-                    <el-form-item label="选择样式">
-                        <el-select v-model="curWatermarkIndex" style="max-width: 200px;" placeholder="请选择水印样式">
-                            <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
-                                :value="index"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-                <div class="config-title">
-                    <h3>型号</h3>
-                    <el-switch v-model="config.watermark.model.show" :active-value="true"
-                        :inactive-value="false"></el-switch>
-                </div>
-                <el-form label-width="80px" v-if="config.watermark.model.show">
-                    <el-form-item label="文本">
-                        <el-input placeholder="留空则自动读取" v-model="img.modelText" clearable></el-input>
-                    </el-form-item>
-                    <el-form-item label="颜色">
-                        <el-color-picker v-model="config.watermark.model.color"
-                            :disabled="!config.watermark.model.show" />
-                    </el-form-item>
-                    <el-form-item label="字号">
-                        <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"
-                            :disabled="!config.watermark.model.show"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="加粗">
-                        <el-switch v-model="config.watermark.model.bold"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="斜体文字">
-                        <el-switch v-model="config.watermark.model.italic"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="替换Z为ℤ">
-                        <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
-                    </el-form-item>
-                </el-form>
-                <div class="config-title">
-                    <h3>参数</h3>
-                    <el-switch v-model="config.watermark.params.show" :active-value="true"
-                        :inactive-value="false"></el-switch>
-                </div>
-                <el-form label-width="80px" v-if="config.watermark.params.show">
-                    <el-form-item label="文本">
-                        <el-input placeholder="留空则自动读取" v-model="img.paramsText" clearable></el-input>
-                    </el-form-item>
-                    <el-form-item label="颜色">
-                        <el-color-picker v-model="config.watermark.params.color" />
-                    </el-form-item>
-                    <el-form-item label="字号">
-                        <el-input-number v-model="config.watermark.params.size" :min="12" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="字母大写">
-                        <el-switch v-model="config.watermark.params.letterUpperCase" :active-value="true"
-                            :inactive-value="false"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="等效焦距">
-                        <el-switch v-model="config.watermark.params.useEquivalentFocalLength" :active-value="true"
-                            :inactive-value="false"></el-switch>
-                    </el-form-item>
-                </el-form>
-                <div v-if="config.watermark.time.enable">
-                    <h3 style="padding-left: 10px;">时间</h3>
+
+        <div class="config-box">
+            <div class="btns">
+                <el-button @click="selectFile" type="primary" plain>选择图片</el-button>
+                <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
+                <el-button @click="print(config, img)" style="display: none;">打印配置</el-button>
+                <el-button @click="handleDraw" :disabled="!curFile" type="success">绘 制</el-button>
+                <el-button type="success" plain @click="download(img.export.name)">保 存</el-button>
+            </div>
+            <el-tabs v-model="activeName">
+                <el-tab-pane label="基本信息" name="info">
                     <el-form label-width="80px">
-                        <el-form-item label="显示">
-                            <el-switch v-model="config.watermark.time.show" :active-value="true"
+                        <el-form-item label="文件名">
+                            <el-input v-model="img.fileName" disabled></el-input>
+                        </el-form-item>
+                        <el-form-item label="文件大小">
+                            <el-input v-model="img.size" disabled></el-input>
+                        </el-form-item>
+                        <el-form-item label="分辨率">
+                            <el-input
+                                :value="(img.exif?.ExifImageWidth || 0) + ' × ' + (img.exif?.ExifImageHeight || 0)"
+                                disabled></el-input>
+                        </el-form-item>
+                        <el-form-item label="文件类型">
+                            <el-input v-model="img.type" disabled>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="修改时间">
+                            <el-input v-model="img.time" disabled></el-input>
+                        </el-form-item>
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="水印" name="sixth">
+                    <div class="config-title">
+                        <h3>样式</h3>
+                    </div>
+                    <el-form label-width="80px">
+                        <el-form-item label="选择样式">
+                            <el-select v-model="curWatermarkIndex" style="max-width: 200px;" placeholder="请选择水印样式">
+                                <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
+                                    :value="index"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div class="config-title">
+                        <h3>型号</h3>
+                        <el-switch v-model="config.watermark.model.show" :active-value="true"
+                            :inactive-value="false"></el-switch>
+                    </div>
+                    <el-form label-width="80px" v-if="config.watermark.model.show">
+                        <el-form-item label="文本">
+                            <el-input placeholder="留空则自动读取" v-model="img.modelText" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item label="颜色">
+                            <el-color-picker v-model="config.watermark.model.color"
+                                :disabled="!config.watermark.model.show" />
+                        </el-form-item>
+                        <el-form-item label="大小">
+                            <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"
+                                :disabled="!config.watermark.model.show"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="加粗">
+                            <el-switch v-model="config.watermark.model.bold"></el-switch>
+                        </el-form-item>
+                        <el-form-item label="斜体文字">
+                            <el-switch v-model="config.watermark.model.italic"></el-switch>
+                        </el-form-item>
+                        <el-form-item label="替换Z为ℤ">
+                            <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
+                        </el-form-item>
+                    </el-form>
+                    <div class="config-title">
+                        <h3>参数</h3>
+                        <el-switch v-model="config.watermark.params.show" :active-value="true"
+                            :inactive-value="false"></el-switch>
+                    </div>
+                    <el-form label-width="80px" v-if="config.watermark.params.show">
+                        <el-form-item label="文本">
+                            <el-input placeholder="留空则自动读取" v-model="img.paramsText" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item label="颜色">
+                            <el-color-picker v-model="config.watermark.params.color" />
+                        </el-form-item>
+                        <el-form-item label="大小">
+                            <el-input-number v-model="config.watermark.params.size" :min="12"
+                                :max="1000"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="字母大写">
+                            <el-switch v-model="config.watermark.params.letterUpperCase" :active-value="true"
                                 :inactive-value="false"></el-switch>
                         </el-form-item>
-                        <div v-show="config.watermark.time.show">
-                            <el-form-item label="文本">
-                                <el-input placeholder="留空则自动读取" v-model="img.timeText" clearable></el-input>
-                            </el-form-item>
-                            <el-form-item label="颜色">
-                                <el-color-picker v-model="config.watermark.time.color" />
-                            </el-form-item>
-                            <el-form-item label="字号">
-                                <el-input-number v-model="config.watermark.time.size" :min="12"
-                                    :max="1000"></el-input-number>
-                            </el-form-item>
-                            <el-form-item label="时间格式">
-                                <el-input placeholder="默认yyyy-MM-dd HH:mm:ss"
-                                    v-model="config.watermark.time.format"></el-input>
-                            </el-form-item>
-                        </div>
+                        <el-form-item label="等效焦距">
+                            <el-switch v-model="config.watermark.params.useEquivalentFocalLength" :active-value="true"
+                                :inactive-value="false"></el-switch>
+                        </el-form-item>
                     </el-form>
-                </div>
+                    <div v-if="config.watermark.time.enable">
+                        <h3 style="padding-left: 10px;">时间</h3>
+                        <el-form label-width="80px">
+                            <el-form-item label="显示">
+                                <el-switch v-model="config.watermark.time.show" :active-value="true"
+                                    :inactive-value="false"></el-switch>
+                            </el-form-item>
+                            <div v-show="config.watermark.time.show">
+                                <el-form-item label="文本">
+                                    <el-input placeholder="留空则自动读取" v-model="img.timeText" clearable></el-input>
+                                </el-form-item>
+                                <el-form-item label="颜色">
+                                    <el-color-picker v-model="config.watermark.time.color" />
+                                </el-form-item>
+                                <el-form-item label="大小">
+                                    <el-input-number v-model="config.watermark.time.size" :min="12"
+                                        :max="1000"></el-input-number>
+                                </el-form-item>
+                                <el-form-item label="时间格式">
+                                    <el-input placeholder="默认yyyy-MM-dd HH:mm:ss"
+                                        v-model="config.watermark.time.format"></el-input>
+                                </el-form-item>
+                            </div>
+                        </el-form>
+                    </div>
 
-                <div class="config-title">
-                    <h3>背景</h3>
-                </div>
-                <el-form label-width="80px">
-                    <el-form-item label="模糊">
-                        <el-switch v-model="config.blur.enable"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="模糊量" v-if="config.blur.enable">
-                        <el-input-number v-model="config.blur.size" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="颜色" v-if="!config.blur.enable">
-                        <el-color-picker v-model="config.watermark.bgColor"
-                            :disabled="config.blur.enable"></el-color-picker>
-                    </el-form-item>
-                </el-form>
-                <div v-if="config.radius.enable">
-                    <h3>圆角</h3>
+
+
+                    <div v-if="config.logo.enable">
+                        <h3 style="margin-left: 10px;">Logo</h3>
+                        <el-form label-width="80">
+                            <el-form-item label="显示">
+                                <el-switch v-model="config.logo.show"></el-switch>
+                            </el-form-item>
+                            <div v-show="config.logo.show">
+                                <el-form-item label="自动匹配">
+                                    <el-switch v-model="config.logo.auto"></el-switch>
+                                </el-form-item>
+                                <el-form-item label="手动选择" v-if="!config.logo.auto">
+                                    <el-select placeholder="选择logo" style="width: 200px;" v-model="config.logo.name">
+                                        <el-option v-for="item in cameraBrands" :label="item.name"
+                                            :value="item.logo"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item label="大小">
+                                    <b style="margin-left: 10px;color: gray;">宽度：</b>
+                                    <el-input-number v-model="config.logo.width" :min="0" :max="500"></el-input-number>
+                                    <b style="margin-left: 10px;color: gray;">高度：</b>
+                                    <el-input-number v-model="config.logo.height" :min="0" :max="500"></el-input-number>
+                                </el-form-item>
+                            </div>
+                        </el-form>
+                    </div>
+
+                    <div v-if="config.divider.enable">
+                        <h3 style="margin-left: 10px;">分割线</h3>
+                        <el-form label-width="80" v-if="config.divider.enable">
+                            <el-form-item label="显示">
+                                <el-switch v-model="config.divider.show"></el-switch>
+                            </el-form-item>
+                            <div v-show="config.divider.show">
+                                <el-form-item label="颜色">
+                                    <el-color-picker v-model="config.divider.color"></el-color-picker>
+                                </el-form-item>
+                                <el-form-item label="宽度">
+                                    <el-input-number v-model="config.divider.width" :min="1"
+                                        :max="1000"></el-input-number>
+                                </el-form-item>
+                            </div>
+                        </el-form>
+                    </div>
+
+
+                </el-tab-pane>
+                <el-tab-pane label="图片" name="picture">
+                    <div class="config-title">
+                        <h3>背景</h3>
+                    </div>
                     <el-form label-width="80px">
-                        <el-form-item label="显示">
-                            <el-switch v-model="config.radius.show"></el-switch>
+                        <el-form-item label="模糊">
+                            <el-switch v-model="config.blur.enable"></el-switch>
                         </el-form-item>
-                        <el-form-item label="半径">
-                            <el-input-number v-model="config.radius.size" :min="0" :max="1000"
-                                :disabled="!config.radius.show"></el-input-number>
+                        <el-form-item label="模糊量" v-if="config.blur.enable">
+                            <el-input-number v-model="config.blur.size" :min="0" :max="1000"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="颜色" v-if="!config.blur.enable">
+                            <el-color-picker v-model="config.watermark.bgColor"
+                                :disabled="config.blur.enable"></el-color-picker>
                         </el-form-item>
                     </el-form>
-                </div>
-                <div v-if="config.logo.enable">
-                    <h3>Logo</h3>
+
+                    <div v-if="config.radius.enable">
+                        <h3 style="margin-left: 10px;">圆角</h3>
+                        <el-form label-width="80px">
+                            <el-form-item label="显示">
+                                <el-switch v-model="config.radius.show"></el-switch>
+                            </el-form-item>
+                            <el-form-item label="半径">
+                                <el-input-number v-model="config.radius.size" :min="0" :max="1000"
+                                    :disabled="!config.radius.show"></el-input-number>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+
+                    <div class="config-title">
+                        <h3>阴影</h3>
+                        <el-switch v-model="config.shadow.show"></el-switch>
+                    </div>
+                    <el-form label-width="80" v-if="config.shadow.show">
+                        <el-alert type="warning" description="效果不佳，此项功能完善中..." :closable="false"></el-alert>
+                        <el-form-item label="颜色">
+                            <el-color-picker v-model="config.shadow.color"></el-color-picker>
+                        </el-form-item>
+                        <el-form-item label="大小">
+                            <el-input-number v-model="config.shadow.size" :min="1" :max="500"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="水平偏移">
+                            <el-input-number v-model="config.shadow.x" :min="-1000" :max="1000"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="垂直偏移">
+                            <el-input-number v-model="config.shadow.y" :min="-1000" :max="1000"></el-input-number>
+                        </el-form-item>
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="边距" name="border">
+                    <el-form label-width="80px">
+                        <h3>图片边距</h3>
+                        <el-form-item label="上边距">
+                            <el-input-number v-model="config.paddings.top" :min="0" :max="1000"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="右边距">
+                            <el-input-number v-model="config.paddings.right" :min="0" :max="1000"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="左边距">
+                            <el-input-number v-model="config.paddings.left" :min="0" :max="1000"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="下边距">
+                            <el-input-number v-model="config.paddings.bottom" :min="0" :max="1000"></el-input-number>
+                        </el-form-item>
+                        <h3>水印边距</h3>
+                        <el-form-item label="左右边距">
+                            <el-input-number v-model="config.watermark.paddings.lr" :min="0"
+                                :max="1000"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="上下边距">
+                            <el-input-number v-model="config.watermark.paddings.tb" :min="0"
+                                :max="1000"></el-input-number>
+                        </el-form-item>
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="导出" name="export">
+                    <h3>导出配置</h3>
                     <el-form label-width="80">
-                        <el-form-item label="显示">
-                            <el-switch v-model="config.logo.show"></el-switch>
+                        <el-form-item label="文件名">
+                            <el-input v-model="img.export.name" :disabled="!curFile"></el-input>
                         </el-form-item>
-                        <div v-show="config.logo.show">
-                            <el-form-item label="自动匹配">
-                                <el-switch v-model="config.logo.auto"></el-switch>
-                            </el-form-item>
-                            <el-form-item label="手动选择" v-if="!config.logo.auto">
-                                <el-select placeholder="选择logo" style="width: 200px;" v-model="config.logo.name">
-                                    <el-option v-for="item in cameraBrands" :label="item.name"
-                                        :value="item.logo"></el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="大小">
-                                <b style="margin-left: 10px;color: gray;">宽度：</b>
-                                <el-input-number v-model="config.logo.width" :min="0" :max="500"></el-input-number>
-                                <b style="margin-left: 10px;color: gray;">高度：</b>
-                                <el-input-number v-model="config.logo.height" :min="0" :max="500"></el-input-number>
-                            </el-form-item>
-                        </div>
-                    </el-form>
-                </div>
-
-                <div v-if="config.divider.enable">
-                    <h3>分割线</h3>
-                    <el-form label-width="80" v-if="config.divider.enable">
-                        <el-form-item label="显示">
-                            <el-switch v-model="config.divider.show"></el-switch>
+                        <el-form-item label="导出质量">
+                            <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
+                                show-input></el-slider>
                         </el-form-item>
-                        <div v-show="config.divider.show">
-                            <el-form-item label="颜色">
-                                <el-color-picker v-model="config.divider.color"></el-color-picker>
-                            </el-form-item>
-                            <el-form-item label="宽度">
-                                <el-input-number v-model="config.divider.width" :min="1" :max="1000"></el-input-number>
-                            </el-form-item>
-                        </div>
+                        <el-alert type="success" description="调整后需要手动点击绘制，文字大小需要重新调整~" :closable="false"></el-alert>
                     </el-form>
-                </div>
-
-                <div class="config-title">
-                    <h3>图片阴影</h3>
-                    <el-switch v-model="config.shadow.show"></el-switch>
-                </div>
-                <el-form label-width="80" v-if="config.shadow.show">
-                    <el-form-item label="颜色">
-                        <el-color-picker v-model="config.shadow.color"></el-color-picker>
-                    </el-form-item>
-                    <el-form-item label="大小">
-                        <el-input-number v-model="config.shadow.size" :min="1" :max="500"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="水平偏移">
-                        <el-input-number v-model="config.shadow.x" :min="-1000" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="垂直偏移">
-                        <el-input-number v-model="config.shadow.y" :min="-1000" :max="1000"></el-input-number>
-                    </el-form-item>
-                </el-form>
-            </el-tab-pane>
-            <el-tab-pane label="边距" name="firth">
-                <el-form label-width="80px">
-                    <h3>图片边距</h3>
-                    <el-form-item label="上边距">
-                        <el-input-number v-model="config.paddings.top" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="下边距">
-                        <el-input-number v-model="config.paddings.bottom" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="右边距">
-                        <el-input-number v-model="config.paddings.right" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="左边距">
-                        <el-input-number v-model="config.paddings.left" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <h3>水印边距</h3>
-                    <el-form-item label="左右边距">
-                        <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="上下边距">
-                        <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="1000"></el-input-number>
-                    </el-form-item>
-                </el-form>
-            </el-tab-pane>
-        </el-tabs>
+                </el-tab-pane>
+            </el-tabs>
+        </div>
     </div>
 </template>
 
@@ -278,7 +299,7 @@ const config = ref<Config>(defaultWaterMark);
 
 const watermarks = reactive(watermarkList)
 const curWatermarkIndex = ref<number>(0)
-const activeName = ref<string>('first')
+const activeName = ref<string>('info')
 
 const selectFile = () => {
     const input = document.createElement('input')
@@ -307,6 +328,9 @@ const selectFile = () => {
 const resetWatermark = () => {
     importConfig(curWatermarkIndex.value);
 
+    img.modelText = '';
+    img.paramsText = '';
+    img.timeText = '';
 
     ElMessage.success({
         message: "已重置水印样式",
@@ -546,9 +570,44 @@ function importConfig(val: number): void {
 </script>
 
 <style lang='less' scoped>
+.box {
+    display: flex;
+    box-sizing: border-box;
+    gap: 10px;
+    flex-wrap: wrap;
+    height: 100vh;
+}
+
+.config-box {
+    position: sticky;
+    top: 0;
+    left: 0px;
+    padding: 10px;
+    width: 600px;
+    box-shadow: 0px 0px 15px gainsboro;
+    border-radius: 10px;
+
+    h3 {
+        padding-bottom: 10px;
+    }
+
+
+    .btns {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
+        // border: 3px dashed red;
+        position: sticky;
+        top: 0;
+        left: 0;
+        background-color: #FFF;
+        z-index: 99;
+    }
+}
+
 #canvasBox {
-    width: 100%;
-    max-height: 500px;
+    flex: 1;
     overflow: auto;
     box-sizing: border-box;
     display: flex;
@@ -558,16 +617,11 @@ function importConfig(val: number): void {
     left: 0;
     background: rgb(255, 255, 255);
     z-index: 100;
+    padding: 10px;
+    // border: 2px solid blue;
 
     #imgCanvas {
         border: 1px solid gainsboro;
-    }
-
-    .btns {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        gap: 10px;
     }
 }
 
@@ -581,20 +635,14 @@ function importConfig(val: number): void {
 @media screen and (max-width: 768px) {
     #canvasBox {
         max-height: 300px;
-
-
-
     }
 
     .btns {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
         gap: 0px;
-
-        >* {
-            margin-top: 10px;
-        }
+        flex-wrap: wrap;
+        justify-content: start;
+        // border: 2px solid red;
     }
 }
 </style>

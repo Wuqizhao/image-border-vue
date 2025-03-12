@@ -121,12 +121,12 @@ const config: Config = {
 	},
 	radius: {
 		enable: true,
-		show:true,
+		show: true,
 		size: 80,
 	},
 	blur: {
 		enable: false,
-		size: 100,
+		size: 1000,
 	},
 	logo: {
 		enable: false,
