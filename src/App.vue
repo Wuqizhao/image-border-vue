@@ -3,12 +3,11 @@
         <canvas id="imgCanvas"></canvas>
     </div>
 
-    <div>
-        <h2>配置</h2>
-        <div class="btns">
+    <div style="padding: 10px 0px;">
+        <div class="btns" style="position: sticky;top: 0;left: 0px;">
             <el-button @click="selectFile" type="primary" plain>选择文件</el-button>
             <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-            <el-button @click="print(config, img)">打印配置</el-button>
+            <!-- <el-button @click="print(config, img)">打印配置</el-button> -->
             <el-button @click="handleDraw" :disabled="!curFile" type="success">绘制</el-button>
             <el-button type="success" plain @click="download(img.export.name)">下载图片</el-button>
         </div>
@@ -315,14 +314,8 @@ const resetWatermark = () => {
 }
 
 // 监听
-watch([curWatermarkIndex, curFile], ([newIndex, newFile]) => {
-    if (newIndex !== curWatermarkIndex.value) {
-        importConfig(newIndex)
-    }
-
-    if (newFile !== curFile.value) {
-        resetWatermark();
-    }
+watch(curWatermarkIndex, (newIndex) => {
+    importConfig(newIndex)
 }, {
     immediate: true
 })
@@ -517,7 +510,6 @@ function handleDraw() {
 function importConfig(val: number): void {
     // 获取对应的水印
     const watermark = watermarks.filter(item => item.index == val)
-    console.log('wm', watermark);
 
     // 导入
     let configPromise = null;
@@ -538,7 +530,6 @@ function importConfig(val: number): void {
         //     configPromise = import('./configs/watermark5');
         //     break;
         default:
-            console.log('导入默认水印');
             configPromise = import('./configs/default');
             break;
     }
@@ -585,5 +576,25 @@ function importConfig(val: number): void {
     justify-content: space-between;
     align-items: center;
     padding: 0px 10px;
+}
+
+@media screen and (max-width: 768px) {
+    #canvasBox {
+        max-height: 300px;
+
+
+
+    }
+
+    .btns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0px;
+
+        >* {
+            margin-top: 10px;
+        }
+    }
 }
 </style>
