@@ -7,7 +7,7 @@
         <div class="btns" style="position: sticky;top: 0;left: 0px;">
             <el-button @click="selectFile" type="primary" plain>选择文件</el-button>
             <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-            <!-- <el-button @click="print(config, img)">打印配置</el-button> -->
+            <el-button @click="print(config, img)" style="display: none;">打印配置</el-button>
             <el-button @click="handleDraw" :disabled="!curFile" type="success">绘制</el-button>
             <el-button type="success" plain @click="download(img.export.name)">下载图片</el-button>
         </div>
