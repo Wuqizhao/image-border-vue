@@ -26,6 +26,7 @@ declare interface Config {
 			letterUpperCase: boolean;
 		};
 		time: {
+			enable: boolean;
 			show: boolean;
 			color: string;
 			size: number;
@@ -39,6 +40,7 @@ declare interface Config {
 	};
 	radius: {
 		enable: boolean;
+		show: boolean;
 		size: number;
 	};
 	blur: {

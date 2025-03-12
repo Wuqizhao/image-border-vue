@@ -107,6 +107,7 @@ const config: Config = {
 			letterUpperCase: false,
 		},
 		time: {
+			enable: true,
 			show: true,
 			color: "#808080",
 			size: 110,
@@ -120,6 +121,7 @@ const config: Config = {
 	},
 	radius: {
 		enable: true,
+		show:true,
 		size: 80,
 	},
 	blur: {

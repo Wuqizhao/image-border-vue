@@ -105,25 +105,32 @@
                             :inactive-value="false"></el-switch>
                     </el-form-item>
                 </el-form>
-                <div class="config-title">
-                    <h3>时间</h3>
-                    <el-switch v-model="config.watermark.time.show" :active-value="true"
-                        :inactive-value="false"></el-switch>
+                <div v-if="config.watermark.time.enable">
+                    <h3 style="padding-left: 10px;">时间</h3>
+                    <el-form label-width="80px">
+                        <el-form-item label="显示">
+                            <el-switch v-model="config.watermark.time.show" :active-value="true"
+                                :inactive-value="false"></el-switch>
+                        </el-form-item>
+                        <div v-show="config.watermark.time.show">
+                            <el-form-item label="文本">
+                                <el-input placeholder="留空则自动读取" v-model="img.timeText" clearable></el-input>
+                            </el-form-item>
+                            <el-form-item label="颜色">
+                                <el-color-picker v-model="config.watermark.time.color" />
+                            </el-form-item>
+                            <el-form-item label="字号">
+                                <el-input-number v-model="config.watermark.time.size" :min="12"
+                                    :max="1000"></el-input-number>
+                            </el-form-item>
+                            <el-form-item label="时间格式">
+                                <el-input placeholder="默认yyyy-MM-dd HH:mm:ss"
+                                    v-model="config.watermark.time.format"></el-input>
+                            </el-form-item>
+                        </div>
+                    </el-form>
                 </div>
-                <el-form label-width="80px" v-if="config.watermark.time.show">
-                    <el-form-item label="文本">
-                        <el-input placeholder="留空则自动读取" v-model="img.timeText" clearable></el-input>
-                    </el-form-item>
-                    <el-form-item label="颜色">
-                        <el-color-picker v-model="config.watermark.time.color" />
-                    </el-form-item>
-                    <el-form-item label="字号">
-                        <el-input-number v-model="config.watermark.time.size" :min="12" :max="1000"></el-input-number>
-                    </el-form-item>
-                    <el-form-item label="时间格式">
-                        <el-input placeholder="默认yyyy-MM-dd HH:mm:ss" v-model="config.watermark.time.format"></el-input>
-                    </el-form-item>
-                </el-form>
+
                 <div class="config-title">
                     <h3>背景</h3>
                 </div>
@@ -139,16 +146,18 @@
                             :disabled="config.blur.enable"></el-color-picker>
                     </el-form-item>
                 </el-form>
-                <div class="config-title">
+                <div v-if="config.radius.enable">
                     <h3>圆角</h3>
-                    <el-switch v-model="config.radius.enable"></el-switch>
+                    <el-form label-width="80px">
+                        <el-form-item label="显示">
+                            <el-switch v-model="config.radius.show"></el-switch>
+                        </el-form-item>
+                        <el-form-item label="半径">
+                            <el-input-number v-model="config.radius.size" :min="0" :max="1000"
+                                :disabled="!config.radius.show"></el-input-number>
+                        </el-form-item>
+                    </el-form>
                 </div>
-                <el-form label-width="80px" v-if="config.radius.enable">
-                    <el-form-item label="半径">
-                        <el-input-number v-model="config.radius.size" :min="0" :max="1000"
-                            :disabled="!config.radius.enable"></el-input-number>
-                    </el-form-item>
-                </el-form>
                 <div v-if="config.logo.enable">
                     <h3>Logo</h3>
                     <el-form label-width="80">
@@ -181,12 +190,14 @@
                         <el-form-item label="显示">
                             <el-switch v-model="config.divider.show"></el-switch>
                         </el-form-item>
-                        <el-form-item label="颜色">
-                            <el-color-picker v-model="config.divider.color"></el-color-picker>
-                        </el-form-item>
-                        <el-form-item label="宽度">
-                            <el-input-number v-model="config.divider.width" :min="1" :max="10"></el-input-number>
-                        </el-form-item>
+                        <div v-show="config.divider.show">
+                            <el-form-item label="颜色">
+                                <el-color-picker v-model="config.divider.color"></el-color-picker>
+                            </el-form-item>
+                            <el-form-item label="宽度">
+                                <el-input-number v-model="config.divider.width" :min="1" :max="1000"></el-input-number>
+                            </el-form-item>
+                        </div>
                     </el-form>
                 </div>
 
@@ -239,7 +250,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime } from './assets/tools'
+import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime, watermarkList } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
@@ -265,33 +276,7 @@ const img = reactive<Img>({
 const curFile = ref<File | null>(null)
 const config = ref<Config>(defaultWaterMark);
 
-const watermarks = reactive([
-    {
-        index: 0,
-        name: '默认样式',
-        config: 'default'
-    },
-    // {
-    //     index: 1,
-    //     name: '徕卡',
-    //     config: 'watermark4'
-    // },
-    // {
-    //     index: 2,
-    //     name: '型号+参数居中',
-    //     config: 'watermark2'
-    // },
-    // {
-    //     index: 3,
-    //     name: '型号+时间',
-    //     config: 'watermark3'
-    // },
-    // {
-    //     index: 4,
-    //     name: '型号+参数+Logo',
-    //     config: 'watermark5'
-    // }
-])
+const watermarks = reactive(watermarkList)
 const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('first')
 
@@ -323,7 +308,7 @@ watch(curWatermarkIndex, (val) => {
     immediate: true
 })
 
-watchThrottled([config, curFile], () => {
+watchThrottled([config, curFile, curWatermarkIndex], () => {
     handleDraw();
 }, { throttle: 1500, deep: true })
 
@@ -449,7 +434,7 @@ function handleDraw() {
             }
 
             // 绘制圆角图片
-            if (radiusConfig.enable) {
+            if (radiusConfig.show) {
                 ctx.save();
                 const radius = radiusConfig.size;
                 ctx.beginPath();
@@ -518,30 +503,34 @@ function handleDraw() {
 function importConfig(val: number): void {
     // 获取对应的水印
     const watermark = watermarks.filter(item => item.index == val)
+    console.log('wm', watermark);
 
     // 导入
     let configPromise = null;
     switch (watermark[0].config) {
-        // case 'watermark1':
-        //     configPromise = import('./configs/watermark1');
-        //     break;
+        case 'watermark1':
+            configPromise = import('./configs/watermark1');
+            break;
         // case 'watermark2':
-        //     configPromise = import('./configs/watermark2.ts1');
+        //     configPromise = import('./configs/watermark2');
         //     break;
         // case 'watermark3':
         //     configPromise = import('./configs/watermark3');
         //     break;
-        // case 'watermark4':
-        //     configPromise = import('./configs/watermark4');
-        //     break;
+        case 'watermark4':
+            configPromise = import('./configs/watermark4');
+            break;
         // case 'watermark5':
         //     configPromise = import('./configs/watermark5');
         //     break;
-        default: configPromise = import('./configs/default');
+        default:
+            console.log('导入默认水印');
+            configPromise = import('./configs/default');
             break;
     }
     configPromise.then(res => {
         config.value = deepClone(<Config>res.default);
+        ElMessage.success('导入成功');
     }).catch(err => {
         ElNotification.error({
             title: '导入水印配置出错',
@@ -559,6 +548,11 @@ function importConfig(val: number): void {
     box-sizing: border-box;
     display: flex;
     justify-content: space-around;
+    position: sticky;
+    top: 0;
+    left: 0;
+    background: rgb(255, 255, 255);
+    z-index: 100;
 
     #imgCanvas {
         border: 1px solid gainsboro;
