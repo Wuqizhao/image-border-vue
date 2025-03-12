@@ -92,6 +92,7 @@ const cameraBrands = [
 	{ name: "富士", logo: "fuji" },
 	{ name: "松下", logo: "panasonic" },
 	{ name: "小米", logo: "xiaomi" },
+	{ name: "华为", logo: "huawei" },
 	{ name: "苹果", logo: "apple" },
 	{ name: "适马", logo: "sigma" },
 	{ name: "徕卡", logo: "leica" },
@@ -104,6 +105,12 @@ const cameraBrands = [
 	{ name: "央视新闻", logo: "ysxw" },
 	{ name: "CCTV", logo: "cctv" },
 	{ name: "BBC", logo: "bbc" },
+	{ name: "菠萝", logo: "boluo" },
+	{ name: "QQ", logo: "qq" },
+	{ name: "QQ空间", logo: "qzone" },
+	{ name: "Java", logo: "java" },
+	{ name: "Javascript", logo: "javascript" },
+	{ name: "PHP", logo: "php" },
 ];
 
 const watermarkList = [
