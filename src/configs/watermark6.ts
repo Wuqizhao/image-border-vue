@@ -71,7 +71,7 @@ const config: Config = {
 		enable: true,
 		auto: false,
 		show: true,
-		name: "hasselblad",
+		name: "hasselblad-white",
 		width: 400,
 		height: 400,
 	},
