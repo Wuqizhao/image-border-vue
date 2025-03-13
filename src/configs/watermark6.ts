@@ -12,7 +12,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		).default;
 		logoImg.onload = () => {
 			const logoX = canvas.width / 2 - logoConfig.width / 2;
-			const logoY = canvas.height - logoConfig.height - 2 * imgPaddings.bottom;
+			const logoY = canvas.height - logoConfig.height - 1.6 * imgPaddings.bottom;
 
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};
@@ -29,7 +29,8 @@ const config: Config = {
 	watermark: {
 		height: 0,
 		model: {
-			show: true,
+			enable: false,
+			show: false,
 			color: "#FF0000",
 			size: 200,
 			replaceZ: true,
@@ -37,14 +38,15 @@ const config: Config = {
 			bold: true, // 加粗
 		},
 		params: {
-			show: true,
+			enable: false,
+			show: false,
 			color: "#808080",
 			size: 14,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
 		},
 		time: {
-			enable: true,
+			enable: false,
 			show: true,
 			color: "#808080",
 			size: 14,
@@ -69,12 +71,12 @@ const config: Config = {
 		enable: true,
 		auto: false,
 		show: true,
-		name: "leica",
-		width: 500,
-		height: 500,
+		name: "hasselblad",
+		width: 400,
+		height: 400,
 	},
 	divider: {
-		enable: true,
+		enable: false,
 		show: true,
 		color: "#808080",
 		width: 2,

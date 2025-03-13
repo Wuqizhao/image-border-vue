@@ -93,6 +93,7 @@ const config: Config = {
 	watermark: {
 		height:0.1,
 		model: {
+			enable: true,
 			show: true,
 			color: "#000000",
 			size: 150,
@@ -101,6 +102,7 @@ const config: Config = {
 			bold: true,
 		},
 		params: {
+			enable: true,
 			show: true,
 			color: "#808080",
 			size: 100,

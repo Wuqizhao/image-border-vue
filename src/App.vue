@@ -64,58 +64,64 @@
                                 v-model="config.watermark.height"></el-input-number>
                         </el-form-item>
                     </el-form>
-                    <div class="config-title">
+                    <div v-if="config.watermark.model.enable">
                         <h3>型号</h3>
-                        <el-switch v-model="config.watermark.model.show" :active-value="true"
-                            :inactive-value="false"></el-switch>
+                        <el-form label-width="80px">
+                            <el-form-item label="显示">
+                                <el-switch v-model="config.watermark.model.show"></el-switch>
+                            </el-form-item>
+                            <div v-show="config.watermark.model.show">
+                                <el-form-item label="文本">
+                                    <el-input placeholder="留空则自动读取" v-model="img.modelText" clearable></el-input>
+                                </el-form-item>
+                                <el-form-item label="颜色">
+                                    <el-color-picker v-model="config.watermark.model.color"
+                                        :disabled="!config.watermark.model.show" />
+                                </el-form-item>
+                                <el-form-item label="大小">
+                                    <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"
+                                        :disabled="!config.watermark.model.show"></el-input-number>
+                                </el-form-item>
+                                <el-form-item label="加粗">
+                                    <el-switch v-model="config.watermark.model.bold"></el-switch>
+                                </el-form-item>
+                                <el-form-item label="斜体文字">
+                                    <el-switch v-model="config.watermark.model.italic"></el-switch>
+                                </el-form-item>
+                                <el-form-item label="替换Z为ℤ">
+                                    <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
+                                </el-form-item>
+                            </div>
+                        </el-form>
                     </div>
-                    <el-form label-width="80px" v-if="config.watermark.model.show">
-                        <el-form-item label="文本">
-                            <el-input placeholder="留空则自动读取" v-model="img.modelText" clearable></el-input>
-                        </el-form-item>
-                        <el-form-item label="颜色">
-                            <el-color-picker v-model="config.watermark.model.color"
-                                :disabled="!config.watermark.model.show" />
-                        </el-form-item>
-                        <el-form-item label="大小">
-                            <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"
-                                :disabled="!config.watermark.model.show"></el-input-number>
-                        </el-form-item>
-                        <el-form-item label="加粗">
-                            <el-switch v-model="config.watermark.model.bold"></el-switch>
-                        </el-form-item>
-                        <el-form-item label="斜体文字">
-                            <el-switch v-model="config.watermark.model.italic"></el-switch>
-                        </el-form-item>
-                        <el-form-item label="替换Z为ℤ">
-                            <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
-                        </el-form-item>
-                    </el-form>
-                    <div class="config-title">
+                    <div v-if="config.watermark.params.enable">
                         <h3>参数</h3>
-                        <el-switch v-model="config.watermark.params.show" :active-value="true"
-                            :inactive-value="false"></el-switch>
+                        <el-form label-width="80px">
+                            <el-form-item label="显示">
+                                <el-switch v-model="config.watermark.params.show"></el-switch>
+                            </el-form-item>
+                            <div v-show="config.watermark.params.show">
+                                <el-form-item label="文本">
+                                    <el-input placeholder="留空则自动读取" v-model="img.paramsText" clearable></el-input>
+                                </el-form-item>
+                                <el-form-item label="颜色">
+                                    <el-color-picker v-model="config.watermark.params.color" />
+                                </el-form-item>
+                                <el-form-item label="大小">
+                                    <el-input-number v-model="config.watermark.params.size" :min="12"
+                                        :max="1000"></el-input-number>
+                                </el-form-item>
+                                <el-form-item label="字母大写">
+                                    <el-switch v-model="config.watermark.params.letterUpperCase" :active-value="true"
+                                        :inactive-value="false"></el-switch>
+                                </el-form-item>
+                                <el-form-item label="等效焦距">
+                                    <el-switch v-model="config.watermark.params.useEquivalentFocalLength"
+                                        :active-value="true" :inactive-value="false"></el-switch>
+                                </el-form-item>
+                            </div>
+                        </el-form>
                     </div>
-                    <el-form label-width="80px" v-if="config.watermark.params.show">
-                        <el-form-item label="文本">
-                            <el-input placeholder="留空则自动读取" v-model="img.paramsText" clearable></el-input>
-                        </el-form-item>
-                        <el-form-item label="颜色">
-                            <el-color-picker v-model="config.watermark.params.color" />
-                        </el-form-item>
-                        <el-form-item label="大小">
-                            <el-input-number v-model="config.watermark.params.size" :min="12"
-                                :max="1000"></el-input-number>
-                        </el-form-item>
-                        <el-form-item label="字母大写">
-                            <el-switch v-model="config.watermark.params.letterUpperCase" :active-value="true"
-                                :inactive-value="false"></el-switch>
-                        </el-form-item>
-                        <el-form-item label="等效焦距">
-                            <el-switch v-model="config.watermark.params.useEquivalentFocalLength" :active-value="true"
-                                :inactive-value="false"></el-switch>
-                        </el-form-item>
-                    </el-form>
                     <div v-if="config.watermark.time.enable">
                         <h3 style="padding-left: 10px;">时间</h3>
                         <el-form label-width="80px">
@@ -157,8 +163,9 @@
                                 </el-form-item>
                                 <el-form-item label="手动选择" v-if="!config.logo.auto">
                                     <el-select placeholder="选择logo" style="width: 200px;" v-model="config.logo.name">
-                                        <el-option v-for="item in cameraBrands" :label="item.name"
-                                            :value="item.logo"></el-option>
+                                        <el-option v-for="item in cameraBrands" :label="item.name" :key="item.name"
+                                            :value="item.logo">
+                                        </el-option>
                                     </el-select>
                                 </el-form-item>
                                 <el-form-item label="宽度">
@@ -269,12 +276,12 @@
                             <el-button size="small" style="margin-left: 10px;"
                                 @click="config.paddings.left = config.paddings.right = config.paddings.top">同步到左右</el-button>
                         </el-form-item>
-                        <el-form-item label="右边距">
-                            <el-input-number v-model="config.paddings.right" :min="0" :max="1000"
-                                :step="10"></el-input-number>
-                        </el-form-item>
                         <el-form-item label="左边距">
                             <el-input-number v-model="config.paddings.left" :min="0" :max="1000"
+                                :step="10"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="右边距">
+                            <el-input-number v-model="config.paddings.right" :min="0" :max="1000"
                                 :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="下边距">
@@ -403,7 +410,7 @@ watch(curWatermarkIndex, (newIndex) => {
     immediate: true
 })
 
-watchThrottled([config, curFile, curWatermarkIndex,auxiliaryLines], () => {
+watchThrottled([config, curFile, curWatermarkIndex, auxiliaryLines], () => {
     handleDraw();
 }, { throttle: 1000, deep: true })
 

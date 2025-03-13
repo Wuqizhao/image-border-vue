@@ -56,6 +56,7 @@ const config: Config = {
 	watermark: {
 		height:0.1,
 		model: {
+			enable:true,
 			show: true,
 			color: "#FF0000",
 			size: 200,
@@ -64,6 +65,7 @@ const config: Config = {
 			bold: true, // 加粗
 		},
 		params: {
+			enable:true,
 			show: true,
 			color: "#808080",
 			size: 14,

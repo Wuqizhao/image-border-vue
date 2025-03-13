@@ -7,4 +7,10 @@ export default defineConfig({
 		host: "0.0.0.0", // 允许外部访问
 	},
 	plugins: [vue()],
+	// 配置别名
+	resolve: {
+		alias: {
+			"@": "/src",
+		},
+	},
 });

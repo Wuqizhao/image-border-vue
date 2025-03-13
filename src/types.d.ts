@@ -10,6 +10,7 @@ declare interface Config {
 	watermark: {
 		height: number; // 基础高度
 		model: {
+			enable:boolean;
 			show: boolean;
 			color: string;
 			size: number;
@@ -18,6 +19,7 @@ declare interface Config {
 			bold: boolean; // 加粗
 		};
 		params: {
+			enable:boolean;
 			show: boolean;
 			color: string;
 			size: number;
