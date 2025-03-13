@@ -8,6 +8,7 @@ declare interface Config {
 		bottom: number;
 	};
 	watermark: {
+		height: number; // 基础高度
 		model: {
 			show: boolean;
 			color: string;

@@ -38,6 +38,14 @@
                         <el-form-item label="修改时间">
                             <el-input v-model="img.time" disabled></el-input>
                         </el-form-item>
+                        <el-form-item label="辅助线">
+                            <b style="margin-left: 20px;">垂直中心线：</b>
+                            <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
+                            <b style="margin-left: 20px;">水印范围：</b>
+                            <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
+                            <b style="margin-left: 20px;">水印水平中心线：</b>
+                            <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
+                        </el-form-item>
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="水印" name="sixth">
@@ -50,6 +58,10 @@
                                 <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
                                     :value="index"></el-option>
                             </el-select>
+                        </el-form-item>
+                        <el-form-item label="基础高度">
+                            <el-input-number :min="0" :max="1" :step="0.01"
+                                v-model="config.watermark.height"></el-input-number>
                         </el-form-item>
                     </el-form>
                     <div class="config-title">
@@ -206,7 +218,8 @@
                             <el-switch v-model="config.blur.enable"></el-switch>
                         </el-form-item>
                         <el-form-item label="模糊量" v-if="config.blur.enable">
-                            <el-input-number v-model="config.blur.size" :min="0" :max="1000"></el-input-number>
+                            <el-input-number v-model="config.blur.size" :min="0" :max="1000"
+                                :step="100"></el-input-number>
                         </el-form-item>
                         <el-form-item label="颜色" v-if="!config.blur.enable">
                             <el-color-picker v-model="config.watermark.bgColor"
@@ -221,7 +234,7 @@
                                 <el-switch v-model="config.radius.show"></el-switch>
                             </el-form-item>
                             <el-form-item label="半径">
-                                <el-input-number v-model="config.radius.size" :min="0" :max="1000"
+                                <el-input-number v-model="config.radius.size" :min="0" :max="1000" :step="10"
                                     :disabled="!config.radius.show"></el-input-number>
                             </el-form-item>
                         </el-form>
@@ -305,6 +318,12 @@ import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
 import { watchThrottled } from '@vueuse/core'
 import Exifr from "exifr";
+// 辅助线配置
+const auxiliaryLines = reactive({
+    verticalCenter: false,
+    watermarkHorizontalCenter: false,
+    watermarkRange: false
+})
 
 const defaultImgValue = {
     width: 0,
@@ -384,7 +403,7 @@ watch(curWatermarkIndex, (newIndex) => {
     immediate: true
 })
 
-watchThrottled([config, curFile, curWatermarkIndex], () => {
+watchThrottled([config, curFile, curWatermarkIndex,auxiliaryLines], () => {
     handleDraw();
 }, { throttle: 1000, deep: true })
 
@@ -462,7 +481,7 @@ function handleDraw() {
                 realImgWidth + imgPaddings.left + imgPaddings.right;
             canvas.height =
                 realImgHeight + imgPaddings.top + imgPaddings.bottom;
-            canvas.height += 0.1 * canvas.height + 2 * watermarkPaddings.tb;
+            canvas.height += config.value.watermark.height * canvas.height + 2 * watermarkPaddings.tb;
 
 
 
@@ -576,6 +595,35 @@ function handleDraw() {
                 rect1: rect1,
                 rect2: rect2
             });
+
+            // 绘制辅助线
+            if (auxiliaryLines.verticalCenter) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, 0);
+                ctx.lineTo(canvas.width / 2, canvas.height);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "#FF0000";
+                ctx.stroke();
+                ctx.restore();
+            }
+            if (auxiliaryLines.watermarkRange) {
+                ctx.save();
+                ctx.lineWidth = 10;
+                ctx.strokeStyle = "#FF0000";
+                ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
+                ctx.restore();
+            }
+            if (auxiliaryLines.watermarkHorizontalCenter) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(rect1.x, rect1.y + (rect2.y - rect1.y) / 2);
+                ctx.lineTo(rect2.x, rect1.y + (rect2.y - rect1.y) / 2);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "#FF0000";
+                ctx.stroke();
+                ctx.restore();
+            }
         }
     }
 }
@@ -602,6 +650,9 @@ function importConfig(val: number): void {
         // case 'watermark5':
         //     configPromise = import('./configs/watermark5');
         //     break;
+        case 'watermark6':
+            configPromise = import('./configs/watermark6');
+            break;
         default:
             configPromise = import('./configs/default');
             break;

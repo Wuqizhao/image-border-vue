@@ -125,6 +125,11 @@ const watermarkList = [
 		name: "小米徕卡",
 		config: "watermark4",
 	},
+	{
+		index: 2,
+		name: "单图标",
+		config: "watermark6",
+	},
 	// {
 	//     index: 2,
 	//     name: '型号+参数居中',

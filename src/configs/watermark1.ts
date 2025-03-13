@@ -54,6 +54,7 @@ const config: Config = {
 		bottom: 0,
 	},
 	watermark: {
+		height:0.1,
 		model: {
 			show: true,
 			color: "#FF0000",
