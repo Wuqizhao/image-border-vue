@@ -196,7 +196,7 @@
                                 </el-form-item>
                                 <el-form-item label="垂直偏移" v-if="config.logo.verticalOffset !== undefined">
                                     <el-input-number v-model="config.logo.verticalOffset" :min="0.01" :max="10"
-                                        :step="0.05">
+                                        :step="0.01">
                                     </el-input-number>
                                 </el-form-item>
                             </div>
@@ -678,6 +678,9 @@ function importConfig(val: number): void {
         //     break;
         case 'watermark6':
             configPromise = import('./configs/watermark6');
+            break;
+        case 'watermark7':
+            configPromise = import('./configs/watermark7');
             break;
         default:
             configPromise = import('./configs/default');

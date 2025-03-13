@@ -142,6 +142,11 @@ const watermarkList = [
 		name: "单图标-哈苏（白）",
 		config: "watermark6",
 	},
+	{
+		index: 3,
+		name: "图标+参数+时间垂直居中",
+		config: "watermark7",
+	},
 	// {
 	//     index: 2,
 	//     name: '型号+参数居中',
