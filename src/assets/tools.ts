@@ -98,6 +98,7 @@ const cameraBrands = [
 	{ name: "适马", logo: "sigma" },
 	{ name: "徕卡", logo: "leica" },
 	{ name: "哈苏", logo: "hasselblad" },
+	{ name: "大疆", logo: "dajiang" },
 	{ name: "蔡司", logo: "zeiss" },
 	{ name: "奥林巴斯", logo: "olympus" },
 	{ name: "耐克", logo: "nike" },
