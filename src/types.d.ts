@@ -61,6 +61,7 @@ declare interface Config {
 		color: string;
 		width: number;
 		scale: number;// 缩放倍数
+		margin: number; // 间隔
 	};
 	shadow: {
 		show: boolean;

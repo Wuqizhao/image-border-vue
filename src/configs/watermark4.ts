@@ -1,8 +1,6 @@
 import type { Config, DrawFun } from "../types";
 
 const doDraw: DrawFun = async (img, config, context) => {
-	console.log("绘制样式4");
-
 	const {
 		watermark,
 		paddings: imgPaddings,
@@ -66,7 +64,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			_y
 		);
 	}
-	const space = 0.6 * logoConfig.width; // 间隔
+	const space = 0.5 * logoConfig.width * dividerConfig.margin; // 间隔
 	// 绘制竖线
 	const paramsWidth = ctx.measureText(img.paramsText).width;
 	// 计算横坐标
@@ -96,7 +94,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.strokeStyle = dividerConfig.color;
 		ctx.lineWidth = dividerConfig.width;
 
-		const _h = Math.min(logoConfig.height, paramsConfig.size) * dividerConfig.scale;
+		const _h =
+			Math.min(logoConfig.height, paramsConfig.size) * dividerConfig.scale;
 		const centerY = rect1.y + (rect2.y - rect1.y) / 2;
 
 		ctx.beginPath();
@@ -163,8 +162,9 @@ const config: Config = {
 		enable: true,
 		show: true,
 		color: "rgb(208, 208, 208)",
-		width: 20,
+		width: 10,
 		scale: 1,
+		margin: 1,
 	},
 	shadow: {
 		show: false,

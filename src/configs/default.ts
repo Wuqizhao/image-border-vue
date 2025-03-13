@@ -142,6 +142,7 @@ const config: Config = {
 		color: "#808080",
 		width: 2,
 		scale: 1,
+		margin: 1,
 	},
 	shadow: {
 		show: false,

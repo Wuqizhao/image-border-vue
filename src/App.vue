@@ -145,10 +145,18 @@
                                     </el-select>
                                 </el-form-item>
                                 <el-form-item label="宽度">
-                                    <el-input-number v-model="config.logo.width" :min="0" :max="500" :step="10"></el-input-number>
+                                    <el-input-number v-model="config.logo.width" :min="0" :max="1000"
+                                        :step="10"></el-input-number>
+                                    <el-button size="mini" style="margin-left: 10px;"
+                                        @click="config.logo.width += 100">+ 100</el-button>
+                                    <el-button size="mini" style="margin-left: 10px;"
+                                        @click="config.logo.width -= 100">- 100</el-button>
+                                    <el-button size="mini" style="margin-left: 10px;"
+                                        @click="config.logo.height = config.logo.width">同步高度</el-button>
                                 </el-form-item>
                                 <el-form-item label="高度">
-                                    <el-input-number v-model="config.logo.height" :min="0" :max="500" :step="10"></el-input-number>
+                                    <el-input-number v-model="config.logo.height" :min="0" :max="1000" :step="10">
+                                    </el-input-number>
                                 </el-form-item>
                             </div>
                         </el-form>
@@ -169,8 +177,12 @@
                                         :max="1000"></el-input-number>
                                 </el-form-item>
                                 <el-form-item label="长度缩放">
-                                    <el-input-number v-model="config.divider.scale" :min="0"
-                                        :max="50" :step="0.01"></el-input-number>
+                                    <el-input-number v-model="config.divider.scale" :min="0" :max="50"
+                                        :step="0.01"></el-input-number>
+                                </el-form-item>
+                                <el-form-item label="间隔缩放">
+                                    <el-input-number v-model="config.divider.margin" :min="0" :max="50"
+                                        :step="0.01"></el-input-number>
                                 </el-form-item>
                             </div>
                         </el-form>
@@ -232,25 +244,29 @@
                     <el-form label-width="80px">
                         <h3>图片边距</h3>
                         <el-form-item label="上边距">
-                            <el-input-number v-model="config.paddings.top" :min="0" :max="1000" :step="10"></el-input-number>
+                            <el-input-number v-model="config.paddings.top" :min="0" :max="1000"
+                                :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="右边距">
-                            <el-input-number v-model="config.paddings.right" :min="0" :max="1000" :step="10"></el-input-number>
+                            <el-input-number v-model="config.paddings.right" :min="0" :max="1000"
+                                :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="左边距">
-                            <el-input-number v-model="config.paddings.left" :min="0" :max="1000" :step="10"></el-input-number>
+                            <el-input-number v-model="config.paddings.left" :min="0" :max="1000"
+                                :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="下边距">
-                            <el-input-number v-model="config.paddings.bottom" :min="0" :max="1000" :step="10"></el-input-number>
+                            <el-input-number v-model="config.paddings.bottom" :min="0" :max="1000"
+                                :step="10"></el-input-number>
                         </el-form-item>
                         <h3>水印边距</h3>
                         <el-form-item label="左右边距">
-                            <el-input-number v-model="config.watermark.paddings.lr" :min="0"
-                                :max="1000" :step="10"></el-input-number>
+                            <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="1000"
+                                :step="10"></el-input-number>
                         </el-form-item>
                         <el-form-item label="上下边距">
-                            <el-input-number v-model="config.watermark.paddings.tb" :min="0"
-                                :max="1000" :step="10"></el-input-number>
+                            <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="1000"
+                                :step="10"></el-input-number>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
