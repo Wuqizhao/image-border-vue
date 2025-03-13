@@ -155,10 +155,10 @@
 
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-button size="mini" @click="config.logo.width += 100">+ 100</el-button>
-                                    <el-button size="mini" style="margin-left: 10px;"
+                                    <el-button size="small" @click="config.logo.width += 100">+ 100</el-button>
+                                    <el-button size="small" style="margin-left: 10px;"
                                         @click="config.logo.width -= 100">- 100</el-button>
-                                    <el-button size="mini" style="margin-left: 10px;"
+                                    <el-button size="small" style="margin-left: 10px;"
                                         @click="config.logo.height = config.logo.width">同步到高度</el-button>
                                 </el-form-item>
                                 <el-form-item label="高度">
@@ -253,7 +253,7 @@
                         <el-form-item label="上边距">
                             <el-input-number v-model="config.paddings.top" :min="0" :max="1000"
                                 :step="10"></el-input-number>
-                            <el-button size="mini" style="margin-left: 10px;"
+                            <el-button size="small" style="margin-left: 10px;"
                                 @click="config.paddings.left = config.paddings.right = config.paddings.top">同步到左右</el-button>
                         </el-form-item>
                         <el-form-item label="右边距">
@@ -442,8 +442,8 @@ function handleDraw() {
                 );
 
             // 获取比例
-            const boxScale = img.width / img.height;
-            const canvasBox = document.getElementById("canvasBox") as HTMLDivElement;
+            // const boxScale = img.width / img.height;
+            // const canvasBox = document.getElementById("canvasBox") as HTMLDivElement;
             const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
             const ctx = canvas.getContext("2d");
             if (!ctx) {
