@@ -4,8 +4,8 @@
             <canvas id="imgCanvas" v-if="curFile"></canvas>
             <el-empty description="请先选择图片~" v-else></el-empty>
             <div class="img-list" v-if="fileList.length">
-                <el-image v-for="(item, index) in fileList" :key="index" style="width: 64px;height: 64px;"
-                    :src="URL?.createObjectURL(<Blob>item)" @click="changeCurFile(item)"></el-image>
+                <el-image v-for="(item, index) in fileList" :key="item.name" style="width: 64px;height: 64px;"
+                    :src="toSrc(item)" @click="changeCurFile(item)" :data-index="index + 1"></el-image>
             </div>
         </div>
 
@@ -182,7 +182,6 @@
                                 <el-form-item label="宽度">
                                     <el-input-number v-model="config.logo.width" :min="0" :max="1000"
                                         :step="10"></el-input-number>
-
                                 </el-form-item>
                                 <el-form-item>
                                     <el-button size="small" @click="config.logo.width -= 100">- 100</el-button>
@@ -193,6 +192,11 @@
                                 </el-form-item>
                                 <el-form-item label="高度">
                                     <el-input-number v-model="config.logo.height" :min="0" :max="1000" :step="10">
+                                    </el-input-number>
+                                </el-form-item>
+                                <el-form-item label="垂直偏移" v-if="config.logo.verticalOffset !== undefined">
+                                    <el-input-number v-model="config.logo.verticalOffset" :min="0.01" :max="10"
+                                        :step="0.05">
                                     </el-input-number>
                                 </el-form-item>
                             </div>
@@ -330,7 +334,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime, watermarkList, getSupportedFonts } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElMessage, ElNotification } from 'element-plus'
@@ -368,7 +372,6 @@ const config = ref<Config>(defaultWaterMark);
 const watermarks = reactive(watermarkList)
 const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('info')
-const URL = window.URL || window.webkitURL;
 
 const selectFile = () => {
     const input = document.createElement('input');
@@ -394,6 +397,13 @@ const selectFile = () => {
         resetText();
     }
 }
+
+const toSrc = computed<(file: File | null) => string | undefined>(() => {
+    return (file: File | null) => {
+        if (!file) return;
+        return URL?.createObjectURL(file);
+    }
+})
 
 function resetText() {
     img.modelText = '';
@@ -422,7 +432,7 @@ watch(curWatermarkIndex, (newIndex) => {
     immediate: true
 })
 
-watchThrottled([config, curFile, curWatermarkIndex, auxiliaryLines], () => {
+watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxiliaryLines], () => {
     handleDraw();
 }, { throttle: 1000, deep: true })
 
@@ -731,13 +741,16 @@ function importConfig(val: number): void {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    justify-content: space-between;
+    // justify-content: space-between;
     position: sticky;
     top: 0;
     left: 0;
     background: rgb(255, 255, 255);
     z-index: 100;
     padding: 10px;
+    max-height: 100vh;
+    transition-duration: 1s;
+    // border: 2px solid salmon;
 
     #imgCanvas {
         border: 1px solid gainsboro;
@@ -748,16 +761,31 @@ function importConfig(val: number): void {
         gap: 5px;
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
+        position: relative;
 
         >* {
             cursor: pointer;
             border: 2px solid transparent;
             border-radius: 10%;
 
+            &::before {
+                content: attr(data-index);
+                color: #FFF;
+                position: absolute;
+                font-size: 12px;
+                padding: 0 5px;
+                top: 0;
+                left: 0;
+                width: 20px;
+                height: 20px;
+            }
+
             &:hover {
                 border: 2px solid salmon;
                 transform: scale(1.1);
                 z-index: 1;
+                transition-duration: 0.5s;
             }
         }
     }

@@ -1,7 +1,6 @@
 import type { Config, DrawFun } from "../types";
 
-const doDraw: DrawFun = async (img, config, context) => {
-	console.log("开始绘制徕卡样式", img);
+const doDraw: DrawFun = async (_, config, context) => {
 	const { logo: logoConfig, paddings: imgPaddings } = config;
 	const { ctx, canvas } = context;
 
@@ -13,7 +12,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 		logoImg.onload = () => {
 			const logoX = canvas.width / 2 - logoConfig.width / 2;
 			const logoY =
-				canvas.height - logoConfig.height - 1.6 * imgPaddings.bottom;
+				canvas.height -
+				logoConfig.height -
+				(logoConfig.verticalOffset || 1) * 1.6 * imgPaddings.bottom;
 
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};
@@ -76,6 +77,7 @@ const config: Config = {
 		name: "hasselblad-white",
 		width: 400,
 		height: 400,
+		verticalOffset: 1,
 	},
 	divider: {
 		enable: false,

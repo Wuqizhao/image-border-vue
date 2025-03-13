@@ -11,7 +11,7 @@ declare interface Config {
 	watermark: {
 		height: number; // 基础高度
 		model: {
-			enable:boolean;
+			enable: boolean;
 			show: boolean;
 			color: string;
 			size: number;
@@ -20,7 +20,7 @@ declare interface Config {
 			bold: boolean; // 加粗
 		};
 		params: {
-			enable:boolean;
+			enable: boolean;
 			show: boolean;
 			color: string;
 			size: number;
@@ -58,13 +58,14 @@ declare interface Config {
 		name: string;
 		width: number;
 		height: number;
+		verticalOffset?: number;
 	};
 	divider: {
 		enable: boolean; // 是否支持
 		show: boolean;
 		color: string;
 		width: number;
-		scale: number;// 缩放倍数
+		scale: number; // 缩放倍数
 		margin: number; // 间隔
 	};
 	shadow: {
