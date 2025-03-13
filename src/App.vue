@@ -4,8 +4,8 @@
             <canvas id="imgCanvas" v-if="curFile"></canvas>
             <el-empty description="请先选择图片~" v-else></el-empty>
             <div class="img-list" v-if="fileList.length">
-                <el-image v-for="(item, index) in fileList" :key="item.name" style="width: 64px;height: 64px;"
-                    :src="toSrc(item)" @click="changeCurFile(item)" :data-index="index + 1"></el-image>
+                <el-image v-for="(item, index) in fileList" :key="item.name" fit="cover" :src="toSrc(item)"
+                    @click="changeCurFile(item)" :data-index="index + 1"></el-image>
             </div>
         </div>
 
@@ -489,9 +489,6 @@ function handleDraw() {
                     timeConfig.format
                 );
 
-            // 获取比例
-            // const boxScale = img.width / img.height;
-            // const canvasBox = document.getElementById("canvasBox") as HTMLDivElement;
             const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
             const ctx = canvas.getContext("2d");
             if (!ctx) {
@@ -511,9 +508,6 @@ function handleDraw() {
             canvas.height =
                 realImgHeight + imgPaddings.top + imgPaddings.bottom;
             canvas.height += config.value.watermark.height * canvas.height + 2 * watermarkPaddings.tb;
-
-
-
 
             // 底部水印的坐标范围
             const rect1 = {
@@ -541,6 +535,9 @@ function handleDraw() {
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
+            // 获取比例
+            // const boxScale = img.width / img.height;
+            // const canvasBox = document.getElementById("canvasBox") as HTMLDivElement;
             // canvasBox.style.height = `${900 / boxScale}px`;
 
 
@@ -768,6 +765,8 @@ function importConfig(val: number): void {
             cursor: pointer;
             border: 2px solid transparent;
             border-radius: 10%;
+            width: 64px;
+            height: 64px;
 
             &::before {
                 content: attr(data-index);
@@ -812,6 +811,14 @@ function importConfig(val: number): void {
 @media screen and (max-width: 768px) {
     #canvasBox {
         max-height: 300px;
+
+        .img-list {
+
+            >* {
+                width: 36px;
+                height: 36px;
+            }
+        }
     }
 
     .btns {
