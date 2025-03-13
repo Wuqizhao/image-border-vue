@@ -14,7 +14,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.save();
 		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
 			modelConfig.bold ? "bold" : ""
-		} ${modelConfig.size}px Arial`;
+		} ${modelConfig.size}px ${config.font || "Arial"}`;
 		ctx.fillStyle = modelConfig.color;
 		ctx.textAlign = "left";
 		ctx.textBaseline = "middle";
@@ -25,7 +25,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
 		ctx.fillText(company, imgPaddings.left + config.watermark.paddings.lr, _y);
-		ctx.font = `${modelConfig.size}px Arial`;
+		ctx.font = `${modelConfig.size}px ${config.font || "Arial"}`;
 		let modelText = img.modelText.replace(company, "");
 		modelText = modelConfig.replaceZ
 			? modelText.replace(/Z|z/, "ℤ")
@@ -42,7 +42,7 @@ const doDraw: DrawFun = (img, config, context) => {
 	if (paramsConfig.show) {
 		ctx.save();
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `${paramsConfig.size}px Arial`;
+		ctx.font = `${paramsConfig.size}px ${config.font || "Arial"}`;
 		ctx.textBaseline = "middle";
 
 		const _y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
@@ -62,7 +62,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.textAlign = "right";
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = timeConfig.color;
-		ctx.font = `${timeConfig.size}px Arial`;
+		ctx.font = `${timeConfig.size}px ${config.font || "Arial"}`;
 		// 在水印范围内垂直居中
 		const _y = (rect2.y + rect1.y) / 2;
 		ctx.fillText(
@@ -84,6 +84,7 @@ const doDraw: DrawFun = (img, config, context) => {
 };
 
 const config: Config = {
+	font: "微软雅黑",
 	paddings: {
 		top: 100, // 图片上边距
 		right: 100,
@@ -91,7 +92,7 @@ const config: Config = {
 		bottom: 0,
 	},
 	watermark: {
-		height:0.1,
+		height: 0.12,
 		model: {
 			enable: true,
 			show: true,

@@ -6,7 +6,7 @@ const print = (config: Config, img: Img) => {
 // 转换曝光时间的函数
 const convertExposureTime = (exposureTime: number) => {
 	if (exposureTime < 1) {
-		return `1/${Math.round((1 / exposureTime) * 10) / 10}`;
+		return `1/${Math.round(1 / exposureTime)}`;
 	} else {
 		return `${exposureTime}`;
 	}
@@ -139,7 +139,7 @@ const watermarkList = [
 	},
 	{
 		index: 2,
-		name: "单图标",
+		name: "单图标-哈苏（白）",
 		config: "watermark6",
 	},
 	// {
@@ -159,6 +159,21 @@ const watermarkList = [
 	// }
 ];
 
+// 获取本地浏览器支持的字体
+const getSupportedFonts = (): string[] => {
+	return [
+		"Arial",
+		"黑体",
+		"微软雅黑",
+		"宋体",
+		"楷体",
+		"隶书",
+		"华文行楷",
+		"Courier New",
+		"Times New Roman",
+	];
+};
+
 export {
 	print,
 	convertExposureTime,
@@ -167,4 +182,5 @@ export {
 	cameraBrands,
 	watermarkList,
 	formatDate,
+	getSupportedFonts,
 };

@@ -47,6 +47,7 @@ const doDraw: DrawFun = (img, config, context) => {
 };
 
 const config: Config = {
+	font: "微软雅黑",
 	paddings: {
 		top: 0, // 图片上边距
 		right: 0,

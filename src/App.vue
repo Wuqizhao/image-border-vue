@@ -49,21 +49,29 @@
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="水印" name="sixth">
-                    <div class="config-title">
+                    <div>
                         <h3>样式</h3>
+                        <el-form label-width="80px">
+                            <el-form-item label="选择样式">
+                                <el-select v-model="curWatermarkIndex" style="max-width: 200px;" placeholder="请选择水印样式">
+                                    <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
+                                        :value="index"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="基础高度">
+                                <el-input-number :min="0" :max="1" :step="0.01"
+                                    v-model="config.watermark.height"></el-input-number>
+                                <p class="tips">图片高度的倍数，影响底部水印绘制范围的大小。</p>
+                            </el-form-item>
+                            <el-form-item label="字体">
+                                <el-select v-model="config.font" clearable>
+                                    <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
+                                        :value="item"></el-option>
+                                </el-select>
+                                <p class="tips">仅支持部分字体！</p>
+                            </el-form-item>
+                        </el-form>
                     </div>
-                    <el-form label-width="80px">
-                        <el-form-item label="选择样式">
-                            <el-select v-model="curWatermarkIndex" style="max-width: 200px;" placeholder="请选择水印样式">
-                                <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
-                                    :value="index"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="基础高度">
-                            <el-input-number :min="0" :max="1" :step="0.01"
-                                v-model="config.watermark.height"></el-input-number>
-                        </el-form-item>
-                    </el-form>
                     <div v-if="config.watermark.model.enable">
                         <h3>型号</h3>
                         <el-form label-width="80px">
@@ -73,6 +81,7 @@
                             <div v-show="config.watermark.model.show">
                                 <el-form-item label="文本">
                                     <el-input placeholder="留空则自动读取" v-model="img.modelText" clearable></el-input>
+                                    <p class="tips">需要手动点击绘制生效</p>
                                 </el-form-item>
                                 <el-form-item label="颜色">
                                     <el-color-picker v-model="config.watermark.model.color"
@@ -103,6 +112,7 @@
                             <div v-show="config.watermark.params.show">
                                 <el-form-item label="文本">
                                     <el-input placeholder="留空则自动读取" v-model="img.paramsText" clearable></el-input>
+                                    <p class="tips">需要手动点击绘制生效</p>
                                 </el-form-item>
                                 <el-form-item label="颜色">
                                     <el-color-picker v-model="config.watermark.params.color" />
@@ -132,6 +142,7 @@
                             <div v-show="config.watermark.time.show">
                                 <el-form-item label="文本">
                                     <el-input placeholder="留空则自动读取" v-model="img.timeText" clearable></el-input>
+                                    <p class="tips">需要手动点击绘制生效</p>
                                 </el-form-item>
                                 <el-form-item label="颜色">
                                     <el-color-picker v-model="config.watermark.time.color" />
@@ -151,7 +162,7 @@
 
 
                     <div v-if="config.logo.enable">
-                        <h3 style="margin-left: 10px;">Logo</h3>
+                        <h3>Logo</h3>
                         <el-form label-width="80">
                             <el-form-item label="显示">
                                 <el-switch v-model="config.logo.show"></el-switch>
@@ -159,7 +170,7 @@
                             <div v-show="config.logo.show">
                                 <el-form-item label="自动匹配">
                                     <el-switch v-model="config.logo.auto" disabled></el-switch>
-                                    <b style="margin-left: 10px;">* 暂时不可用</b>
+                                    <p class="tips">暂时不可用，请手动选择~</p>
                                 </el-form-item>
                                 <el-form-item label="手动选择" v-if="!config.logo.auto">
                                     <el-select placeholder="选择logo" style="width: 200px;" v-model="config.logo.name">
@@ -174,9 +185,9 @@
 
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-button size="small" @click="config.logo.width += 100">+ 100</el-button>
-                                    <el-button size="small" style="margin-left: 10px;"
-                                        @click="config.logo.width -= 100">- 100</el-button>
+                                    <el-button size="small" @click="config.logo.width -= 100">- 100</el-button>
+                                    <el-button style="margin-left: 10px;" size="small"
+                                        @click="config.logo.width += 100">+ 100</el-button>
                                     <el-button size="small" style="margin-left: 10px;"
                                         @click="config.logo.height = config.logo.width">同步到高度</el-button>
                                 </el-form-item>
@@ -189,7 +200,7 @@
                     </div>
 
                     <div v-if="config.divider.enable">
-                        <h3 style="margin-left: 10px;">分割线</h3>
+                        <h3>分割线</h3>
                         <el-form label-width="80" v-if="config.divider.enable">
                             <el-form-item label="显示">
                                 <el-switch v-model="config.divider.show"></el-switch>
@@ -273,7 +284,7 @@
                         <el-form-item label="上边距">
                             <el-input-number v-model="config.paddings.top" :min="0" :max="1000"
                                 :step="10"></el-input-number>
-                            <el-button size="small" style="margin-left: 10px;"
+                            <el-button style="margin-left: 10px;"
                                 @click="config.paddings.left = config.paddings.right = config.paddings.top">同步到左右</el-button>
                         </el-form-item>
                         <el-form-item label="左边距">
@@ -313,13 +324,14 @@
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
+            <el-backtop :right="10" :bottom="100" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime, watermarkList } from './assets/tools'
+import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime, watermarkList, getSupportedFonts } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
@@ -689,15 +701,15 @@ function importConfig(val: number): void {
     position: sticky;
     top: 0;
     left: 0px;
-    padding: 10px;
+    padding: 10px 15px;
     width: 600px;
     box-shadow: 0px 0px 15px gainsboro;
     border-radius: 10px;
 
+
     h3 {
         padding-bottom: 10px;
     }
-
 
     .btns {
         display: flex;
@@ -748,6 +760,17 @@ function importConfig(val: number): void {
                 z-index: 1;
             }
         }
+    }
+}
+
+.tips {
+    color: gray;
+    font-size: 12px;
+    width: 100%;
+
+    &::before {
+        content: '* ';
+        color: red;
     }
 }
 

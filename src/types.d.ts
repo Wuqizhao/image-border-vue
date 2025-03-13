@@ -1,6 +1,7 @@
 import type { Exifr, Tags } from "exifr";
 
 declare interface Config {
+	font: string;
 	paddings: {
 		top: number;
 		right: number;

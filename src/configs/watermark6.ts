@@ -12,7 +12,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 		).default;
 		logoImg.onload = () => {
 			const logoX = canvas.width / 2 - logoConfig.width / 2;
-			const logoY = canvas.height - logoConfig.height - 1.6 * imgPaddings.bottom;
+			const logoY =
+				canvas.height - logoConfig.height - 1.6 * imgPaddings.bottom;
 
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};
@@ -20,6 +21,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 };
 
 const config: Config = {
+	font: "微软雅黑",
 	paddings: {
 		top: 150, // 图片上边距
 		right: 150,

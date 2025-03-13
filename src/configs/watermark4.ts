@@ -21,7 +21,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			ctx.save(); // 保存当前绘图状态
 			ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
 				modelConfig.bold ? "bold" : ""
-			} ${modelConfig.size}px Arial`;
+			} ${modelConfig.size}px ${config.font || 'Arial'}`;
 			ctx.fillStyle = modelConfig.color;
 			ctx.textAlign = "left";
 			ctx.textBaseline = "middle";
@@ -33,7 +33,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 			ctx.fillText(company, imgPaddings.left + watermarkPaddings.lr, _y);
 
-			ctx.font = `${modelConfig.size}px Arial`;
+			ctx.font = `${modelConfig.size}px ${config.font || 'Arial'}`;
 			const modelText = modelConfig.replaceZ
 				? img.modelText.replace(/z|Z/, "ℤ")
 				: img.modelText;
@@ -53,7 +53,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.textAlign = "right";
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `bold ${paramsConfig.size}px Arial`;
+		ctx.font = `bold ${paramsConfig.size}px ${config.font || 'Arial'}`;
 
 		const paramsText = paramsConfig.letterUpperCase
 			? img.paramsText.toUpperCase()
@@ -106,6 +106,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 };
 
 const config: Config = {
+	font: "微软雅黑",
 	paddings: {
 		top: 0, // 图片上边距
 		right: 0,
