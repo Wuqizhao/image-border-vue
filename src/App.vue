@@ -3,6 +3,10 @@
         <div id="canvasBox">
             <canvas id="imgCanvas" v-if="curFile"></canvas>
             <el-empty description="请先选择图片~" v-else></el-empty>
+            <div class="img-list" v-if="fileList.length">
+                <el-image v-for="(item, index) in fileList" :key="index" style="width: 64px;height: 64px;"
+                    :src="URL?.createObjectURL(<Blob>item)" @click="changeCurFile(item)"></el-image>
+            </div>
         </div>
 
         <div class="config-box">
@@ -136,7 +140,8 @@
                             </el-form-item>
                             <div v-show="config.logo.show">
                                 <el-form-item label="自动匹配">
-                                    <el-switch v-model="config.logo.auto"></el-switch>
+                                    <el-switch v-model="config.logo.auto" disabled></el-switch>
+                                    <b style="margin-left: 10px;">* 暂时不可用</b>
                                 </el-form-item>
                                 <el-form-item label="手动选择" v-if="!config.logo.auto">
                                     <el-select placeholder="选择logo" style="width: 200px;" v-model="config.logo.name">
@@ -147,12 +152,14 @@
                                 <el-form-item label="宽度">
                                     <el-input-number v-model="config.logo.width" :min="0" :max="1000"
                                         :step="10"></el-input-number>
-                                    <el-button size="mini" style="margin-left: 10px;"
-                                        @click="config.logo.width += 100">+ 100</el-button>
+
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button size="mini" @click="config.logo.width += 100">+ 100</el-button>
                                     <el-button size="mini" style="margin-left: 10px;"
                                         @click="config.logo.width -= 100">- 100</el-button>
                                     <el-button size="mini" style="margin-left: 10px;"
-                                        @click="config.logo.height = config.logo.width">同步高度</el-button>
+                                        @click="config.logo.height = config.logo.width">同步到高度</el-button>
                                 </el-form-item>
                                 <el-form-item label="高度">
                                     <el-input-number v-model="config.logo.height" :min="0" :max="1000" :step="10">
@@ -246,6 +253,8 @@
                         <el-form-item label="上边距">
                             <el-input-number v-model="config.paddings.top" :min="0" :max="1000"
                                 :step="10"></el-input-number>
+                            <el-button size="mini" style="margin-left: 10px;"
+                                @click="config.paddings.left = config.paddings.right = config.paddings.top">同步到左右</el-button>
                         </el-form-item>
                         <el-form-item label="右边距">
                             <el-input-number v-model="config.paddings.right" :min="0" :max="1000"
@@ -315,20 +324,25 @@ const defaultImgValue = {
 };
 const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
+const fileList = ref<File[]>([]);
 const config = ref<Config>(defaultWaterMark);
 
 const watermarks = reactive(watermarkList)
 const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('info')
+const URL = window.URL || window.webkitURL;
 
 const selectFile = () => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = 'image/*'
-    input.click()
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*';
+    input.click();
+
     input.onchange = (e) => {
         const target = e.target as HTMLInputElement;
         if (target === null || !target.files) throw new Error('图片不存在...');
+        fileList.value = Array.from(target.files);
         const file = target.files[0];
         curFile.value = file;
 
@@ -339,18 +353,24 @@ const selectFile = () => {
         img.type = file.type;
         img.time = formatDate(new Date(file.lastModified));
 
-        img.modelText = '';
-        img.paramsText = '';
-        img.timeText = '';
+        resetText();
     }
+}
+
+function resetText() {
+    img.modelText = '';
+    img.paramsText = '';
+    img.timeText = '';
+}
+
+function changeCurFile(file: File) {
+    curFile.value = file;
+    resetText();
 }
 
 const resetWatermark = () => {
     importConfig(curWatermarkIndex.value);
-
-    img.modelText = '';
-    img.paramsText = '';
-    img.timeText = '';
+    resetText();
 
     ElMessage.success({
         message: "已重置水印样式",
@@ -380,8 +400,6 @@ function handleDraw() {
         paddings: watermarkPaddings,
         bgColor
     } = watermark;
-
-
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -475,7 +493,7 @@ function handleDraw() {
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            canvasBox.style.height = `${900 / boxScale}px`;
+            // canvasBox.style.height = `${900 / boxScale}px`;
 
 
             // 绘制阴影
@@ -625,10 +643,9 @@ function importConfig(val: number): void {
 
     .btns {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        padding: 10px;
-        gap: 10px;
-        // border: 3px dashed red;
+        padding: 10px 0px;
         position: sticky;
         top: 0;
         left: 0;
@@ -642,17 +659,37 @@ function importConfig(val: number): void {
     overflow: auto;
     box-sizing: border-box;
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
     position: sticky;
     top: 0;
     left: 0;
     background: rgb(255, 255, 255);
     z-index: 100;
     padding: 10px;
-    // border: 2px solid blue;
 
     #imgCanvas {
         border: 1px solid gainsboro;
+    }
+
+    .img-list {
+        padding: 5px 0px;
+        gap: 5px;
+        display: flex;
+        flex-wrap: wrap;
+
+        >* {
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 10%;
+
+            &:hover {
+                border: 2px solid salmon;
+                transform: scale(1.1);
+                z-index: 1;
+            }
+        }
     }
 }
 
@@ -669,11 +706,7 @@ function importConfig(val: number): void {
     }
 
     .btns {
-        display: flex;
-        gap: 0px;
-        flex-wrap: wrap;
-        justify-content: start;
-        // border: 2px solid red;
+        justify-content: space-between;
     }
 }
 </style>

@@ -142,7 +142,7 @@ const config: Config = {
 		bgColor: "#FFF",
 	},
 	radius: {
-		enable: false,
+		enable: true,
 		show: false,
 		size: 100,
 	},
