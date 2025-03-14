@@ -82,7 +82,7 @@ const config: Config = {
 	radius: {
 		enable: true,
 		show: true,
-		size: 100,
+		size: 150,
 	},
 	blur: {
 		enable: false,
