@@ -87,7 +87,8 @@
                                         <p class="tips">需要手动点击绘制生效</p>
                                     </el-form-item>
                                     <el-form-item label="颜色">
-                                        <el-color-picker show-alpha v-model="config.watermark.model.color"
+                                        <el-color-picker :predefine="preDefineColors" show-alpha
+                                            v-model="config.watermark.model.color"
                                             :disabled="!config.watermark.model.show" />
                                         <el-button v-if="config.watermark.params.enable" style="margin-left: 10px;"
                                             size="small"
@@ -125,7 +126,8 @@
                                         <p class="tips">需要手动点击绘制生效</p>
                                     </el-form-item>
                                     <el-form-item label="颜色">
-                                        <el-color-picker show-alpha v-model="config.watermark.params.color" />
+                                        <el-color-picker :predefine="preDefineColors" show-alpha
+                                            v-model="config.watermark.params.color" />
                                         <el-button v-if="config.divider.enable" style="margin-left: 10px;" size="small"
                                             @click="config.divider.color = config.watermark.params.color">同步分割线颜色</el-button>
                                     </el-form-item>
@@ -160,7 +162,8 @@
                                         <p class="tips">需要手动点击绘制生效</p>
                                     </el-form-item>
                                     <el-form-item label="颜色">
-                                        <el-color-picker show-alpha v-model="config.watermark.time.color" />
+                                        <el-color-picker :predefine="preDefineColors" show-alpha
+                                            v-model="config.watermark.time.color" />
                                     </el-form-item>
                                     <el-form-item label="大小">
                                         <el-input-number v-model="config.watermark.time.size" :min="12"
@@ -184,7 +187,8 @@
                                 </el-form-item>
                                 <div v-show="config.divider.show">
                                     <el-form-item label="颜色">
-                                        <el-color-picker show-alpha v-model="config.divider.color"></el-color-picker>
+                                        <el-color-picker :predefine="preDefineColors" show-alpha
+                                            v-model="config.divider.color"></el-color-picker>
                                     </el-form-item>
                                     <el-form-item label="宽度">
                                         <el-input-number v-model="config.divider.width" :min="1"
@@ -272,7 +276,7 @@
                                 :step="100"></el-input-number>
                         </el-form-item>
                         <el-form-item label="颜色" v-if="!config.blur.enable">
-                            <el-color-picker show-alpha v-model="config.watermark.bgColor"
+                            <el-color-picker :predefine="preDefineColors" show-alpha v-model="config.watermark.bgColor"
                                 :disabled="config.blur.enable"></el-color-picker>
                         </el-form-item>
                     </el-form>
@@ -284,7 +288,8 @@
                     <el-form label-width="80" v-if="config.shadow.show">
                         <el-alert type="warning" description="效果不佳，此项功能完善中..." :closable="false"></el-alert>
                         <el-form-item label="颜色">
-                            <el-color-picker show-alpha v-model="config.shadow.color"></el-color-picker>
+                            <el-color-picker :predefine="preDefineColors" show-alpha
+                                v-model="config.shadow.color"></el-color-picker>
                         </el-form-item>
                         <el-form-item label="大小">
                             <el-input-number v-model="config.shadow.size" :min="1" :max="500"></el-input-number>
@@ -350,7 +355,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime, watermarkList, getSupportedFonts } from './assets/tools'
+import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'

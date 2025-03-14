@@ -10,6 +10,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	const {
 		model: modelConfig,
 		params: paramsConfig,
+		time: timeConfig,
 		paddings: watermarkPaddings,
 	} = watermark;
 	const { ctx, canvas, rect1, rect2 } = context;
@@ -61,6 +62,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			_y
 		);
 	}
+
 	const space = 0.5 * logoConfig.width * dividerConfig.margin; // 间隔
 	// 绘制竖线
 	const paramsWidth = ctx.measureText(img.paramsText).width;
@@ -76,6 +78,18 @@ const doDraw: DrawFun = async (img, config, context) => {
 	const logoX = _x - space - logoConfig.width;
 	// 计算纵坐标
 	const logoY = _y - logoConfig.height / 2;
+
+	// 绘制时间
+	// if (timeConfig.show) {
+	// 	const _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
+	// 	ctx.save();
+	// 	ctx.textAlign = "left";
+	// 	ctx.textBaseline = "middle";
+	// 	ctx.fillStyle = timeConfig.color;
+	// 	ctx.font = `${timeConfig.size}px ${config.font || "Arial"}`;
+	// 	ctx.fillText(img.timeText, logoX + logoConfig.width + 2 * space, _y);
+	// 	ctx.restore();
+	// }
 
 	// 绘制LOGO
 	if (logoConfig.show) {
@@ -130,10 +144,10 @@ const config: Config = {
 			letterUpperCase: false,
 		},
 		time: {
-			enable: false,
-			show: false,
+			enable: true,
+			show: true,
 			color: "#000000",
-			size: 140,
+			size: 80,
 			format: "yyyy-MM-dd HH:mm",
 		},
 		paddings: {

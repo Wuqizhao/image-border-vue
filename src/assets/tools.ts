@@ -179,6 +179,14 @@ const getSupportedFonts = (): string[] => {
 	];
 };
 
+const preDefineColors = [
+	'#FFF',
+	'#000',
+	'#F00',
+	'#00FF00',
+	'#0000FF',
+]
+
 export {
 	print,
 	convertExposureTime,
@@ -188,4 +196,5 @@ export {
 	watermarkList,
 	formatDate,
 	getSupportedFonts,
+	preDefineColors
 };
