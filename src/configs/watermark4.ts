@@ -10,7 +10,6 @@ const doDraw: DrawFun = async (img, config, context) => {
 	const {
 		model: modelConfig,
 		params: paramsConfig,
-		time: timeConfig,
 		paddings: watermarkPaddings,
 	} = watermark;
 	const { ctx, canvas, rect1, rect2 } = context;
