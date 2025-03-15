@@ -13,7 +13,7 @@
             <div class="btns">
                 <el-button @click="selectFile" type="primary" plain>选择图片</el-button>
                 <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-                <el-button @click="print(config, img)">打印配置</el-button>
+                <el-button @click="print(config, img)" style="display: none;">打印配置</el-button>
                 <el-button @click="handleDraw" :disabled="!curFile" type="success">绘 制</el-button>
                 <el-button type="success" plain @click="download(img.export.name)">保 存</el-button>
             </div>
