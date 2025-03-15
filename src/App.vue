@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <div id="canvasBox">
+        <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
             <canvas id="imgCanvas" v-if="curFile"></canvas>
             <el-empty description="请先选择图片~" v-else @click="selectFile"></el-empty>
             <div class="img-list" v-if="fileList.length">
@@ -13,7 +13,6 @@
             <div class="btns">
                 <el-button @click="selectFile" type="primary" plain>选择图片</el-button>
                 <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-                <el-button @click="print(config, img)" v-if="isDev">打印配置</el-button>
                 <el-button @click="handleDraw" :disabled="!curFile" type="success">绘 制</el-button>
                 <el-button type="success" plain @click="download(img.export.name)">保 存</el-button>
             </div>
@@ -61,13 +60,14 @@
                             <el-input v-model="img.time" disabled></el-input>
                         </el-form-item>
                         <h3>开发</h3>
-                        <el-form-item label="辅助线">
+                        <el-form-item label="辅助线" v-if="isDev">
                             <b style="margin-left: 20px;">垂直中心线：</b>
                             <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
                             <b style="margin-left: 20px;">水印范围：</b>
                             <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
                             <b style="margin-left: 20px;">水印水平中心线：</b>
                             <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
+                            <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
@@ -216,7 +216,7 @@
                                 <div v-show="config.logo.show">
                                     <el-form-item label="自动匹配">
                                         <el-switch v-model="config.logo.auto"></el-switch>
-                                        <p class="tips">当前仅支持尼康、佳能、一加、vivo和小米~</p>
+                                        <p class="tips">支持列表：尼康、佳能、苹果、一加、vivo、小米~</p>
                                     </el-form-item>
                                     <el-form-item label="手动选择" v-if="!config.logo.auto">
                                         <el-select placeholder="选择logo" style="width: 200px;"
@@ -396,6 +396,23 @@ const watermarks = reactive(watermarkList)
 const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('info')
 
+const onDrop = (event: DragEvent) => {
+    event.preventDefault();
+    const files = event.dataTransfer?.files;
+    if (files) {
+        const validImages: File[] = [];
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type.startsWith('image/')) {
+                validImages.push(file);
+            }
+        }
+        if (validImages.length > 0) {
+            fileList.value = validImages;
+            curFile.value = validImages[0];
+        }
+    }
+};
 const selectFile = () => {
     const input = document.createElement('input');
     input.type = 'file';
