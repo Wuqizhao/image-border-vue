@@ -86,11 +86,12 @@ declare interface Context {
 		x: number;
 		y: number;
 	};
-
 	rect2: {
 		x: number;
 		y: number;
 	};
+	exposureTime?: string;
+	focalLength?: string;
 }
 
 declare interface Img {
@@ -110,4 +111,10 @@ declare interface Img {
 	timeText: string;
 }
 
-export { Config, Img, DrawFun };
+declare type CameraBrands = {
+	name: string;
+	logo: string;
+	make?: string[]; // 自动匹配logo时使用的厂商名称
+};
+
+export { Config, Img, DrawFun, CameraBrands };

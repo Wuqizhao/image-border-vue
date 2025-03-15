@@ -1,4 +1,4 @@
-import type { Config, Img } from "../types";
+import type { CameraBrands, Config, Img } from "../types";
 const print = (config: Config, img: Img) => {
 	console.log("当前配置：", config);
 	console.log("当前图片信息：", img);
@@ -49,33 +49,44 @@ function deepClone<T>(value: T): T {
 }
 
 // 定义相机品牌
-const cameraBrands = [
-	{ name: "佳能", logo: "canon" },
-	{ name: "佳能-白", logo: "canon-white" },
-	{ name: "尼康", logo: "nikon" },
-	{ name: "尼康-文字-黑", logo: "nikon-2" },
-	{ name: "尼康-文字-白", logo: "nikon-2-white" },
-	{ name: "索尼-黑", logo: "sony" },
-	{ name: "索尼-白", logo: "sony-white" },
+const cameraBrands: CameraBrands[] = [
+	{ name: "佳能", logo: "canon", make: ["Canon"] },
+	{ name: "佳能(白)", logo: "canon-white" },
+	{ name: "尼康", logo: "nikon", make: ["NIKON CORPORATION"] },
+	{ name: "尼康-文字(黑)", logo: "nikon-2" },
+	{ name: "尼康-文字(白)", logo: "nikon-2-white" },
+	{ name: "索尼(黑)", logo: "sony", make: ["SONY"] },
+	{ name: "索尼(白)", logo: "sony-white" },
+	{ name: "索尼-Alpha(白)", logo: "sony-alpha" },
+	{ name: "索尼-Alpha2(黑)", logo: "sony-alpha-2-black" },
+	{ name: "索尼-Alpha2(白)", logo: "sony-alpha-2-white" },
 	{ name: "富士", logo: "fuji" },
 	{ name: "松下", logo: "panasonic" },
-	{ name: "小米", logo: "xiaomi" },
+	{ name: "小米", logo: "xiaomi", make: ["Xiaomi"] },
 	{ name: "小米汽车", logo: "xiaomi-car" },
 	{ name: "华为", logo: "huawei" },
-	{ name: "苹果-黑", logo: "apple" },
-	{ name: "苹果-白", logo: "apple-white" },
+	{ name: "荣耀", logo: "honor" },
+	{ name: "荣耀-彩色", logo: "honor-2" },
+	{ name: "苹果(黑)", logo: "apple" },
+	{ name: "苹果(白)", logo: "apple-white" },
 	{ name: "OPPO", logo: "oppo" },
-	{ name: "vivo", logo: "vivo" },
-	{ name: "vivo-文字-黑", logo: "vivo-2" },
-	{ name: "vivo-文字-白", logo: "vivo-2-white" },
+	{ name: "一加", logo: "oneplus", make: ["OnePlus"] },
+	{ name: "一加(黑)", logo: "oneplus-black" },
+	{ name: "一加(白)", logo: "oneplus-white" },
+	{ name: "一加(红)", logo: "oneplus-red" },
+	{ name: "vivo", logo: "vivo", make: ["vivo"] },
+	{ name: "vivo-文字(黑)", logo: "vivo-2" },
+	{ name: "vivo-文字(白)", logo: "vivo-2-white" },
 	{ name: "适马", logo: "sigma" },
 	{ name: "徕卡", logo: "leica" },
-	{ name: "哈苏-黑", logo: "hasselblad" },
-	{ name: "哈苏-白", logo: "hasselblad-white" },
-	{ name: "大疆", logo: "dajiang" },
-	{ name: "大疆-白", logo: "dajiang-white" },
+	{ name: "哈苏(黑)", logo: "hasselblad" },
+	{ name: "哈苏(白)", logo: "hasselblad-white" },
+	{ name: "大疆", logo: "dajiang", make: ["DJI"] },
+	{ name: "大疆(白)", logo: "dajiang-white" },
 	{ name: "蔡司", logo: "zeiss" },
 	{ name: "奥林巴斯", logo: "olympus" },
+	{ name: "柯达", logo: "kodak" },
+	{ name: "柯达-透明", logo: "kodak-2" },
 	{ name: "耐克", logo: "nike" },
 	{ name: "南极人", logo: "njr" },
 	{ name: "拼多多", logo: "pdd" },
@@ -143,13 +154,7 @@ const getSupportedFonts = (): string[] => {
 	];
 };
 
-const preDefineColors = [
-	'#FFF',
-	'#000',
-	'#F00',
-	'#00FF00',
-	'#0000FF',
-]
+const preDefineColors = ["#FFF", "#000", "#F00", "#00FF00", "#0000FF"];
 
 export {
 	print,
@@ -158,6 +163,6 @@ export {
 	deepClone,
 	cameraBrands,
 	watermarkList,
- 	getSupportedFonts,
-	preDefineColors
+	getSupportedFonts,
+	preDefineColors,
 };

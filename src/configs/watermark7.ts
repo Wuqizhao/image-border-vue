@@ -90,7 +90,7 @@ const config: Config = {
 	},
 	logo: {
 		enable: true,
-		auto: false,
+		auto: true,
 		show: true,
 		name: "leica",
 		width: 300,

@@ -10,9 +10,10 @@ const doDraw: DrawFun = async (img, config, context) => {
 	const {
 		model: modelConfig,
 		params: paramsConfig,
+		time: timeConfig,
 		paddings: watermarkPaddings,
 	} = watermark;
-	const { ctx, canvas, rect1, rect2 } = context;
+	const { ctx, canvas, rect1, rect2, focalLength, exposureTime } = context;
 
 	// 绘制型号
 	if (modelConfig.show) {
@@ -47,48 +48,59 @@ const doDraw: DrawFun = async (img, config, context) => {
 	}
 	// 在水印范围内垂直居中
 	const _y = (rect2.y + rect1.y) / 2;
+	// 参数的宽度
+	let paramsWidth = 0;
 
 	// 绘制参数
 	if (paramsConfig.show) {
 		ctx.textAlign = "right";
-		ctx.textBaseline = "middle";
+		ctx.textBaseline = timeConfig.show ? "bottom" : "middle";
 		ctx.fillStyle = paramsConfig.color;
 		ctx.font = `bold ${paramsConfig.size}px ${config.font || "Arial"}`;
 
+		let paramsText = `${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  ISO${img.exif.ISO}`;
+		paramsConfig.letterUpperCase && (paramsText = paramsText.toUpperCase());
+		paramsWidth = ctx.measureText(paramsText).width;
+
 		ctx.fillText(
-			img.paramsText,
+			paramsText,
 			canvas.width - imgPaddings.right - watermarkPaddings.lr,
 			_y
 		);
 	}
 
+	// 绘制时间
+	let timeWidth = 0;
+	if (timeConfig.show) {
+		ctx.save();
+		ctx.textAlign = paramsConfig.show ? "left" : "right";
+		const _x = paramsConfig.show
+			? canvas.width - imgPaddings.right - watermarkPaddings.lr - paramsWidth
+			: canvas.width - imgPaddings.right - watermarkPaddings.lr;
+		const _y =
+			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
+		ctx.textBaseline = "middle";
+		ctx.fillStyle = timeConfig.color;
+		ctx.font = `${timeConfig.size}px ${config.font}`;
+
+		timeWidth = ctx.measureText(img.timeText).width;
+
+		ctx.fillText(img.timeText, _x, _y);
+		ctx.restore();
+	}
+
 	const space = 0.5 * logoConfig.width * dividerConfig.margin; // 间隔
-	// 绘制竖线
-	const paramsWidth = ctx.measureText(img.paramsText).width;
+
 	// 计算横坐标
 	const _x =
 		canvas.width -
 		imgPaddings.right -
 		watermarkPaddings.lr -
-		paramsWidth -
+		Math.max(paramsWidth, timeWidth) -
 		space;
-
-	// 计算横坐标
 	const logoX = _x - space - logoConfig.width;
 	// 计算纵坐标
 	const logoY = _y - logoConfig.height / 2;
-
-	// 绘制时间
-	// if (timeConfig.show) {
-	// 	const _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
-	// 	ctx.save();
-	// 	ctx.textAlign = "left";
-	// 	ctx.textBaseline = "middle";
-	// 	ctx.fillStyle = timeConfig.color;
-	// 	ctx.font = `${timeConfig.size}px ${config.font || "Arial"}`;
-	// 	ctx.fillText(img.timeText, logoX + logoConfig.width + 2 * space, _y);
-	// 	ctx.restore();
-	// }
 
 	// 绘制LOGO
 	if (logoConfig.show) {
@@ -100,6 +112,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};
 	}
+
+	// 绘制分割线
 	if (dividerConfig.show) {
 		ctx.strokeStyle = dividerConfig.color;
 		ctx.lineWidth = dividerConfig.width;
@@ -145,9 +159,9 @@ const config: Config = {
 		time: {
 			enable: true,
 			show: true,
-			color: "#000000",
-			size: 80,
-			format: "YYYY-MM-DD HH:mm",
+			color: "#808080",
+			size: 60,
+			format: "YYYY.MM.DD HH:mm:ss",
 		},
 		paddings: {
 			lr: 100,
@@ -177,7 +191,7 @@ const config: Config = {
 		show: true,
 		color: "rgb(208, 208, 208)",
 		width: 10,
-		scale: 1,
+		scale: 1.8,
 		margin: 1,
 	},
 	shadow: {

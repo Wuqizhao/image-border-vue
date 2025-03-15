@@ -13,7 +13,7 @@
             <div class="btns">
                 <el-button @click="selectFile" type="primary" plain>选择图片</el-button>
                 <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-                <el-button @click="print(config, img)" style="display: none;">打印配置</el-button>
+                <el-button @click="print(config, img)">打印配置</el-button>
                 <el-button @click="handleDraw" :disabled="!curFile" type="success">绘 制</el-button>
                 <el-button type="success" plain @click="download(img.export.name)">保 存</el-button>
             </div>
@@ -215,8 +215,8 @@
                                 </el-form-item>
                                 <div v-show="config.logo.show">
                                     <el-form-item label="自动匹配">
-                                        <el-switch v-model="config.logo.auto" disabled></el-switch>
-                                        <p class="tips">暂时不可用，请手动选择~</p>
+                                        <el-switch v-model="config.logo.auto"></el-switch>
+                                        <p class="tips">当前仅支持尼康、佳能、一加、vivo和小米~</p>
                                     </el-form-item>
                                     <el-form-item label="手动选择" v-if="!config.logo.auto">
                                         <el-select placeholder="选择logo" style="width: 200px;"
@@ -227,7 +227,7 @@
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item label="宽度">
-                                        <el-input-number v-model="config.logo.width" :min="0" :max="1000"
+                                        <el-input-number v-model="config.logo.width" :min="0" :max="5000"
                                             :step="10"></el-input-number>
                                     </el-form-item>
                                     <el-form-item>
@@ -238,11 +238,11 @@
                                             @click="config.logo.height = config.logo.width">同步到高度</el-button>
                                     </el-form-item>
                                     <el-form-item label="高度">
-                                        <el-input-number v-model="config.logo.height" :min="0" :max="1000" :step="10">
+                                        <el-input-number v-model="config.logo.height" :min="0" :max="5000" :step="10">
                                         </el-input-number>
                                     </el-form-item>
                                     <el-form-item label="垂直偏移" v-if="config.logo.verticalOffset !== undefined">
-                                        <el-input-number v-model="config.logo.verticalOffset" :min="0.01" :max="10"
+                                        <el-input-number v-model="config.logo.verticalOffset" :min="-10" :max="10"
                                             :step="0.01">
                                         </el-input-number>
                                     </el-form-item>
@@ -338,7 +338,8 @@
                     <h3>导出配置</h3>
                     <el-form label-width="80">
                         <el-form-item label="文件名">
-                            <el-input v-model="img.export.name" :disabled="!curFile"></el-input>
+                            <el-input v-model="img.export.name" :disabled="!curFile" placeholder="留空则由浏览器决定"
+                                clearable></el-input>
                         </el-form-item>
                         <el-form-item label="导出质量">
                             <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
@@ -355,11 +356,11 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { print, download, deepClone, cameraBrands,  convertExposureTime, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
+import { print, download, deepClone, cameraBrands, convertExposureTime, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
-import { useDebounceFn, watchThrottled,formatDate } from '@vueuse/core'
+import { useDebounceFn, watchThrottled, formatDate } from '@vueuse/core'
 import Exifr from "exifr";
 // 辅助线配置
 const auxiliaryLines = reactive({
@@ -412,7 +413,7 @@ const selectFile = () => {
         img.export.name = img.export.name || "WM_" + file.name;
         img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
         img.type = file.type;
-        img.time = formatDate(new Date(file.lastModified),'YYYY-MM-DD HH:mm:ss');
+        img.time = formatDate(new Date(file.lastModified), 'YYYY-MM-DD HH:mm:ss');
 
         resetText();
     }
@@ -463,7 +464,7 @@ const handleDraw = useDebounceFn(() => {
     const file = curFile.value;
     if (!file) return;
 
-    const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig } = config.value;
+    const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig } = config.value;
     const {
         params: paramsConfig,
         time: timeConfig,
@@ -488,7 +489,7 @@ const handleDraw = useDebounceFn(() => {
             if (exif?.Make === undefined) {
                 ElNotification({
                     title: '错误',
-                    message: '未读取到相机Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
+                    message: '未读取到Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
                     type: 'error',
                 });
                 curFile.value = null;
@@ -496,14 +497,18 @@ const handleDraw = useDebounceFn(() => {
             }
 
             img.exif = exif;
+            console.log('品牌：', exif?.Make);
             img.modelText = img.modelText ? img.modelText : img.exif?.Model;
+            // 曝光时间
+            const exposureTime = convertExposureTime(exif?.ExposureTime);
+            // 焦距
+            const focalLength = (paramsConfig.useEquivalentFocalLength
+                ? exif?.FocalLengthIn35mmFormat
+                : exif?.FocalLength) || exif?.FocalLength;
             img.paramsText = img.paramsText
                 ? img.paramsText
-                : `${convertExposureTime(exif?.ExposureTime)}s  f/${exif?.FNumber
-                }  ISO ${exif?.ISO}  ${paramsConfig.useEquivalentFocalLength
-                    ? exif?.FocalLengthIn35mmFormat
-                    : exif?.FocalLength
-                }mm`;
+                : `${exposureTime}s  f/${exif?.FNumber
+                }  ISO ${exif?.ISO}  ${focalLength}mm`;
             // 大写
             img.paramsText = paramsConfig.letterUpperCase
                 ? img.paramsText.toUpperCase()
@@ -640,11 +645,23 @@ const handleDraw = useDebounceFn(() => {
             );
 
             ctx.restore();
+
+            // 自动匹配logo
+            if (logoConfig.enable && logoConfig.auto) {
+                cameraBrands.forEach((brand) => {
+                    if (brand.make && brand.make?.map(item => item.toUpperCase()).includes(exif.Make.toUpperCase())) {
+                        logoConfig.name = brand.logo;
+                    }
+                });
+            }
+
             config.value.draw(img, config.value, {
                 ctx: ctx,
                 canvas: canvas,
                 rect1: rect1,
-                rect2: rect2
+                rect2: rect2,
+                exposureTime: exposureTime,
+                focalLength: focalLength,
             });
 
             // 绘制辅助线
