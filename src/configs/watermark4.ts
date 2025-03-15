@@ -148,7 +148,7 @@ const config: Config = {
 			show: true,
 			color: "#000000",
 			size: 80,
-			format: "yyyy-MM-dd HH:mm",
+			format: "YYYY-MM-DD HH:mm",
 		},
 		paddings: {
 			lr: 100,

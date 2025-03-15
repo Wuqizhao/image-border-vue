@@ -170,7 +170,7 @@
                                             :max="1000"></el-input-number>
                                     </el-form-item>
                                     <el-form-item label="时间格式">
-                                        <el-input placeholder="默认yyyy-MM-dd HH:mm:ss"
+                                        <el-input placeholder="默认YYYY-MM-DD HH:mm:ss"
                                             v-model="config.watermark.time.format"></el-input>
                                         <p class="tips">需要清空时间文本方可生效</p>
                                     </el-form-item>
@@ -355,11 +355,11 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { print, download, deepClone, cameraBrands, formatDate, convertExposureTime, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
+import { print, download, deepClone, cameraBrands,  convertExposureTime, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
 import defaultWaterMark from './configs/default'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
-import { watchThrottled } from '@vueuse/core'
+import { useDebounceFn, watchThrottled,formatDate } from '@vueuse/core'
 import Exifr from "exifr";
 // 辅助线配置
 const auxiliaryLines = reactive({
@@ -412,7 +412,7 @@ const selectFile = () => {
         img.export.name = img.export.name || "WM_" + file.name;
         img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
         img.type = file.type;
-        img.time = formatDate(new Date(file.lastModified));
+        img.time = formatDate(new Date(file.lastModified),'YYYY-MM-DD HH:mm:ss');
 
         resetText();
     }
@@ -459,7 +459,7 @@ watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxi
 }, { throttle: 1000, deep: true })
 
 
-function handleDraw() {
+const handleDraw = useDebounceFn(() => {
     const file = curFile.value;
     if (!file) return;
 
@@ -677,7 +677,7 @@ function handleDraw() {
             }
         }
     }
-}
+}, 200)
 
 function importConfig(val: number): void {
     // 获取对应的水印
