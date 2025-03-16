@@ -35,9 +35,11 @@
                             <p class="tips">图片高度的倍数，影响底部水印绘制范围的大小。</p>
                         </el-form-item>
                         <el-form-item label="字体">
-                            <el-select v-model="config.font" clearable>
+                            <el-select v-model="config.font" clearable style="max-width: 200px;">
                                 <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
-                                    :value="item"></el-option>
+                                    :value="item">
+                                    <span :style="`font-family: ${item};`">{{ item }}</span>
+                                </el-option>
                             </el-select>
                             <p class="tips">仅支持部分字体！</p>
                         </el-form-item>
