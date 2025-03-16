@@ -40,7 +40,7 @@
                                     <p class="tips">图片高度的倍数，影响底部水印绘制范围的大小。</p>
                                 </el-form-item>
                                 <el-form-item label="字体">
-                                    <el-select v-model="config.font" clearable>
+                                    <el-select filterable v-model="config.font" clearable>
                                         <el-option v-for="(item, index) in getSupportedFonts()" :key="index"
                                             :label="item" :value="item" :style="{ fontFamily: item }"></el-option>
                                     </el-select>
@@ -234,7 +234,7 @@
                                             <p class="tips">支持列表：尼康、佳能、苹果、一加、vivo、小米~</p>
                                         </el-form-item>
                                         <el-form-item label="手动选择" v-if="!config.logo.auto">
-                                            <el-select placeholder="选择logo" style="width: 200px;"
+                                            <el-select filterable placeholder="选择logo" style="width: 200px;"
                                                 v-model="config.logo.name">
                                                 <el-option v-for="item in enhancedCameraBrands" :label="item.name"
                                                     :key="item.name" :value="item.logo">
@@ -949,6 +949,10 @@ function importConfig(val: number): void {
 
     #canvasBox {
         max-height: 300px;
+
+        #imgCanvas {
+            max-height: 100%;
+        }
     }
 
 
