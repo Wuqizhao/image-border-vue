@@ -6,21 +6,22 @@
         </div>
 
         <div class="config-box">
-            <div class="btns">
+            <!-- <div class="btns">
                 <el-button @click="selectFile" type="primary" plain>选择图片</el-button>
-                <el-button @click="clearFileList" type="danger" plain>清 空</el-button>
                 <el-button @click="handleDraw" :disabled="!curFile" type="success">绘 制</el-button>
-                <el-button type="success" plain @click="download(img.export.name)">保 存</el-button>
-            </div>
+            </div> -->
 
             <div class="tabs-container">
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="基本信息" name="info">
                         <div>
-                            <div class="img-list" v-if="fileList.length">
-                                <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
-                                    :src="item.url" @click="changeCurFile(fileList[index])"
-                                    :data-index="index + 1"></el-image>
+                            <div>
+                                <div class="img-list" v-if="fileList.length">
+                                    <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
+                                        :src="item.url" @click="changeCurFile(fileList[index])"
+                                        :data-index="index + 1"></el-image>
+                                    <el-button @click="clearFileList" type="danger" plain>清空</el-button>
+                                </div>
                             </div>
                             <h3>样式</h3>
                             <el-form label-width="80px">
@@ -31,8 +32,10 @@
                                             :value="index"></el-option>
                                     </el-select>
 
-                                    <el-button type="danger" plain @click="resetWatermark"
-                                        style="margin-left: 10px;">重置</el-button>
+                                    <div style="padding-top: 5px;width: 100%;">
+                                        <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
+                                        <el-button @click="handleDraw" :disabled="!curFile" type="success" plain>重新绘制</el-button>
+                                    </div>
                                 </el-form-item>
                                 <el-form-item label="基础高度">
                                     <el-input-number :min="0" :max="1" :step="0.01"
@@ -364,12 +367,12 @@
                             </el-form-item>
                             <el-form-item label="导出质量">
                                 <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
-                                    show-input></el-slider>
-                                <p class="tips">调整后需点击绘制并调整布局~</p>
+                                    :format-tooltip="(val) => val * 100 + '%'" show-input></el-slider>
                             </el-form-item>
                             <el-form-item label="导出">
-                                <el-button type="primary" plain @click="download(img.export.name)">导出当前图片</el-button>
-                                <el-button type="success" plain disabled>批量导出</el-button>
+                                <el-button type="primary" plain @click="download(img.export.name, img.export.quality)"
+                                    :disabled="!curFile">导出当前图片</el-button>
+                                <el-button v-show="fileList.length > 1" type="success" plain disabled>批量导出</el-button>
                             </el-form-item>
                         </el-form>
                     </el-tab-pane>
@@ -461,7 +464,15 @@ const selectFile = () => {
 const clearFileList = () => {
     fileList.value = [];
     changeCurFile(null);
-    ElMessage.success('已清空列表~')
+
+    const canvas = document.getElementById('imgCanvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    // 清空画布
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ElMessage.success('已清空列表~')
+    }
 }
 
 const enhancedFileList = computedAsync(async () => {
@@ -478,7 +489,10 @@ function resetText() {
 }
 
 function changeCurFile(file: File | null) {
-    if (!file) return;
+    if (!file) {
+        curFile.value = null;
+        return;
+    };
     // 更新基本信息
     img.fileName = file.name;
     img.export.name = img.export.name || "WM_" + file.name;
@@ -592,9 +606,8 @@ const handleDraw = useDebounceFn(() => {
                 return;
             }
 
-            const scale = img.export.quality;
-            const realImgWidth = img.width * scale;
-            const realImgHeight = img.height * scale;
+            const realImgWidth = img.width;
+            const realImgHeight = img.height;
 
             // 修改画布大小
             canvas.width =
