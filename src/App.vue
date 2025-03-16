@@ -25,7 +25,7 @@
                             <h3>样式</h3>
                             <el-form label-width="80px">
                                 <el-form-item label="选择样式">
-                                    <el-select v-model="curWatermarkIndex" style="max-width: 200px;"
+                                    <el-select v-model="curWatermarkIndex" style="max-width: 180px;"
                                         placeholder="请选择水印样式">
                                         <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
                                             :value="index"></el-option>
@@ -859,9 +859,6 @@ function importConfig(val: number): void {
 
     }
 
-
-
-
     h3 {
         padding-bottom: 10px;
     }
@@ -872,7 +869,7 @@ function importConfig(val: number): void {
         gap: 5px;
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        // justify-content: center;
         position: relative;
         // border: 2px dashed red;
 
@@ -921,6 +918,7 @@ function importConfig(val: number): void {
         border: 1px solid gainsboro;
         max-width: 100%;
         box-sizing: border-box;
+        max-height: 100%;
     }
 
 }
@@ -943,14 +941,6 @@ function importConfig(val: number): void {
     padding: 0px 10px;
 }
 
-.img-list {
-
-    >* {
-        width: 36px;
-        height: 36px;
-    }
-}
-
 @media screen and (max-width: 768px) {
     .box {
         gap: 5px;
@@ -965,6 +955,7 @@ function importConfig(val: number): void {
     .config-box {
         width: 100%;
         background-color: #FFF;
+        border-radius: 10px 10px 0px 0px;
 
         .btns {
             justify-content: space-between;
