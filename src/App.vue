@@ -12,72 +12,76 @@
                 <el-button @click="handleDraw" :disabled="!curFile" type="success">绘 制</el-button>
                 <el-button type="success" plain @click="download(img.export.name)">保 存</el-button>
             </div>
+
             <div class="tabs-container">
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="基本信息" name="info">
-
-                        <div class="img-list" v-if="fileList.length">
-                            <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
-                                :src="item.url" @click="changeCurFile(fileList[index])"
-                                :data-index="index + 1"></el-image>
-                        </div>
-                        <h3>样式</h3>
-                        <el-form label-width="80px">
-                            <el-form-item label="选择样式">
-                                <el-select v-model="curWatermarkIndex" style="max-width: 200px;" placeholder="请选择水印样式">
-                                    <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
-                                        :value="index"></el-option>
-                                </el-select>
-
-                                <el-button type="danger" plain @click="resetWatermark"
-                                    style="margin-left: 10px;">重置</el-button>
-                            </el-form-item>
-                            <el-form-item label="基础高度">
-                                <el-input-number :min="0" :max="1" :step="0.01"
-                                    v-model="config.watermark.height"></el-input-number>
-                                <p class="tips">图片高度的倍数，影响底部水印绘制范围的大小。</p>
-                            </el-form-item>
-                            <el-form-item label="字体">
-                                <el-select v-model="config.font" clearable>
-                                    <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
-                                        :value="item" :style="{ fontFamily: item }"></el-option>
-                                </el-select>
-                                <p class="tips">仅支持部分字体！</p>
-                            </el-form-item>
-                        </el-form>
-                        <el-form label-width="80px" v-if="curFile">
-                            <h3>文件</h3>
-                            <el-form-item label="文件名">
-                                <el-input v-model="img.fileName" disabled></el-input>
-                            </el-form-item>
-                            <el-form-item label="文件大小">
-                                <el-input v-model="img.size" disabled></el-input>
-                            </el-form-item>
-                            <el-form-item label="分辨率">
-                                <el-input
-                                    :value="(img.exif?.ExifImageWidth || 0) + ' × ' + (img.exif?.ExifImageHeight || 0)"
-                                    disabled></el-input>
-                            </el-form-item>
-                            <el-form-item label="文件类型">
-                                <el-input v-model="img.type" disabled>
-                                </el-input>
-                            </el-form-item>
-                            <el-form-item label="修改时间">
-                                <el-input v-model="img.time" disabled></el-input>
-                            </el-form-item>
-                            <div>
-                                <h3>开发</h3>
-                                <el-form-item label="辅助线" v-if="isDev">
-                                    <b style="margin-left: 20px;">垂直中心线：</b>
-                                    <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
-                                    <b style="margin-left: 20px;">水印范围：</b>
-                                    <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
-                                    <b style="margin-left: 20px;">水印水平中心线：</b>
-                                    <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
-                                    <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
-                                </el-form-item>
+                        <div>
+                            <div class="img-list" v-if="fileList.length">
+                                <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
+                                    :src="item.url" @click="changeCurFile(fileList[index])"
+                                    :data-index="index + 1"></el-image>
                             </div>
-                        </el-form>
+                            <h3>样式</h3>
+                            <el-form label-width="80px">
+                                <el-form-item label="选择样式">
+                                    <el-select v-model="curWatermarkIndex" style="max-width: 200px;"
+                                        placeholder="请选择水印样式">
+                                        <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
+                                            :value="index"></el-option>
+                                    </el-select>
+
+                                    <el-button type="danger" plain @click="resetWatermark"
+                                        style="margin-left: 10px;">重置</el-button>
+                                </el-form-item>
+                                <el-form-item label="基础高度">
+                                    <el-input-number :min="0" :max="1" :step="0.01"
+                                        v-model="config.watermark.height"></el-input-number>
+                                    <p class="tips">图片高度的倍数，影响底部水印绘制范围的大小。</p>
+                                </el-form-item>
+                                <el-form-item label="字体">
+                                    <el-select v-model="config.font" clearable>
+                                        <el-option v-for="(item, index) in getSupportedFonts()" :key="index"
+                                            :label="item" :value="item" :style="{ fontFamily: item }"></el-option>
+                                    </el-select>
+                                    <p class="tips">仅支持部分字体！</p>
+                                </el-form-item>
+                            </el-form>
+                            <el-form label-width="80px" v-if="curFile">
+                                <h3>文件</h3>
+                                <el-form-item label="文件名">
+                                    <el-input v-model="img.fileName" disabled></el-input>
+                                </el-form-item>
+                                <el-form-item label="文件大小">
+                                    <el-input v-model="img.size" disabled></el-input>
+                                </el-form-item>
+                                <el-form-item label="分辨率">
+                                    <el-input
+                                        :value="(img.exif?.ExifImageWidth || 0) + ' × ' + (img.exif?.ExifImageHeight || 0)"
+                                        disabled></el-input>
+                                </el-form-item>
+                                <el-form-item label="文件类型">
+                                    <el-input v-model="img.type" disabled>
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="修改时间">
+                                    <el-input v-model="img.time" disabled></el-input>
+                                </el-form-item>
+                                <div>
+                                    <h3>开发</h3>
+                                    <el-form-item label="辅助线" v-if="isDev">
+                                        <b style="margin-left: 20px;">垂直中心线：</b>
+                                        <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
+                                        <b style="margin-left: 20px;">水印范围：</b>
+                                        <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
+                                        <b style="margin-left: 20px;">水印水平中心线：</b>
+                                        <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
+                                        <el-button @click="print(config, img)"
+                                            style="margin-left: 10px;">打印配置</el-button>
+                                    </el-form-item>
+                                </div>
+                            </el-form>
+                        </div>
                     </el-tab-pane>
                     <el-tab-pane label="水印" name="watermark">
                         <el-collapse accordion>
@@ -370,6 +374,7 @@
                     </el-tab-pane>
                 </el-tabs>
             </div>
+
 
             <el-backtop :right="10" :bottom="100" />
         </div>
@@ -800,16 +805,17 @@ function importConfig(val: number): void {
 }
 </script>
 
+
+
 <style lang='less' scoped>
 .box {
     display: flex;
     justify-content: space-between;
     gap: 20px;
-    flex-wrap: wrap;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
 }
+
 
 .config-box {
     padding: 10px 15px;
@@ -820,6 +826,7 @@ function importConfig(val: number): void {
     box-shadow: 0px 0px 15px gainsboro;
     border-radius: 10px 0 0 10px;
     overflow: hidden;
+
 
     .btns {
         display: flex;
@@ -833,20 +840,27 @@ function importConfig(val: number): void {
 
     .tabs-container {
         flex: 1;
-        height: 100%;
+        overflow: hidden;
 
-        :deep(.el-tabs) {
+        .el-tabs {
+            overflow: hidden;
             height: 100%;
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
 
-            .el-tabs__content {
+            :deep(.el-tabs__content) {
                 overflow-y: auto;
-                scrollbar-width: thin;
-                scrollbar-color: transparent transparent;
-                padding-bottom: 50px;
+            }
 
+            .el-tab-pane {
+                height: auto;
             }
         }
+
     }
+
+
+
 
     h3 {
         padding-bottom: 10px;
@@ -884,7 +898,6 @@ function importConfig(val: number): void {
             &:hover {
                 border: 2px solid gainsboro;
                 transform: scale(1.1);
-                z-index: 1;
                 transition-duration: 0.5s;
             }
         }
@@ -899,7 +912,6 @@ function importConfig(val: number): void {
     justify-content: space-between;
     align-items: center;
     background: rgb(255, 255, 255);
-    z-index: 100;
     padding: 10px;
     max-height: 100vh;
     transition-duration: 1s;
@@ -908,7 +920,6 @@ function importConfig(val: number): void {
     #imgCanvas {
         border: 1px solid gainsboro;
         max-width: 100%;
-        height: 100%;
         box-sizing: border-box;
     }
 
@@ -943,6 +954,7 @@ function importConfig(val: number): void {
 @media screen and (max-width: 768px) {
     .box {
         gap: 5px;
+        flex-direction: column;
     }
 
     #canvasBox {
@@ -951,8 +963,8 @@ function importConfig(val: number): void {
 
 
     .config-box {
+        width: 100%;
         background-color: #FFF;
-        z-index: 9999;
 
         .btns {
             justify-content: space-between;
