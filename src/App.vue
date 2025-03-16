@@ -884,7 +884,6 @@ function importConfig(val: number): void {
             &:hover {
                 border: 2px solid gainsboro;
                 transform: scale(1.1);
-                z-index: 1;
                 transition-duration: 0.5s;
             }
         }
@@ -899,7 +898,6 @@ function importConfig(val: number): void {
     justify-content: space-between;
     align-items: center;
     background: rgb(255, 255, 255);
-    z-index: 100;
     padding: 10px;
     max-height: 100vh;
     transition-duration: 1s;
@@ -952,7 +950,6 @@ function importConfig(val: number): void {
 
     .config-box {
         background-color: #FFF;
-        z-index: 9999;
 
         .btns {
             justify-content: space-between;
