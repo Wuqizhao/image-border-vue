@@ -67,9 +67,9 @@
                                 <el-form-item label="修改时间">
                                     <el-input v-model="img.time" disabled></el-input>
                                 </el-form-item>
-                                <div>
+                                <div v-if="isDev">
                                     <h3>开发</h3>
-                                    <el-form-item label="辅助线" v-if="isDev">
+                                    <el-form-item label="辅助线">
                                         <b style="margin-left: 20px;">垂直中心线：</b>
                                         <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
                                         <b style="margin-left: 20px;">水印范围：</b>
