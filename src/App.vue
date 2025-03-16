@@ -238,8 +238,9 @@
                                                 v-model="config.logo.name">
                                                 <el-option v-for="item in enhancedCameraBrands" :label="item.name"
                                                     :key="item.name" :value="item.logo">
-                                                    <div style="display: flex;align-items: center;gap: 6px;">
-                                                        <img :width="18" :height="18" :src="item.thumbnail" />
+                                                    <div style="display: flex;align-items: center;gap: 10px;">
+                                                        <img :width="24" :height="24" :src="item.thumbnail"
+                                                            :style="{ background: item.logo.indexOf('white') >= 0 ? 'rgba(0,0,0,0.08)' : '' }" />
                                                         <span>{{ item.name }}</span>
                                                     </div>
                                                 </el-option>
@@ -364,7 +365,7 @@
                             <el-form-item label="导出质量">
                                 <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
                                     show-input></el-slider>
-                                <p class="tips">调整后需要手动点击绘制，文字大小需要重新调整~</p>
+                                <p class="tips">调整后需点击绘制并调整布局~</p>
                             </el-form-item>
                             <el-form-item label="导出">
                                 <el-button type="primary" plain @click="download(img.export.name)">导出当前图片</el-button>

@@ -4,7 +4,6 @@ const print = (config: Config, img: Img) => {
 	console.log("当前图片信息：", img);
 };
 
-
 // 定义相机品牌
 const cameraBrands: CameraBrands[] = [
 	{ name: "佳能", logo: "canon", make: ["Canon"] },
@@ -14,7 +13,8 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "尼康-文字(白)", logo: "nikon-2-white" },
 	{ name: "索尼(黑)", logo: "sony", make: ["SONY"] },
 	{ name: "索尼(白)", logo: "sony-white" },
-	{ name: "索尼-Alpha(白)", logo: "sony-alpha" },
+	{ name: "索尼-Alpha(白)", logo: "sony-alpha-white" },
+	{ name: "索尼-Alpha(黑)", logo: "sony-alpha-black" },
 	{ name: "索尼-Alpha2(黑)", logo: "sony-alpha-2-black" },
 	{ name: "索尼-Alpha2(白)", logo: "sony-alpha-2-white" },
 	{ name: "富士", logo: "fuji" },
