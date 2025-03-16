@@ -25,7 +25,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
 		ctx.fillText(company, imgPaddings.left + config.watermark.paddings.lr, _y);
-		ctx.font = `${modelConfig.size}px ${config.font || "Arial"}`;
+		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "");
 		modelText = modelConfig.replaceZ
 			? modelText.replace(/Z|z/, "ℤ")
@@ -42,7 +42,7 @@ const doDraw: DrawFun = (img, config, context) => {
 	if (paramsConfig.show) {
 		ctx.save();
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `${paramsConfig.size}px ${config.font || "Arial"}`;
+		ctx.font = `${paramsConfig.size}px ${config.font}`;
 		ctx.textBaseline = "middle";
 
 		const _y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
@@ -62,7 +62,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.textAlign = "right";
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = timeConfig.color;
-		ctx.font = `${timeConfig.size}px ${config.font || "Arial"}`;
+		ctx.font = `${timeConfig.size}px ${config.font}`;
 		// 在水印范围内垂直居中
 		const _y = (rect2.y + rect1.y) / 2;
 		ctx.fillText(
@@ -72,15 +72,6 @@ const doDraw: DrawFun = (img, config, context) => {
 		);
 		ctx.restore();
 	}
-
-	// 绘制范围
-	// ctx.lineWidth = 5;
-	// ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
-	// ctx.strokeStyle = "#FF0000";
-	// ctx.beginPath();
-	// ctx.moveTo(rect1.x, rect1.y + (rect2.y - rect1.y)/2);
-	// ctx.lineTo(rect2.x, rect1.y + (rect2.y - rect1.y)/2);
-	// ctx.stroke();
 };
 
 const config: Config = {

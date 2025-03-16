@@ -2,7 +2,7 @@
     <div class="box">
         <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
             <canvas id="imgCanvas" v-if="curFile"></canvas>
-            <el-empty description="请先选择图片~" v-else @click="selectFile"></el-empty>
+            <el-empty description="点击选择图片~" v-else @click="selectFile"></el-empty>
         </div>
 
         <div class="config-box">
@@ -508,7 +508,7 @@ watch(curWatermarkIndex, (newIndex) => {
 
 watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxiliaryLines], ([_newConfig, _newCurFile]) => {
     handleDraw();
-}, { throttle: 1000, deep: true })
+}, { throttle: 250, deep: true })
 
 
 const enhancedCameraBrands = computedAsync(async () => {
@@ -523,7 +523,6 @@ const enhancedCameraBrands = computedAsync(async () => {
 async function getBrandImageThumbnail(logo: string) {
     const { pathname } = new URL(`./assets/logos/${logo}.png`, import.meta.url)
     return await compressImage(pathname)
-
 }
 
 const handleDraw = useDebounceFn(() => {
@@ -563,7 +562,6 @@ const handleDraw = useDebounceFn(() => {
             }
 
             img.exif = exif;
-            console.log('品牌：', exif?.Make);
             img.modelText = img.modelText ? img.modelText : img.exif?.Model;
             // 曝光时间
             const exposureTime = convertExposureTime(exif?.ExposureTime);
@@ -630,12 +628,6 @@ const handleDraw = useDebounceFn(() => {
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-
-            // 获取比例
-            // const boxScale = img.width / img.height;
-            // const canvasBox = document.getElementById("canvasBox") as HTMLDivElement;
-            // canvasBox.style.height = `${900 / boxScale}px`;
-
 
             // 绘制阴影
             if (shadowConfig.show) {
