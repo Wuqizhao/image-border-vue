@@ -232,11 +232,10 @@
                                         <el-form-item label="手动选择" v-if="!config.logo.auto">
                                             <el-select placeholder="选择logo" style="width: 200px;"
                                                 v-model="config.logo.name">
-                                                <el-option v-for="item in cameraBrands" :label="item.name"
+                                                <el-option v-for="item in enhancedCameraBrands" :label="item.name"
                                                     :key="item.name" :value="item.logo">
                                                     <div style="display: flex;align-items: center;gap: 6px;">
-                                                        <img :width="18" :height="18"
-                                                            :src="getBrandImageUrl(item.logo)" />
+                                                        <img :width="18" :height="18" :src="item.thumbnail" />
                                                         <span>{{ item.name }}</span>
                                                     </div>
                                                 </el-option>
@@ -379,11 +378,12 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { print, download, deepClone, cameraBrands, convertExposureTime, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
+import { print, cameraBrands, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
+import { download, deepClone, convertExposureTime, compressImage } from "./utils"
 import defaultWaterMark from './configs/default'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
-import { useDebounceFn, watchThrottled, formatDate } from '@vueuse/core'
+import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
 
 const isDev = computed(() => import.meta.env.DEV)
@@ -458,12 +458,11 @@ const clearFileList = () => {
     ElMessage.success('已清空列表~')
 }
 
-const enhancedFileList = computed(() => {
-    return fileList.value.map((file) => ({
+const enhancedFileList = computedAsync(async () => {
+    return await Promise.all(fileList.value.map(async (file) => ({
         ...file,
-        url: URL?.createObjectURL(file),
-
-    }))
+        url: await compressImage(file)
+    })))
 })
 
 function resetText() {
@@ -505,8 +504,20 @@ watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxi
     handleDraw();
 }, { throttle: 1000, deep: true })
 
-function getBrandImageUrl(logo: string) {
-    return new URL(`./assets/logos/${logo}.png`, import.meta.url).pathname
+
+const enhancedCameraBrands = computedAsync(async () => {
+    return await Promise.all(cameraBrands.map(async brand => {
+        return {
+            ...brand,
+            thumbnail: await getBrandImageThumbnail(brand.logo)
+        }
+    }))
+})
+
+async function getBrandImageThumbnail(logo: string) {
+    const { pathname } = new URL(`./assets/logos/${logo}.png`, import.meta.url)
+    return await compressImage(pathname)
+
 }
 
 const handleDraw = useDebounceFn(() => {
@@ -796,6 +807,8 @@ function importConfig(val: number): void {
     gap: 20px;
     flex-wrap: wrap;
     width: 100%;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .config-box {
@@ -827,6 +840,8 @@ function importConfig(val: number): void {
 
             .el-tabs__content {
                 overflow-y: auto;
+                scrollbar-width: thin;
+                scrollbar-color: transparent transparent;
                 padding-bottom: 50px;
 
             }
@@ -878,23 +893,17 @@ function importConfig(val: number): void {
 
 #canvasBox {
     flex: 1;
-    overflow: auto;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 10px;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 0;
-    left: 0;
     background: rgb(255, 255, 255);
     z-index: 100;
     padding: 10px;
     max-height: 100vh;
     transition-duration: 1s;
     width: 100%;
-    // border: 2px solid salmon;
 
     #imgCanvas {
         border: 1px solid gainsboro;
