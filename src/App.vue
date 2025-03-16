@@ -914,7 +914,9 @@ function importConfig(val: number): void {
     #canvasBox {
         max-height: 300px;
 
-    }.btns {
+    }
+
+    .btns {
         justify-content: space-between;
     }
 }
