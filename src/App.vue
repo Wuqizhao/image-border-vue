@@ -913,11 +913,16 @@ function importConfig(val: number): void {
 
     #canvasBox {
         max-height: 300px;
-
     }
 
-    .btns {
-        justify-content: space-between;
+
+    .config-box {
+        background-color: #FFF;
+        z-index: 9999;
+
+        .btns {
+            justify-content: space-between;
+        }
     }
 }
 </style>
