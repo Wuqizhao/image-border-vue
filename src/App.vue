@@ -959,6 +959,10 @@ function importConfig(val: number): void {
 
     #canvasBox {
         max-height: 300px;
+
+        #imgCanvas {
+            max-height: 100%;
+        }
     }
 
 
