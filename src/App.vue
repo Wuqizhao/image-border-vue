@@ -37,7 +37,7 @@
                         <el-form-item label="字体">
                             <el-select v-model="config.font" clearable>
                                 <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
-                                    :value="item"></el-option>
+                                    :value="item" :style="{ fontFamily: item }"></el-option>
                             </el-select>
                             <p class="tips">仅支持部分字体！</p>
                         </el-form-item>
