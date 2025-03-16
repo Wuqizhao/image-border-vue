@@ -93,6 +93,7 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "南极人", logo: "njr" },
 	{ name: "拼多多", logo: "pdd" },
 	{ name: "央视新闻", logo: "ysxw" },
+	{ name: "Photoshop", logo: "ps" },
 	{ name: "CCTV", logo: "cctv" },
 	{ name: "BBC", logo: "bbc" },
 	{ name: "菠萝", logo: "boluo" },
