@@ -12,7 +12,7 @@
         <div class="config-box">
             <div class="btns">
                 <el-button @click="selectFile" type="primary" plain>选择图片</el-button>
-                <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
+                <el-button @click="clearFileList" type="danger" plain>清 空</el-button>
                 <el-button @click="handleDraw" :disabled="!curFile" type="success">绘 制</el-button>
                 <el-button type="success" plain @click="download(img.export.name)">保 存</el-button>
             </div>
@@ -25,6 +25,9 @@
                                 <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
                                     :value="index"></el-option>
                             </el-select>
+
+                            <el-button type="danger" plain @click="resetWatermark"
+                                style="margin-left: 10px;">重置样式</el-button>
                         </el-form-item>
                         <el-form-item label="基础高度">
                             <el-input-number :min="0" :max="1" :step="0.01"
@@ -59,16 +62,18 @@
                         <el-form-item label="修改时间">
                             <el-input v-model="img.time" disabled></el-input>
                         </el-form-item>
-                        <h3>开发</h3>
-                        <el-form-item label="辅助线" v-if="isDev">
-                            <b style="margin-left: 20px;">垂直中心线：</b>
-                            <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
-                            <b style="margin-left: 20px;">水印范围：</b>
-                            <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
-                            <b style="margin-left: 20px;">水印水平中心线：</b>
-                            <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
-                            <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
-                        </el-form-item>
+                        <div>
+                            <h3>开发</h3>
+                            <el-form-item label="辅助线" v-if="isDev">
+                                <b style="margin-left: 20px;">垂直中心线：</b>
+                                <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
+                                <b style="margin-left: 20px;">水印范围：</b>
+                                <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
+                                <b style="margin-left: 20px;">水印水平中心线：</b>
+                                <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
+                                <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
+                            </el-form-item>
+                        </div>
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="水印" name="watermark">
@@ -344,8 +349,12 @@
                         <el-form-item label="导出质量">
                             <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
                                 show-input></el-slider>
+                            <p class="tips">调整后需要手动点击绘制，文字大小需要重新调整~</p>
                         </el-form-item>
-                        <el-alert type="success" description="调整后需要手动点击绘制，文字大小需要重新调整~" :closable="false"></el-alert>
+                        <el-form-item label="导出">
+                            <el-button type="primary" plain @click="download(img.export.name)">导出当前图片</el-button>
+                            <el-button type="success" plain disabled>批量导出</el-button>
+                        </el-form-item>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
@@ -409,7 +418,7 @@ const onDrop = (event: DragEvent) => {
         }
         if (validImages.length > 0) {
             fileList.value = validImages;
-            curFile.value = validImages[0];
+            changeCurFile(validImages[0]);
         }
     }
 };
@@ -425,17 +434,14 @@ const selectFile = () => {
         if (target === null || !target.files) throw new Error('图片不存在...');
         fileList.value = Array.from(target.files);
         const file = target.files[0];
-        curFile.value = file;
-
-        // 更新基本信息
-        img.fileName = file.name;
-        img.export.name = img.export.name || "WM_" + file.name;
-        img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
-        img.type = file.type;
-        img.time = formatDate(new Date(file.lastModified), 'YYYY-MM-DD HH:mm:ss');
-
-        resetText();
+        changeCurFile(file);
     }
+}
+
+const clearFileList = () => {
+    fileList.value = [];
+    changeCurFile(null);
+    ElMessage.success('已清空列表~')
 }
 
 const enhancedFileList = computed(() => {
@@ -452,7 +458,14 @@ function resetText() {
     img.timeText = '';
 }
 
-function changeCurFile(file: File) {
+function changeCurFile(file: File | null) {
+    if (!file) return;
+    // 更新基本信息
+    img.fileName = file.name;
+    img.export.name = img.export.name || "WM_" + file.name;
+    img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
+    img.type = file.type;
+    img.time = formatDate(new Date(file.lastModified), 'YYYY-MM-DD HH:mm:ss');
     curFile.value = file;
     resetText();
 }
@@ -844,7 +857,7 @@ function importConfig(val: number): void {
             }
 
             &:hover {
-                border: 2px solid salmon;
+                border: 2px solid gainsboro;
                 transform: scale(1.1);
                 z-index: 1;
                 transition-duration: 0.5s;

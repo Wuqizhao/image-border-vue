@@ -158,7 +158,7 @@ const config: Config = {
 		},
 		time: {
 			enable: true,
-			show: true,
+			show: false,
 			color: "#808080",
 			size: 60,
 			format: "YYYY.MM.DD HH:mm:ss",
