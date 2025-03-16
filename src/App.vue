@@ -3,10 +3,6 @@
         <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
             <canvas id="imgCanvas" v-if="curFile"></canvas>
             <el-empty description="请先选择图片~" v-else @click="selectFile"></el-empty>
-            <div class="img-list" v-if="fileList.length">
-                <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover" :src="item.url"
-                    @click="changeCurFile(fileList[index])" :data-index="index + 1"></el-image>
-            </div>
         </div>
 
         <div class="config-box">
@@ -18,6 +14,11 @@
             </div>
             <el-tabs v-model="activeName">
                 <el-tab-pane label="基本信息" name="info">
+
+                    <div class="img-list" v-if="fileList.length">
+                        <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover" :src="item.url"
+                            @click="changeCurFile(fileList[index])" :data-index="index + 1"></el-image>
+                    </div>
                     <h3>样式</h3>
                     <el-form label-width="80px">
                         <el-form-item label="选择样式">
@@ -27,7 +28,7 @@
                             </el-select>
 
                             <el-button type="danger" plain @click="resetWatermark"
-                                style="margin-left: 10px;">重置样式</el-button>
+                                style="margin-left: 10px;">重置</el-button>
                         </el-form-item>
                         <el-form-item label="基础高度">
                             <el-input-number :min="0" :max="1" :step="0.01"
@@ -42,8 +43,8 @@
                             <p class="tips">仅支持部分字体！</p>
                         </el-form-item>
                     </el-form>
-                    <h3>文件</h3>
-                    <el-form label-width="80px">
+                    <el-form label-width="80px" v-if="curFile">
+                        <h3>文件</h3>
                         <el-form-item label="文件名">
                             <el-input v-model="img.fileName" disabled></el-input>
                         </el-form-item>
@@ -228,6 +229,10 @@
                                             v-model="config.logo.name">
                                             <el-option v-for="item in cameraBrands" :label="item.name" :key="item.name"
                                                 :value="item.logo">
+                                                <div style="display: flex;align-items: center;gap: 6px;">
+                                                    <img :width="18" :height="18" :src="getBrandImageUrl(item.logo)" />
+                                                    <span>{{ item.name }}</span>
+                                                </div>
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
@@ -487,10 +492,13 @@ watch(curWatermarkIndex, (newIndex) => {
     immediate: true
 })
 
-watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxiliaryLines], () => {
+watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxiliaryLines], ([_newConfig, _newCurFile]) => {
     handleDraw();
 }, { throttle: 1000, deep: true })
 
+function getBrandImageUrl(logo: string) {
+    return new URL(`./assets/logos/${logo}.png`, import.meta.url).pathname
+}
 
 const handleDraw = useDebounceFn(() => {
     const file = curFile.value;
@@ -777,7 +785,7 @@ function importConfig(val: number): void {
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
-    gap: 10px;
+    gap: 20px;
     flex-wrap: wrap;
     height: 100vh;
     width: 100%;
@@ -785,7 +793,7 @@ function importConfig(val: number): void {
 
 .config-box {
     padding: 10px 15px;
-    width: 500px;
+    width: 600px;
     box-shadow: 0px 0px 15px gainsboro;
     border-radius: 10px;
 
@@ -805,29 +813,6 @@ function importConfig(val: number): void {
         background-color: #FFF;
         z-index: 99;
     }
-}
-
-#canvasBox {
-    flex: 1;
-    overflow: auto;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    // justify-content: space-between;
-    position: sticky;
-    top: 0;
-    left: 0;
-    background: rgb(255, 255, 255);
-    z-index: 100;
-    padding: 10px;
-    max-height: 100vh;
-    transition-duration: 1s;
-    // border: 2px solid salmon;
-
-    #imgCanvas {
-        border: 1px solid gainsboro;
-    }
 
     .img-list {
         padding: 5px 0px;
@@ -836,6 +821,7 @@ function importConfig(val: number): void {
         flex-wrap: wrap;
         justify-content: center;
         position: relative;
+        // border: 2px dashed red;
 
         >* {
             cursor: pointer;
@@ -866,6 +852,33 @@ function importConfig(val: number): void {
     }
 }
 
+#canvasBox {
+    flex: 1;
+    overflow: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    left: 0;
+    background: rgb(255, 255, 255);
+    z-index: 100;
+    padding: 10px;
+    max-height: 100vh;
+    transition-duration: 1s;
+    width: 100%;
+    // border: 2px solid salmon;
+
+    #imgCanvas {
+        border: 1px solid gainsboro;
+        max-width: 100%;
+    }
+
+}
+
 .tips {
     color: gray;
     font-size: 12px;
@@ -884,17 +897,22 @@ function importConfig(val: number): void {
     padding: 0px 10px;
 }
 
+.img-list {
+
+    >* {
+        width: 36px;
+        height: 36px;
+    }
+}
+
 @media screen and (max-width: 768px) {
+    .box {
+        gap: 5px;
+    }
+
     #canvasBox {
         max-height: 300px;
 
-        .img-list {
-
-            >* {
-                width: 36px;
-                height: 36px;
-            }
-        }
     }
 
     .btns {
