@@ -908,6 +908,7 @@ function importConfig(val: number): void {
     #imgCanvas {
         border: 1px solid gainsboro;
         max-width: 100%;
+        height: 100%;
         box-sizing: border-box;
     }
 
@@ -946,16 +947,16 @@ function importConfig(val: number): void {
 
     #canvasBox {
         max-height: 300px;
-
     }
+
 
     .config-box {
-        border-radius: 10px 10px 0 0;
+        background-color: #FFF;
+        z-index: 9999;
 
-    }
-
-    .btns {
-        justify-content: space-between;
+        .btns {
+            justify-content: space-between;
+        }
     }
 }
 </style>
