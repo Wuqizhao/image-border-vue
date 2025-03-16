@@ -228,6 +228,10 @@
                                             v-model="config.logo.name">
                                             <el-option v-for="item in cameraBrands" :label="item.name" :key="item.name"
                                                 :value="item.logo">
+                                                <div style="display: flex;align-items: center;gap: 6px;">
+                                                    <img :width="18" :height="18" :src="getBrandImageUrl(item.logo)" />
+                                                    <span>{{ item.name }}</span>
+                                                </div>
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
@@ -491,6 +495,10 @@ watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxi
     handleDraw();
 }, { throttle: 1000, deep: true })
 
+
+function getBrandImageUrl(logo: string) {
+    return new URL(`./assets/logos/${logo}.png`, import.meta.url).pathname
+}
 
 const handleDraw = useDebounceFn(() => {
     const file = curFile.value;
