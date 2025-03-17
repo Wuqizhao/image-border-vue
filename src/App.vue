@@ -368,16 +368,31 @@
                             <el-form-item label="导出">
                                 <el-button type="primary" plain @click="download(img.export.name, img.export.quality)"
                                     :disabled="!curFile">导出当前图片</el-button>
-                                <el-button v-show="fileList.length > 1" type="success" plain disabled>批量导出</el-button>
+                                <el-button v-show="fileList.length > 1" type="success" plain
+                                    @click="batchExportVisible = true">批量导出</el-button>
                             </el-form-item>
                         </el-form>
                     </el-tab-pane>
                 </el-tabs>
             </div>
 
-
             <el-backtop :right="10" :bottom="100" />
         </div>
+
+        <el-dialog title="批量导出" v-model="batchExportVisible" style="max-width: 95%;width: fit-content;min-width: 300px;">
+            <el-table :data="fileList" style="width: 100%;">
+                <el-table-column prop="name" label="文件名"></el-table-column>
+                <el-table-column prop="size" label="文件大小">
+                    <template #default="scope">
+                        {{ ((scope.row.size) / 1024 / 1024).toFixed(2) }}M
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <template #footer>
+                <el-button type="primary" @click="batchExport">全部导出</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -423,6 +438,7 @@ const config = ref<Config>(defaultWaterMark);
 const watermarks = reactive(watermarkList)
 const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('info')
+const batchExportVisible = ref(false);
 
 const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -469,6 +485,15 @@ const clearFileList = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ElMessage.success('已清空列表~')
     }
+}
+
+const batchExport = () => {
+    if (fileList.value.length === 0) {
+        ElMessage.warning('请先选择图片~');
+        return;
+    }
+
+    ElMessage.success('开发中...')
 }
 
 const enhancedFileList = computedAsync(async () => {
