@@ -34,7 +34,8 @@
 
                                     <div style="padding-top: 5px;width: 100%;">
                                         <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-                                        <el-button @click="handleDraw" :disabled="!curFile" type="success" plain>重新绘制</el-button>
+                                        <el-button @click="handleDraw" :disabled="!curFile" type="success"
+                                            plain>重新绘制</el-button>
                                     </div>
                                 </el-form-item>
                                 <el-form-item label="基础高度">
@@ -234,7 +235,7 @@
                                     <div v-show="config.logo.show">
                                         <el-form-item label="自动匹配">
                                             <el-switch v-model="config.logo.auto"></el-switch>
-                                            <p class="tips">支持列表：尼康、佳能、苹果、一加、vivo、小米~</p>
+                                            <p class="tips">支持列表：尼康、佳能、索尼、大疆、苹果、一加、vivo、小米~</p>
                                         </el-form-item>
                                         <el-form-item label="手动选择" v-if="!config.logo.auto">
                                             <el-select filterable placeholder="选择logo" style="width: 200px;"
@@ -332,8 +333,12 @@
                             <el-form-item label="上边距">
                                 <el-input-number v-model="config.paddings.top" :min="0" :max="1000"
                                     :step="10"></el-input-number>
-                                <el-button style="margin-left: 10px;"
-                                    @click="config.paddings.left = config.paddings.right = config.paddings.top">同步到左右</el-button>
+                                <div style="width: 100%;">
+                                    <el-button size="small"
+                                        @click="config.paddings.left = config.paddings.right = config.paddings.top">同步左右</el-button>
+                                    <el-button size="small"
+                                        @click="config.paddings.bottom = config.paddings.left = config.paddings.right = config.paddings.top">全部同步</el-button>
+                                </div>
                             </el-form-item>
                             <el-form-item label="左边距">
                                 <el-input-number v-model="config.paddings.left" :min="0" :max="1000"
@@ -349,7 +354,7 @@
                             </el-form-item>
                             <h3>水印边距</h3>
                             <el-form-item label="左右边距">
-                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="1000"
+                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="1000"  :disabled="config.watermark.height <= 0"
                                     :step="10"></el-input-number>
                             </el-form-item>
                             <el-form-item label="上下边距">

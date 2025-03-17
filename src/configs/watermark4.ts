@@ -161,7 +161,7 @@ const config: Config = {
 			show: false,
 			color: "#808080",
 			size: 60,
-			format: "YYYY.MM.DD HH:mm:ss",
+			format: "YYYY.MM.DD  HH:mm:ss",
 		},
 		paddings: {
 			lr: 100,
