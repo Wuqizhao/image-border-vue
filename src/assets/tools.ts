@@ -22,6 +22,8 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "小米", logo: "xiaomi", make: ["Xiaomi"] },
 	{ name: "小米汽车", logo: "xiaomi-car" },
 	{ name: "华为", logo: "huawei" },
+	{ name: "华为(黑)", logo: "huawei-black" },
+	{ name: "华为(白)", logo: "huawei-white" },
 	{ name: "荣耀", logo: "honor" },
 	{ name: "苹果(黑)", logo: "apple", make: ["Apple"] },
 	{ name: "苹果(白)", logo: "apple-white" },
@@ -81,6 +83,11 @@ const watermarkList = [
 		index: 3,
 		name: "图标+参数+时间垂直居中",
 		config: "watermark7",
+	},
+	{
+		index: 4,
+		name: "样式8",
+		config: "watermark8",
 	},
 	// {
 	//     index: 2,

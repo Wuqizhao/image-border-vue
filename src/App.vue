@@ -65,6 +65,8 @@
                             <div v-if="isDev">
                                 <h3>开发</h3>
                                 <el-form-item label="辅助线">
+                                    <b style="margin-left: 20px;">水平中心线：</b>
+                                    <el-switch v-model="auxiliaryLines.horizontalCenter"></el-switch>
                                     <b style="margin-left: 20px;">垂直中心线：</b>
                                     <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
                                     <b style="margin-left: 20px;">水印范围：</b>
@@ -322,7 +324,7 @@
                         <el-form label-width="80px">
                             <h3>图片边距</h3>
                             <el-form-item label="上边距">
-                                <el-input-number v-model="config.paddings.top" :min="0" :max="1000"
+                                <el-input-number v-model="config.paddings.top" :min="0" :max="2000"
                                     :step="10"></el-input-number>
                                 <div style="width: 100%;">
                                     <el-button size="small"
@@ -332,24 +334,24 @@
                                 </div>
                             </el-form-item>
                             <el-form-item label="左边距">
-                                <el-input-number v-model="config.paddings.left" :min="0" :max="1000"
+                                <el-input-number v-model="config.paddings.left" :min="0" :max="2000"
                                     :step="10"></el-input-number>
                             </el-form-item>
                             <el-form-item label="右边距">
-                                <el-input-number v-model="config.paddings.right" :min="0" :max="1000"
+                                <el-input-number v-model="config.paddings.right" :min="0" :max="2000"
                                     :step="10"></el-input-number>
                             </el-form-item>
                             <el-form-item label="下边距">
-                                <el-input-number v-model="config.paddings.bottom" :min="0" :max="1000"
+                                <el-input-number v-model="config.paddings.bottom" :min="0" :max="2000"
                                     :step="10"></el-input-number>
                             </el-form-item>
                             <h3>水印边距</h3>
                             <el-form-item label="左右边距">
-                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="1000"
+                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="2000"
                                     :disabled="config.watermark.height <= 0" :step="10"></el-input-number>
                             </el-form-item>
                             <el-form-item label="上下边距">
-                                <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="1000"
+                                <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="2000"
                                     :step="10"></el-input-number>
                             </el-form-item>
                         </el-form>
@@ -379,7 +381,8 @@
             <el-backtop :right="10" :bottom="100" />
         </div>
 
-        <el-dialog title="批量导出" v-model="batchExportVisible" style="max-width: 95%;width: fit-content;min-width: 300px;">
+        <el-dialog title="批量导出" v-model="batchExportVisible"
+            style="max-width: 95%;width: fit-content;min-width: 300px;">
             <el-table :data="fileList" style="width: 100%;">
                 <el-table-column prop="name" label="文件名"></el-table-column>
                 <el-table-column prop="size" label="文件大小">
@@ -409,9 +412,10 @@ import Exifr from "exifr";
 const isDev = computed(() => import.meta.env.DEV)
 // 辅助线配置
 const auxiliaryLines = reactive({
-    verticalCenter: false,
-    watermarkHorizontalCenter: false,
-    watermarkRange: false
+    verticalCenter: false, // 垂直中心线
+    horizontalCenter: false, // 水平中心线
+    watermarkHorizontalCenter: false, // 水印水平中心线
+    watermarkRange: false, // 水印范围
 })
 
 const defaultImgValue = {
@@ -757,6 +761,17 @@ const handleDraw = useDebounceFn(() => {
             });
 
             // 绘制辅助线
+            if (auxiliaryLines.horizontalCenter) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height / 2);
+                ctx.lineTo(canvas.width, canvas.height / 2);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "#FF0000";
+                ctx.stroke();
+
+                ctx.restore();
+            }
             if (auxiliaryLines.verticalCenter) {
                 ctx.save();
                 ctx.beginPath();
@@ -815,6 +830,9 @@ function importConfig(val: number): void {
             break;
         case 'watermark7':
             configPromise = import('./configs/watermark7');
+            break;
+        case 'watermark8':
+            configPromise = import('./configs/watermark8');
             break;
         default:
             configPromise = import('./configs/default');
