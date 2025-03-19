@@ -12,7 +12,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		).default;
 		logoImg.onload = () => {
 			const logoX = canvas.width / 2 - logoConfig.width / 2;
-			const logoY = rect1.y * (logoConfig.verticalOffset || 1);
+			const logoY = (rect1.y + (rect2.y - rect1.y)/4 - logoConfig.height/2) * (logoConfig.verticalOffset || 1);
 
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};
