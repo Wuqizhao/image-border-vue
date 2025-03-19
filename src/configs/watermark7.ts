@@ -12,9 +12,26 @@ const doDraw: DrawFun = async (img, config, context) => {
 		).default;
 		logoImg.onload = () => {
 			const logoX = canvas.width / 2 - logoConfig.width / 2;
-			const logoY = (rect1.y + (rect2.y - rect1.y)/4 - logoConfig.height/2) * (logoConfig.verticalOffset || 1);
 
-			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
+			let logoY = 0;
+			if (!timeConfig.show && !paramsConfig.show) {
+				// 时间和参数都不显示
+				logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height / 2;
+			} else if (!paramsConfig.show || !timeConfig.show) {
+				// 不显示时间或者不显示参数
+				logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height;
+			} else {
+				// 都显示
+				logoY = rect1.y + (rect2.y - rect1.y) / 4 - logoConfig.height / 2;
+			}
+
+			ctx.drawImage(
+				logoImg,
+				logoX,
+				logoY * (logoConfig.verticalOffset || 1),
+				logoConfig.width,
+				logoConfig.height
+			);
 		};
 	}
 
@@ -24,7 +41,16 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.font = `${paramsConfig.size}px ${config.font}`;
 		ctx.textBaseline = "middle";
 		ctx.textAlign = "center";
-		const _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
+
+		let _y = 0;
+		if (!logoConfig.show && !timeConfig.show) {
+			_y = rect1.y + (rect2.y - rect1.y) / 2;
+		} else if (!logoConfig.show) {
+			ctx.textBaseline = "top";
+			_y = rect1.y + (rect2.y - rect1.y) / 4;
+		} else {
+			_y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
+		}
 		ctx.fillText(img.paramsText, canvas.width / 2, _y);
 	}
 
@@ -34,7 +60,15 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.font = `${timeConfig.size}px ${config.font}`;
 		ctx.textBaseline = "bottom";
 		ctx.textAlign = "center";
-		const _y = rect2.y;
+		let _y = 0;
+		if (!logoConfig.show && !paramsConfig.show) {
+			ctx.textBaseline = "middle";
+			_y = rect1.y + (rect2.y - rect1.y) / 2;
+		} else if (!logoConfig.show || !paramsConfig.show) {
+			_y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
+		} else {
+			_y = rect2.y;
+		}
 		ctx.fillText(img.timeText, canvas.width / 2, _y);
 	}
 };

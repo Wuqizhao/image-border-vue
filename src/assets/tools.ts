@@ -114,7 +114,16 @@ const getSupportedFonts = (): string[] => {
 	];
 };
 
-const preDefineColors = ["#FFF", "#000", "#F00", "#00FF00", "#0000FF"];
+const preDefineColors = [
+	"#FFF",
+	"#808080",
+	"#CCC",
+	"#DCDCDC",
+	"#000",
+	"#F00",
+	"#00FF00",
+	"#0000FF",
+];
 
 export {
 	print,

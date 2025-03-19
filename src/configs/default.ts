@@ -18,8 +18,13 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.fillStyle = modelConfig.color;
 		ctx.textAlign = "left";
 		ctx.textBaseline = "middle";
-		// 顶着线
-		const _y = rect1.y + (rect2.y - rect1.y) / 4;
+
+		let _y = 0;
+		if (!paramsConfig.show) {
+			_y = rect1.y + (rect2.y - rect1.y) / 2;
+		} else {
+			_y = rect1.y + (rect2.y - rect1.y) / 4;
+		}
 		// 截取厂商
 		const company = img.modelText.split(" ")[0];
 		// 计算厂商的宽度
@@ -45,7 +50,10 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.font = `${paramsConfig.size}px ${config.font}`;
 		ctx.textBaseline = "middle";
 
-		const _y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
+		let _y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
+		if (!modelConfig.show) {
+			_y = rect1.y + (rect2.y - rect1.y) / 2;
+		}
 		ctx.fillText(
 			paramsConfig.letterUpperCase
 				? img.paramsText.toLocaleUpperCase()
