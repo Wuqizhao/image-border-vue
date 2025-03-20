@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
-            <canvas id="imgCanvas" v-if="curFile"></canvas>
+            <canvas id="imgCanvas" v-if="curFile" @click="preview"></canvas>
             <el-empty description="点击选择图片~" v-else @click="selectFile"></el-empty>
         </div>
 
@@ -13,7 +13,10 @@
                             <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
                                 :src="item.url" @click="changeCurFile(fileList[index])"
                                 :data-index="index + 1"></el-image>
-                            <el-button @click="clearFileList" type="danger" plain>清空</el-button>
+                            <div class="btn-box">
+                                <el-button @click="clearFileList" type="danger" plain>清空</el-button>
+                                <el-button type="primary" plain @click="selectFile(true)">添加</el-button>
+                            </div>
                         </div>
                         <h3>样式</h3>
                         <el-form label-width="80px">
@@ -461,7 +464,7 @@ const onDrop = (event: DragEvent) => {
         }
     }
 };
-const selectFile = () => {
+const selectFile = (append = false) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
@@ -471,9 +474,18 @@ const selectFile = () => {
     input.onchange = (e) => {
         const target = e.target as HTMLInputElement;
         if (target === null || !target.files) throw new Error('图片不存在...');
-        fileList.value = Array.from(target.files);
-        const file = target.files[0];
-        changeCurFile(file);
+
+        // 追加
+        if (append) {
+            fileList.value = [...fileList.value, ...Array.from(target.files)];
+        }
+        else {
+            fileList.value = Array.from(target.files);
+        }
+        const file = fileList.value[0];
+        if (file !== curFile.value) {
+            changeCurFile(file);
+        }
     }
 }
 
@@ -600,6 +612,8 @@ const handleDraw = useDebounceFn(() => {
                     message: '未读取到Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
                     type: 'error',
                 });
+                // 从文件列表删除当前图片
+                fileList.value = fileList.value.filter(item => item !== file);
                 curFile.value = null;
                 return;
             }
@@ -855,6 +869,21 @@ function importConfig(val: number): void {
         })
     })
 }
+
+const preview = () => {
+    // 获取dom
+    const canvasBox = document.getElementById('canvasBox') as HTMLCanvasElement;
+    if (!canvasBox) return;
+
+    // 判断最大高度是不是100vh
+    if (canvasBox.style.maxHeight === '100vh') {
+        // 修改最大高度为100%
+        canvasBox.style.maxHeight = window.innerWidth > 768 ? '100vh' : '300px';
+    } else {
+        // 修改最大高度为100vh
+        canvasBox.style.maxHeight = '100vh';
+    }
+}
 </script>
 
 
@@ -920,17 +949,34 @@ function importConfig(val: number): void {
         padding: 5px 0px;
         gap: 5px;
         display: flex;
-        flex-wrap: wrap;
-        // justify-content: center;
+        align-items: center;
+        flex-shrink: 1;
         position: relative;
-        // border: 2px dashed red;
+        // max-height: fit-content;
+        overflow: auto;
 
-        >* {
+        >.btn-box {
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            right: 0px;
+            top: 0px;
+            background: #FFF;
+            z-index: 1;
+
+            >.el-button {
+                margin: 2px;
+            }
+        }
+
+        >.el-image {
             cursor: pointer;
             border: 2px solid transparent;
             border-radius: 10%;
+            min-width: 64px;
             width: 64px;
             height: 64px;
+
 
             &::before {
                 content: attr(data-index);
