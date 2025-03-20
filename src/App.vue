@@ -9,7 +9,7 @@
             <div class="tabs-container">
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="基本信息" name="info">
-                        <div class="img-list" v-if="fileList.length">
+                        <HorizontalScroll class="img-list" v-if="fileList.length">
                             <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
                                 :src="item.url" @click="changeCurFile(fileList[index])"
                                 :data-index="index + 1"></el-image>
@@ -17,7 +17,7 @@
                                 <el-button @click="clearFileList" type="danger" plain>清空</el-button>
                                 <el-button type="primary" plain @click="selectFile(true)">添加</el-button>
                             </div>
-                        </div>
+                        </HorizontalScroll>
                         <h3>样式</h3>
                         <el-form label-width="80px">
                             <el-form-item label="选择样式">
@@ -411,6 +411,7 @@ import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
+import HorizontalScroll from './components/HorizontalScroll.vue'
 
 const isDev = computed(() => import.meta.env.DEV)
 // 辅助线配置
@@ -946,14 +947,12 @@ const preview = () => {
 
 
     .img-list {
-        padding: 5px 0px;
+        padding: 0px;
         gap: 5px;
         display: flex;
         align-items: center;
         flex-shrink: 1;
         position: relative;
-        // max-height: fit-content;
-        overflow: auto;
 
         >.btn-box {
             display: flex;
@@ -965,7 +964,7 @@ const preview = () => {
             z-index: 1;
 
             >.el-button {
-                margin: 2px;
+                margin: 2px 0px 2px 2px;
             }
         }
 
