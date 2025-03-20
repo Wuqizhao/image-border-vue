@@ -1,7 +1,6 @@
 import type { Config, DrawFun } from "../types";
 
 const doDraw: DrawFun = (img, config, context) => {
-	console.log("开始绘制徕卡样式");
 	const { watermark } = config;
 	const {
 		model: modelConfig,

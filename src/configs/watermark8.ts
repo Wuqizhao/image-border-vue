@@ -178,7 +178,7 @@ const config: Config = {
 	},
 	draw: doDraw,
 	beforeDraw: async () => {
-		console.log("beforeDraw");
+		// do something
 	},
 };
 
