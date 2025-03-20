@@ -76,6 +76,8 @@ declare interface Config {
 		y: number;
 	};
 	draw: DrawFun;
+	beforeDraw?: (img: Img, config: Config, context?: Context) => void;
+	afterDraw?: (img: Img, config: Config, context?: Context) => void;
 }
 
 declare type DrawFun = (img: Img, config: Config, context: Context) => void;

@@ -4,9 +4,6 @@ const doDraw: DrawFun = async (img, config, context) => {
 	const { params: paramsConfig } = watermark;
 	const { ctx, canvas, exposureTime } = context;
 
-	// 重新修改水印大小
-	// canvas.width =
-
 	let rect1 = {
 		x: canvas.width - imgPaddings.right,
 		y: 0,
@@ -16,23 +13,17 @@ const doDraw: DrawFun = async (img, config, context) => {
 		y: canvas.height,
 	};
 
-	// 绘制水印范围
-	// ctx.strokeStyle = "#FF0000";
-	// ctx.lineWidth = 10;
-	// ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
+	// const SPACE = 200;
+	const labelX = rect1.x + (2 * (rect2.x - rect1.x)) / 8;
+	const paramsX = rect1.x + (5 * (rect2.x - rect1.x)) / 8;
 
-	// 绘制水印垂直中心线
+	// // 绘制水印垂直中心线
 	// ctx.strokeStyle = "#FF0000";
 	// ctx.lineWidth = 5;
 	// ctx.beginPath();
 	// ctx.moveTo(rect1.x + (rect2.x - rect1.x) / 2, 0);
 	// ctx.lineTo(rect1.x + (rect2.x - rect1.x) / 2, canvas.height);
 	// ctx.stroke();
-
-	// const SPACE = 200;
-	const labelX = rect1.x + (3 * (rect2.x - rect1.x)) / 8;
-	const paramsX = rect1.x + (5 * (rect2.x - rect1.x)) / 8;
-
 	// ctx.beginPath();
 	// ctx.moveTo(labelX, 0);
 	// ctx.lineTo(labelX, canvas.height);
@@ -40,9 +31,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// ctx.beginPath();
 	// ctx.moveTo(paramsX, 0);
 	// ctx.lineTo(paramsX, canvas.height);
-    // ctx.stroke();
-    
-	// const WIDTH = 200;
+	// ctx.stroke();
+
+	const WIDTH = (rect2.x - rect1.x) / 4;
 
 	// 绘制曝光三要素和焦段参数
 	if (paramsConfig.show) {
@@ -50,22 +41,12 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.fillStyle = paramsConfig.color;
 		ctx.font = `bolder Italic ${paramsConfig.size}px ${config.font}`;
 		ctx.textBaseline = "middle";
-		// ctx.textAlign = "center";
 
-		// let _x = rect1.x + (rect2.x - rect1.x) / 2;
 		let fNumberY = canvas.height / 2;
 		ctx.textAlign = "center";
 		ctx.fillText("F", labelX, fNumberY);
 		ctx.textAlign = "left";
 		ctx.fillText(`${img.exif?.FNumber}`, paramsX, fNumberY);
-		// 绘制矩形框
-		// ctx.strokeStyle = paramsConfig.color;
-		// ctx.strokeRect(
-		// 	_x - SPACE - WIDTH - SPACE,
-		// 	fNumberY - SPACE - paramsConfig.size/2,
-		// 	WIDTH + SPACE * 2,
-		// 	SPACE * 2 + paramsConfig.size/2
-		// );
 
 		// ISO
 		let isoY = (3 * canvas.height) / 5;
@@ -81,6 +62,28 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.fillText("S", labelX, shutterSpeedY);
 		ctx.textAlign = "left";
 		ctx.fillText(`${exposureTime}`, paramsX, shutterSpeedY);
+
+		// 绘制矩形框
+		ctx.strokeStyle = paramsConfig.color;
+		ctx.lineWidth = 10;
+		ctx.strokeRect(
+			labelX - WIDTH / 2,
+			fNumberY - paramsConfig.size - ctx.lineWidth,
+			WIDTH,
+			2 * paramsConfig.size
+		);
+		ctx.strokeRect(
+			labelX - WIDTH / 2,
+			isoY - paramsConfig.size - ctx.lineWidth,
+			WIDTH,
+			2 * paramsConfig.size
+		);
+		ctx.strokeRect(
+			labelX - WIDTH / 2,
+			shutterSpeedY - paramsConfig.size - ctx.lineWidth,
+			WIDTH,
+			2 * paramsConfig.size
+		);
 	}
 
 	if (logoConfig.show) {
@@ -104,10 +107,10 @@ const doDraw: DrawFun = async (img, config, context) => {
 const config: Config = {
 	font: "微软雅黑",
 	paddings: {
-		top: 300, // 图片上边距
+		top: 500, // 图片上边距
 		right: 2000,
-		left: 400,
-		bottom: 400,
+		left: 500,
+		bottom: 500,
 	},
 	watermark: {
 		height: 0,
@@ -124,7 +127,7 @@ const config: Config = {
 			enable: true,
 			show: true,
 			color: "#FFF",
-			size: 160,
+			size: 130,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
 		},
@@ -148,15 +151,15 @@ const config: Config = {
 	},
 	blur: {
 		enable: true,
-		size: 1000,
+		size: 200,
 	},
 	logo: {
 		enable: true,
 		auto: true,
 		show: true,
 		name: "leica",
-		width: 300,
-		height: 300,
+		width: 500,
+		height: 500,
 	},
 	divider: {
 		enable: false,
@@ -174,6 +177,9 @@ const config: Config = {
 		size: 2,
 	},
 	draw: doDraw,
+	beforeDraw: async () => {
+		console.log("beforeDraw");
+	},
 };
 
 export default config;

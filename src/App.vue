@@ -576,6 +576,10 @@ const handleDraw = useDebounceFn(() => {
         bgColor
     } = watermark;
 
+    if (config.value.beforeDraw) {
+        config.value.beforeDraw(img, config.value);
+    }
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (e) => {
@@ -833,6 +837,9 @@ function importConfig(val: number): void {
             break;
         case 'watermark8':
             configPromise = import('./configs/watermark8');
+            break;
+        case 'watermark9':
+            configPromise = import('./configs/watermark9');
             break;
         default:
             configPromise = import('./configs/default');

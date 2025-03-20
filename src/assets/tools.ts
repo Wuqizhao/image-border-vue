@@ -76,17 +76,22 @@ const watermarkList = [
 	},
 	{
 		index: 2,
-		name: "单图标-哈苏（白）",
+		name: "纯图标",
 		config: "watermark6",
 	},
 	{
 		index: 3,
-		name: "图标+参数+时间垂直居中",
+		name: "经典模式",
 		config: "watermark7",
 	},
 	{
 		index: 4,
-		name: "样式8",
+		name: "经典模糊",
+		config: "watermark9",
+	},
+	{
+		index: 5,
+		name: "印象毛玻璃",
 		config: "watermark8",
 	},
 	// {
