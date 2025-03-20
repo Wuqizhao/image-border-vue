@@ -475,13 +475,14 @@ const selectFile = (append = false) => {
     input.onchange = (e) => {
         const target = e.target as HTMLInputElement;
         if (target === null || !target.files) throw new Error('图片不存在...');
+        const files = Array.from(target.files);
 
         // 追加
         if (append) {
-            fileList.value = [...fileList.value, ...Array.from(target.files)];
+            fileList.value = [...fileList.value, ...files];
         }
         else {
-            fileList.value = Array.from(target.files);
+            fileList.value = files;
         }
         const file = fileList.value[0];
         if (file !== curFile.value) {
