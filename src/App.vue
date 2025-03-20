@@ -8,7 +8,7 @@
         <div class="config-box">
             <div class="tabs-container">
                 <el-tabs v-model="activeName">
-                    <el-tab-pane label="基本信息" name="info">
+                    <el-tab-pane label="文件" name="info">
                         <HorizontalScroll class="img-list" v-if="fileList.length">
                             <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
                                 :src="item.url" @click="changeCurFile(fileList[index])"
@@ -81,7 +81,7 @@
                             </div>
                         </el-form>
                     </el-tab-pane>
-                    <el-tab-pane label="水印" name="watermark">
+                    <el-tab-pane label="调整" name="watermark">
                         <el-collapse accordion>
                             <el-collapse-item v-if="config.watermark.model.enable">
                                 <template #title>
