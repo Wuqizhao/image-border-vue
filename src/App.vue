@@ -517,9 +517,10 @@ const batchExport = () => {
 const enhancedFileList = computedAsync(async () => {
     return await Promise.all(fileList.value.map(async (file) => ({
         ...file,
-        url: await compressImage(file)
+        url: compressImage(file)
     })))
 })
+
 
 function resetText() {
     img.modelText = '';
@@ -575,7 +576,7 @@ const enhancedCameraBrands = computedAsync(async () => {
 
 async function getBrandImageThumbnail(logo: string) {
     const { pathname } = new URL(`./assets/logos/${logo}.png`, import.meta.url)
-    return await compressImage(pathname)
+    return compressImage(pathname)
 }
 
 const handleDraw = useDebounceFn(() => {
