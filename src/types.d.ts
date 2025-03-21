@@ -9,6 +9,7 @@ declare interface Config {
 		bottom: number;
 	};
 	watermark: {
+		position?: "bottom" | "top" | "left" | "right"; // 水印位置
 		height: number; // 基础高度
 		model: {
 			enable: boolean;
@@ -76,8 +77,8 @@ declare interface Config {
 		y: number;
 	};
 	draw: DrawFun;
-	beforeDraw?: (img: Img, config: Config, context?: Context) => void;
-	afterDraw?: (img: Img, config: Config, context?: Context) => void;
+	beforeDraw?: (canvas: HTMLCanvasElement) => void;
+	afterDraw?: () => void;
 }
 
 declare type DrawFun = (img: Img, config: Config, context: Context) => void;

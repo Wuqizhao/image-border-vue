@@ -2,16 +2,16 @@ import type { Config, DrawFun } from "../types";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
 	const { params: paramsConfig } = watermark;
-	const { ctx, canvas, exposureTime } = context;
+	const { ctx, canvas, exposureTime, rect1, rect2 } = context;
 
-	let rect1 = {
-		x: canvas.width - imgPaddings.right,
-		y: 0,
-	};
-	let rect2 = {
-		x: canvas.width,
-		y: canvas.height,
-	};
+	// let rect1 = {
+	// 	x: canvas.width - imgPaddings.right,
+	// 	y: 0,
+	// };
+	// let rect2 = {
+	// 	x: canvas.width,
+	// 	y: canvas.height,
+	// };
 
 	// const SPACE = 200;
 	const labelX = rect1.x + (2 * (rect2.x - rect1.x)) / 8;
@@ -33,7 +33,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// ctx.lineTo(paramsX, canvas.height);
 	// ctx.stroke();
 
-	const WIDTH = (rect2.x - rect1.x) / 4;
+	const WIDTH = (rect2.x - rect1.x) / 5;
 
 	// 绘制曝光三要素和焦段参数
 	if (paramsConfig.show) {
@@ -93,7 +93,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		).default;
 
 		logoImg.onload = () => {
-			const _x = canvas.width - imgPaddings.right / 2 - logoConfig.width / 2;
+			const _x = rect1.x + (rect2.x - rect1.x) / 2 - logoConfig.width / 2;
 			let _y = canvas.height / 3 - logoConfig.height / 2;
 			if (!paramsConfig.show) {
 				_y = canvas.height / 2 - logoConfig.height / 2;
@@ -108,12 +108,13 @@ const config: Config = {
 	font: "微软雅黑",
 	paddings: {
 		top: 500, // 图片上边距
-		right: 2000,
+		right: 0,
 		left: 500,
 		bottom: 500,
 	},
 	watermark: {
-		height: 0,
+		position: "right",
+		height: 0.4,
 		model: {
 			enable: false,
 			show: false,

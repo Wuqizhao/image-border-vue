@@ -27,15 +27,14 @@
                                 </el-select>
 
                                 <div style="padding-top: 5px;width: 100%;">
-                                    <el-button type="danger" plain @click="resetWatermark">重置样式</el-button>
-                                    <el-button @click="handleDraw" :disabled="!curFile" type="success"
-                                        plain>重新绘制</el-button>
+                                    <el-button plain @click="resetWatermark">重置样式</el-button>
+                                    <el-button @click="handleDraw" :disabled="!curFile" plain>重新绘制</el-button>
                                 </div>
                             </el-form-item>
                             <el-form-item label="基础高度">
                                 <el-input-number :min="0" :max="1" :step="0.01"
                                     v-model="config.watermark.height"></el-input-number>
-                                <p class="tips">图片高度的倍数，影响底部水印绘制范围的大小。</p>
+                                <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
                             </el-form-item>
                             <el-form-item label="字体">
                                 <el-select filterable v-model="config.font" clearable>
@@ -406,7 +405,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { print, cameraBrands, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
 import { download, deepClone, convertExposureTime, compressImage } from "./utils"
-import defaultWaterMark from './configs/default'
+import defaultWaterMark from './configs/watermark4'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img } from './types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
@@ -591,10 +590,6 @@ const handleDraw = useDebounceFn(() => {
         bgColor
     } = watermark;
 
-    if (config.value.beforeDraw) {
-        config.value.beforeDraw(img, config.value);
-    }
-
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (e) => {
@@ -646,9 +641,7 @@ const handleDraw = useDebounceFn(() => {
             const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
             const ctx = canvas.getContext("2d");
             if (!ctx) {
-                ElMessage.error({
-                    message: "没有找到画布",
-                });
+                ElMessage.error("没有找到画布~");
                 return;
             }
 
@@ -660,20 +653,27 @@ const handleDraw = useDebounceFn(() => {
                 realImgWidth + imgPaddings.left + imgPaddings.right;
             canvas.height =
                 realImgHeight + imgPaddings.top + imgPaddings.bottom;
-            canvas.height += config.value.watermark.height * canvas.height + 2 * watermarkPaddings.tb;
 
-            // 底部水印的坐标范围
-            const rect1 = {
-                x: imgPaddings.left,
-                y: realImgHeight +
+            const rect1 = { x: 0, y: 0 }; const rect2 = { x: 0, y: 0 };
+            if (config.value.watermark.position === "left" || config.value.watermark.position === "right") {
+                canvas.width += config.value.watermark.height * canvas.width + 2 * watermarkPaddings.lr;
+                // 底部水印的坐标范围
+                rect1.x = imgPaddings.left + realImgWidth;
+                rect1.y = imgPaddings.top;
+                rect2.x = canvas.width - imgPaddings.right;
+                rect2.y = canvas.height - watermarkPaddings.tb - imgPaddings.bottom;
+            }
+            else {
+                canvas.height += config.value.watermark.height * canvas.height + 2 * watermarkPaddings.tb;
+
+                rect1.x = imgPaddings.left;
+                rect1.y = realImgHeight +
                     imgPaddings.top +
                     imgPaddings.bottom +
-                    watermarkPaddings.tb,
-            };
-            const rect2 = {
-                x: canvas.width - imgPaddings.right,
-                y: canvas.height - watermarkPaddings.tb,
-            };
+                    watermarkPaddings.tb;
+                rect2.x = canvas.width - imgPaddings.right;
+                rect2.y = canvas.height - watermarkPaddings.tb;
+            }
 
             if (blurConfig.enable) {
                 ctx.save();
@@ -806,7 +806,7 @@ const handleDraw = useDebounceFn(() => {
             if (auxiliaryLines.watermarkRange) {
                 ctx.save();
                 ctx.lineWidth = 10;
-                ctx.strokeStyle = "#FF0000";
+                ctx.strokeStyle = "#00FF00";
                 ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
                 ctx.restore();
             }
@@ -834,18 +834,9 @@ function importConfig(val: number): void {
         case 'watermark1':
             configPromise = import('./configs/watermark1');
             break;
-        // case 'watermark2':
-        //     configPromise = import('./configs/watermark2');
-        //     break;
-        // case 'watermark3':
-        //     configPromise = import('./configs/watermark3');
-        //     break;
         case 'watermark4':
             configPromise = import('./configs/watermark4');
             break;
-        // case 'watermark5':
-        //     configPromise = import('./configs/watermark5');
-        //     break;
         case 'watermark6':
             configPromise = import('./configs/watermark6');
             break;
@@ -859,7 +850,7 @@ function importConfig(val: number): void {
             configPromise = import('./configs/watermark9');
             break;
         default:
-            configPromise = import('./configs/default');
+            configPromise = import('./configs/watermark4');
             break;
     }
     configPromise.then(res => {
@@ -1026,6 +1017,7 @@ const preview = () => {
     color: gray;
     font-size: 12px;
     width: 100%;
+    line-height: 20px;
 
     &::before {
         content: '* ';
