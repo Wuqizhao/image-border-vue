@@ -443,7 +443,7 @@ const fileList = ref<File[]>([]);
 const config = ref<Config>(defaultWaterMark);
 
 const watermarks = reactive(watermarkList)
-const curWatermarkIndex = ref<number>(0)
+const curWatermarkIndex = ref<number>(1)
 const activeName = ref<string>('info')
 const batchExportVisible = ref(false);
 
@@ -831,8 +831,8 @@ function importConfig(val: number): void {
     // 导入
     let configPromise = null;
     switch (watermark[0].config) {
-        case 'watermark1':
-            configPromise = import('./configs/watermark1');
+        case 'default':
+            configPromise = import('./configs/default');
             break;
         case 'watermark4':
             configPromise = import('./configs/watermark4');
