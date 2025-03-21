@@ -1,19 +1,9 @@
 import type { Config, DrawFun } from "../types";
 const doDraw: DrawFun = async (img, config, context) => {
-	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
+	const { watermark, logo: logoConfig } = config;
 	const { params: paramsConfig } = watermark;
 	const { ctx, canvas, exposureTime, rect1, rect2 } = context;
 
-	// let rect1 = {
-	// 	x: canvas.width - imgPaddings.right,
-	// 	y: 0,
-	// };
-	// let rect2 = {
-	// 	x: canvas.width,
-	// 	y: canvas.height,
-	// };
-
-	// const SPACE = 200;
 	const labelX = rect1.x + (2 * (rect2.x - rect1.x)) / 8;
 	const paramsX = rect1.x + (5 * (rect2.x - rect1.x)) / 8;
 
