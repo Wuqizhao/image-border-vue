@@ -89,7 +89,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.restore();
 	}
 
-	const space = 0.5 * logoConfig.width * dividerConfig.margin; // 间隔
+	const space = paramsConfig.size * dividerConfig.margin;
 
 	// 计算横坐标
 	const _x =

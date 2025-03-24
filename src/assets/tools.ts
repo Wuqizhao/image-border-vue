@@ -20,6 +20,7 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "富士", logo: "fuji", make: ["FUJIFILM"] },
 	{ name: "松下", logo: "panasonic" },
 	{ name: "小米", logo: "xiaomi", make: ["Xiaomi"] },
+	{ name: "小米-2", logo: "xiaomi-2" },
 	{ name: "小米汽车", logo: "xiaomi-car" },
 	{ name: "华为", logo: "huawei" },
 	{ name: "华为(黑)", logo: "huawei-black" },
