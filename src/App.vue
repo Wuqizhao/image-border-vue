@@ -299,7 +299,6 @@
 
                         <el-form label-width="80">
                             <h3>阴影</h3>
-                            <el-alert type="warning" description="效果不佳，此项功能完善中..." :closable="false"></el-alert>
                             <el-form-item label="显示">
                                 <el-switch v-model="config.shadow.show"></el-switch>
                             </el-form-item>
@@ -675,6 +674,21 @@ const handleDraw = useDebounceFn(() => {
                 rect2.y = canvas.height - watermarkPaddings.tb;
             }
 
+            // 绘制阴影
+            if (shadowConfig.show) {
+                ctx.save();
+                ctx.fillStyle = shadowConfig.color;
+                ctx.filter = `blur(${shadowConfig.size}px)`;
+                ctx.fillRect(
+                    imgPaddings.left + shadowConfig.x,
+                    imgPaddings.top + shadowConfig.y,
+                    realImgWidth,
+                    realImgHeight
+                );
+                ctx.restore();
+            }
+
+            // 绘制背景
             if (blurConfig.enable) {
                 ctx.save();
                 ctx.filter = `blur(${blurConfig.size}px)`;
@@ -689,19 +703,67 @@ const handleDraw = useDebounceFn(() => {
             }
 
             // 绘制阴影
+            // 绘制阴影
             if (shadowConfig.show) {
                 ctx.save();
-                // 绘制矩形阴影
                 ctx.fillStyle = shadowConfig.color;
-                // 模糊
                 ctx.filter = `blur(${shadowConfig.size}px)`;
 
-                ctx.fillRect(
-                    imgPaddings.left + shadowConfig.x - shadowConfig.size,
-                    imgPaddings.top + shadowConfig.y - shadowConfig.size,
-                    realImgWidth + shadowConfig.size,
-                    realImgHeight + shadowConfig.size
-                );
+                // 应用圆角效果
+                if (radiusConfig.show) {
+                    const radius = radiusConfig.size;
+                    ctx.beginPath();
+                    ctx.moveTo(imgPaddings.left + shadowConfig.x + radius, imgPaddings.top + shadowConfig.y);
+                    ctx.lineTo(
+                        canvas.width - imgPaddings.right - shadowConfig.x - radius,
+                        imgPaddings.top + shadowConfig.y
+                    );
+                    ctx.quadraticCurveTo(
+                        canvas.width - imgPaddings.right - shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y,
+                        canvas.width - imgPaddings.right - shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y + radius
+                    );
+                    ctx.lineTo(
+                        canvas.width - imgPaddings.right - shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y + img.height - radius
+                    );
+                    ctx.quadraticCurveTo(
+                        canvas.width - imgPaddings.right - shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y + img.height,
+                        canvas.width - imgPaddings.right - shadowConfig.x - radius,
+                        imgPaddings.top + shadowConfig.y + img.height
+                    );
+                    ctx.lineTo(
+                        imgPaddings.left + shadowConfig.x + radius,
+                        imgPaddings.top + shadowConfig.y + img.height
+                    );
+                    ctx.quadraticCurveTo(
+                        imgPaddings.left + shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y + img.height,
+                        imgPaddings.left + shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y + img.height - radius
+                    );
+                    ctx.lineTo(
+                        imgPaddings.left + shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y + radius
+                    );
+                    ctx.quadraticCurveTo(
+                        imgPaddings.left + shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y,
+                        imgPaddings.left + shadowConfig.x + radius,
+                        imgPaddings.top + shadowConfig.y
+                    );
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    ctx.fillRect(
+                        imgPaddings.left + shadowConfig.x,
+                        imgPaddings.top + shadowConfig.y,
+                        img.width,
+                        img.height
+                    );
+                }
                 ctx.restore();
             }
 

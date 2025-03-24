@@ -165,7 +165,7 @@ const config: Config = {
 		},
 		paddings: {
 			lr: 100,
-			tb: 150,
+			tb: 120,
 		},
 		bgColor: "#FFF",
 	},
@@ -199,7 +199,7 @@ const config: Config = {
 		color: "#808080",
 		x: 0,
 		y: 0,
-		size: 2,
+		size: 50,
 	},
 	draw: doDraw,
 };
