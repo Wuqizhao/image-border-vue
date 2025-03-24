@@ -1,3 +1,6 @@
+import { ElMessage } from "element-plus";
+import type { ImgExt } from "../types";
+
 // 转换曝光时间的函数
 export function convertExposureTime(exposureTime: number) {
 	if (exposureTime < 1) {
@@ -7,13 +10,41 @@ export function convertExposureTime(exposureTime: number) {
 	}
 }
 
-export function download(name: string, quality: number = 1) {
+export async function download(
+	name: string,
+	quality: number = 1,
+	ext: ImgExt = "jpeg"
+) {
 	const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
 	if (!canvas) throw new Error("canvas不存在");
-	const a = document.createElement("a");
-	a.href = canvas.toDataURL("image/jpeg", quality);
-	a.download = name;
-	a.click();
+
+	try {
+		// 使用 toBlob 异步生成图片数据
+		const mimeType = `image/${ext.toLowerCase()}`;
+		await new Promise<void>((resolve, reject) => {
+			canvas.toBlob(
+				(blob) => {
+					if (!blob) {
+						reject(new Error("无法生成图片 Blob"));
+						return;
+					}
+
+					// 创建临时链接并触发下载
+					const a = document.createElement("a");
+					const url = URL.createObjectURL(blob);
+					a.href = url;
+					a.download = `${name}.${ext}`;
+					a.click();
+					URL.revokeObjectURL(url); // 释放内存
+					resolve();
+				},
+				mimeType,
+				quality
+			);
+		});
+	} catch (error) {
+		ElMessage.error("导出失败:" + error);
+	}
 }
 
 // 深拷贝对象，包含函数

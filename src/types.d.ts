@@ -1,3 +1,4 @@
+import type { de } from "element-plus/es/locales.mjs";
 import type { Exifr, Tags } from "exifr";
 
 declare interface Config {
@@ -107,6 +108,7 @@ declare interface Img {
 	export: {
 		name: string;
 		quality: number;
+		ext: ImgExt;
 	};
 	exif: any;
 	modelText: string;
@@ -120,4 +122,6 @@ declare type CameraBrands = {
 	make?: string[]; // 自动匹配logo时使用的厂商名称
 };
 
-export { Config, Img, DrawFun, CameraBrands };
+declare type ImgExt = "jpeg" | "png";
+
+export { Config, Img, DrawFun, CameraBrands,ImgExt };

@@ -364,12 +364,19 @@
                                 <el-input v-model="img.export.name" :disabled="!curFile" placeholder="留空则由浏览器决定"
                                     clearable></el-input>
                             </el-form-item>
+                            <el-form-item label="格式">
+                                <el-radio-group v-model="img.export.ext">
+                                    <el-radio value="jpeg">JPEG</el-radio>
+                                    <el-radio value="png">PNG(支持透明背景)</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
                             <el-form-item label="导出质量">
                                 <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
                                     :format-tooltip="(val) => val * 100 + '%'" show-input></el-slider>
                             </el-form-item>
                             <el-form-item label="导出">
-                                <el-button type="primary" plain @click="download(img.export.name, img.export.quality)"
+                                <el-button type="primary" plain
+                                    @click="download(img.export.name, img.export.quality, img.export.ext)"
                                     :disabled="!curFile">导出当前图片</el-button>
                                 <el-button v-show="fileList.length > 1" type="success" plain
                                     @click="batchExportVisible = true">批量导出</el-button>
@@ -420,7 +427,7 @@ const auxiliaryLines = reactive({
     watermarkRange: false, // 水印范围
 })
 
-const defaultImgValue = {
+const defaultImgValue: Img = {
     width: 0,
     height: 0,
     fileName: '',
@@ -430,6 +437,7 @@ const defaultImgValue = {
     export: {
         name: '',
         quality: 1,
+        ext: 'jpeg'
     },
     exif: {},
     modelText: '',
@@ -533,7 +541,7 @@ function changeCurFile(file: File | null) {
     };
     // 更新基本信息
     img.fileName = file.name;
-    img.export.name = img.export.name || "WM_" + file.name;
+    img.export.name = (img.export.name || "WM_" + file.name).split('.')[0];
     img.size = (file.size / 1024 / 1024).toFixed(2) + "MB";
     img.type = file.type;
     img.time = formatDate(new Date(file.lastModified), 'YYYY-MM-DD HH:mm:ss');
