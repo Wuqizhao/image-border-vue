@@ -61,6 +61,8 @@ declare interface Config {
 		width: number;
 		height: number;
 		verticalOffset?: number;
+		// 自定义url
+		url?: string;
 	};
 	divider: {
 		enable: boolean; // 是否支持

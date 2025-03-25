@@ -72,6 +72,8 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "南极人", logo: "njr" },
 	{ name: "拼多多", logo: "pdd" },
 	{ name: "菠萝", logo: "boluo" },
+	{ name: "头像1", logo: "https://q1.qlogo.cn/g?b=qq&nk=2314571340&s=100" },
+	{ name: "头像2", logo: "https://q1.qlogo.cn/g?b=qq&nk=2869361496&s=100" },
 ];
 
 const watermarkList = [

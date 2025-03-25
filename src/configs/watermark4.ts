@@ -105,9 +105,16 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制LOGO
 	if (logoConfig.show) {
 		const logoImg = new Image();
-		logoImg.src = (
-			await import(`../assets/logos/${logoConfig.name}.png`)
-		).default;
+
+		if (logoConfig.url) {
+			logoImg.src = logoConfig.url;
+		} else if (logoConfig.name.startsWith("http")) {
+			logoImg.src = logoConfig.name;
+		} else {
+			logoImg.src = (
+				await import(`../assets/logos/${logoConfig.name}.png`)
+			).default;
+		}
 		logoImg.onload = () => {
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};

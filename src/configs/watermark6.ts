@@ -6,9 +6,17 @@ const doDraw: DrawFun = async (_, config, context) => {
 
 	if (logoConfig.show) {
 		const logoImg = new Image();
-		logoImg.src = (
-			await import(`../assets/logos/${logoConfig.name}.png`)
-		).default;
+
+		if (logoConfig.url) {
+			logoImg.src = logoConfig.url;
+		} else if (logoConfig.name.startsWith("http")) {
+			logoImg.src = logoConfig.name;
+		} else {
+			logoImg.src = (
+				await import(`../assets/logos/${logoConfig.name}.png`)
+			).default;
+		}
+
 		logoImg.onload = () => {
 			const logoX = canvas.width / 2 - logoConfig.width / 2;
 			const logoY =

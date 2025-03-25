@@ -231,8 +231,8 @@
                                             <p class="tips">支持列表：尼康、佳能、索尼、大疆、富士、徕卡、苹果、一加、vivo、小米~</p>
                                         </el-form-item>
                                         <el-form-item label="手动选择" v-if="!config.logo.auto">
-                                            <el-select filterable placeholder="选择logo" style="width: 200px;"
-                                                v-model="config.logo.name">
+                                            <el-select filterable placeholder="选择logo" :disabled="!!config.logo?.url"
+                                                style="width: 200px;" v-model="config.logo.name">
                                                 <el-option v-for="item in enhancedCameraBrands" :label="item.name"
                                                     :key="item.name" :value="item.logo">
                                                     <div style="display: flex;align-items: center;gap: 10px;">
@@ -242,6 +242,11 @@
                                                     </div>
                                                 </el-option>
                                             </el-select>
+                                            <p class="tips" v-if="config.logo.url">您已输入logo地址，选择被禁用</p>
+                                        </el-form-item>
+                                        <el-form-item label="输入地址">
+                                            <el-input v-model="config.logo.url" placeholder="输入logo地址（http(s)://...）"
+                                                clearable></el-input>
                                         </el-form-item>
                                         <el-form-item label="宽度">
                                             <el-input-number v-model="config.logo.width" :min="0" :max="5000"
@@ -581,6 +586,7 @@ const enhancedCameraBrands = computedAsync(async () => {
 })
 
 async function getBrandImageThumbnail(logo: string) {
+    if (logo.startsWith('http')) return logo;
     const { pathname } = new URL(`./assets/logos/${logo}.png`, import.meta.url)
     return compressImage(pathname)
 }
