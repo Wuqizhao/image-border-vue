@@ -17,10 +17,10 @@ export async function download(
 ) {
 	const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
 	if (!canvas) throw new Error("canvas不存在");
+	const mimeType = `image/${ext.toLowerCase()}`;
 
 	try {
 		// 使用 toBlob 异步生成图片数据
-		const mimeType = `image/${ext.toLowerCase()}`;
 		await new Promise<void>((resolve, reject) => {
 			canvas.toBlob(
 				(blob) => {
@@ -43,7 +43,7 @@ export async function download(
 			);
 		});
 	} catch (error) {
-		ElMessage.error("导出失败:" + error);
+		ElMessage.error("图片导出失败:" + error);
 	}
 }
 

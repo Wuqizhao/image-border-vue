@@ -1,3 +1,4 @@
+import { ElMessage } from "element-plus";
 import type { Config, DrawFun } from "../types";
 
 const doDraw: DrawFun = async (img, config, context) => {
@@ -117,6 +118,10 @@ const doDraw: DrawFun = async (img, config, context) => {
 		}
 		logoImg.onload = () => {
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
+		};
+		logoImg.onerror = (err) => {
+			console.log(err);
+			ElMessage.error("LOGO加载失败:" + err);
 		};
 	}
 
