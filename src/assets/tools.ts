@@ -112,6 +112,11 @@ const watermarkList = [
 		name: "时间+型号",
 		config: "时间+型号",
 	},
+	{
+		index: 7,
+		name: "小米徕卡2",
+		config: "小米徕卡2",
+	},
 ];
 
 // 获取本地浏览器支持的字体

@@ -933,6 +933,9 @@ function importConfig(val: number): void {
         case '时间+型号':
             configPromise = import('./configs/时间+型号');
             break;
+        case '小米徕卡2':
+            configPromise = import('./configs/小米徕卡2');
+            break;
         default:
             configPromise = import('./configs/watermark4');
             break;
