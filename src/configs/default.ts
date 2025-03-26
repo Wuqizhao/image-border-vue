@@ -47,7 +47,9 @@ const doDraw: DrawFun = (img, config, context) => {
 	if (paramsConfig.show) {
 		ctx.save();
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `${paramsConfig.size}px ${config.font}`;
+		ctx.font = `${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${
+			config.font
+		}`;
 		ctx.textBaseline = "middle";
 
 		let _y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
@@ -108,6 +110,7 @@ const config: Config = {
 			size: 100,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
+			italic: false,
 		},
 		time: {
 			enable: true,

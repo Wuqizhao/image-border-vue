@@ -29,7 +29,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	if (paramsConfig.show) {
 		// 光圈
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `bolder Italic ${paramsConfig.size}px ${config.font}`;
+		ctx.font = `bolder ${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${config.font}`;
 		ctx.textBaseline = "middle";
 
 		let fNumberY = canvas.height / 2;
@@ -140,6 +140,7 @@ const config: Config = {
 			size: 130,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
+			italic: true,
 		},
 		time: {
 			enable: false,

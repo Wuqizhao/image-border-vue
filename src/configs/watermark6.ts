@@ -66,6 +66,7 @@ const config: Config = {
 			size: 14,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
+			italic: false,
 		},
 		time: {
 			enable: false,

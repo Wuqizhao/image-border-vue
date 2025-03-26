@@ -95,7 +95,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制参数
 	if (paramsConfig.show) {
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `${paramsConfig.size}px ${config.font}`;
+		ctx.font = `${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${config.font}`;
 		ctx.textBaseline = "middle";
 		ctx.textAlign = "center";
 
@@ -150,6 +150,7 @@ const config: Config = {
 			size: 100,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
+			italic: false,
 		},
 		time: {
 			enable: true,

@@ -30,6 +30,8 @@ declare interface Config {
 			useEquivalentFocalLength: boolean;
 			// 字母大写
 			letterUpperCase: boolean;
+			// 斜体
+			italic: boolean;
 		};
 		time: {
 			enable: boolean;

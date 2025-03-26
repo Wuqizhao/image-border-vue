@@ -148,12 +148,14 @@
                                                 :max="1000"></el-input-number>
                                         </el-form-item>
                                         <el-form-item label="字母大写">
-                                            <el-switch v-model="config.watermark.params.letterUpperCase"
-                                                :active-value="true" :inactive-value="false"></el-switch>
+                                            <el-switch v-model="config.watermark.params.letterUpperCase"></el-switch>
                                         </el-form-item>
                                         <el-form-item label="等效焦距">
-                                            <el-switch v-model="config.watermark.params.useEquivalentFocalLength"
-                                                :active-value="true" :inactive-value="false"></el-switch>
+                                            <el-switch
+                                                v-model="config.watermark.params.useEquivalentFocalLength"></el-switch>
+                                        </el-form-item>
+                                        <el-form-item label="斜体文字">
+                                            <el-switch v-model="config.watermark.params.italic"></el-switch>
                                         </el-form-item>
                                     </div>
                                 </el-form>
