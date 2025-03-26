@@ -136,6 +136,7 @@ const config: Config = {
 		width: 300,
 		height: 300,
 		verticalOffset: 1,
+		circle: false,
 	},
 	divider: {
 		enable: false,

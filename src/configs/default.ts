@@ -138,6 +138,8 @@ const config: Config = {
 		name: "leica",
 		width: 40,
 		height: 40,
+		circle: false,
+		verticalOffset: 1,
 	},
 	divider: {
 		enable: false,

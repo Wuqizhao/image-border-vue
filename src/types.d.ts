@@ -60,7 +60,10 @@ declare interface Config {
 		name: string;
 		width: number;
 		height: number;
-		verticalOffset?: number;
+		// 垂直偏移
+		verticalOffset: number;
+		// 是否圆形图片
+		circle: boolean;
 		// 自定义url
 		url?: string;
 	};

@@ -117,6 +117,19 @@ const doDraw: DrawFun = async (img, config, context) => {
 			).default;
 		}
 		logoImg.onload = () => {
+			if (logoConfig.circle) {
+				// 绘制圆形LOGO
+				ctx.beginPath();
+				ctx.arc(
+					logoX + logoConfig.width / 2,
+					logoY + logoConfig.height / 2,
+					logoConfig.width / 2,
+					0,
+					Math.PI * 2
+				);
+				ctx.clip();
+			}
+
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};
 		logoImg.onerror = (err) => {
@@ -197,6 +210,8 @@ const config: Config = {
 		width: 200,
 		height: 200,
 		name: "leica",
+		circle: true,
+		verticalOffset: 1,
 	},
 	divider: {
 		enable: true,

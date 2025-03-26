@@ -86,6 +86,7 @@ const config: Config = {
 		width: 400,
 		height: 400,
 		verticalOffset: 1,
+		circle: false,
 	},
 	divider: {
 		enable: false,

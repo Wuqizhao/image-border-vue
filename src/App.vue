@@ -264,6 +264,9 @@
                                                 :step="10">
                                             </el-input-number>
                                         </el-form-item>
+                                        <el-form-item label="圆形logo">
+                                            <el-switch v-model="config.logo.circle"></el-switch>
+                                        </el-form-item>
                                         <el-form-item label="垂直偏移" v-if="config.logo.verticalOffset !== undefined">
                                             <el-input-number v-model="config.logo.verticalOffset" :min="-10" :max="10"
                                                 :step="0.01">
@@ -377,9 +380,9 @@
                             </el-form-item>
                             <el-form-item label="导出质量">
                                 <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
-                                    :format-tooltip="(val) => val * 100 + '%'" show-input></el-slider>
+                                    :format-tooltip="(val) => (val * 100).toFixed(0) + '%'" show-input></el-slider>
                             </el-form-item>
-                            <el-form-item label="导出">
+                            <el-form-item label="">
                                 <el-button type="primary" plain
                                     @click="download(img.export.name, img.export.quality, img.export.ext)"
                                     :disabled="!curFile">导出当前图片</el-button>
