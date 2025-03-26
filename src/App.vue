@@ -358,8 +358,7 @@
                             </el-form-item>
                             <h3>水印边距</h3>
                             <el-form-item label="左右边距">
-                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="2000"
-                                    :disabled="config.watermark.height <= 0" :step="10"></el-input-number>
+                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="2000" :step="10"></el-input-number>
                             </el-form-item>
                             <el-form-item label="上下边距">
                                 <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="2000"
@@ -930,6 +929,9 @@ function importConfig(val: number): void {
             break;
         case 'watermark9':
             configPromise = import('./configs/watermark9');
+            break;
+        case '时间+型号':
+            configPromise = import('./configs/时间+型号');
             break;
         default:
             configPromise = import('./configs/watermark4');

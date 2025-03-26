@@ -107,6 +107,11 @@ const watermarkList = [
 		name: "印象毛玻璃",
 		config: "watermark8",
 	},
+	{
+		index: 6,
+		name: "时间+型号",
+		config: "时间+型号",
+	},
 ];
 
 // 获取本地浏览器支持的字体
