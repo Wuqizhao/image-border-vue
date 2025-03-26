@@ -24,6 +24,17 @@ const doDraw: DrawFun = async (_, config, context) => {
 				logoConfig.height -
 				(logoConfig.verticalOffset || 1) * 1.6 * imgPaddings.bottom;
 
+			if (logoConfig.circle) {
+				ctx.beginPath();
+				ctx.arc(
+					logoX + logoConfig.width / 2,
+					logoY + logoConfig.height / 2,
+					logoConfig.width / 2,
+					0,
+					Math.PI * 2
+				);
+				ctx.clip();
+			}
 			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
 		};
 	}

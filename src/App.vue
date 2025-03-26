@@ -719,7 +719,8 @@ const handleDraw = useDebounceFn(() => {
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            // 绘制阴影
+
+
             // 绘制阴影
             if (shadowConfig.show) {
                 ctx.save();

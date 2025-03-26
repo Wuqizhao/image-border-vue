@@ -69,6 +69,18 @@ const doDraw: DrawFun = async (img, config, context) => {
 				logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height;
 			}
 
+			ctx.save();
+			if (logoConfig.circle) {
+				ctx.beginPath();
+				ctx.arc(
+					logoX + logoConfig.width / 2,
+					logoY + logoConfig.height / 2,
+					logoConfig.width / 2,
+					0,
+					Math.PI * 2
+				);
+				ctx.clip();
+			}
 			ctx.drawImage(
 				logoImg,
 				logoX,
@@ -76,6 +88,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 				logoConfig.width,
 				logoConfig.height
 			);
+			ctx.restore();
 		};
 	}
 

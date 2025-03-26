@@ -40,7 +40,6 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 		// ISO
 		let isoY = (3 * canvas.height) / 5;
-		// ctx.fillText(`ISO    ${img.exif?.ISO}`, _x, isoY);
 		ctx.textAlign = "center";
 		ctx.fillText("ISO", labelX, isoY);
 		ctx.textAlign = "left";
@@ -95,7 +94,21 @@ const doDraw: DrawFun = async (img, config, context) => {
 				_y = canvas.height / 2 - logoConfig.height / 2;
 			}
 
+
+			ctx.save();
+			if (logoConfig.circle) {
+				ctx.beginPath();
+				ctx.arc(
+					_x + logoConfig.width / 2,
+					_y + logoConfig.height / 2,
+					logoConfig.width / 2,
+					0,
+					Math.PI * 2
+				);
+				ctx.clip();
+			}
 			ctx.drawImage(logoImg, _x, _y, logoConfig.width, logoConfig.height);
+			ctx.restore();
 		};
 	}
 };
