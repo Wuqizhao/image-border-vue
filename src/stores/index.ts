@@ -1,5 +1,15 @@
-import { createPinia } from "pinia";
+import { defineStore } from "pinia";
+import type { LocalWaterMarkItem } from "../types";
 
-const pinia = createPinia();
-
-export default pinia;
+export const useStore = defineStore("store", {
+	state: () => {
+		return {
+			localWatermarks: [] as LocalWaterMarkItem[],
+		};
+	},
+	actions: {
+		addWatermark(data: LocalWaterMarkItem) {
+			this.localWatermarks.push(data);
+		},
+	},
+});

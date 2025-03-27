@@ -131,4 +131,12 @@ declare type CameraBrands = {
 
 declare type ImgExt = "jpeg" | "png";
 
-export { Config, Img, DrawFun, CameraBrands,ImgExt };
+// 保存在pinia的单个水印配置
+declare type LocalWaterMarkItem = {
+	name: string;
+	config: Config;
+};
+
+
+
+export { Config, Img, DrawFun, CameraBrands, ImgExt, LocalWaterMarkItem };

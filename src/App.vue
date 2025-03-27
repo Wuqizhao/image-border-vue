@@ -76,6 +76,7 @@
                                     <b style="margin-left: 20px;">水印水平中心线：</b>
                                     <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
                                     <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
+                                    <el-button style="margin-left: 10px;" @click="showConfigDialog">保存当前配置</el-button>
                                 </el-form-item>
                             </div>
                         </el-form>
@@ -308,7 +309,7 @@
                         </el-form>
 
                         <el-form label-width="80">
-                            <h3>阴影</h3>
+                            <h3 style="margin-left: 10px;">阴影</h3>
                             <el-form-item label="显示">
                                 <el-switch v-model="config.shadow.show"></el-switch>
                             </el-form-item>
@@ -358,7 +359,8 @@
                             </el-form-item>
                             <h3>水印边距</h3>
                             <el-form-item label="左右边距">
-                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="2000" :step="10"></el-input-number>
+                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="2000"
+                                    :step="10"></el-input-number>
                             </el-form-item>
                             <el-form-item label="上下边距">
                                 <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="2000"
@@ -398,6 +400,7 @@
             <el-backtop :right="10" :bottom="100" />
         </div>
 
+        <!-- 批量导出 -->
         <el-dialog title="批量导出" v-model="batchExportVisible"
             style="max-width: 95%;width: fit-content;min-width: 300px;">
             <el-table :data="fileList" style="width: 100%;">
@@ -413,6 +416,21 @@
                 <el-button type="primary" @click="batchExport">全部导出</el-button>
             </template>
         </el-dialog>
+
+        <el-dialog title="保存配置" v-model="saveConfigDialog.show">
+            <el-form label-width="80">
+                <el-form-item label="配置名称">
+                    <el-input v-model="saveConfigDialog.name" placeholder="请输入配置名称" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="配置描述">
+                    <el-input v-model="saveConfigDialog.config" placeholder="请输入配置描述" clearable type="textarea"
+                        :rows="20"></el-input>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <el-button type="primary" @click="saveConfig">保存</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -422,10 +440,12 @@ import { print, cameraBrands, watermarkList, getSupportedFonts, preDefineColors 
 import { download, deepClone, convertExposureTime, compressImage } from "./utils"
 import defaultWaterMark from './configs/watermark4'
 import { ElMessage, ElNotification } from 'element-plus'
-import type { Config, Img } from './types'
+import type { Config, Img, LocalWaterMarkItem } from './types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
 import HorizontalScroll from './components/HorizontalScroll.vue'
+import { useStore } from './stores';
+const store = useStore();
 
 const isDev = computed(() => import.meta.env.DEV)
 // 辅助线配置
@@ -462,6 +482,11 @@ const watermarks = reactive(watermarkList)
 const curWatermarkIndex = ref<number>(1)
 const activeName = ref<string>('info')
 const batchExportVisible = ref(false);
+const saveConfigDialog = reactive({
+    show: false,
+    name: '',
+    config: '',
+})
 
 const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -536,7 +561,6 @@ const enhancedFileList = computedAsync(async () => {
     })))
 })
 
-
 function resetText() {
     img.modelText = '';
     img.paramsText = '';
@@ -566,6 +590,38 @@ const resetWatermark = () => {
         message: "已重置水印样式",
     });
 }
+
+const showConfigDialog = () => {
+    // 弹出对话框
+    saveConfigDialog.show = true;
+    saveConfigDialog.config = JSON.stringify(config.value, null, 4);
+}
+
+const saveConfig = () => {
+    if (saveConfigDialog.name.trim() === '') {
+        ElMessage.error('请输入配置名称~');
+        return;
+    }
+
+    try {
+        const config = JSON.parse(JSON.stringify(saveConfigDialog.config));
+
+        const watermark: LocalWaterMarkItem = {
+            name: saveConfigDialog.name,
+            config: config
+        };
+
+        // 保存到pinia
+        store.addWatermark(watermark);
+
+        saveConfigDialog.show = false;
+        ElMessage.success('保存成功~');
+    }
+    catch (e) {
+        ElMessage.error('保存失败:格式错误！' + e);
+    }
+}
+
 
 // 监听
 watch(curWatermarkIndex, (newIndex) => {

@@ -2,9 +2,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ],
   },
   "files": [],
   "references": [

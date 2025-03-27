@@ -73,7 +73,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const exposureText = paramsConfig.letterUpperCase
 			? exposure.toUpperCase()
 			: exposure;
-		const iso = "ISO " + img.exif.ISO;
+		const iso = "iso " + img.exif.ISO;
 		const isoText = paramsConfig.letterUpperCase ? iso.toUpperCase() : iso;
 		// 计算总宽度
 		apertureWidth = ctx.measureText(apertureText).width;
@@ -218,9 +218,9 @@ const config: Config = {
 	shadow: {
 		show: false,
 		color: "#808080",
-		x: 20,
-		y: 20,
-		size: 2,
+		x: 0,
+		y: 0,
+		size: 20,
 	},
 	draw: doDraw,
 };

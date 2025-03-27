@@ -185,9 +185,9 @@ const config: Config = {
 	shadow: {
 		show: false,
 		color: "#808080",
-		x: 20,
-		y: 20,
-		size: 2,
+		x: 0,
+		y: 0,
+		size: 20,
 	},
 	draw: doDraw,
 	beforeDraw: async () => {
