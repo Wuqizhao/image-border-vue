@@ -137,6 +137,22 @@ declare type LocalWaterMarkItem = {
 	config: Config;
 };
 
+declare type WatermarkListBaseItem = {
+	name: string;
+	config: string;
+};
+declare type WatermarkListItem = WatermarkListBaseItem & {
+	index: number;
+	is_local?: boolean;
+};
 
-
-export { Config, Img, DrawFun, CameraBrands, ImgExt, LocalWaterMarkItem };
+export {
+	Config,
+	Img,
+	DrawFun,
+	CameraBrands,
+	ImgExt,
+	LocalWaterMarkItem,
+	WatermarkListItem,
+	WatermarkListBaseItem,
+};

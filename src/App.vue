@@ -436,11 +436,11 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { print, cameraBrands, watermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
+import { print, cameraBrands, getWatermarkList, getSupportedFonts, preDefineColors } from './assets/tools'
 import { download, deepClone, convertExposureTime, compressImage } from "./utils"
 import defaultWaterMark from './configs/watermark4'
 import { ElMessage, ElNotification } from 'element-plus'
-import type { Config, Img, LocalWaterMarkItem } from './types'
+import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from './types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
 import HorizontalScroll from './components/HorizontalScroll.vue'
@@ -478,8 +478,8 @@ const curFile = ref<File | null>(null)
 const fileList = ref<File[]>([]);
 const config = ref<Config>(defaultWaterMark);
 
-const watermarks = reactive(watermarkList)
-const curWatermarkIndex = ref<number>(1)
+const watermarks = ref<WatermarkListItem[]>(getWatermarkList())
+const curWatermarkIndex = ref<number>(0)
 const activeName = ref<string>('info')
 const batchExportVisible = ref(false);
 const saveConfigDialog = reactive({
@@ -963,11 +963,22 @@ const handleDraw = useDebounceFn(() => {
 
 function importConfig(val: number): void {
     // 获取对应的水印
-    const watermark = watermarks.filter(item => item.index == val)
+    const watermark: WatermarkListItem | undefined = watermarks.value.filter(item => item.index == val).shift()
 
+    if (watermark === undefined) {
+        ElMessage.error('未找到匹配的水印配置！');
+        return;
+    }
     // 导入
+    if (watermark.is_local) {
+        console.log('转换后', (watermark.config));
+        config.value = JSON.parse(watermark.config)
+        return;
+    }
+
+
     let configPromise = null;
-    switch (watermark[0].config) {
+    switch (watermark.config) {
         case 'default':
             configPromise = import('./configs/default');
             break;

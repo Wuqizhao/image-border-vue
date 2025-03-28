@@ -1,4 +1,11 @@
-import type { CameraBrands, Config, Img } from "../types";
+import type {
+	CameraBrands,
+	Config,
+	Img,
+	WatermarkListBaseItem,
+	WatermarkListItem,
+} from "../types";
+import { useStore } from "../stores";
 const print = (config: Config, img: Img) => {
 	console.log("当前配置：", config);
 	console.log("当前图片信息：", img);
@@ -76,49 +83,64 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "头像2", logo: "avatar2" },
 ];
 
-const watermarkList = [
+const watermarkList: WatermarkListBaseItem[] = [
 	{
-		index: 0,
-		name: "默认样式",
-		config: "default",
-	},
-	{
-		index: 1,
 		name: "小米徕卡",
 		config: "watermark4",
 	},
 	{
-		index: 2,
+		name: "小米徕卡2",
+		config: "小米徕卡2",
+	},
+	{
+		name: "默认样式",
+		config: "default",
+	},
+	{
 		name: "纯图标",
 		config: "watermark6",
 	},
 	{
-		index: 3,
 		name: "经典模式",
 		config: "watermark7",
 	},
 	{
-		index: 4,
 		name: "经典模糊",
 		config: "watermark9",
 	},
 	{
-		index: 5,
 		name: "印象毛玻璃",
 		config: "watermark8",
 	},
 	{
-		index: 6,
 		name: "时间+型号",
 		config: "时间+型号",
 	},
-	{
-		index: 7,
-		name: "小米徕卡2",
-		config: "小米徕卡2",
-	},
 ];
 
+export function getWatermarkList(): WatermarkListItem[] {
+	const list: WatermarkListItem[] = watermarkList.map((item, index) => {
+		return { ...item, index: index };
+	});
+
+	// 获取本地的配置
+	// const store = useStore();
+	// const localNames: WatermarkListItem[] = store.localWatermarks.map(
+	// 	(item, index) => {
+	// 		return {
+	// 			index: list.length + index,
+	// 			name: item.name,
+	// 			config: JSON.stringify(item.config),
+	// 			is_local: true,
+	// 		};
+	// 	}
+	// );
+
+	// 根据index属性升序
+	// return [...localNames, ...list].sort((a, b) => a.index - b.index);
+
+	return list;
+}
 // 获取本地浏览器支持的字体
 const getSupportedFonts = (): string[] => {
 	return [
