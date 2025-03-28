@@ -5,7 +5,7 @@ import type {
 	WatermarkListBaseItem,
 	WatermarkListItem,
 } from "../types";
-import { useStore } from "../stores";
+// import { useStore } from "../stores";
 const print = (config: Config, img: Img) => {
 	console.log("当前配置：", config);
 	console.log("当前图片信息：", img);
