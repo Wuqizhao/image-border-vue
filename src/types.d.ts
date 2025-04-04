@@ -1,4 +1,3 @@
-import type { de } from "element-plus/es/locales.mjs";
 import type { Exifr, Tags } from "exifr";
 
 declare interface Config {

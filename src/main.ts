@@ -8,7 +8,10 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 
+import router from "./routers";
+
 const app = createApp(App);
+app.use(router);
 app.use(ElementPlus);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
