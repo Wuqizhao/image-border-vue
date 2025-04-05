@@ -470,7 +470,7 @@ const defaultImgValue: Img = {
     time: '',
     export: {
         name: '',
-        quality: 1,
+        quality: 0.97,
         ext: 'jpeg'
     },
     exif: {},
