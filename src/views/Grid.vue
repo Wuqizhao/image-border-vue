@@ -85,7 +85,7 @@
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus';
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { UploadFilled, PictureFilled, Delete, Loading } from '@element-plus/icons-vue';
 
 interface ImageItem {
@@ -94,7 +94,7 @@ interface ImageItem {
     image: HTMLImageElement;
 }
 
-const inputRef = ref<HTMLInputElement | null>(null);
+// const inputRef = ref<HTMLInputElement | null>(null);
 const previewCanvas = ref<HTMLCanvasElement | null>(null);
 const imageList = ref<ImageItem[]>([]);
 const currentImageIndex = ref(-1);
@@ -108,13 +108,13 @@ const loading = ref(false);
 const exporting = ref(false);
 
 // 上传前检查
-const beforeUpload = (file: File) => {
+const beforeUpload = () => {
     return true;
 };
 
 // 处理文件选择
 const handleFileChange = async (file: any) => {
-    if (!beforeUpload(file.raw)) {
+    if (!beforeUpload()) {
         return;
     }
 
