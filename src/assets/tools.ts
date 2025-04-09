@@ -66,6 +66,8 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "央视新闻", logo: "ysxw" },
 	{ name: "Photoshop", logo: "ps" },
 	{ name: "Lightroom", logo: "lightroom" },
+	{ name: "像素蛋糕", logo: "xsdg" },
+	{ name: "像素蛋糕-2", logo: "xsdg-2" },
 	{ name: "Google", logo: "google" },
 	{ name: "Google-2", logo: "google-2" },
 	{ name: "Samsung", logo: "samsung" },
@@ -89,6 +91,8 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "菠萝", logo: "boluo" },
 	{ name: "头像1", logo: "avatar1" },
 	{ name: "头像2", logo: "avatar2" },
+	{ name: "头像3", logo: "avatar3" },
+	{ name: "头像4", logo: "avatar4" },
 ];
 
 const watermarkList: WatermarkListBaseItem[] = [
