@@ -652,7 +652,7 @@ const enhancedCameraBrands = computedAsync(async () => {
 
 async function getBrandImageThumbnail(logo: string) {
     if (logo.startsWith('http')) return logo;
-    const { pathname } = new URL(`./assets/logos/${logo}.png`, import.meta.url)
+    const { pathname } = new URL(`../assets/logos/${logo}.png`, import.meta.url)
     return compressImage(pathname)
 }
 
