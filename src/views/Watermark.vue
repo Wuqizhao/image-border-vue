@@ -998,7 +998,7 @@ function importConfig(val: number): void {
         return;
     }
 
-    const filename = watermark.is_local ? watermark.config : watermark.config_name;
+    const filename = watermark.is_local ? watermark.config_name : watermark.config;
     let configPromise = null;
     switch (filename) {
         case "小米徕卡2":
