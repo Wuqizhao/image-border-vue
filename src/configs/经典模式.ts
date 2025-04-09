@@ -57,7 +57,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制参数
 	if (paramsConfig.show) {
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${config.font}`;
+		ctx.font = `${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${
+			config.font
+		}`;
 		ctx.textBaseline = "middle";
 		ctx.textAlign = "center";
 
@@ -93,6 +95,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 };
 
 const config: Config = {
+	name: "经典模式",
 	font: "微软雅黑",
 	paddings: {
 		top: 150, // 图片上边距

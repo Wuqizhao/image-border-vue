@@ -26,14 +26,23 @@
                         <h3>样式</h3>
                         <el-form label-width="80px">
                             <el-form-item label="选择样式">
-                                <el-select v-model="curWatermarkIndex" style="max-width: 180px;" placeholder="请选择水印样式">
-                                    <el-option v-for="(item, index) in watermarks" :key="index" :label="item.name"
-                                        :value="index"></el-option>
+                                <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式">
+                                    <el-option v-for="(item, index) in watermarks" :key="index" :value="index"
+                                        :label="item.name">
+                                        <div style="display: flex;align-items: center;justify-content: space-between;">
+                                            <b>{{ item.name }}<small style="color:gray;">{{ item.is_local ? '[本地]' :
+                                                '[内置]'
+                                                    }}</small></b>
+                                            <el-button v-if="item.is_local" type="danger" size="small" plain
+                                                @click="deleteWatermark(item.name, $event)">删 除</el-button>
+                                        </div>
+                                    </el-option>
                                 </el-select>
 
                                 <div style="padding-top: 5px;width: 100%;">
+                                    <el-button @click="showConfigDialog">保存配置</el-button>
                                     <el-button plain @click="resetWatermark">重置样式</el-button>
-                                    <el-button @click="handleDraw" :disabled="!curFile" plain>重新绘制</el-button>
+                                    <el-button @click="handleDraw" :disabled="!curFile" plain>重绘</el-button>
                                 </div>
                             </el-form-item>
                             <el-form-item label="基础高度">
@@ -81,7 +90,6 @@
                                     <b style="margin-left: 20px;">水印水平中心线：</b>
                                     <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
                                     <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
-                                    <el-button style="margin-left: 10px;" @click="showConfigDialog">保存当前配置</el-button>
                                 </el-form-item>
                             </div>
                         </el-form>
@@ -263,7 +271,8 @@
                                         <el-form-item>
                                             <el-button size="small" @click="config.logo.width -= 100">- 100</el-button>
                                             <el-button style="margin-left: 10px;" size="small"
-                                                @click="config.logo.width += 100">+ 100</el-button>
+                                                @click="config.logo.width += 100">+
+                                                100</el-button>
                                             <el-button size="small" style="margin-left: 10px;"
                                                 @click="config.logo.height = config.logo.width">同步到高度</el-button>
                                         </el-form-item>
@@ -422,13 +431,13 @@
             </template>
         </el-dialog>
 
-        <el-dialog title="保存配置" v-model="saveConfigDialog.show">
+        <el-dialog title="保存配置" v-model="saveConfigDialog.show" style="max-width: 95%;min-width: 300px;">
             <el-form label-width="80">
                 <el-form-item label="配置名称">
                     <el-input v-model="saveConfigDialog.name" placeholder="请输入配置名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="配置描述">
-                    <el-input v-model="saveConfigDialog.config" placeholder="请输入配置描述" clearable type="textarea"
+                    <el-input v-model="saveConfigDialog.config" placeholder="请输入配置描述" disabled type="textarea"
                         :rows="20"></el-input>
                 </el-form-item>
             </el-form>
@@ -442,8 +451,8 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { print, cameraBrands, getWatermarkList, getSupportedFonts, preDefineColors } from '../assets/tools'
-import { download, deepClone, convertExposureTime, compressImage } from "../utils"
-import defaultWaterMark from '../configs/watermark4'
+import { download, convertExposureTime, compressImage, deepClone } from "../utils"
+import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
@@ -492,6 +501,17 @@ const saveConfigDialog = reactive({
     name: '',
     config: '',
 })
+
+
+
+function deleteWatermark(name: string, event: Event) {
+    // 阻止事件冒泡
+    event.stopPropagation();
+
+    if (store.deleteLocalWatermark(name)) {
+        watermarks.value = getWatermarkList();
+    }
+}
 
 const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -599,6 +619,7 @@ const resetWatermark = () => {
 const showConfigDialog = () => {
     // 弹出对话框
     saveConfigDialog.show = true;
+    saveConfigDialog.name = '自定义配置' + new Date().getTime();
     saveConfigDialog.config = JSON.stringify(config.value, null, 4);
 }
 
@@ -609,11 +630,12 @@ const saveConfig = () => {
     }
 
     try {
-        const config = JSON.parse(JSON.stringify(saveConfigDialog.config));
+        const temp_config = JSON.parse(JSON.stringify(saveConfigDialog.config));
 
         const watermark: LocalWaterMarkItem = {
             name: saveConfigDialog.name,
-            config: config
+            config: temp_config,
+            config_name: config.value.name,
         };
 
         // 保存到pinia
@@ -621,6 +643,7 @@ const saveConfig = () => {
 
         saveConfigDialog.show = false;
         ElMessage.success('保存成功~');
+        watermarks.value = getWatermarkList();
     }
     catch (e) {
         ElMessage.error('保存失败:格式错误！' + e);
@@ -974,47 +997,44 @@ function importConfig(val: number): void {
         ElMessage.error('未找到匹配的水印配置！');
         return;
     }
-    // 导入
-    if (watermark.is_local) {
-        console.log('转换后', (watermark.config));
-        config.value = JSON.parse(watermark.config)
-        return;
-    }
 
-
+    const filename = watermark.is_local ? watermark.config : watermark.config_name;
     let configPromise = null;
-    switch (watermark.config) {
-        case 'default':
-            configPromise = import('../configs/default');
+    switch (filename) {
+        case "小米徕卡2":
+            configPromise = import("../configs/小米徕卡2");
             break;
-        case 'watermark4':
-            configPromise = import('../configs/watermark4');
+        case "默认样式":
+            configPromise = import("../configs/默认样式");
             break;
-        case 'watermark6':
-            configPromise = import('../configs/watermark6');
+        case "纯图标":
+            configPromise = import("../configs/纯图标");
             break;
-        case 'watermark7':
-            configPromise = import('../configs/watermark7');
+        case "经典模式":
+            configPromise = import("../configs/经典模式");
             break;
-        case 'watermark8':
-            configPromise = import('../configs/watermark8');
+        case "经典模糊":
+            configPromise = import("../configs/经典模糊");
             break;
-        case 'watermark9':
-            configPromise = import('../configs/watermark9');
+        case "印象毛玻璃":
+            configPromise = import("../configs/印象毛玻璃");
             break;
-        case '时间+型号':
-            configPromise = import('../configs/时间+型号');
-            break;
-        case '小米徕卡2':
-            configPromise = import('../configs/小米徕卡2');
+        case "时间+型号":
+            configPromise = import("../configs/时间+型号");
             break;
         default:
-            configPromise = import('../configs/watermark4');
+            configPromise = import("../configs/小米徕卡");
             break;
     }
     configPromise.then(res => {
-        config.value = deepClone(<Config>res.default);
-        ElMessage.success('配置导入成功~');
+        let config_value = deepClone(<Config>res.default);
+        if (watermark.is_local) {
+            let local_value = JSON.parse(JSON.parse(watermark.config)) as Config;
+            // 合并对象
+            config_value = Object.assign(config_value, local_value);
+        }
+        config.value = config_value;
+        ElMessage.success(`配置【${watermark.name}】导入成功~`);
     }).catch(err => {
         ElNotification.error({
             title: '导入水印配置出错',

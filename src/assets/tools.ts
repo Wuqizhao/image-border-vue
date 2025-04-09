@@ -5,14 +5,15 @@ import type {
 	WatermarkListBaseItem,
 	WatermarkListItem,
 } from "../types";
-// import { useStore } from "../stores";
-const print = (config: Config, img: Img) => {
+import { useStore } from "../stores";
+
+export const print = (config: Config, img: Img) => {
 	console.log("当前配置：", config);
 	console.log("当前图片信息：", img);
 };
 
 // 定义相机品牌
-const cameraBrands: CameraBrands[] = [
+export const cameraBrands: CameraBrands[] = [
 	{ name: "佳能", logo: "canon", make: ["Canon"] },
 	{ name: "佳能(白)", logo: "canon-white" },
 	{ name: "尼康", logo: "nikon", make: ["NIKON CORPORATION"] },
@@ -95,10 +96,10 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "头像4", logo: "avatar4" },
 ];
 
-const watermarkList: WatermarkListBaseItem[] = [
+export const watermarkList: WatermarkListBaseItem[] = [
 	{
 		name: "小米徕卡",
-		config: "watermark4",
+		config: "小米徕卡",
 	},
 	{
 		name: "小米徕卡2",
@@ -106,23 +107,23 @@ const watermarkList: WatermarkListBaseItem[] = [
 	},
 	{
 		name: "默认样式",
-		config: "default",
+		config: "默认样式",
 	},
 	{
 		name: "纯图标",
-		config: "watermark6",
+		config: "纯图标",
 	},
 	{
 		name: "经典模式",
-		config: "watermark7",
+		config: "经典模式",
 	},
 	{
 		name: "经典模糊",
-		config: "watermark9",
+		config: "经典模糊",
 	},
 	{
 		name: "印象毛玻璃",
-		config: "watermark8",
+		config: "印象毛玻璃",
 	},
 	{
 		name: "时间+型号",
@@ -136,25 +137,28 @@ export function getWatermarkList(): WatermarkListItem[] {
 	});
 
 	// 获取本地的配置
-	// const store = useStore();
-	// const localNames: WatermarkListItem[] = store.localWatermarks.map(
-	// 	(item, index) => {
-	// 		return {
-	// 			index: list.length + index,
-	// 			name: item.name,
-	// 			config: JSON.stringify(item.config),
-	// 			is_local: true,
-	// 		};
-	// 	}
-	// );
+	const store = useStore();
+	const localNames: WatermarkListItem[] = store.localWatermarks.map(
+		(item, index) => {
+			let watermark_item: WatermarkListItem = {
+				index: list.length + index,
+				is_local: true,
+				name: item.name,
+				config: JSON.stringify(item.config),
+				config_name: item?.config_name,
+			};
+			return watermark_item;
+		}
+	);
 
 	// 根据index属性升序
-	// return [...localNames, ...list].sort((a, b) => a.index - b.index);
+	return [...localNames, ...list].sort((a, b) => a.index - b.index);
 
-	return list;
+	// return list;
 }
+
 // 获取本地浏览器支持的字体
-const getSupportedFonts = (): string[] => {
+export const getSupportedFonts = (): string[] => {
 	return [
 		"Arial",
 		"黑体",
@@ -168,7 +172,7 @@ const getSupportedFonts = (): string[] => {
 	];
 };
 
-const preDefineColors = [
+export const preDefineColors = [
 	"#FFF",
 	"#808080",
 	"#CCC",
@@ -178,11 +182,3 @@ const preDefineColors = [
 	"#00FF00",
 	"#0000FF",
 ];
-
-export {
-	print,
-	cameraBrands,
-	watermarkList,
-	getSupportedFonts,
-	preDefineColors,
-};

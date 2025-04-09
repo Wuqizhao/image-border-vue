@@ -57,7 +57,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.textAlign = "right";
 		ctx.textBaseline = timeConfig.show ? "bottom" : "middle";
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `bold ${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${config.font || "Arial"}`;
+		ctx.font = `bold ${paramsConfig.italic ? "Italic" : ""} ${
+			paramsConfig.size
+		}px ${config.font || "Arial"}`;
 
 		let paramsText = `${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  ISO${img.exif.ISO}`;
 		paramsConfig.letterUpperCase && (paramsText = paramsText.toUpperCase());
@@ -155,6 +157,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 };
 
 const config: Config = {
+	name: "小米徕卡",
 	font: "微软雅黑",
 	paddings: {
 		top: 0, // 图片上边距

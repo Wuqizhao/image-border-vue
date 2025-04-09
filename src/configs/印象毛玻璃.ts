@@ -29,7 +29,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 	if (paramsConfig.show) {
 		// 光圈
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `bolder ${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${config.font}`;
+		ctx.font = `bolder ${paramsConfig.italic ? "Italic" : ""} ${
+			paramsConfig.size
+		}px ${config.font}`;
 		ctx.textBaseline = "middle";
 
 		let fNumberY = canvas.height / 2;
@@ -94,7 +96,6 @@ const doDraw: DrawFun = async (img, config, context) => {
 				_y = canvas.height / 2 - logoConfig.height / 2;
 			}
 
-
 			ctx.save();
 			if (logoConfig.circle) {
 				ctx.beginPath();
@@ -114,6 +115,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 };
 
 const config: Config = {
+	name: "印象毛玻璃",
 	font: "微软雅黑",
 	paddings: {
 		top: 500, // 图片上边距

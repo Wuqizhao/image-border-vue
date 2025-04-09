@@ -85,6 +85,7 @@ const doDraw: DrawFun = (img, config, context) => {
 };
 
 const config: Config = {
+	name: "默认样式",
 	font: "微软雅黑",
 	paddings: {
 		top: 100, // 图片上边距

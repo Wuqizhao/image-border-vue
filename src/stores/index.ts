@@ -1,19 +1,35 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import type { LocalWaterMarkItem } from "../types";
+import { ElMessage } from "element-plus";
 
-export const useStore = defineStore("store", () => {
-	const localWatermarks = ref<LocalWaterMarkItem[]>([])
+export const useStore = defineStore(
+	"store",
+	() => {
+		const localWatermarks = ref<LocalWaterMarkItem[]>([]);
 
-	function addWatermark(data: LocalWaterMarkItem) {
-		localWatermarks.value.push(data);
+		function addWatermark(data: LocalWaterMarkItem) {
+			localWatermarks.value.push(data);
+		}
+
+		function deleteLocalWatermark(name: string) {
+			// 找到对应下标
+			const index = localWatermarks.value.findIndex(
+				(item) => item.name === name
+			);
+			if (index === -1) return false;
+			localWatermarks.value.splice(index, 1);
+			ElMessage.success(`本地配置【${name}】删除成功`);
+			return true;
+		}
+
+		return {
+			localWatermarks,
+			addWatermark,
+			deleteLocalWatermark,
+		};
+	},
+	{
+		persist: true,
 	}
-
-	return {
-		localWatermarks,
-		addWatermark
-	}
-}, {
-	persist: true
-
-});
+);

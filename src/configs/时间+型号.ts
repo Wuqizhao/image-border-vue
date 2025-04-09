@@ -101,6 +101,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 };
 
 const config: Config = {
+	name: "时间+型号",
 	font: "微软雅黑",
 	paddings: {
 		top: 0, // 图片上边距
