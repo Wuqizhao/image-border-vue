@@ -43,6 +43,8 @@ const cameraBrands: CameraBrands[] = [
 	{ name: "vivo", logo: "vivo", make: ["vivo"] },
 	{ name: "vivo-文字(黑)", logo: "vivo-2" },
 	{ name: "vivo-文字(白)", logo: "vivo-2-white" },
+	{ name: "IQOO", logo: "iqoo" },
+	{ name: "IQOO-2", logo: "iqoo-2" },
 	{ name: "适马", logo: "sigma" },
 	{ name: "徕卡", logo: "leica", make: ["LEICA CAMERA AG"] },
 	{ name: "哈苏(黑)", logo: "hasselblad" },
