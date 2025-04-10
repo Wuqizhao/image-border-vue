@@ -2,25 +2,20 @@
     <div class="box">
         <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
             <canvas id="imgCanvas" v-if="curFile" @click="preview"></canvas>
-            <el-empty description="点击选择图片~" v-else @click="selectFile"></el-empty>
+            <el-empty description="点击添加图片~" v-else @click="selectFile"></el-empty>
         </div>
 
         <div class="config-box">
             <div class="tabs-container">
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="文件" name="info">
-                        <div style="padding:10px 0px">
-                            <router-link to="/grid">
-                                <el-button>九宫格分割工具</el-button>
-                            </router-link>
-                        </div>
                         <HorizontalScroll class="img-list" v-if="fileList.length">
                             <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
                                 :src="item.url" @click="changeCurFile(fileList[index])"
                                 :data-index="index + 1"></el-image>
                             <div class="btn-box">
-                                <el-button @click="clearFileList" type="danger" plain>清空</el-button>
-                                <el-button type="primary" plain @click="selectFile(true)">添加</el-button>
+                                <el-button @click="clearFileList" plain>清空</el-button>
+                                <el-button plain @click="selectFile(true)">添加</el-button>
                             </div>
                         </HorizontalScroll>
                         <h3>样式</h3>
@@ -93,6 +88,12 @@
                                 </el-form-item>
                             </div>
                         </el-form>
+
+                        <div style="padding:10px 0px">
+                            <router-link to="/grid">
+                                <el-button>九宫格分割工具</el-button>
+                            </router-link>
+                        </div>
                     </el-tab-pane>
                     <el-tab-pane label="调整" name="watermark">
                         <el-collapse accordion>
