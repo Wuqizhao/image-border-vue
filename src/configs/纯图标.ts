@@ -86,6 +86,7 @@ const config: Config = {
 		enable: true,
 		show: true,
 		size: 100,
+		position: ["lt", "rt", "lb", "rb"],
 	},
 	blur: {
 		enable: false,

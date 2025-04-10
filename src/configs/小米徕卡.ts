@@ -61,7 +61,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			paramsConfig.size
 		}px ${config.font || "Arial"}`;
 
-		let paramsText = `${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  ISO${img.exif.ISO}`;
+		let paramsText = `${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  iso${img.exif.ISO}`;
 		paramsConfig.letterUpperCase && (paramsText = paramsText.toUpperCase());
 		paramsWidth = ctx.measureText(paramsText).width;
 
@@ -201,6 +201,7 @@ const config: Config = {
 	radius: {
 		enable: true,
 		show: false,
+		position: ["lt", "rt", "lb", "rb"],
 		size: 100,
 	},
 	blur: {

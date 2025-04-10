@@ -117,7 +117,7 @@ const config: Config = {
 		params: {
 			enable: true,
 			show: true,
-			color: "#FF0000",
+			color: "#808080",
 			size: 100,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
@@ -139,6 +139,7 @@ const config: Config = {
 	radius: {
 		enable: true,
 		show: true,
+		position: ["lt", "rt", "lb", "rb"],
 		size: 150,
 	},
 	blur: {

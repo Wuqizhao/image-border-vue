@@ -146,6 +146,10 @@ declare interface BaseConfig {
 		 */
 		show: boolean;
 		/**
+		 * 圆角位置
+		 */
+		position: Array<"lt" | "rt" | "lb" | "rb">;
+		/**
 		 * 圆角大小
 		 */
 		size: number;

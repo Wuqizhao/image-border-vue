@@ -301,8 +301,16 @@
                                 <el-form-item label="显示">
                                     <el-switch v-model="config.radius.show"></el-switch>
                                 </el-form-item>
+                                <el-form-item label="位置" style="display: none;">
+                                    <el-checkbox-group v-model="config.radius.position">
+                                        <el-checkbox label="top" value="lt">左上</el-checkbox>
+                                        <el-checkbox label="right" value="rt">右上</el-checkbox>
+                                        <el-checkbox label="bottom" value="lb">左下</el-checkbox>
+                                        <el-checkbox label="left" value="rb">右下</el-checkbox>
+                                    </el-checkbox-group>
+                                </el-form-item>
                                 <el-form-item label="半径">
-                                    <el-input-number v-model="config.radius.size" :min="0" :max="1000" :step="10"
+                                    <el-input-number v-model="config.radius.size" :min="0" :max="2000" :step="10"
                                         :disabled="!config.radius.show"></el-input-number>
                                 </el-form-item>
                             </el-form>
@@ -313,7 +321,7 @@
                                 <el-switch v-model="config.blur.enable"></el-switch>
                             </el-form-item>
                             <el-form-item label="模糊量" v-if="config.blur.enable">
-                                <el-input-number v-model="config.blur.size" :min="0" :max="1000"
+                                <el-input-number v-model="config.blur.size" :min="0" :max="2000"
                                     :step="100"></el-input-number>
                             </el-form-item>
                             <el-form-item label="颜色" v-if="!config.blur.enable">
@@ -807,68 +815,44 @@ const handleDraw = useDebounceFn(() => {
 
 
             // 绘制阴影
-            if (shadowConfig.show) {
-                ctx.save();
-                ctx.fillStyle = shadowConfig.color;
-                ctx.filter = `blur(${shadowConfig.size}px)`;
+            if (radiusConfig.show) {
+                const radius = radiusConfig.size;
+                const x = imgPaddings.left + shadowConfig.x;
+                const y = imgPaddings.top + shadowConfig.y;
+                const width = img.width;
+                const height = img.height;
 
-                // 应用圆角效果
-                if (radiusConfig.show) {
-                    const radius = radiusConfig.size;
-                    ctx.beginPath();
-                    ctx.moveTo(imgPaddings.left + shadowConfig.x + radius, imgPaddings.top + shadowConfig.y);
-                    ctx.lineTo(
-                        canvas.width - imgPaddings.right - shadowConfig.x - radius,
-                        imgPaddings.top + shadowConfig.y
-                    );
-                    ctx.quadraticCurveTo(
-                        canvas.width - imgPaddings.right - shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y,
-                        canvas.width - imgPaddings.right - shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y + radius
-                    );
-                    ctx.lineTo(
-                        canvas.width - imgPaddings.right - shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y + img.height - radius
-                    );
-                    ctx.quadraticCurveTo(
-                        canvas.width - imgPaddings.right - shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y + img.height,
-                        canvas.width - imgPaddings.right - shadowConfig.x - radius,
-                        imgPaddings.top + shadowConfig.y + img.height
-                    );
-                    ctx.lineTo(
-                        imgPaddings.left + shadowConfig.x + radius,
-                        imgPaddings.top + shadowConfig.y + img.height
-                    );
-                    ctx.quadraticCurveTo(
-                        imgPaddings.left + shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y + img.height,
-                        imgPaddings.left + shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y + img.height - radius
-                    );
-                    ctx.lineTo(
-                        imgPaddings.left + shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y + radius
-                    );
-                    ctx.quadraticCurveTo(
-                        imgPaddings.left + shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y,
-                        imgPaddings.left + shadowConfig.x + radius,
-                        imgPaddings.top + shadowConfig.y
-                    );
-                    ctx.closePath();
-                    ctx.fill();
-                } else {
-                    ctx.fillRect(
-                        imgPaddings.left + shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y,
-                        img.width,
-                        img.height
-                    );
-                }
+                ctx.beginPath();
+
+                // 左上角
+                ctx.moveTo(x + radius, y);
+                ctx.quadraticCurveTo(x, y, x, y + radius);
+
+                // 右上角
+                ctx.lineTo(x + width - radius, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+
+                // 右下角
+                ctx.lineTo(x + width, y + height - radius);
+                ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+
+                // 左下角
+                ctx.lineTo(x + radius, y + height);
+                ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+
+                ctx.closePath();
+                ctx.fill();
                 ctx.restore();
+            } else {
+                // 绘制直角矩形
+                ctx.fillRect(
+                    imgPaddings.left + shadowConfig.x,
+                    imgPaddings.top + shadowConfig.y,
+                    img.width,
+                    img.height
+                );
             }
+
 
             // 绘制圆角图片
             if (radiusConfig.show) {
@@ -1037,7 +1021,7 @@ function importConfig(val: number): void {
         ElMessage.success(`配置【${watermark.name}】导入成功~`);
     }).catch(err => {
         ElNotification.error({
-            title: '导入水印配置出错',
+            title: '导入水印配置失败',
             message: err.message
         })
     })
