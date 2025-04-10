@@ -137,100 +137,12 @@
                         </el-collapse>
                     </el-tab-pane>
                     <el-tab-pane label="图片" name="picture">
-                        <div v-if="config.radius.enable">
-                            <h3 style="margin-left: 10px;">圆角</h3>
-                            <el-form label-width="80px">
-                                <el-form-item label="显示">
-                                    <el-switch v-model="config.radius.show"></el-switch>
-                                </el-form-item>
-                                <el-form-item label="位置" style="display: none;">
-                                    <el-checkbox-group v-model="config.radius.position">
-                                        <el-checkbox label="top" value="lt">左上</el-checkbox>
-                                        <el-checkbox label="right" value="rt">右上</el-checkbox>
-                                        <el-checkbox label="bottom" value="lb">左下</el-checkbox>
-                                        <el-checkbox label="left" value="rb">右下</el-checkbox>
-                                    </el-checkbox-group>
-                                </el-form-item>
-                                <el-form-item label="半径">
-                                    <el-input-number v-model="config.radius.size" :min="0" :max="2000" :step="10"
-                                        :disabled="!config.radius.show"></el-input-number>
-                                </el-form-item>
-                            </el-form>
-                        </div>
-                        <el-form label-width="80px">
-                            <h3 style="margin-left: 10px;">背景</h3>
-                            <el-form-item label="模糊">
-                                <el-switch v-model="config.blur.enable"></el-switch>
-                            </el-form-item>
-                            <el-form-item label="模糊量" v-if="config.blur.enable">
-                                <el-input-number v-model="config.blur.size" :min="0" :max="2000"
-                                    :step="100"></el-input-number>
-                            </el-form-item>
-                            <el-form-item label="颜色" v-if="!config.blur.enable">
-                                <el-color-picker :predefine="preDefineColors" show-alpha
-                                    v-model="config.watermark.bgColor" :disabled="config.blur.enable"></el-color-picker>
-                            </el-form-item>
-                        </el-form>
-
-                        <el-form label-width="80">
-                            <h3 style="margin-left: 10px;">阴影</h3>
-                            <el-form-item label="显示">
-                                <el-switch v-model="config.shadow.show"></el-switch>
-                            </el-form-item>
-                            <div v-show="config.shadow.show">
-                                <el-form-item label="颜色">
-                                    <el-color-picker :predefine="preDefineColors" show-alpha
-                                        v-model="config.shadow.color"></el-color-picker>
-                                </el-form-item>
-                                <el-form-item label="大小">
-                                    <el-input-number v-model="config.shadow.size" :min="1" :max="500"></el-input-number>
-                                </el-form-item>
-                                <el-form-item label="水平偏移">
-                                    <el-input-number v-model="config.shadow.x" :min="-1000"
-                                        :max="1000"></el-input-number>
-                                </el-form-item>
-                                <el-form-item label="垂直偏移">
-                                    <el-input-number v-model="config.shadow.y" :min="-1000"
-                                        :max="1000"></el-input-number>
-                                </el-form-item>
-                            </div>
-                        </el-form>
+                        <RadiusConfig :radius="config.radius" />
+                        <BlurConfig :blur="config.blur" :bg="config.watermark" />
+                        <ShadowConfig :shadow="config.shadow" />
                     </el-tab-pane>
                     <el-tab-pane label="边距" name="border">
-                        <el-form label-width="80px">
-                            <h3>图片边距</h3>
-                            <el-form-item label="上边距">
-                                <el-input-number v-model="config.paddings.top" :min="0" :max="2000"
-                                    :step="10"></el-input-number>
-                                <div style="width: 100%;">
-                                    <el-button size="small"
-                                        @click="config.paddings.left = config.paddings.right = config.paddings.top">同步左右</el-button>
-                                    <el-button size="small"
-                                        @click="config.paddings.bottom = config.paddings.left = config.paddings.right = config.paddings.top">全部同步</el-button>
-                                </div>
-                            </el-form-item>
-                            <el-form-item label="左边距">
-                                <el-input-number v-model="config.paddings.left" :min="0" :max="2000"
-                                    :step="10"></el-input-number>
-                            </el-form-item>
-                            <el-form-item label="右边距">
-                                <el-input-number v-model="config.paddings.right" :min="0" :max="2000"
-                                    :step="10"></el-input-number>
-                            </el-form-item>
-                            <el-form-item label="下边距">
-                                <el-input-number v-model="config.paddings.bottom" :min="0" :max="2000"
-                                    :step="10"></el-input-number>
-                            </el-form-item>
-                            <h3>水印边距</h3>
-                            <el-form-item label="左右边距">
-                                <el-input-number v-model="config.watermark.paddings.lr" :min="0" :max="2000"
-                                    :step="10"></el-input-number>
-                            </el-form-item>
-                            <el-form-item label="上下边距">
-                                <el-input-number v-model="config.watermark.paddings.tb" :min="0" :max="2000"
-                                    :step="10"></el-input-number>
-                            </el-form-item>
-                        </el-form>
+                        <PaddingConfig :paddings="config.paddings" :watermark="config.watermark" />
                     </el-tab-pane>
                     <el-tab-pane label="导出" name="export">
                         <h3>导出配置</h3>
@@ -300,7 +212,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { print, cameraBrands, getWatermarkList, getSupportedFonts, preDefineColors } from '../assets/tools'
+import { print, cameraBrands, getWatermarkList, getSupportedFonts } from '../assets/tools'
 import { download, convertExposureTime, compressImage, deepClone } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
@@ -315,6 +227,10 @@ import ParamsConfig from '../components/ParamsConfig.vue'
 import TimeConfig from '../components/TimeConfig.vue'
 import DividerConfig from '../components/DividerConfig.vue'
 import LogoConfig from '../components/LogoConfig.vue'
+import RadiusConfig from '../components/RadiusConfig.vue'
+import BlurConfig from '../components/BlurConfig.vue'
+import ShadowConfig from '../components/ShadowConfig.vue'
+import PaddingConfig from '../components/PaddingConfig.vue'
 const store = useStore();
 
 const isDev = computed(() => import.meta.env.DEV)
@@ -641,8 +557,7 @@ const handleDraw = useDebounceFn(() => {
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-
-
+            ctx.restore();
 
             // 绘制阴影
             if (radiusConfig.show) {
@@ -653,20 +568,15 @@ const handleDraw = useDebounceFn(() => {
                 const height = img.height;
 
                 ctx.beginPath();
-
-                // 左上角
                 ctx.moveTo(x + radius, y);
                 ctx.quadraticCurveTo(x, y, x, y + radius);
 
-                // 右上角
                 ctx.lineTo(x + width - radius, y);
                 ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
 
-                // 右下角
                 ctx.lineTo(x + width, y + height - radius);
                 ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
 
-                // 左下角
                 ctx.lineTo(x + radius, y + height);
                 ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
 
@@ -684,7 +594,7 @@ const handleDraw = useDebounceFn(() => {
             }
 
 
-            // 绘制圆角图片
+            // 绘制圆角图片区域
             if (radiusConfig.show) {
                 ctx.save();
                 const radius = radiusConfig.size;
