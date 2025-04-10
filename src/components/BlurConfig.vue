@@ -5,7 +5,7 @@
             <el-switch v-model="config.blur.enable"></el-switch>
         </el-form-item>
         <el-form-item label="模糊量" v-if="config.blur.enable">
-            <el-input-number v-model="config.blur.size" :min="0" :max="2000" :step="100"></el-input-number>
+            <el-slider show-input v-model="config.blur.size" :min="0" :max="2000" :step="100"></el-slider>
         </el-form-item>
         <el-form-item label="颜色" v-if="!config.blur.enable">
             <el-color-picker :predefine="preDefineColors" show-alpha v-model="config.bg.bgColor"></el-color-picker>

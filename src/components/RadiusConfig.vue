@@ -14,8 +14,8 @@
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="半径">
-                <el-input-number v-model="config.radius.size" :min="0" :max="2000" :step="10"
-                    :disabled="!config.radius.show"></el-input-number>
+                <el-slider show-input v-model="config.radius.size" :min="0" :max="2000" :step="10"
+                    :disabled="!config.radius.show"></el-slider>
             </el-form-item>
         </el-form>
     </div>

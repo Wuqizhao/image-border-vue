@@ -56,7 +56,7 @@
 
                         <ImageInfo v-if="curFile" :img="img" />
 
-                        
+
                         <div v-if="isDev">
                             <h3>开发工具</h3>
                             <el-form-item label="辅助线">
@@ -143,6 +143,7 @@
                             <el-form-item label="导出质量">
                                 <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
                                     :format-tooltip="(val) => (val * 100).toFixed(0) + '%'" show-input></el-slider>
+                                <p class="tips">推荐0.97，兼顾画质和文件大小。</p>
                             </el-form-item>
                             <el-form-item label="">
                                 <el-button type="primary" plain
