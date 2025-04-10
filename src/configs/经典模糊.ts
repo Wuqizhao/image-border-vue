@@ -162,6 +162,15 @@ const config: Config = {
 			size: 100,
 			format: "YYYY.MM.DD HH:mm",
 		},
+		lens: {
+			enable: false,
+			show: false,
+			color: "#808080",
+			size: 14,
+			italic: false,
+			bold: false,
+			text: "",
+		},
 		paddings: {
 			lr: 0,
 			tb: 100,

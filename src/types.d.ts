@@ -121,6 +121,36 @@ declare interface BaseConfig {
 			 */
 			format: string;
 		};
+		lens: {
+			/**
+			 * 是否支持镜头
+			 */
+			enable: boolean;
+			/**
+			 * 是否显示镜头
+			 */
+			show: boolean;
+			/**
+			 * 镜头文本
+			 */
+			text: string;
+			/**
+			 * 镜头文本颜色
+			 */
+			color: string;
+			/**
+			 * 文字大小
+			 */
+			size: number;
+			/**
+			 * 是否斜体
+			 */
+			italic: boolean;
+			/**
+			 * 是否加粗
+			 */
+			bold: boolean;
+		};
 		paddings: {
 			/**
 			 * 水印额外的左右边距

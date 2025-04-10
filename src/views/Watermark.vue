@@ -206,6 +206,12 @@
                                     </div>
                                 </el-form>
                             </el-collapse-item>
+                            <el-collapse-item v-if="config.watermark.lens.enable">
+                                <template #title>
+                                    <h3>镜头</h3>
+                                </template>
+                                <LensConfig :config="config.watermark.lens" />
+                            </el-collapse-item>
                             <el-collapse-item v-if="config.divider.enable">
                                 <template #title>
                                     <h3>分割线</h3>
@@ -468,6 +474,7 @@ import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueus
 import Exifr from "exifr";
 import HorizontalScroll from '../components/HorizontalScroll.vue'
 import { useStore } from '../stores';
+import LensConfig from '../components/LensConfig.vue'
 const store = useStore();
 
 const isDev = computed(() => import.meta.env.DEV)

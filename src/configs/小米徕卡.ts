@@ -12,6 +12,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		model: modelConfig,
 		params: paramsConfig,
 		time: timeConfig,
+		lens: lensConfig,
 		paddings: watermarkPaddings,
 	} = watermark;
 	const { ctx, canvas, rect1, rect2, focalLength, exposureTime } = context;
@@ -27,7 +28,10 @@ const doDraw: DrawFun = async (img, config, context) => {
 			ctx.fillStyle = modelConfig.color;
 			ctx.textAlign = "left";
 			ctx.textBaseline = "middle";
-			const _y = rect1.y + (rect2.y - rect1.y) / 2;
+			let _y = rect1.y + (rect2.y - rect1.y) / 2;
+			if (lensConfig.show) {
+				_y = rect1.y + (rect2.y - rect1.y) / 3;
+			}
 			// 截取厂商
 			const company = img.modelText.split(" ")[0];
 			// 计算厂商的宽度
@@ -55,7 +59,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制参数
 	if (paramsConfig.show) {
 		ctx.textAlign = "right";
-		ctx.textBaseline = timeConfig.show ? "bottom" : "middle";
+		ctx.textBaseline = "middle";
 		ctx.fillStyle = paramsConfig.color;
 		ctx.font = `bold ${paramsConfig.italic ? "Italic" : ""} ${
 			paramsConfig.size
@@ -65,6 +69,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		paramsConfig.letterUpperCase && (paramsText = paramsText.toUpperCase());
 		paramsWidth = ctx.measureText(paramsText).width;
 
+		let _y = rect1.y + (rect2.y - rect1.y) / (timeConfig.show ? 3 : 2);
 		ctx.fillText(
 			paramsText,
 			canvas.width - imgPaddings.right - watermarkPaddings.lr,
@@ -89,6 +94,26 @@ const doDraw: DrawFun = async (img, config, context) => {
 		timeWidth = ctx.measureText(img.timeText).width;
 
 		ctx.fillText(img.timeText, _x, _y);
+		ctx.restore();
+	}
+
+	// 绘制镜头
+	if (lensConfig.show) {
+		ctx.save();
+		const text = lensConfig.text || img.exif?.LensModel;
+		ctx.textAlign = "left";
+		ctx.fillStyle = lensConfig.color;
+		ctx.font = `${lensConfig.bold ? "bold" : ""} ${
+			lensConfig.italic ? "italic" : ""
+		} ${lensConfig.size}px ${config.font}`;
+		ctx.textBaseline = "top";
+
+		let _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
+		if (!modelConfig.show) {
+			_y = rect1.y + (rect2.y - rect1.y) / 2;
+			ctx.textBaseline = "middle";
+		}
+		ctx.fillText(text, imgPaddings.left + watermarkPaddings.lr, _y);
 		ctx.restore();
 	}
 
@@ -189,8 +214,17 @@ const config: Config = {
 			enable: true,
 			show: false,
 			color: "#808080",
-			size: 60,
+			size: 80,
 			format: "YYYY.MM.DD  HH:mm:ss",
+		},
+		lens: {
+			enable: true,
+			show: false,
+			color: "#808080",
+			size: 80,
+			italic: false,
+			bold: false,
+			text: "",
 		},
 		paddings: {
 			lr: 120,
@@ -223,7 +257,7 @@ const config: Config = {
 		show: true,
 		color: "rgb(208, 208, 208)",
 		width: 10,
-		scale: 1.8,
+		scale: 2,
 		margin: 1,
 	},
 	shadow: {
