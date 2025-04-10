@@ -101,110 +101,20 @@
                                 <template #title>
                                     <h3>型号</h3>
                                 </template>
-                                <el-form label-width="80px">
-                                    <el-form-item label="显示">
-                                        <el-switch v-model="config.watermark.model.show"></el-switch>
-                                    </el-form-item>
-                                    <div v-show="config.watermark.model.show">
-                                        <el-form-item label="文本">
-                                            <el-input placeholder="留空则自动读取" v-model="img.modelText"
-                                                clearable></el-input>
-                                            <p class="tips">需要手动点击绘制生效</p>
-                                        </el-form-item>
-                                        <el-form-item label="颜色">
-                                            <el-color-picker :predefine="preDefineColors" show-alpha
-                                                v-model="config.watermark.model.color"
-                                                :disabled="!config.watermark.model.show" />
-                                            <el-button v-if="config.watermark.params.enable" style="margin-left: 10px;"
-                                                size="small"
-                                                @click="config.watermark.params.color = config.watermark.model.color">同步参数颜色</el-button>
-                                            <el-button v-if="config.watermark.time.enable" size="small"
-                                                @click="config.watermark.time.color = config.watermark.model.color">同步时间颜色</el-button>
-                                        </el-form-item>
-                                        <el-form-item label="大小">
-                                            <el-input-number v-model="config.watermark.model.size" :min="12" :max="1000"
-                                                :disabled="!config.watermark.model.show"></el-input-number>
-                                        </el-form-item>
-                                        <el-form-item label="加粗">
-                                            <el-switch v-model="config.watermark.model.bold"></el-switch>
-                                        </el-form-item>
-                                        <el-form-item label="斜体文字">
-                                            <el-switch v-model="config.watermark.model.italic"></el-switch>
-                                        </el-form-item>
-                                        <el-form-item label="替换Z为ℤ">
-                                            <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
-                                        </el-form-item>
-                                    </div>
-                                </el-form>
+                                <ModelConfig :config="config.watermark.model" :params-config="config.watermark.params"
+                                    :time-config="config.watermark.time" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.params.enable">
                                 <template #title>
                                     <h3>参数</h3>
                                 </template>
-                                <el-form label-width="80px">
-                                    <el-form-item label="显示">
-                                        <el-switch v-model="config.watermark.params.show"></el-switch>
-                                    </el-form-item>
-                                    <div v-show="config.watermark.params.show">
-                                        <el-form-item label="文本">
-                                            <el-input placeholder="留空则自动读取" v-model="img.paramsText"
-                                                clearable></el-input>
-                                            <p class="tips">需要手动点击绘制生效</p>
-                                        </el-form-item>
-                                        <el-form-item label="颜色">
-                                            <el-color-picker :predefine="preDefineColors" show-alpha
-                                                v-model="config.watermark.params.color" />
-                                            <el-button v-if="config.divider.enable" style="margin-left: 10px;"
-                                                size="small"
-                                                @click="config.divider.color = config.watermark.params.color">同步分割线颜色</el-button>
-                                        </el-form-item>
-                                        <el-form-item label="大小">
-                                            <el-input-number v-model="config.watermark.params.size" :min="12"
-                                                :max="1000"></el-input-number>
-                                        </el-form-item>
-                                        <el-form-item label="字母大写">
-                                            <el-switch v-model="config.watermark.params.letterUpperCase"></el-switch>
-                                        </el-form-item>
-                                        <el-form-item label="等效焦距">
-                                            <el-switch
-                                                v-model="config.watermark.params.useEquivalentFocalLength"></el-switch>
-                                        </el-form-item>
-                                        <el-form-item label="斜体文字">
-                                            <el-switch v-model="config.watermark.params.italic"></el-switch>
-                                        </el-form-item>
-                                    </div>
-                                </el-form>
+                                <ParamsConfig :params="config.watermark.params" :divider="config.divider" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.time.enable">
                                 <template #title>
                                     <h3>时间</h3>
                                 </template>
-                                <el-form label-width="80px">
-                                    <el-form-item label="显示">
-                                        <el-switch v-model="config.watermark.time.show" :active-value="true"
-                                            :inactive-value="false"></el-switch>
-                                    </el-form-item>
-                                    <div v-show="config.watermark.time.show">
-                                        <el-form-item label="文本">
-                                            <el-input placeholder="留空则自动读取" disabled v-model="img.timeText"
-                                                clearable></el-input>
-                                            <p class="tips">需要手动点击绘制生效</p>
-                                        </el-form-item>
-                                        <el-form-item label="颜色">
-                                            <el-color-picker :predefine="preDefineColors" show-alpha
-                                                v-model="config.watermark.time.color" />
-                                        </el-form-item>
-                                        <el-form-item label="大小">
-                                            <el-input-number v-model="config.watermark.time.size" :min="12"
-                                                :max="1000"></el-input-number>
-                                        </el-form-item>
-                                        <el-form-item label="时间格式">
-                                            <el-input placeholder="默认YYYY-MM-DD HH:mm:ss"
-                                                v-model="config.watermark.time.format"></el-input>
-                                            <p class="tips">需要清空时间文本方可生效</p>
-                                        </el-form-item>
-                                    </div>
-                                </el-form>
+                                <TimeConfig :time="config.watermark.time" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.lens.enable">
                                 <template #title>
@@ -216,88 +126,13 @@
                                 <template #title>
                                     <h3>分割线</h3>
                                 </template>
-                                <el-form label-width="80">
-                                    <el-form-item label="显示">
-                                        <el-switch v-model="config.divider.show"></el-switch>
-                                    </el-form-item>
-                                    <div v-show="config.divider.show">
-                                        <el-form-item label="颜色">
-                                            <el-color-picker :predefine="preDefineColors" show-alpha
-                                                v-model="config.divider.color"></el-color-picker>
-                                        </el-form-item>
-                                        <el-form-item label="宽度">
-                                            <el-input-number v-model="config.divider.width" :min="1"
-                                                :max="1000"></el-input-number>
-                                        </el-form-item>
-                                        <el-form-item label="长度缩放">
-                                            <el-input-number v-model="config.divider.scale" :min="0" :max="50"
-                                                :step="0.01"></el-input-number>
-                                        </el-form-item>
-                                        <el-form-item label="间隔缩放">
-                                            <el-input-number v-model="config.divider.margin" :min="0" :max="50"
-                                                :step="0.01"></el-input-number>
-                                        </el-form-item>
-                                    </div>
-                                </el-form>
+                                <DividerConfig :divider="config.divider" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.logo.enable">
                                 <template #title>
                                     <h3>图标</h3>
                                 </template>
-                                <el-form label-width="80">
-                                    <el-form-item label="显示">
-                                        <el-switch v-model="config.logo.show"></el-switch>
-                                    </el-form-item>
-                                    <div v-show="config.logo.show">
-                                        <el-form-item label="自动匹配">
-                                            <el-switch v-model="config.logo.auto"></el-switch>
-                                            <p class="tips">支持列表：尼康、佳能、索尼、大疆、富士、徕卡、苹果、一加、vivo、小米~</p>
-                                        </el-form-item>
-                                        <el-form-item label="手动选择" v-if="!config.logo.auto">
-                                            <el-select filterable placeholder="选择logo" :disabled="!!config.logo?.url"
-                                                style="width: 200px;" v-model="config.logo.name">
-                                                <el-option v-for="item in enhancedCameraBrands" :label="item.name"
-                                                    :key="item.name" :value="item.logo">
-                                                    <div style="display: flex;align-items: center;gap: 10px;">
-                                                        <img :width="24" :height="24" :src="item.thumbnail"
-                                                            :style="{ background: item.logo.indexOf('white') >= 0 ? 'rgba(0,0,0,0.08)' : '' }" />
-                                                        <span>{{ item.name }}</span>
-                                                    </div>
-                                                </el-option>
-                                            </el-select>
-                                            <p class="tips" v-if="config.logo.url">您已输入logo地址，选择被禁用</p>
-                                        </el-form-item>
-                                        <el-form-item label="输入地址">
-                                            <el-input v-model="config.logo.url" placeholder="输入logo地址（http(s)://...）"
-                                                clearable></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="宽度">
-                                            <el-input-number v-model="config.logo.width" :min="0" :max="5000"
-                                                :step="10"></el-input-number>
-                                        </el-form-item>
-                                        <el-form-item>
-                                            <el-button size="small" @click="config.logo.width -= 100">- 100</el-button>
-                                            <el-button style="margin-left: 10px;" size="small"
-                                                @click="config.logo.width += 100">+
-                                                100</el-button>
-                                            <el-button size="small" style="margin-left: 10px;"
-                                                @click="config.logo.height = config.logo.width">同步到高度</el-button>
-                                        </el-form-item>
-                                        <el-form-item label="高度">
-                                            <el-input-number v-model="config.logo.height" :min="0" :max="5000"
-                                                :step="10">
-                                            </el-input-number>
-                                        </el-form-item>
-                                        <el-form-item label="圆形logo">
-                                            <el-switch v-model="config.logo.circle"></el-switch>
-                                        </el-form-item>
-                                        <el-form-item label="垂直偏移" v-if="config.logo.verticalOffset !== undefined">
-                                            <el-input-number v-model="config.logo.verticalOffset" :min="-10" :max="10"
-                                                :step="0.01">
-                                            </el-input-number>
-                                        </el-form-item>
-                                    </div>
-                                </el-form>
+                                <LogoConfig :logo="config.logo" />
                             </el-collapse-item>
                         </el-collapse>
                     </el-tab-pane>
@@ -475,6 +310,11 @@ import Exifr from "exifr";
 import HorizontalScroll from '../components/HorizontalScroll.vue'
 import { useStore } from '../stores';
 import LensConfig from '../components/LensConfig.vue'
+import ModelConfig from '../components/ModelConfig.vue'
+import ParamsConfig from '../components/ParamsConfig.vue'
+import TimeConfig from '../components/TimeConfig.vue'
+import DividerConfig from '../components/DividerConfig.vue'
+import LogoConfig from '../components/LogoConfig.vue'
 const store = useStore();
 
 const isDev = computed(() => import.meta.env.DEV)
@@ -517,8 +357,6 @@ const saveConfigDialog = reactive({
     name: '',
     config: '',
 })
-
-
 
 function deleteWatermark(name: string, event: Event) {
     // 阻止事件冒泡
@@ -678,22 +516,6 @@ watch(curWatermarkIndex, (newIndex) => {
 watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxiliaryLines], ([_newConfig, _newCurFile]) => {
     handleDraw();
 }, { throttle: 250, deep: true })
-
-
-const enhancedCameraBrands = computedAsync(async () => {
-    return await Promise.all(cameraBrands.map(async brand => {
-        return {
-            ...brand,
-            thumbnail: await getBrandImageThumbnail(brand.logo)
-        }
-    }))
-})
-
-async function getBrandImageThumbnail(logo: string) {
-    if (logo.startsWith('http')) return logo;
-    const { pathname } = new URL(`../assets/logos/${logo}.png`, import.meta.url)
-    return compressImage(pathname)
-}
 
 const handleDraw = useDebounceFn(() => {
     const file = curFile.value;
@@ -1184,17 +1006,6 @@ const preview = () => {
 
 }
 
-.tips {
-    color: gray;
-    font-size: 12px;
-    width: 100%;
-    line-height: 20px;
-
-    &::before {
-        content: '* ';
-        color: red;
-    }
-}
 
 
 @media screen and (max-width: 768px) {
