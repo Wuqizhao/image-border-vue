@@ -65,7 +65,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 			paramsConfig.size
 		}px ${config.font || "Arial"}`;
 
-		let paramsText = `${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  iso${img.exif.ISO}`;
+		let paramsText =
+			paramsConfig?.text ||
+			`${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  iso${img.exif.ISO}`;
 		paramsConfig.letterUpperCase && (paramsText = paramsText.toUpperCase());
 		paramsWidth = ctx.measureText(paramsText).width;
 
@@ -249,7 +251,7 @@ const config: Config = {
 		width: 180,
 		height: 180,
 		name: "leica",
-		circle: true,
+		circle: false,
 		verticalOffset: 1,
 	},
 	divider: {

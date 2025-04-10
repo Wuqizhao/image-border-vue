@@ -53,41 +53,24 @@
                                 <p class="tips">仅支持部分字体！</p>
                             </el-form-item>
                         </el-form>
-                        <el-form label-width="80px" v-if="curFile">
-                            <h3>文件</h3>
-                            <el-form-item label="文件名">
-                                <el-input v-model="img.fileName" disabled></el-input>
+
+                        <ImageInfo v-if="curFile" :img="img" />
+
+                        
+                        <div v-if="isDev">
+                            <h3>开发工具</h3>
+                            <el-form-item label="辅助线">
+                                <b style="margin-left: 20px;">水平中心线：</b>
+                                <el-switch v-model="auxiliaryLines.horizontalCenter"></el-switch>
+                                <b style="margin-left: 20px;">垂直中心线：</b>
+                                <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
+                                <b style="margin-left: 20px;">水印范围：</b>
+                                <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
+                                <b style="margin-left: 20px;">水印水平中心线：</b>
+                                <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
+                                <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
                             </el-form-item>
-                            <el-form-item label="文件大小">
-                                <el-input v-model="img.size" disabled></el-input>
-                            </el-form-item>
-                            <el-form-item label="分辨率">
-                                <el-input
-                                    :value="(img.exif?.ExifImageWidth || 0) + ' × ' + (img.exif?.ExifImageHeight || 0)"
-                                    disabled></el-input>
-                            </el-form-item>
-                            <el-form-item label="文件类型">
-                                <el-input v-model="img.type" disabled>
-                                </el-input>
-                            </el-form-item>
-                            <el-form-item label="修改时间">
-                                <el-input v-model="img.time" disabled></el-input>
-                            </el-form-item>
-                            <div v-if="isDev">
-                                <h3>开发</h3>
-                                <el-form-item label="辅助线">
-                                    <b style="margin-left: 20px;">水平中心线：</b>
-                                    <el-switch v-model="auxiliaryLines.horizontalCenter"></el-switch>
-                                    <b style="margin-left: 20px;">垂直中心线：</b>
-                                    <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
-                                    <b style="margin-left: 20px;">水印范围：</b>
-                                    <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
-                                    <b style="margin-left: 20px;">水印水平中心线：</b>
-                                    <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
-                                    <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
-                                </el-form-item>
-                            </div>
-                        </el-form>
+                        </div>
 
                         <div style="padding:10px 0px">
                             <router-link to="/grid">
@@ -231,6 +214,7 @@ import RadiusConfig from '../components/RadiusConfig.vue'
 import BlurConfig from '../components/BlurConfig.vue'
 import ShadowConfig from '../components/ShadowConfig.vue'
 import PaddingConfig from '../components/PaddingConfig.vue'
+import ImageInfo from '../components/ImageInfo.vue'
 const store = useStore();
 
 const isDev = computed(() => import.meta.env.DEV)
@@ -439,6 +423,7 @@ const handleDraw = useDebounceFn(() => {
 
     const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig } = config.value;
     const {
+        model,
         params: paramsConfig,
         time: timeConfig,
         paddings: watermarkPaddings,
@@ -472,23 +457,22 @@ const handleDraw = useDebounceFn(() => {
             }
 
             img.exif = exif;
-            img.modelText = img.modelText ? img.modelText : img.exif?.Model;
+            // img.modelText = img.modelText ? img.modelText : img.exif?.Model;
+            img.modelText = model.text || img.exif?.Model;
             // 曝光时间
             const exposureTime = convertExposureTime(exif?.ExposureTime);
             // 焦距
             const focalLength = (paramsConfig.useEquivalentFocalLength
                 ? exif?.FocalLengthIn35mmFormat
                 : exif?.FocalLength) || exif?.FocalLength;
-            img.paramsText = img.paramsText
-                ? img.paramsText
-                : `${exposureTime}s  f/${exif?.FNumber
+            img.paramsText = paramsConfig.text || `${exposureTime}s  f/${exif?.FNumber
                 }  ISO ${exif?.ISO}  ${focalLength}mm`;
             // 大写
             img.paramsText = paramsConfig.letterUpperCase
                 ? img.paramsText.toUpperCase()
                 : img.paramsText.toLocaleLowerCase();
 
-            img.timeText = formatDate(
+            img.timeText = timeConfig.text || formatDate(
                 new Date(img.exif?.DateTimeOriginal as number),
                 timeConfig.format
             );

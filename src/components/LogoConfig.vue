@@ -24,6 +24,7 @@
             </el-form-item>
             <el-form-item label="输入地址">
                 <el-input v-model="config.logo.url" placeholder="输入logo地址（http(s)://...）" clearable></el-input>
+                <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！</p>
             </el-form-item>
             <el-form-item label="宽度">
                 <el-input-number v-model="config.logo.width" :min="0" :max="5000" :step="10"></el-input-number>

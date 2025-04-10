@@ -20,6 +20,7 @@
             </el-form-item>
             <el-form-item label="等效焦距">
                 <el-switch v-model="props.params.useEquivalentFocalLength"></el-switch>
+                <p class="tips">等效全画幅焦段，是否支持看图片Exif信息</p>
             </el-form-item>
             <el-form-item label="斜体文字">
                 <el-switch v-model="props.params.italic"></el-switch>

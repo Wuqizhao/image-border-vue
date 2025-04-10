@@ -68,6 +68,10 @@ declare interface BaseConfig {
 			 * 型号文字是否加粗，一般只加粗厂商
 			 */
 			bold: boolean;
+			/**
+			 * 自定义文本
+			 */
+			text?: string;
 		};
 		params: {
 			/**
@@ -98,6 +102,10 @@ declare interface BaseConfig {
 			 * 是否斜体
 			 */
 			italic: boolean;
+			/**
+			 * 自定义文本
+			 */
+			text?: string;
 		};
 		time: {
 			/**
@@ -120,6 +128,10 @@ declare interface BaseConfig {
 			 * 时间格式(YYYY-MM-DD HH:mm:ss)
 			 */
 			format: string;
+			/**
+			 * 自定义的文本
+			 */
+			text?: string;
 		};
 		lens: {
 			/**
