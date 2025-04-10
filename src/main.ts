@@ -7,12 +7,16 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
+// 引入中文语言包
+import { zhCn } from "element-plus/es/locales.mjs";
 
 import router from "./routers";
 
 const app = createApp(App);
 app.use(router);
-app.use(ElementPlus);
+app.use(ElementPlus, {
+	locale: zhCn,
+});
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 

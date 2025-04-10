@@ -170,6 +170,11 @@ export function getWatermarkList(): WatermarkListItem[] {
 export const getSupportedFonts = (): string[] => {
 	return [
 		"Arial",
+		"墨趣古风体",
+		"Long Cang",
+		"Zhi Mang Xing",
+		"Liu Jian Mao Cao",
+		"Ma Shan Zheng",
 		"黑体",
 		"微软雅黑",
 		"宋体",

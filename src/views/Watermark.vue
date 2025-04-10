@@ -177,8 +177,8 @@
             </template>
         </el-dialog>
 
-        <el-dialog title="保存配置" v-model="saveConfigDialog.show" style="max-width: 95%;min-width: 300px;">
-            <el-form label-width="80">
+        <el-dialog title="保存配置" v-model="saveConfigDialog.show" style="width: 500px;max-width: 90%;">
+            <el-form label-width="80px">
                 <el-form-item label="配置名称">
                     <el-input v-model="saveConfigDialog.name" placeholder="请输入配置名称" clearable></el-input>
                 </el-form-item>
@@ -771,6 +771,14 @@ const preview = () => {
 
 
 <style lang='less' scoped>
+@font-face {
+    font-family: '墨趣古风体';
+    src: url('https://zf.sc.chinaz.com/Files/DownLoad/upload/2025/0408/moqugufengti.ttf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 .box {
     display: flex;
     justify-content: space-between;
