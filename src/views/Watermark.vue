@@ -771,14 +771,6 @@ const preview = () => {
 
 
 <style lang='less' scoped>
-@font-face {
-    font-family: '墨趣古风体';
-    src: url('https://zf.sc.chinaz.com/Files/DownLoad/upload/2025/0408/moqugufengti.ttf');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 .box {
     display: flex;
     justify-content: space-between;
