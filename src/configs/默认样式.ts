@@ -139,7 +139,7 @@ const config: Config = {
 		bottom: 0,
 	},
 	watermark: {
-		height: 0.08,
+		height: 0.13,
 		model: {
 			enable: true,
 			show: true,
@@ -176,7 +176,7 @@ const config: Config = {
 		},
 		paddings: {
 			lr: 0,
-			tb: 150,
+			tb: 100,
 		},
 		bgColor: "#FFF",
 	},
