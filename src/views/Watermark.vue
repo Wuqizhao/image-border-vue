@@ -514,20 +514,6 @@ const handleDraw = useDebounceFn(() => {
                 rect2.y = canvas.height - watermarkPaddings.tb;
             }
 
-            // 绘制阴影
-            if (shadowConfig.show) {
-                ctx.save();
-                ctx.fillStyle = shadowConfig.color;
-                ctx.filter = `blur(${shadowConfig.size}px)`;
-                ctx.fillRect(
-                    imgPaddings.left + shadowConfig.x,
-                    imgPaddings.top + shadowConfig.y,
-                    realImgWidth,
-                    realImgHeight
-                );
-                ctx.restore();
-            }
-
             // 绘制背景
             if (blurConfig.enable) {
                 ctx.save();
@@ -575,6 +561,19 @@ const handleDraw = useDebounceFn(() => {
                     img.width,
                     img.height
                 );
+            }
+            // 绘制阴影
+            if (shadowConfig.show) {
+                ctx.save();
+                ctx.fillStyle = shadowConfig.color;
+                ctx.filter = `blur(${shadowConfig.size}px)`;
+                ctx.fillRect(
+                    imgPaddings.left + shadowConfig.x,
+                    imgPaddings.top + shadowConfig.y,
+                    realImgWidth,
+                    realImgHeight
+                );
+                ctx.restore();
             }
 
 
