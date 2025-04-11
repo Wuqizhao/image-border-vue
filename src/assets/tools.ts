@@ -14,9 +14,13 @@ export const print = (config: Config, img: Img) => {
 
 // 定义相机品牌
 export const cameraBrands: CameraBrands[] = [
-	{ name: "佳能", logo: "canon", make: ["Canon"] },
+	{ name: "佳能(圆)", logo: "canon-circle", make: ["Canon"] },
+	{ name: "佳能", logo: "canon" },
 	{ name: "佳能(白)", logo: "canon-white" },
+	{ name: "佳能-2", logo: "canon-2" },
 	{ name: "尼康", logo: "nikon", make: ["NIKON CORPORATION"] },
+	{ name: "尼康-Z系列(黑)", logo: "nikon-z" },
+	{ name: "尼康-Z系列(白)", logo: "nikon-z-white" },
 	{ name: "尼康-文字(黑)", logo: "nikon-2" },
 	{ name: "尼康-文字(白)", logo: "nikon-2-white" },
 	{ name: "索尼(黑)", logo: "sony", make: ["SONY"] },
@@ -162,8 +166,6 @@ export function getWatermarkList(): WatermarkListItem[] {
 
 	// 根据index属性升序
 	return [...localNames, ...list].sort((a, b) => a.index - b.index);
-
-	// return list;
 }
 
 // 获取本地浏览器支持的字体

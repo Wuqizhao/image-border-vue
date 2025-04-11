@@ -85,25 +85,26 @@
                                     <h3>型号</h3>
                                 </template>
                                 <ModelConfig :config="config.watermark.model" :params-config="config.watermark.params"
-                                    :time-config="config.watermark.time" />
+                                    :time-config="config.watermark.time" :text="img.modelText" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.params.enable">
                                 <template #title>
                                     <h3>参数</h3>
                                 </template>
-                                <ParamsConfig :params="config.watermark.params" :divider="config.divider" />
+                                <ParamsConfig :params="config.watermark.params" :divider="config.divider"
+                                    :text="img.paramsText" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.time.enable">
                                 <template #title>
                                     <h3>时间</h3>
                                 </template>
-                                <TimeConfig :time="config.watermark.time" />
+                                <TimeConfig :time="config.watermark.time" :text="img.timeText" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.lens.enable">
                                 <template #title>
                                     <h3>镜头</h3>
                                 </template>
-                                <LensConfig :config="config.watermark.lens" />
+                                <LensConfig :config="config.watermark.lens" :text="img.lensText" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.divider.enable">
                                 <template #title>
@@ -242,7 +243,8 @@ const defaultImgValue: Img = {
     exif: {},
     modelText: '',
     paramsText: '',
-    timeText: ''
+    timeText: '',
+    lensText: ''
 };
 const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
@@ -342,12 +344,6 @@ const enhancedFileList = computedAsync(async () => {
     })))
 })
 
-function resetText() {
-    img.modelText = '';
-    img.paramsText = '';
-    img.timeText = '';
-}
-
 function changeCurFile(file: File | null) {
     if (!file) {
         curFile.value = null;
@@ -360,12 +356,10 @@ function changeCurFile(file: File | null) {
     img.type = file.type;
     img.time = formatDate(new Date(file.lastModified), 'YYYY-MM-DD HH:mm:ss');
     curFile.value = file;
-    resetText();
 }
 
 const resetWatermark = () => {
     importConfig(curWatermarkIndex.value);
-    resetText();
 
     ElMessage.success({
         message: "已重置水印样式",
@@ -409,7 +403,6 @@ const saveConfig = () => {
 
 // 监听
 watch(curWatermarkIndex, (newIndex) => {
-    resetText();
     importConfig(newIndex)
 }, {
     immediate: true
@@ -429,6 +422,7 @@ const handleDraw = useDebounceFn(() => {
         params: paramsConfig,
         time: timeConfig,
         paddings: watermarkPaddings,
+        lens,
         bgColor
     } = watermark;
 
@@ -477,6 +471,7 @@ const handleDraw = useDebounceFn(() => {
                 new Date(img.exif?.DateTimeOriginal as number),
                 timeConfig.format
             );
+            img.lensText = lens.text || exif?.LensModel;
 
             const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
             const ctx = canvas.getContext("2d");

@@ -5,7 +5,12 @@
         </el-form-item>
         <div v-if="props.config.show">
             <el-form-item label="文本">
-                <el-input placeholder="留空则自动读取" v-model="props.config.text" clearable></el-input>
+                <el-input placeholder="留空则自动读取" v-model="props.config.text" clearable>
+                    <template #append>
+                        <el-button @click="useExifModelText">读取</el-button>
+                    </template>
+                </el-input>
+
             </el-form-item>
             <el-form-item label="颜色">
                 <el-color-picker :predefine="preDefineColors" show-alpha v-model="props.config.color"
@@ -66,8 +71,14 @@ const props = defineProps({
             enable: Boolean,
             color: String
         })
-    }
+    },
+    text: String
 });
+
+
+function useExifModelText() {
+    props.config.text = props.text;
+}
 </script>
 
 <style lang='less' scoped></style>

@@ -5,7 +5,11 @@
         </el-form-item>
         <div v-show="props.params.show">
             <el-form-item label="文本">
-                <el-input placeholder="留空则自动读取" v-model="props.params.text" clearable></el-input>
+                <el-input placeholder="留空则自动读取" v-model="props.params.text" clearable>
+                    <template #append>
+                        <el-button size="small" @click="props.params.text = props.text">读取</el-button>
+                    </template>
+                </el-input>
             </el-form-item>
             <el-form-item label="颜色">
                 <el-color-picker :predefine="preDefineColors" show-alpha v-model="props.params.color" />
@@ -57,6 +61,7 @@ const props = defineProps({
             color: String,
         })
     },
+    text: String
 });
 </script>
 

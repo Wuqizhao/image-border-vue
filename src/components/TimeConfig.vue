@@ -5,7 +5,11 @@
         </el-form-item>
         <div v-show="props.time.show">
             <el-form-item label="文本">
-                <el-input placeholder="留空则自动读取~" v-model="props.time.text" clearable></el-input>
+                <el-input placeholder="留空则自动读取~" v-model="props.time.text" clearable>
+                    <template #append>
+                        <el-button @click="props.time.text = props.text">读取</el-button>
+                    </template>
+                </el-input>
             </el-form-item>
             <el-form-item label="颜色">
                 <el-color-picker :predefine="preDefineColors" show-alpha v-model="props.time.color" />
@@ -37,6 +41,7 @@ const props = defineProps({
             }
         )
     },
+    text: String
 });
 </script>
 

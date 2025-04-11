@@ -4,13 +4,17 @@
             <el-switch v-model="props.config.show"></el-switch>
         </el-form-item>
         <el-form-item label="文本">
-            <el-input v-model="props.config.text" placeholder="自定义文本，留空自动读取~"></el-input>
+            <el-input v-model="props.config.text" placeholder="自定义文本，留空自动读取~">
+                <template #append>
+                    <el-button @click="props.config.text = props.text">读取</el-button>
+                </template></el-input>
         </el-form-item>
         <el-form-item label="颜色">
             <el-color-picker v-model="props.config.color" :predefine="preDefineColors"></el-color-picker>
         </el-form-item>
         <el-form-item label="大小">
-            <el-slider show-input v-model="props.config.size" :min="12" :max="250"></el-slider>
+            <el-slider show-input v-model="props.config.size" :min="12" :max="250">
+            </el-slider>
         </el-form-item>
         <el-form-item label="斜体">
             <el-switch v-model="props.config.italic"></el-switch>
@@ -35,7 +39,8 @@ const props = defineProps({
             italic: Boolean,
             bold: Boolean,
         })
-    }
+    },
+    text: String
 })
 </script>
 

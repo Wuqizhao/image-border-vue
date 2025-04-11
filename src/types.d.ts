@@ -401,6 +401,10 @@ declare interface Img {
 	 * 自定义的时间文本
 	 */
 	timeText: string;
+	/**
+	 * 镜头文本
+	 */
+	lensText: string;
 }
 
 declare type CameraBrands = {
