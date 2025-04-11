@@ -1,4 +1,5 @@
 import type { Config, DrawFun } from "../types";
+import { getLogoSrc } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, logo: logoConfig } = config;
 	const { params: paramsConfig } = watermark;
@@ -79,15 +80,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	if (logoConfig.show) {
 		const logoImg = new Image();
-		if (logoConfig.url) {
-			logoImg.src = logoConfig.url;
-		} else if (logoConfig.name.startsWith("http")) {
-			logoImg.src = logoConfig.name;
-		} else {
-			logoImg.src = (
-				await import(`../assets/logos/${logoConfig.name}.png`)
-			).default;
-		}
+		logoImg.src = await getLogoSrc(config);
 
 		logoImg.onload = () => {
 			const _x = rect1.x + (rect2.x - rect1.x) / 2 - logoConfig.width / 2;

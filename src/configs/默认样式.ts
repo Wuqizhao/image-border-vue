@@ -1,14 +1,37 @@
 import type { Config, DrawFun } from "../types";
-const doDraw: DrawFun = (img, config, context) => {
-	const { watermark, paddings: imgPaddings } = config;
+import { getLogoSrc } from "../utils";
+const doDraw: DrawFun = async (img, config, context) => {
+	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
 	const {
 		model: modelConfig,
 		params: paramsConfig,
 		time: timeConfig,
 		paddings: watermarkPaddings,
+		lens: lensConfig,
 	} = watermark;
 	const { ctx, canvas, rect1, rect2 } = context;
 
+	// 绘制Logo
+	if (logoConfig.show) {
+		const img = new Image();
+		img.src = await getLogoSrc(config);
+		img.onload = () => {
+			let _y = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height / 2;
+			ctx.drawImage(
+				img,
+				imgPaddings.left + watermarkPaddings.lr,
+				_y,
+				logoConfig.width,
+				logoConfig.height
+			);
+		};
+	}
+
+	const SPACE = 0.2 * logoConfig.width;
+	const _x =
+		imgPaddings.left +
+		watermarkPaddings.lr +
+		(logoConfig.show ? logoConfig.width + SPACE : 0);
 	// 绘制型号
 	if (modelConfig.show) {
 		ctx.save();
@@ -29,17 +52,13 @@ const doDraw: DrawFun = (img, config, context) => {
 		const company = img.modelText.split(" ")[0];
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
-		ctx.fillText(company, imgPaddings.left + config.watermark.paddings.lr, _y);
+		ctx.fillText(company, _x, _y);
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "");
 		modelText = modelConfig.replaceZ
 			? modelText.replace(/Z|z/, "ℤ")
 			: modelText;
-		ctx.fillText(
-			modelText,
-			imgPaddings.left + watermarkPaddings.lr + companyWidth,
-			_y
-		);
+		ctx.fillText(modelText, _x + companyWidth, _y);
 		ctx.restore(); // 恢复之前的绘图状态
 	}
 
@@ -60,9 +79,32 @@ const doDraw: DrawFun = (img, config, context) => {
 			paramsConfig.letterUpperCase
 				? img.paramsText.toLocaleUpperCase()
 				: img.paramsText,
-			imgPaddings.left + watermarkPaddings.lr,
+			_x,
 			_y
 		);
+		ctx.restore();
+	}
+
+	// 绘制镜头信息
+	if (lensConfig.show) {
+		ctx.save();
+		ctx.textAlign = "right";
+		ctx.textBaseline = "middle";
+		ctx.fillStyle = lensConfig.color;
+		ctx.font = `${lensConfig.bold ? "bold" : ""} ${
+			lensConfig.italic ? "italic" : ""
+		} ${lensConfig.size}px ${config.font}`;
+
+		let _y = rect1.y + (rect2.y - rect1.y) / 4;
+		if (!timeConfig.show) {
+			_y = rect1.y + (rect2.y - rect1.y) / 2;
+		}
+		ctx.fillText(
+			lensConfig.text || img.exif?.LensModel,
+			canvas.width - imgPaddings.right - watermarkPaddings.lr,
+			_y
+		);
+
 		ctx.restore();
 	}
 
@@ -74,7 +116,10 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.fillStyle = timeConfig.color;
 		ctx.font = `${timeConfig.size}px ${config.font}`;
 		// 在水印范围内垂直居中
-		const _y = (rect2.y + rect1.y) / 2;
+		let _y = (rect2.y + rect1.y) / 2;
+		if (lensConfig.show) {
+			_y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
+		}
 		ctx.fillText(
 			img.timeText,
 			canvas.width - imgPaddings.right - watermarkPaddings.lr,
@@ -94,7 +139,7 @@ const config: Config = {
 		bottom: 0,
 	},
 	watermark: {
-		height: 0.12,
+		height: 0.08,
 		model: {
 			enable: true,
 			show: true,
@@ -117,21 +162,21 @@ const config: Config = {
 			enable: true,
 			show: true,
 			color: "#808080",
-			size: 110,
+			size: 100,
 			format: "YYYY-MM-DD HH:mm",
 		},
 		lens: {
-			enable: false,
+			enable: true,
 			show: false,
 			color: "#808080",
-			size: 14,
+			size: 100,
 			italic: false,
 			bold: false,
 			text: "",
 		},
 		paddings: {
 			lr: 0,
-			tb: 100,
+			tb: 150,
 		},
 		bgColor: "#FFF",
 	},
@@ -146,12 +191,12 @@ const config: Config = {
 		size: 1000,
 	},
 	logo: {
-		enable: false,
-		auto: false,
+		enable: true,
+		auto: true,
 		show: false,
 		name: "leica",
-		width: 40,
-		height: 40,
+		width: 700,
+		height: 700,
 		circle: false,
 		verticalOffset: 1,
 	},

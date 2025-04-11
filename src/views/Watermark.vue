@@ -414,11 +414,12 @@ watch(curWatermarkIndex, (newIndex) => {
     immediate: true
 })
 
-watchThrottled([() => config, () => curFile, () => curWatermarkIndex, () => auxiliaryLines], ([_newConfig, _newCurFile]) => {
+watchThrottled([() => config, () => curFile, () => auxiliaryLines], () => {
     handleDraw();
 }, { throttle: 250, deep: true })
 
 const handleDraw = useDebounceFn(() => {
+    console.info('触发绘制');
     const file = curFile.value;
     if (!file) return;
 

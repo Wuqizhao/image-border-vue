@@ -1,5 +1,5 @@
 import { ElMessage } from "element-plus";
-import type { ImgExt } from "../types";
+import type { Config, ImgExt } from "../types";
 
 // 转换曝光时间的函数
 export function convertExposureTime(exposureTime: number) {
@@ -79,4 +79,15 @@ export function compressImage(file: File | string) {
 		return file;
 	}
 	return URL.createObjectURL(file);
+}
+
+export async function getLogoSrc(config: Config) {
+	const { logo: logoConfig } = config;
+	if (logoConfig.url) {
+		return logoConfig.url;
+	} else if (logoConfig.name.startsWith("http")) {
+		return logoConfig.name;
+	} else {
+		return (await import(`../assets/logos/${logoConfig.name}.png`)).default;
+	}
 }

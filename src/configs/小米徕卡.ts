@@ -1,5 +1,6 @@
 import { ElMessage } from "element-plus";
 import type { Config, DrawFun } from "../types";
+import { getLogoSrc } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context) => {
 	const {
@@ -135,16 +136,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制LOGO
 	if (logoConfig.show) {
 		const logoImg = new Image();
-
-		if (logoConfig.url) {
-			logoImg.src = logoConfig.url;
-		} else if (logoConfig.name.startsWith("http")) {
-			logoImg.src = logoConfig.name;
-		} else {
-			logoImg.src = (
-				await import(`../assets/logos/${logoConfig.name}.png`)
-			).default;
-		}
+		logoImg.src = await getLogoSrc(config);
+		
 		logoImg.onload = () => {
 			if (logoConfig.circle) {
 				// 绘制圆形LOGO
