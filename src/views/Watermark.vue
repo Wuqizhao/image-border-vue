@@ -265,6 +265,7 @@ function deleteWatermark(name: string, event: Event) {
 
     if (store.deleteLocalWatermark(name)) {
         watermarks.value = getWatermarkList();
+        curWatermarkIndex.value = 0;
     }
 }
 
