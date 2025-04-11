@@ -1,34 +1,17 @@
 import type { Config, DrawFun } from "../types";
-import { getLogoSrc } from "../utils";
+import { drawLogo } from "../utils";
 
 const doDraw: DrawFun = async (_, config, context) => {
 	const { logo: logoConfig, paddings: imgPaddings } = config;
 	const { ctx, canvas } = context;
 
 	if (logoConfig.show) {
-		const logoImg = new Image();
-		logoImg.src = await getLogoSrc(config);
-
-		logoImg.onload = () => {
-			const logoX = canvas.width / 2 - logoConfig.width / 2;
-			const logoY =
-				canvas.height -
-				logoConfig.height -
-				(logoConfig.verticalOffset || 1) * 1.6 * imgPaddings.bottom;
-
-			if (logoConfig.circle) {
-				ctx.beginPath();
-				ctx.arc(
-					logoX + logoConfig.width / 2,
-					logoY + logoConfig.height / 2,
-					logoConfig.width / 2,
-					0,
-					Math.PI * 2
-				);
-				ctx.clip();
-			}
-			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
-		};
+		const logoX = canvas.width / 2 - logoConfig.width / 2;
+		const logoY =
+			canvas.height -
+			logoConfig.height -
+			(logoConfig.verticalOffset || 1) * 1.6 * imgPaddings.bottom;
+		drawLogo(config, ctx, logoX, logoY);
 	}
 };
 

@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { getLogoSrc } from "../utils";
+import { drawLogo } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, logo: logoConfig } = config;
 	const { params: paramsConfig } = watermark;
@@ -79,31 +79,13 @@ const doDraw: DrawFun = async (img, config, context) => {
 	}
 
 	if (logoConfig.show) {
-		const logoImg = new Image();
-		logoImg.src = await getLogoSrc(config);
-
-		logoImg.onload = () => {
-			const _x = rect1.x + (rect2.x - rect1.x) / 2 - logoConfig.width / 2;
-			let _y = canvas.height / 3 - logoConfig.height / 2;
-			if (!paramsConfig.show) {
-				_y = canvas.height / 2 - logoConfig.height / 2;
-			}
-
-			ctx.save();
-			if (logoConfig.circle) {
-				ctx.beginPath();
-				ctx.arc(
-					_x + logoConfig.width / 2,
-					_y + logoConfig.height / 2,
-					logoConfig.width / 2,
-					0,
-					Math.PI * 2
-				);
-				ctx.clip();
-			}
-			ctx.drawImage(logoImg, _x, _y, logoConfig.width, logoConfig.height);
-			ctx.restore();
-		};
+		const _x = rect1.x + (rect2.x - rect1.x) / 2 - logoConfig.width / 2;
+		let _y = canvas.height / 3 - logoConfig.height / 2;
+		if (!paramsConfig.show) {
+			_y = canvas.height / 2 - logoConfig.height / 2;
+		}
+		_y -= (logoConfig.verticalOffset - 1) * logoConfig.height;
+		drawLogo(config, ctx, _x, _y);
 	}
 };
 

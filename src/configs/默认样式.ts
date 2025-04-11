@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { getLogoSrc } from "../utils";
+import { drawLogo } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
 	const {
@@ -13,18 +13,13 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	// 绘制Logo
 	if (logoConfig.show) {
-		const img = new Image();
-		img.src = await getLogoSrc(config);
-		img.onload = () => {
-			let _y = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height / 2;
-			ctx.drawImage(
-				img,
-				imgPaddings.left + watermarkPaddings.lr,
-				_y,
-				logoConfig.width,
-				logoConfig.height
-			);
-		};
+		const logoX = imgPaddings.left + watermarkPaddings.lr;
+		const _y =
+			rect1.y +
+			(rect2.y - rect1.y) / 2 -
+			logoConfig.height / 2 -
+			(logoConfig.verticalOffset - 1) * logoConfig.height;
+		drawLogo(config, ctx, logoX, _y);
 	}
 
 	const SPACE = 0.2 * logoConfig.width;

@@ -1,6 +1,5 @@
-import { ElMessage } from "element-plus";
 import type { Config, DrawFun } from "../types";
-import { getLogoSrc } from "../utils";
+import { drawLogo } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context) => {
 	const {
@@ -131,33 +130,14 @@ const doDraw: DrawFun = async (img, config, context) => {
 		space;
 	const logoX = _x - space - logoConfig.width;
 	// 计算纵坐标
-	const logoY = _y - logoConfig.height / 2;
+	const logoY =
+		_y -
+		logoConfig.height / 2 -
+		(logoConfig.verticalOffset - 1) * logoConfig.height;
 
 	// 绘制LOGO
 	if (logoConfig.show) {
-		const logoImg = new Image();
-		logoImg.src = await getLogoSrc(config);
-		
-		logoImg.onload = () => {
-			if (logoConfig.circle) {
-				// 绘制圆形LOGO
-				ctx.beginPath();
-				ctx.arc(
-					logoX + logoConfig.width / 2,
-					logoY + logoConfig.height / 2,
-					logoConfig.width / 2,
-					0,
-					Math.PI * 2
-				);
-				ctx.clip();
-			}
-
-			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
-		};
-		logoImg.onerror = (err) => {
-			console.log(err);
-			ElMessage.error("LOGO加载失败:" + err);
-		};
+		drawLogo(config, ctx, logoX, logoY);
 	}
 
 	// 绘制分割线

@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { getLogoSrc } from "../utils";
+import { drawLogo } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context) => {
 	const { logo: logoConfig, watermark } = config;
@@ -7,45 +7,17 @@ const doDraw: DrawFun = async (img, config, context) => {
 	const { ctx, canvas, rect1, rect2 } = context;
 
 	if (logoConfig.show) {
-		const logoImg = new Image();
-		logoImg.src = await getLogoSrc(config);
-		
-		logoImg.onload = () => {
-			const logoX = canvas.width / 2 - logoConfig.width / 2;
-
-			let logoY = 0;
-			if (!timeConfig.show && !paramsConfig.show) {
-				// 时间和参数都不显示
-				logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height / 2;
-			} else if (!paramsConfig.show || !timeConfig.show) {
-				// 不显示时间或者不显示参数
-				logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height;
-			} else {
-				// 都显示
-				logoY = rect1.y + (rect2.y - rect1.y) / 4 - logoConfig.height / 2;
-			}
-
-			ctx.save();
-			if (logoConfig.circle) {
-				ctx.beginPath();
-				ctx.arc(
-					logoX + logoConfig.width / 2,
-					logoY + logoConfig.height / 2,
-					logoConfig.width / 2,
-					0,
-					Math.PI * 2
-				);
-				ctx.clip();
-			}
-			ctx.drawImage(
-				logoImg,
-				logoX,
-				logoY * (logoConfig.verticalOffset || 1),
-				logoConfig.width,
-				logoConfig.height
-			);
-			ctx.restore();
-		};
+		const logoX = canvas.width / 2 - logoConfig.width / 2;
+		let logoY = rect1.y + (rect2.y - rect1.y) / 4 - logoConfig.height / 2;
+		if (!timeConfig.show && !paramsConfig.show) {
+			// 时间和参数都不显示
+			logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height / 2;
+		} else if (!paramsConfig.show || !timeConfig.show) {
+			// 不显示时间或者不显示参数
+			logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height;
+		}
+		logoY -= (logoConfig.verticalOffset - 1) * logoConfig.height;
+		drawLogo(config, ctx, logoX, logoY);
 	}
 
 	// 绘制参数

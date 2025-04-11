@@ -27,7 +27,7 @@
                 <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！</p>
             </el-form-item>
             <el-form-item label="宽度">
-                <el-input-number v-model="config.logo.width" :min="0" :max="5000" :step="10"></el-input-number>
+                <el-slider show-input v-model="config.logo.width" :min="0" :max="5000" :step="10"></el-slider>
             </el-form-item>
             <el-form-item>
                 <el-button size="small" @click="config.logo.width -= 100">- 100</el-button>
@@ -37,15 +37,18 @@
                     @click="config.logo.height = config.logo.width">同步到高度</el-button>
             </el-form-item>
             <el-form-item label="高度">
-                <el-input-number v-model="config.logo.height" :min="0" :max="5000" :step="10">
-                </el-input-number>
+                <el-slider show-input v-model="config.logo.height" :min="0" :max="5000" :step="10">
+                </el-slider>
             </el-form-item>
             <el-form-item label="圆形logo">
                 <el-switch v-model="config.logo.circle"></el-switch>
             </el-form-item>
             <el-form-item label="垂直偏移" v-if="config.logo.verticalOffset !== undefined">
-                <el-input-number v-model="config.logo.verticalOffset" :min="-10" :max="10" :step="0.01">
-                </el-input-number>
+                <el-slider show-input v-model="config.logo.verticalOffset" :min="-20" :max="20" :step="0.01">
+                </el-slider>
+                <p class="tips">默认：{{ defaultVerticalOffset }}
+                    <el-button size="small" @click="config.logo.verticalOffset = defaultVerticalOffset">恢复默认</el-button>
+                </p>
             </el-form-item>
         </div>
     </el-form>
@@ -74,6 +77,8 @@ const config = defineProps({
         )
     },
 });
+
+const defaultVerticalOffset = config.logo.verticalOffset || 0;
 
 
 const enhancedCameraBrands = computedAsync(async () => {

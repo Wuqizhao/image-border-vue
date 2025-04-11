@@ -1,4 +1,4 @@
-import { ElMessage } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 import type { Config, ImgExt } from "../types";
 
 // 转换曝光时间的函数
@@ -90,4 +90,39 @@ export async function getLogoSrc(config: Config) {
 	} else {
 		return (await import(`../assets/logos/${logoConfig.name}.png`)).default;
 	}
+}
+
+export async function drawLogo(
+	config: Config,
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number
+) {
+	const img = new Image();
+	img.src = await getLogoSrc(config);
+	img.onload = () => {
+		ctx.save();
+		const logoConfig = config.logo;
+		if (logoConfig.circle) {
+			// 绘制圆形LOGO
+			ctx.beginPath();
+			ctx.arc(
+				x + logoConfig.width / 2,
+				y + logoConfig.height / 2,
+				logoConfig.width / 2,
+				0,
+				Math.PI * 2
+			);
+			ctx.clip();
+		}
+		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
+		ctx.restore();
+	};
+	img.onerror = (err) => {
+		console.error("Logo加载失败:", err);
+		ElNotification.error({
+			title: "Logo加载失败",
+			message: err.toString(),
+		});
+	};
 }

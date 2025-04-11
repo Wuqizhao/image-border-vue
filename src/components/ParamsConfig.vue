@@ -13,7 +13,7 @@
                     @click="props.divider.color = props.params.color">同步分割线颜色</el-button>
             </el-form-item>
             <el-form-item label="大小">
-                <el-input-number v-model="props.params.size" :min="12" :max="1000"></el-input-number>
+                <el-slider show-input v-model="props.params.size" :min="12" :max="300"></el-slider>
             </el-form-item>
             <el-form-item label="字母大写">
                 <el-switch v-model="props.params.letterUpperCase"></el-switch>

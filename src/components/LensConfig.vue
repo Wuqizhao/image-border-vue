@@ -10,7 +10,7 @@
             <el-color-picker v-model="props.config.color" :predefine="preDefineColors"></el-color-picker>
         </el-form-item>
         <el-form-item label="大小">
-            <el-input-number v-model="props.config.size" :min="1" :max="100"></el-input-number>
+            <el-slider show-input v-model="props.config.size" :min="12" :max="250"></el-slider>
         </el-form-item>
         <el-form-item label="斜体">
             <el-switch v-model="props.config.italic"></el-switch>

@@ -11,7 +11,7 @@
                 <el-color-picker :predefine="preDefineColors" show-alpha v-model="props.time.color" />
             </el-form-item>
             <el-form-item label="大小">
-                <el-input-number v-model="props.time.size" :min="12" :max="1000"></el-input-number>
+                <el-slider show-input v-model="props.time.size" :min="12" :max="250"></el-slider>
             </el-form-item>
             <el-form-item label="时间格式">
                 <el-input placeholder="默认YYYY-MM-DD HH:mm:ss" v-model="props.time.format"></el-input>

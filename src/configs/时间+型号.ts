@@ -1,6 +1,5 @@
-import { ElMessage } from "element-plus";
 import type { Config, DrawFun } from "../types";
-import { getLogoSrc } from "../utils";
+import { drawLogo } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
 	const {
@@ -10,7 +9,11 @@ const doDraw: DrawFun = async (img, config, context) => {
 	} = watermark;
 	const { ctx, canvas } = context;
 
-	let _y = canvas.height - 300;
+	let _y =
+		canvas.height -
+		watermarkPaddings.tb -
+		imgPaddings.bottom -
+		0.07 * img.height;
 
 	// 绘制辅助线
 	// ctx.beginPath();
@@ -66,31 +69,11 @@ const doDraw: DrawFun = async (img, config, context) => {
 	if (logoConfig.show) {
 		const logoX = canvas.width / 2 - logoConfig.width / 2;
 		const logoY =
-			canvas.height - 300 * logoConfig.verticalOffset - logoConfig.height / 2;
+			_y -
+			logoConfig.height / 2 -
+			(logoConfig.verticalOffset - 1) * logoConfig.height;
 
-		const logoImg = new Image();
-		logoImg.src = await getLogoSrc(config);
-		
-		logoImg.onload = () => {
-			if (logoConfig.circle) {
-				// 绘制圆形LOGO
-				ctx.beginPath();
-				ctx.arc(
-					logoX + logoConfig.width / 2,
-					logoY + logoConfig.height / 2,
-					logoConfig.width / 2,
-					0,
-					Math.PI * 2
-				);
-				ctx.clip();
-			}
-
-			ctx.drawImage(logoImg, logoX, logoY, logoConfig.width, logoConfig.height);
-		};
-		logoImg.onerror = (err) => {
-			console.log(err);
-			ElMessage.error("LOGO加载失败:" + err);
-		};
+		drawLogo(config, ctx, logoX, logoY);
 	}
 };
 
@@ -109,7 +92,7 @@ const config: Config = {
 			enable: true,
 			show: true,
 			color: "#FFFFFF",
-			size: 150,
+			size: 120,
 			replaceZ: true,
 			italic: false,
 			bold: true,
@@ -118,7 +101,7 @@ const config: Config = {
 			enable: false,
 			show: false,
 			color: "#FFFFFF",
-			size: 100,
+			size: 80,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
 			italic: false,
@@ -127,7 +110,7 @@ const config: Config = {
 			enable: true,
 			show: true,
 			color: "#FFFFFF",
-			size: 110,
+			size: 80,
 			format: "YYYY.MM.DD HH:mm",
 		},
 		lens: {

@@ -16,8 +16,8 @@
                     @click="props.timeConfig.color = props.config.color">同步时间颜色</el-button>
             </el-form-item>
             <el-form-item label="大小">
-                <el-input-number v-model="props.config.size" :min="12" :max="1000"
-                    :disabled="!props.config.show"></el-input-number>
+                <el-slider show-input v-model="props.config.size" :min="12" :max="500"
+                    :disabled="!props.config.show"></el-slider>
             </el-form-item>
             <el-form-item label="加粗">
                 <el-switch v-model="props.config.bold"></el-switch>
