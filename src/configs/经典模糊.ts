@@ -181,7 +181,7 @@ const config: Config = {
 		color: "#808080",
 		x: 0,
 		y: 0,
-		size: 20,
+		size: 100,
 	},
 	draw: doDraw,
 };
