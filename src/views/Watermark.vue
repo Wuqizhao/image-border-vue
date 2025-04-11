@@ -419,7 +419,6 @@ watchThrottled([() => config, () => curFile, () => auxiliaryLines], () => {
 }, { throttle: 250, deep: true })
 
 const handleDraw = useDebounceFn(() => {
-    console.info('触发绘制');
     const file = curFile.value;
     if (!file) return;
 
@@ -459,7 +458,6 @@ const handleDraw = useDebounceFn(() => {
             }
 
             img.exif = exif;
-            // img.modelText = img.modelText ? img.modelText : img.exif?.Model;
             img.modelText = model.text || img.exif?.Model;
             // 曝光时间
             const exposureTime = convertExposureTime(exif?.ExposureTime);
@@ -468,7 +466,7 @@ const handleDraw = useDebounceFn(() => {
                 ? exif?.FocalLengthIn35mmFormat
                 : exif?.FocalLength) || exif?.FocalLength;
             img.paramsText = paramsConfig.text || `${exposureTime}s  f/${exif?.FNumber
-                }  ISO ${exif?.ISO}  ${focalLength}mm`;
+                }  iso ${exif?.ISO}  ${focalLength}mm`;
             // 大写
             img.paramsText = paramsConfig.letterUpperCase
                 ? img.paramsText.toUpperCase()
