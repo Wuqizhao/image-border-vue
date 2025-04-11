@@ -10,13 +10,17 @@
                     v-model="config.shadow.color"></el-color-picker>
             </el-form-item>
             <el-form-item label="大小">
-                <el-input-number v-model="config.shadow.size" :min="1" :max="500"></el-input-number>
+                <el-slider show-input v-model="config.shadow.size" :min="1" :max="500"></el-slider>
             </el-form-item>
             <el-form-item label="水平偏移">
-                <el-input-number v-model="config.shadow.x" :min="-1000" :max="1000"></el-input-number>
+                <el-slider show-input v-model="config.shadow.x" :min="-1000" :max="1000"></el-slider>
             </el-form-item>
             <el-form-item label="垂直偏移">
-                <el-input-number v-model="config.shadow.y" :min="-1000" :max="1000"></el-input-number>
+                <el-slider show-input v-model="config.shadow.y" :min="-1000" :max="1000"></el-slider>
+            </el-form-item>
+            <el-form-item label="重置">
+                <el-button size="small" @click="resetSize">重置大小</el-button>
+                <el-button size="small" @click="resetOffset">重置偏移量</el-button>
             </el-form-item>
         </div>
     </el-form>
@@ -39,6 +43,16 @@ const config = defineProps({
         }
     }
 })
+
+const defaultConfig = JSON.parse(JSON.stringify(config.shadow));
+
+function resetSize() {
+    config.shadow.size = defaultConfig.size;
+}
+function resetOffset() {
+    config.shadow.x = defaultConfig.x;
+    config.shadow.y = defaultConfig.y;
+}
 </script>
 
 <style lang='less' scoped></style>

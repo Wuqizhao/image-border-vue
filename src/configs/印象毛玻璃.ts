@@ -177,9 +177,6 @@ const config: Config = {
 		size: 50,
 	},
 	draw: doDraw,
-	beforeDraw: async () => {
-		// do something
-	},
 };
 
 export default config;
