@@ -385,7 +385,7 @@ const saveConfig = () => {
     }
 
     try {
-        const temp_config = JSON.parse(JSON.stringify(saveConfigDialog.config));
+        const temp_config = JSON.parse(saveConfigDialog.config);
 
         const watermark: LocalWaterMarkItem = {
             name: saveConfigDialog.name,
@@ -736,7 +736,7 @@ function importConfig(val: number): void {
     configPromise.then(res => {
         let config_value = deepClone(<Config>res.default);
         if (watermark.is_local) {
-            let local_value = JSON.parse(JSON.parse(watermark.config)) as Config;
+            let local_value = JSON.parse(watermark.config) as Config;
             // 合并对象
             config_value = Object.assign(config_value, local_value);
         }
