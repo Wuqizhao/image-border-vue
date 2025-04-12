@@ -9,13 +9,13 @@
                     v-model="props.divider.color"></el-color-picker>
             </el-form-item>
             <el-form-item label="宽度">
-                <el-input-number v-model="props.divider.width" :min="1" :max="1000"></el-input-number>
+                <el-slider show-input v-model="props.divider.width" :min="1" :max="100"></el-slider>
             </el-form-item>
             <el-form-item label="长度缩放">
-                <el-input-number v-model="props.divider.scale" :min="0" :max="50" :step="0.01"></el-input-number>
+                <el-slider show-input v-model="props.divider.scale" :min="0" :max="20" :step="0.01"></el-slider>
             </el-form-item>
             <el-form-item label="间隔缩放">
-                <el-input-number v-model="props.divider.margin" :min="0" :max="50" :step="0.01"></el-input-number>
+                <el-slider show-input v-model="props.divider.margin" :min="0" :max="10" :step="0.01"></el-slider>
             </el-form-item>
         </div>
     </el-form>

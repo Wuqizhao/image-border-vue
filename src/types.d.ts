@@ -1,5 +1,243 @@
 import type { Exifr, Tags } from "exifr";
 
+declare interface Model {
+	/**
+	 * 是否支持显示型号
+	 */
+	enable: boolean;
+	/**
+	 * 是否显示型号
+	 */
+	show: boolean;
+	/**
+	 * 型号文本的颜色
+	 */
+	color: string;
+	/**
+	 * 型号文本大小
+	 */
+	size: number;
+	/**
+	 * 型号文字是否替换Z为ℤ
+	 */
+	replaceZ: boolean;
+	/**
+	 * 型号文字是否斜体
+	 */
+	italic: boolean;
+	/**
+	 * 型号文字是否加粗，一般只加粗厂商
+	 */
+	bold: boolean;
+	/**
+	 * 自定义文本
+	 */
+	text?: string;
+}
+declare interface Params {
+	/**
+	 * 是否支持参数
+	 */
+	enable: boolean;
+	/**
+	 * 是否显示参数
+	 */
+	show: boolean;
+	/**
+	 * 参数文本的颜色
+	 */
+	color: string;
+	/**
+	 * 参数文本大小
+	 */
+	size: number;
+	/**
+	 * 是否使用等效焦距
+	 */
+	useEquivalentFocalLength: boolean;
+	/**
+	 * 是否大写
+	 */
+	letterUpperCase: boolean;
+	/**
+	 * 是否斜体
+	 */
+	italic: boolean;
+	/**
+	 * 自定义文本
+	 */
+	text?: string;
+}
+declare interface Time {
+	/**
+	 * 是否支持时间
+	 */
+	enable: boolean;
+	/**
+	 * 是否显示时间
+	 */
+	show: boolean;
+	/**
+	 * 时间文本的颜色
+	 */
+	color: string;
+	/**
+	 * 时间文本大小
+	 */
+	size: number;
+	/**
+	 * 时间格式(YYYY-MM-DD HH:mm:ss)
+	 */
+	format: string;
+	/**
+	 * 自定义的文本
+	 */
+	text?: string;
+}
+declare interface Lens {
+	/**
+	 * 是否支持镜头
+	 */
+	enable: boolean;
+	/**
+	 * 是否显示镜头
+	 */
+	show: boolean;
+	/**
+	 * 镜头文本
+	 */
+	text: string;
+	/**
+	 * 镜头文本颜色
+	 */
+	color: string;
+	/**
+	 * 文字大小
+	 */
+	size: number;
+	/**
+	 * 是否斜体
+	 */
+	italic: boolean;
+	/**
+	 * 是否加粗
+	 */
+	bold: boolean;
+}
+declare interface Radius {
+	/**
+	 * 是否支持圆角
+	 */
+	enable: boolean;
+	/**
+	 * 是否显示圆角
+	 */
+	show: boolean;
+	/**
+	 * 圆角位置
+	 */
+	position: Array<"lt" | "rt" | "lb" | "rb">;
+	/**
+	 * 圆角大小
+	 */
+	size: number;
+}
+declare interface Blur {
+	/**
+	 * 是否支持模糊
+	 */
+	enable: boolean;
+	/**
+	 * 模糊大小
+	 */
+	size: number;
+}
+declare interface Logo {
+	/**
+	 * 是否支持logo
+	 */
+	enable: boolean;
+	/**
+	 * 是否自动匹配logo
+	 */
+	auto: boolean;
+	/**
+	 * 是否显示logo
+	 */
+	show: boolean;
+	/**
+	 * logo名称
+	 */
+	name: string;
+	/**
+	 * logo宽度
+	 */
+	width: number;
+	/**
+	 * logo高度
+	 */
+	height: number;
+	/**
+	 * 垂直偏移
+	 */
+	verticalOffset: number;
+	/**
+	 * 是否圆形LOGO
+	 */
+	circle: boolean;
+	/**
+	 * 自定义的logo地址（可选），此选项可能导致无法导出图片
+	 */
+	url?: string;
+}
+declare interface Divider {
+	/**
+	 * 是否支持分割线
+	 */
+	enable: boolean;
+	/**
+	 * 是否显示分割线
+	 */
+	show: boolean;
+	/**
+	 * 分割线颜色
+	 */
+	color: string;
+	/**
+	 * 分割线宽度
+	 */
+	width: number;
+	/**
+	 * 缩放倍数
+	 */
+	scale: number;
+	/**
+	 * 间隔
+	 */
+	margin: number;
+}
+declare interface Shadow {
+	/**
+	 * 是否显示阴影
+	 */
+	show: boolean;
+	/**
+	 * 阴影颜色
+	 */
+	color: string;
+	/**
+	 * 阴影大小
+	 */
+	size: number;
+	/**
+	 * 阴影水平偏移
+	 */
+	x: number;
+	/**
+	 * 阴影垂直偏移
+	 */
+	y: number;
+}
 declare interface BaseConfig {
 	/**
 	 * 水印名称，和文件名一致
@@ -39,130 +277,10 @@ declare interface BaseConfig {
 		 * 水印的基础高度，水印在上下对应高度的倍数，水印在左右对应宽度的倍数
 		 */
 		height: number;
-		model: {
-			/**
-			 * 是否支持显示型号
-			 */
-			enable: boolean;
-			/**
-			 * 是否显示型号
-			 */
-			show: boolean;
-			/**
-			 * 型号文本的颜色
-			 */
-			color: string;
-			/**
-			 * 型号文本大小
-			 */
-			size: number;
-			/**
-			 * 型号文字是否替换Z为ℤ
-			 */
-			replaceZ: boolean;
-			/**
-			 * 型号文字是否斜体
-			 */
-			italic: boolean;
-			/**
-			 * 型号文字是否加粗，一般只加粗厂商
-			 */
-			bold: boolean;
-			/**
-			 * 自定义文本
-			 */
-			text?: string;
-		};
-		params: {
-			/**
-			 * 是否支持参数
-			 */
-			enable: boolean;
-			/**
-			 * 是否显示参数
-			 */
-			show: boolean;
-			/**
-			 * 参数文本的颜色
-			 */
-			color: string;
-			/**
-			 * 参数文本大小
-			 */
-			size: number;
-			/**
-			 * 是否使用等效焦距
-			 */
-			useEquivalentFocalLength: boolean;
-			/**
-			 * 是否大写
-			 */
-			letterUpperCase: boolean;
-			/**
-			 * 是否斜体
-			 */
-			italic: boolean;
-			/**
-			 * 自定义文本
-			 */
-			text?: string;
-		};
-		time: {
-			/**
-			 * 是否支持时间
-			 */
-			enable: boolean;
-			/**
-			 * 是否显示时间
-			 */
-			show: boolean;
-			/**
-			 * 时间文本的颜色
-			 */
-			color: string;
-			/**
-			 * 时间文本大小
-			 */
-			size: number;
-			/**
-			 * 时间格式(YYYY-MM-DD HH:mm:ss)
-			 */
-			format: string;
-			/**
-			 * 自定义的文本
-			 */
-			text?: string;
-		};
-		lens: {
-			/**
-			 * 是否支持镜头
-			 */
-			enable: boolean;
-			/**
-			 * 是否显示镜头
-			 */
-			show: boolean;
-			/**
-			 * 镜头文本
-			 */
-			text: string;
-			/**
-			 * 镜头文本颜色
-			 */
-			color: string;
-			/**
-			 * 文字大小
-			 */
-			size: number;
-			/**
-			 * 是否斜体
-			 */
-			italic: boolean;
-			/**
-			 * 是否加粗
-			 */
-			bold: boolean;
-		};
+		model: Model;
+		params: Params;
+		time: Time;
+		lens: Lens;
 		paddings: {
 			/**
 			 * 水印额外的左右边距
@@ -178,120 +296,11 @@ declare interface BaseConfig {
 		 */
 		bgColor: string;
 	};
-	radius: {
-		/**
-		 * 是否支持圆角
-		 */
-		enable: boolean;
-		/**
-		 * 是否显示圆角
-		 */
-		show: boolean;
-		/**
-		 * 圆角位置
-		 */
-		position: Array<"lt" | "rt" | "lb" | "rb">;
-		/**
-		 * 圆角大小
-		 */
-		size: number;
-	};
-	blur: {
-		/**
-		 * 是否支持模糊
-		 */
-		enable: boolean;
-		/**
-		 * 模糊大小
-		 */
-		size: number;
-	};
-	logo: {
-		/**
-		 * 是否支持logo
-		 */
-		enable: boolean;
-		/**
-		 * 是否自动匹配logo
-		 */
-		auto: boolean;
-		/**
-		 * 是否显示logo
-		 */
-		show: boolean;
-		/**
-		 * logo名称
-		 */
-		name: string;
-		/**
-		 * logo宽度
-		 */
-		width: number;
-		/**
-		 * logo高度
-		 */
-		height: number;
-		/**
-		 * 垂直偏移
-		 */
-		verticalOffset: number;
-		/**
-		 * 是否圆形LOGO
-		 */
-		circle: boolean;
-		/**
-		 * 自定义的logo地址（可选），此选项可能导致无法导出图片
-		 */
-		url?: string;
-	};
-	divider: {
-		/**
-		 * 是否支持分割线
-		 */
-		enable: boolean;
-		/**
-		 * 是否显示分割线
-		 */
-		show: boolean;
-		/**
-		 * 分割线颜色
-		 */
-		color: string;
-		/**
-		 * 分割线宽度
-		 */
-		width: number;
-		/**
-		 * 缩放倍数
-		 */
-		scale: number;
-		/**
-		 * 间隔
-		 */
-		margin: number;
-	};
-	shadow: {
-		/**
-		 * 是否显示阴影
-		 */
-		show: boolean;
-		/**
-		 * 阴影颜色
-		 */
-		color: string;
-		/**
-		 * 阴影大小
-		 */
-		size: number;
-		/**
-		 * 阴影水平偏移
-		 */
-		x: number;
-		/**
-		 * 阴影垂直偏移
-		 */
-		y: number;
-	};
+	radius: Radius;
+	blur: Blur;
+	logo: Logo;
+	divider: Divider;
+	shadow: Shadow;
 }
 declare interface Config extends BaseConfig {
 	/**
