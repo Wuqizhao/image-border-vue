@@ -19,37 +19,34 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	// 绘制型号
 	if (modelConfig.show) {
-		const modelConfig = config.watermark.model;
-		if (modelConfig.show) {
-			ctx.save(); // 保存当前绘图状态
-			ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
-				modelConfig.bold ? "bold" : ""
-			} ${modelConfig.size}px ${config.font || "Arial"}`;
-			ctx.fillStyle = modelConfig.color;
-			ctx.textAlign = "left";
-			ctx.textBaseline = "middle";
-			let _y = rect1.y + (rect2.y - rect1.y) / 2;
-			if (lensConfig.show) {
-				_y = rect1.y + (rect2.y - rect1.y) / 3;
-			}
-			// 截取厂商
-			const company = img.modelText.split(" ")[0];
-			// 计算厂商的宽度
-			const companyWidth = ctx.measureText(company).width;
-
-			ctx.fillText(company, imgPaddings.left + watermarkPaddings.lr, _y);
-
-			ctx.font = `${modelConfig.size}px ${config.font || "Arial"}`;
-			const modelText = modelConfig.replaceZ
-				? img.modelText.replace(/z|Z/, "ℤ")
-				: img.modelText;
-			ctx.fillText(
-				modelText.replace(company, ""),
-				imgPaddings.left + watermarkPaddings.lr + companyWidth,
-				_y
-			);
-			ctx.restore(); // 恢复之前的绘图状态
+		ctx.save(); // 保存当前绘图状态
+		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
+			modelConfig.bold ? "bold" : ""
+		} ${modelConfig.size}px ${config.font || "Arial"}`;
+		ctx.fillStyle = modelConfig.color;
+		ctx.textAlign = "left";
+		ctx.textBaseline = "middle";
+		let _y = rect1.y + (rect2.y - rect1.y) / 2;
+		if (lensConfig.show) {
+			_y = rect1.y + (rect2.y - rect1.y) / 3;
 		}
+		// 截取厂商
+		const company = img.modelText.split(" ")[0];
+		// 计算厂商的宽度
+		const companyWidth = ctx.measureText(company).width;
+
+		ctx.fillText(company, imgPaddings.left + watermarkPaddings.lr, _y);
+
+		ctx.font = `${modelConfig.size}px ${config.font || "Arial"}`;
+		const modelText = modelConfig.replaceZ
+			? img.modelText.replace(/z|Z/, "ℤ")
+			: img.modelText;
+		ctx.fillText(
+			modelText.replace(company, ""),
+			imgPaddings.left + watermarkPaddings.lr + companyWidth,
+			_y
+		);
+		ctx.restore(); // 恢复之前的绘图状态
 	}
 	// 在水印范围内垂直居中
 	const _y = (rect2.y + rect1.y) / 2;

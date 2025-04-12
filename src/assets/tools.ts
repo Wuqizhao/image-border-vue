@@ -142,6 +142,10 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		name: "时间+型号",
 		config: "时间+型号",
 	},
+	{
+		name: "蔡司水印",
+		config: "蔡司水印",
+	},
 ];
 
 export function getWatermarkList(): WatermarkListItem[] {
