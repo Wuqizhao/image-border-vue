@@ -1,7 +1,11 @@
 import { ElMessage, ElNotification } from "element-plus";
 import type { Config, ImgExt } from "../types";
 
-// 转换曝光时间的函数
+/**
+ * 将曝光时间转换为分数字符串格式
+ * @param exposureTime 曝光时间(秒)
+ * @returns 格式化后的曝光时间字符串。如果小于1秒则返回分数形式(如"1/60"),否则直接返回数字字符串
+ */
 export function convertExposureTime(exposureTime: number) {
 	if (exposureTime < 1) {
 		return `1/${Math.round(1 / exposureTime)}`;
@@ -10,9 +14,18 @@ export function convertExposureTime(exposureTime: number) {
 	}
 }
 
+/**
+ * 将画布内容下载为图片文件
+ * @param name - 下载文件的名称(不包含扩展名)
+ * @param quality - 图片质量，范围0-1，默认为0.97
+ * @param ext - 图片格式扩展名，默认为"jpeg"
+ * @throws {Error} 当画布元素不存在时抛出错误
+ * @returns Promise<void>t download('my-image', 0.8, 'png')
+ * ```
+ */
 export async function download(
 	name: string,
-	quality: number = 1,
+	quality: number = 0.97,
 	ext: ImgExt = "jpeg"
 ) {
 	const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
@@ -47,7 +60,13 @@ export async function download(
 	}
 }
 
-// 深拷贝对象，包含函数
+/**
+ * 深度克隆一个值，支持函数、对象、数组和基本类型
+ * @template T 要克隆的值的类型
+ * @param {T} value 需要被克隆的值
+ * @returns {T} 返回克隆后的新值 cloned = deepClone(obj); // { a: 1, b: { c: 2 } }
+ * ```
+ */
 export function deepClone<T>(value: T): T {
 	// 如果值为 null 或者不是对象或函数，则直接返回该值
 	if (value === null || typeof value !== "object") {
@@ -74,6 +93,11 @@ export function deepClone<T>(value: T): T {
 	return clone as T;
 }
 
+/**
+ * 处理图片URL
+ * @param file - 图片文件对象或图片URL字符串
+ * @returns 如果输入为字符串则直接返回,否则返回文件的对象URL
+ */
 export function compressImage(file: File | string) {
 	if (typeof file === "string") {
 		return file;
@@ -81,6 +105,15 @@ export function compressImage(file: File | string) {
 	return URL.createObjectURL(file);
 }
 
+/**
+ * 获取 Logo 图片的源地址
+ * @param config 配置对象，包含 logo 相关配置
+ * @returns 返回 Promise<string> 类型的 logo 图片地址
+ * @description 根据配置获取 logo 图片地址,支持以下三种方式:
+ * 1. 直接使用 url 属性指定的地址
+ * 2. 使用 name 属性指定的 http(s) 链接
+ * 3. 从本地 assets/logos 目录下按 name 属性加载图片
+ */
 export async function getLogoSrc(config: Config) {
 	const { logo: logoConfig } = config;
 	if (logoConfig.url) {
@@ -92,6 +125,20 @@ export async function getLogoSrc(config: Config) {
 	}
 }
 
+/**
+ * 在画布上绘制Logo图片
+ * @param config - 配置对象，包含Logo的相关设置
+ * @param ctx - Canvas 2D渲染上下文
+ * @param x - Logo绘制的x坐标
+ * @param y - Logo绘制的y坐标
+ *
+ * @description
+ * - 支持绘制圆形或矩形Logo
+ * - 当config.logo.circle为true时绘制圆形Logo
+ * - 加载失败时会显示错误通知
+ *
+ * @throws 当Logo图片加载失败时，会通过ElNotification显示错误信息
+ */
 export async function drawLogo(
 	config: Config,
 	ctx: CanvasRenderingContext2D,
@@ -127,6 +174,11 @@ export async function drawLogo(
 	};
 }
 
+/**
+ * 检测当前设备是否为移动设备
+ * 通过检查用户代理字符串判断是否为移动设备
+ * @returns {boolean} 如果是移动设备返回 true,否则返回 false
+ */
 export function isMobile() {
 	let isMobile =
 		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(

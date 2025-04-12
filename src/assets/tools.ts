@@ -159,6 +159,16 @@ export const watermarkList: WatermarkListBaseItem[] = [
 	},
 ];
 
+/**
+ * 获取水印列表，包含预设水印和本地自定义水印
+ *
+ * @returns {WatermarkListItem[]} 返回合并后的水印列表，按index属性升序排列
+ *
+ * @description
+ * - 将预设水印列表添加index属性
+ * - 获取本地存储的自定义水印并转换格式
+ * - 合并预设和本地水印列表并按index排序
+ */
 export function getWatermarkList(): WatermarkListItem[] {
 	const list: WatermarkListItem[] = watermarkList.map((item, index) => {
 		return { ...item, index: index };
@@ -183,7 +193,11 @@ export function getWatermarkList(): WatermarkListItem[] {
 	return [...localNames, ...list].sort((a, b) => a.index - b.index);
 }
 
-// 获取本地浏览器支持的字体
+/**
+ * 获取支持的字体列表
+ * @returns 返回包含所有支持字体名称的字符串数组
+ * @description 返回一个包含中英文字体的数组,包括Arial、宋体等常用字体
+ */
 export const getSupportedFonts = (): string[] => {
 	return [
 		"Arial",

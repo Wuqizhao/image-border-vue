@@ -191,12 +191,33 @@ declare interface Logo {
 	url?: string;
 }
 declare interface Location {
+	/**
+	 * 是否支持位置功能
+	 */
 	enable: boolean;
+	/**
+	 * 是否显示位置
+	 */
 	show: boolean;
+	/**
+	 * 自定义的位置文本
+	 */
 	text: string;
+	/**
+	 * 位置文本大小
+	 */
 	size: number;
+	/**
+	 * 位置文本颜色
+	 */
 	color: string;
+	/**
+	 * 是否加粗
+	 */
 	bold: boolean;
+	/**
+	 * 是否斜体
+	 */
 	italic: boolean;
 }
 declare interface Divider {
