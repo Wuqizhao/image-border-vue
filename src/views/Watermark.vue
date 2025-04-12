@@ -46,7 +46,7 @@
                                 <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
                             </el-form-item>
                             <el-form-item label="字体">
-                                <el-select filterable v-model="config.font" clearable>
+                                <el-select :filterable="!isMobile()" v-model="config.font" clearable>
                                     <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
                                         :value="item" :style="{ fontFamily: item }"></el-option>
                                 </el-select>
@@ -80,6 +80,12 @@
                     </el-tab-pane>
                     <el-tab-pane label="调整" name="watermark">
                         <el-collapse accordion>
+                            <el-collapse-item v-if="config.logo.enable">
+                                <template #title>
+                                    <h3>图标</h3>
+                                </template>
+                                <LogoConfig :logo="config.logo" />
+                            </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.model.enable">
                                 <template #title>
                                     <h3>型号</h3>
@@ -105,12 +111,6 @@
                                     <h3>镜头</h3>
                                 </template>
                                 <LensConfig :config="config.watermark.lens" :text="img.lensText" />
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.logo.enable">
-                                <template #title>
-                                    <h3>图标</h3>
-                                </template>
-                                <LogoConfig :logo="config.logo" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.divider.enable">
                                 <template #title>
@@ -204,7 +204,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { print, cameraBrands, getWatermarkList, getSupportedFonts } from '../assets/tools'
-import { download, convertExposureTime, compressImage, deepClone } from "../utils"
+import { download, convertExposureTime, compressImage, deepClone, isMobile } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
@@ -226,6 +226,7 @@ import ImageInfo from '../components/ImageInfo.vue'
 import LocationConfig from '../components/LocationConfig.vue'
 const store = useStore();
 
+// 是否开发环境
 const isDev = computed(() => import.meta.env.DEV)
 // 辅助线配置
 const auxiliaryLines = reactive({

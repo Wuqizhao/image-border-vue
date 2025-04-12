@@ -9,8 +9,8 @@
                 <p class="tips">支持列表：尼康、佳能、索尼、大疆、富士、徕卡、苹果、一加、vivo、小米~</p>
             </el-form-item>
             <el-form-item label="手动选择" v-if="!config.logo.auto">
-                <el-select filterable placeholder="选择logo" :disabled="!!config.logo?.url" style="width: 200px;"
-                    v-model="config.logo.name">
+                <el-select :filterable="!isMobile()" placeholder="选择logo" :disabled="!!config.logo?.url"
+                    style="width: 200px;" v-model="config.logo.name">
                     <el-option v-for="item in enhancedCameraBrands" :label="item.name" :key="item.name"
                         :value="item.logo">
                         <div style="display: flex;align-items: center;gap: 10px;">
@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { cameraBrands } from '../assets/tools';
 import { computedAsync } from '@vueuse/core';
-import { compressImage } from '../utils';
+import { compressImage, isMobile } from '../utils';
 
 const config = defineProps({
     logo: {

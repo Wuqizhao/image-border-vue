@@ -4,7 +4,7 @@
             <el-switch v-model="loc.show"></el-switch>
         </el-form-item>
         <el-form-item label="文本">
-            <el-input v-model="loc.text" placeholder="自定义位置文本，留空自动读取~">
+            <el-input v-model="loc.text" placeholder="自定义位置文本，留空自动读取~" clearable>
                 <template #append>
                     <el-button @click="loc.text = text">读取</el-button>
                 </template>
