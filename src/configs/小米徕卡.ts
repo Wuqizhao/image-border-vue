@@ -7,6 +7,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		paddings: imgPaddings,
 		divider: dividerConfig,
 		logo: logoConfig,
+		location: locationConfig,
 	} = config;
 	const {
 		model: modelConfig,
@@ -27,7 +28,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.textAlign = "left";
 		ctx.textBaseline = "middle";
 		let _y = rect1.y + (rect2.y - rect1.y) / 2;
-		if (lensConfig.show) {
+		if (lensConfig.show || (locationConfig?.show && timeConfig.show)) {
 			_y = rect1.y + (rect2.y - rect1.y) / 3;
 		}
 		// 截取厂商
@@ -64,11 +65,13 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 		let paramsText =
 			paramsConfig?.text ||
-			`${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  iso${img.exif.ISO}`;
+			`${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  ISO${img.exif.ISO}`;
 		paramsConfig.letterUpperCase && (paramsText = paramsText.toUpperCase());
 		paramsWidth = ctx.measureText(paramsText).width;
 
-		let _y = rect1.y + (rect2.y - rect1.y) / (timeConfig.show ? 3 : 2);
+		let _y =
+			rect1.y +
+			(rect2.y - rect1.y) / (timeConfig.show || locationConfig?.show ? 3 : 2);
 		ctx.fillText(
 			paramsText,
 			canvas.width - imgPaddings.right - watermarkPaddings.lr,
@@ -76,26 +79,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		);
 	}
 
-	// 绘制时间
-	let timeWidth = 0;
-	if (timeConfig.show) {
-		ctx.save();
-		ctx.textAlign = paramsConfig.show ? "left" : "right";
-		const _x = paramsConfig.show
-			? canvas.width - imgPaddings.right - watermarkPaddings.lr - paramsWidth
-			: canvas.width - imgPaddings.right - watermarkPaddings.lr;
-		const _y =
-			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
-		ctx.textBaseline = "middle";
-		ctx.fillStyle = timeConfig.color;
-		ctx.font = `${timeConfig.size}px ${config.font}`;
-
-		timeWidth = ctx.measureText(img.timeText).width;
-
-		ctx.fillText(img.timeText, _x, _y);
-		ctx.restore();
-	}
-
+	let lensWidth = 0;
 	// 绘制镜头
 	if (lensConfig.show) {
 		ctx.save();
@@ -112,7 +96,39 @@ const doDraw: DrawFun = async (img, config, context) => {
 			_y = rect1.y + (rect2.y - rect1.y) / 2;
 			ctx.textBaseline = "middle";
 		}
+		lensWidth = ctx.measureText(text).width;
 		ctx.fillText(text, imgPaddings.left + watermarkPaddings.lr, _y);
+		ctx.restore();
+	}
+
+	// 绘制时间
+	let timeWidth = 0;
+	if (timeConfig.show) {
+		ctx.save();
+		ctx.textAlign = paramsConfig.show ? "left" : "right";
+		let _x = paramsConfig.show
+			? canvas.width - imgPaddings.right - watermarkPaddings.lr - paramsWidth
+			: canvas.width - imgPaddings.right - watermarkPaddings.lr;
+		const _y =
+			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
+		ctx.textBaseline = paramsConfig.show ? "top" : "middle";
+		ctx.fillStyle = timeConfig.color;
+		ctx.font = `${timeConfig.size}px ${config.font}`;
+
+		timeWidth = ctx.measureText(img.timeText).width;
+
+		if (!locationConfig?.show) {
+			ctx.fillText(img.timeText, _x, _y);
+		} else {
+			ctx.textAlign = "left";
+			ctx.textBaseline = "top";
+			let _x = imgPaddings.left + watermarkPaddings.lr;
+			if (lensConfig.show) {
+				const SPACE = 50;
+				_x += lensWidth + SPACE * dividerConfig.margin;
+			}
+			ctx.fillText(img.timeText, _x, _y);
+		}
 		ctx.restore();
 	}
 
@@ -138,18 +154,40 @@ const doDraw: DrawFun = async (img, config, context) => {
 	}
 
 	// 绘制分割线
+	const centerY = rect1.y + (rect2.y - rect1.y) / 2;
 	if (dividerConfig.show) {
 		ctx.strokeStyle = dividerConfig.color;
 		ctx.lineWidth = dividerConfig.width;
 
 		const _h =
 			Math.min(logoConfig.height, paramsConfig.size) * dividerConfig.scale;
-		const centerY = rect1.y + (rect2.y - rect1.y) / 2;
 
 		ctx.beginPath();
 		ctx.moveTo(_x, centerY - _h / 2);
 		ctx.lineTo(_x, centerY + _h / 2);
 		ctx.stroke();
+	}
+
+	// 绘制位置
+	if (locationConfig?.show) {
+		ctx.save();
+		ctx.textAlign = "left";
+		ctx.textBaseline = "top";
+		ctx.fillStyle = locationConfig.color;
+		ctx.font = `${locationConfig.bold ? "bold" : ""} ${
+			locationConfig.italic ? "italic" : ""
+		} ${locationConfig.size}px ${config.font}`;
+
+		const text = locationConfig.text || img.locationText;
+
+		const _x = paramsConfig.show
+			? canvas.width - imgPaddings.right - watermarkPaddings.lr - paramsWidth
+			: canvas.width - imgPaddings.right - watermarkPaddings.lr;
+		const _y =
+			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
+
+		ctx.fillText(text, _x, _y);
+		ctx.restore();
 	}
 };
 
@@ -186,14 +224,14 @@ const config: Config = {
 			enable: true,
 			show: false,
 			color: "#808080",
-			size: 80,
+			size: 60,
 			format: "YYYY.MM.DD  HH:mm:ss",
 		},
 		lens: {
 			enable: true,
 			show: false,
 			color: "#808080",
-			size: 80,
+			size: 60,
 			italic: false,
 			bold: false,
 			text: "",
@@ -238,6 +276,15 @@ const config: Config = {
 		x: 0,
 		y: 0,
 		size: 100,
+	},
+	location: {
+		enable: true,
+		show: false,
+		color: "#808080",
+		size: 60,
+		italic: false,
+		bold: false,
+		text: "",
 	},
 	draw: doDraw,
 };

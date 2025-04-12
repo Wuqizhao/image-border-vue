@@ -190,6 +190,15 @@ declare interface Logo {
 	 */
 	url?: string;
 }
+declare interface Location {
+	enable: boolean;
+	show: boolean;
+	text: string;
+	size: number;
+	color: string;
+	bold: boolean;
+	italic: boolean;
+}
 declare interface Divider {
 	/**
 	 * 是否支持分割线
@@ -301,6 +310,7 @@ declare interface BaseConfig {
 	logo: Logo;
 	divider: Divider;
 	shadow: Shadow;
+	location?: Location;
 }
 declare interface Config extends BaseConfig {
 	/**
@@ -414,6 +424,10 @@ declare interface Img {
 	 * 镜头文本
 	 */
 	lensText: string;
+	/**
+	 * 经纬度
+	 */
+	locationText: string;
 }
 
 declare type CameraBrands = {

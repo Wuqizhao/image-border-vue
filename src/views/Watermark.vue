@@ -106,17 +106,23 @@
                                 </template>
                                 <LensConfig :config="config.watermark.lens" :text="img.lensText" />
                             </el-collapse-item>
+                            <el-collapse-item v-if="config.logo.enable">
+                                <template #title>
+                                    <h3>图标</h3>
+                                </template>
+                                <LogoConfig :logo="config.logo" />
+                            </el-collapse-item>
                             <el-collapse-item v-if="config.divider.enable">
                                 <template #title>
                                     <h3>分割线</h3>
                                 </template>
                                 <DividerConfig :divider="config.divider" />
                             </el-collapse-item>
-                            <el-collapse-item v-if="config.logo.enable">
+                            <el-collapse-item v-if="config.location?.enable">
                                 <template #title>
-                                    <h3>图标</h3>
+                                    <h3>地理位置</h3>
                                 </template>
-                                <LogoConfig :logo="config.logo" />
+                                <LocationConfig :loc="config.location" :text="img.locationText" />
                             </el-collapse-item>
                         </el-collapse>
                     </el-tab-pane>
@@ -217,6 +223,7 @@ import BlurConfig from '../components/BlurConfig.vue'
 import ShadowConfig from '../components/ShadowConfig.vue'
 import PaddingConfig from '../components/PaddingConfig.vue'
 import ImageInfo from '../components/ImageInfo.vue'
+import LocationConfig from '../components/LocationConfig.vue'
 const store = useStore();
 
 const isDev = computed(() => import.meta.env.DEV)
@@ -244,7 +251,8 @@ const defaultImgValue: Img = {
     modelText: '',
     paramsText: '',
     timeText: '',
-    lensText: ''
+    lensText: '',
+    locationText: ''
 };
 const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
@@ -416,7 +424,7 @@ const handleDraw = useDebounceFn(() => {
     const file = curFile.value;
     if (!file) return;
 
-    const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig } = config.value;
+    const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig, location: locationConfig } = config.value;
     const {
         model,
         params: paramsConfig,
@@ -472,6 +480,11 @@ const handleDraw = useDebounceFn(() => {
                 timeConfig.format
             );
             img.lensText = lens.text || exif?.LensModel;
+            img.locationText = locationConfig?.text || `${img.exif?.GPSLatitude[0]}°${img.exif?.GPSLatitude[1]
+                }'${(img.exif?.GPSLatitude[2]).toFixed(0)}''${img.exif?.GPSLatitudeRef} ${img.exif?.GPSLongitude[0]
+                }°${img.exif?.GPSLongitude[1]}'${(img.exif?.GPSLongitude[2]).toFixed(
+                    0
+                )}''${img.exif?.GPSLongitudeRef}`;
 
             const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
             const ctx = canvas.getContext("2d");
