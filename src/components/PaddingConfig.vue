@@ -21,7 +21,7 @@
         </el-form-item>
         <h3>水印边距</h3>
         <el-form-item label="左右边距">
-            <el-slider v-model="config.watermark.paddings.lr" :min="0" :max="2000" :step="10" show-input></el-slider>
+            <el-slider v-model="config.watermark.paddings.lr" :min="0" :max="5000" :step="10" show-input></el-slider>
         </el-form-item>
         <el-form-item label="上下边距">
             <el-slider v-model="config.watermark.paddings.tb" :min="0" :max="2000" :step="10" show-input></el-slider>
