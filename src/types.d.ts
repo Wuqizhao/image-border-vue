@@ -332,6 +332,16 @@ declare interface BaseConfig {
 	divider: Divider;
 	shadow: Shadow;
 	location?: Location;
+	labels?: Array<
+		Lens & {
+			name: string;
+			x: number;
+			y: number;
+			align: "left" | "center" | "right";
+			verticalAlign: "top" | "middle" | "bottom";
+			font: string;
+		}
+	>;
 }
 declare interface Config extends BaseConfig {
 	/**

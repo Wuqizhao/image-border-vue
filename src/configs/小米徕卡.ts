@@ -189,6 +189,23 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.fillText(text, _x, _y);
 		ctx.restore();
 	}
+
+	// 渲染自定义文本
+	if (config.labels) {
+		for (const label of config.labels) {
+			if (!label.show) continue;
+
+			ctx.save();
+			ctx.textAlign = label.align;
+			ctx.textBaseline = label.verticalAlign;
+			ctx.fillStyle = label.color;
+			ctx.font = `${label.bold ? "bold" : ""} ${label.italic ? "italic" : ""} ${
+				label.size
+			}px ${label.font}`;
+
+			ctx.fillText(label.text, label.x, label.y);
+		}
+	}
 };
 
 const config: Config = {
@@ -286,6 +303,38 @@ const config: Config = {
 		bold: false,
 		text: "",
 	},
+	labels: [
+		{
+			name: "自定义文本1",
+			enable: true,
+			show: false,
+			align: "left",
+			verticalAlign: "middle",
+			color: "#808080",
+			size: 160,
+			italic: false,
+			bold: false,
+			text: "",
+			x: 100,
+			y: 100,
+			font: "华文行楷",
+		},
+		{
+			name: "自定义文本2",
+			enable: true,
+			show: false,
+			align: "left",
+			verticalAlign: "middle",
+			color: "#808080",
+			size: 160,
+			italic: false,
+			bold: false,
+			text: "",
+			x: 100,
+			y: 100,
+			font: "华文行楷",
+		},
+	],
 	draw: doDraw,
 };
 

@@ -124,6 +124,12 @@
                                 </template>
                                 <LocationConfig :loc="config.location" :text="img.locationText" />
                             </el-collapse-item>
+                            <el-collapse-item v-if="config.labels?.length">
+                                <template #title>
+                                    <h3>自定义文本</h3>
+                                </template>
+                                <LabelsConfig v-for="label in config.labels" :config="label" />
+                            </el-collapse-item>
                         </el-collapse>
                     </el-tab-pane>
                     <el-tab-pane label="图片" name="picture">
@@ -224,6 +230,7 @@ import ShadowConfig from '../components/ShadowConfig.vue'
 import PaddingConfig from '../components/PaddingConfig.vue'
 import ImageInfo from '../components/ImageInfo.vue'
 import LocationConfig from '../components/LocationConfig.vue'
+import LabelsConfig from '../components/LabelsConfig.vue';
 const store = useStore();
 
 // 是否开发环境
@@ -481,11 +488,14 @@ const handleDraw = useDebounceFn(() => {
                 timeConfig.format
             );
             img.lensText = lens.text || exif?.LensModel;
-            img.locationText = locationConfig?.text || `${img.exif?.GPSLatitude[0]}°${img.exif?.GPSLatitude[1]
-                }'${(img.exif?.GPSLatitude[2]).toFixed(0)}''${img.exif?.GPSLatitudeRef} ${img.exif?.GPSLongitude[0]
-                }°${img.exif?.GPSLongitude[1]}'${(img.exif?.GPSLongitude[2]).toFixed(
-                    0
-                )}''${img.exif?.GPSLongitudeRef}`;
+
+            if (img.exif?.GPSLatitude && img.exif?.GPSLongitude) {
+                img.locationText = locationConfig?.text || `${img.exif?.GPSLatitude[0]}°${img.exif?.GPSLatitude[1]
+                    }'${(img.exif?.GPSLatitude[2]).toFixed(0)}''${img.exif?.GPSLatitudeRef} ${img.exif?.GPSLongitude[0]
+                    }°${img.exif?.GPSLongitude[1]}'${(img.exif?.GPSLongitude[2]).toFixed(
+                        0
+                    )}''${img.exif?.GPSLongitudeRef}`;
+            }
 
             const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
             const ctx = canvas.getContext("2d");
