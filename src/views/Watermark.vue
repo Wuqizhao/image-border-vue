@@ -124,7 +124,7 @@
                                 </template>
                                 <LocationConfig :loc="config.location" :text="img.locationText" />
                             </el-collapse-item>
-                            <el-collapse-item v-if="config.labels">
+                            <el-collapse-item>
                                 <template #title>
                                     <h3>自定义文本</h3>
                                 </template>
@@ -132,7 +132,7 @@
                                     @remove="removeCustomLabel" />
                                 <el-button @click="addCustomLabel">添加自定义文本</el-button>
                             </el-collapse-item>
-                            <el-collapse-item v-if="config.images">
+                            <el-collapse-item>
                                 <template #title>
                                     <h3>自定义图片</h3>
                                 </template>
@@ -220,7 +220,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { print, cameraBrands, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
-import { download, convertExposureTime, compressImage, deepClone, isMobile } from "../utils"
+import { download, convertExposureTime, compressImage, deepClone, isMobile, drawCustomLabelsAndImages } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
@@ -684,6 +684,9 @@ const handleDraw = useDebounceFn(() => {
                 focalLength: focalLength,
             });
 
+
+            drawCustomLabelsAndImages(ctx, config.value.labels, config.value.images);
+
             // 绘制辅助线
             if (auxiliaryLines.horizontalCenter) {
                 ctx.save();
@@ -800,6 +803,9 @@ const preview = () => {
 }
 
 function addCustomLabel() {
+    if (!config.value?.labels) {
+        config.value.labels = [defaultLabelConfig];
+    }
     config.value?.labels?.unshift(defaultLabelConfig);
 }
 
@@ -809,6 +815,9 @@ function removeCustomLabel(name: string) {
 }
 
 function addCustomImage() {
+    if (!config.value?.images) {
+        config.value.images = [defaultImageConfig];
+    }
     config.value?.images?.unshift(defaultImageConfig);
 }
 function removeCustomImage(title: string) {

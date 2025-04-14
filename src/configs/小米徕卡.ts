@@ -189,35 +189,6 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.fillText(text, _x, _y);
 		ctx.restore();
 	}
-
-	// 渲染自定义文本
-	if (config.labels) {
-		for (const label of config.labels) {
-			if (!label.show) continue;
-
-			ctx.save();
-			ctx.textAlign = label.align;
-			ctx.textBaseline = label.verticalAlign;
-			ctx.fillStyle = label.color;
-			ctx.font = `${label.bold ? "bold" : ""} ${label.italic ? "italic" : ""} ${
-				label.size
-			}px ${label.font}`;
-
-			ctx.fillText(label.text, label.x, label.y);
-			ctx.restore();
-		}
-	}
-
-	// 绘制自定义图片
-	if (config?.images) {
-		for (const image of config.images) {
-			if (!image.show) continue;
-
-			ctx.save();
-			drawLogo(image, ctx, image.horizontalOffset, image.verticalOffset);
-			ctx.restore();
-		}
-	}
 };
 
 const config: Config = {

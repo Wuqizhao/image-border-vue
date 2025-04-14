@@ -199,8 +199,8 @@ export function isMobile() {
 
 export function drawCustomLabelsAndImages(
 	ctx: CanvasRenderingContext2D,
-	labels: LabelConfigItem[],
-	images: ImagesConfigItem[]
+	labels: LabelConfigItem[] | undefined,
+	images: ImagesConfigItem[] | undefined
 ) {
 	// 渲染自定义文本
 	if (labels) {
