@@ -1,5 +1,8 @@
 <template>
-    <h3>{{ props.config.name }}</h3>
+    <h3 style="display: flex;justify-content: space-between;align-items: center;padding:10px;">
+        <el-divider content-position="left">{{ props.config.name }}</el-divider>
+        <el-button type="danger" :text="true" plain @click="$emit('remove', props.config.name)">删除</el-button>
+    </h3>
     <el-form label-width="80px">
         <el-form-item label="显示">
             <el-switch v-model="props.config.show"></el-switch>
@@ -20,7 +23,7 @@
         <el-form-item label="垂直对齐">
             <el-radio-group v-model="props.config.verticalAlign">
                 <el-radio label="top" value="left">顶部对齐</el-radio>
-                <el-radio label="center" value="center">居中</el-radio>
+                <el-radio label="center" value="middle">居中</el-radio>
                 <el-radio label="bottom" value="right">底部对齐</el-radio>
             </el-radio-group>
         </el-form-item>
@@ -44,10 +47,10 @@
             <el-switch v-model="props.config.bold"></el-switch>
         </el-form-item>
         <el-form-item label="水平移动">
-            <el-slider show-input v-model="props.config.x" :min="-5000" :max="5000"></el-slider>
+            <el-slider show-input v-model="props.config.x" :min="-1000" :max="8000"></el-slider>
         </el-form-item>
         <el-form-item label="垂直移动">
-            <el-slider show-input v-model="props.config.y" :min="-5000" :max="5000"></el-slider>
+            <el-slider show-input v-model="props.config.y" :min="-1000" :max="5000"></el-slider>
         </el-form-item>
     </el-form>
 </template>

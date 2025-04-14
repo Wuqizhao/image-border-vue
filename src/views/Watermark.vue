@@ -124,11 +124,13 @@
                                 </template>
                                 <LocationConfig :loc="config.location" :text="img.locationText" />
                             </el-collapse-item>
-                            <el-collapse-item v-if="config.labels?.length">
+                            <el-collapse-item>
                                 <template #title>
                                     <h3>自定义文本</h3>
                                 </template>
-                                <LabelsConfig v-for="label in config.labels" :config="label" />
+                                <LabelsConfig v-for="label in config.labels" :config="label" :key="label.name"
+                                    @remove="removeCustomLabel" />
+                                <el-button @click="addCustomLabel">添加自定义文本</el-button>
                             </el-collapse-item>
                         </el-collapse>
                     </el-tab-pane>
@@ -786,6 +788,29 @@ const preview = () => {
         // 修改最大高度为100vh
         canvasBox.style.maxHeight = '100vh';
     }
+}
+
+function addCustomLabel() {
+    config.value?.labels?.push({
+        name: `自定义文本(${new Date().getTime()})`,
+        enable: true,
+        show: true,
+        align: 'left',
+        verticalAlign: 'middle',
+        color: '#F00',
+        size: 160,
+        italic: false,
+        bold: false,
+        text: '',
+        x: 100,
+        y: 100,
+        font: '微软雅黑',
+    });
+}
+
+function removeCustomLabel(name: string) {
+    // 根据name属性删除
+    config.value?.labels?.splice(config.value?.labels?.findIndex(item => item.name === name), 1);
 }
 </script>
 

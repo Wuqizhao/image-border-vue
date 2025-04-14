@@ -66,7 +66,7 @@ const doDraw: DrawFun = (img, config, context) => {
 
 	// 绘制Logo
 	if (logoConfig.show) {
-		const logoX = dividerWidth;
+		const logoX = dividerConfig.show ? dividerWidth : _x + modelWidth;
 		const logoY = centerY - logoConfig.height / 2;
 		drawLogo(config, ctx, logoX, logoY);
 	}

@@ -134,6 +134,10 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		config: "小米徕卡2",
 	},
 	{
+		name: "蔡司水印",
+		config: "蔡司水印",
+	},
+	{
 		name: "默认样式",
 		config: "默认样式",
 	},
@@ -156,10 +160,6 @@ export const watermarkList: WatermarkListBaseItem[] = [
 	{
 		name: "时间+型号",
 		config: "时间+型号",
-	},
-	{
-		name: "蔡司水印",
-		config: "蔡司水印",
 	},
 ];
 
