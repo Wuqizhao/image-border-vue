@@ -1,0 +1,88 @@
+<template>
+    <h3 style="display: flex;justify-content: space-between;align-items: center;padding:10px;">
+        <el-divider content-position="left">{{ props.config.title }}</el-divider>
+        <el-button type="danger" :text="true" plain @click="emits('remove', props.config.title)">删除</el-button>
+    </h3>
+    <el-form label-width="80px">
+        <el-form-item label="显示">
+            <el-switch v-model="props.config.show"></el-switch>
+        </el-form-item>
+        <el-form-item label="宽度">
+            <el-slider show-input v-model="props.config.width" :min="1" :max="1000" @change="syncHeight"></el-slider>
+            <el-checkbox v-model="sync">高度和宽度同步</el-checkbox>
+        </el-form-item>
+        <el-form-item label="高度">
+            <el-slider show-input v-model="props.config.height" :min="1" :max="1000"></el-slider>
+        </el-form-item>
+        <el-form-item label="圆形裁切">
+            <el-switch v-model="props.config.circle"></el-switch>
+        </el-form-item>
+        <el-form-item label="图片地址">
+            <el-input v-model="props.config.url" placeholder="请输入图片地址" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="选择logo">
+            <el-select v-model="props.config.name" :disabled="!!props.config.url.length">
+                <el-option v-for="item in enhancedCameraBrands" :key="item.name" :value="item.logo">
+                    <div style="display: flex;align-items: center;gap: 10px;">
+                        <img :width="24" :height="24" :src="item.thumbnail"
+                            :style="{ background: item.logo.indexOf('white') >= 0 ? 'rgba(0,0,0,0.08)' : '' }" />
+                        <span>{{ item.name }}</span>
+                    </div>
+                </el-option>
+            </el-select>
+            <p class="tips" v-show="props.config.url">您已指定url地址，选择logo被禁用！</p>
+        </el-form-item>
+        <el-form-item label="水平偏移">
+            <el-slider show-input v-model="props.config.horizontalOffset" :min="-1000" :max="10000"></el-slider>
+        </el-form-item>
+        <el-form-item label="垂直偏移">
+            <el-slider show-input v-model="props.config.verticalOffset" :min="-1000" :max="5000"></el-slider>
+        </el-form-item>
+    </el-form>
+</template>
+
+<script setup lang="ts">
+import { computedAsync } from '@vueuse/core';
+import { cameraBrands } from '../assets/tools';
+import { getBrandImageThumbnail } from '../utils';
+import { ref } from 'vue';
+
+const props = defineProps({
+    config: {
+        type: Object,
+        required: true,
+        default: () => ({
+            title: String,
+            name: String,
+            show: Boolean,
+            circle: Boolean,
+            url: String,
+            width: Number,
+            height: Number,
+            verticalOffset: Number,
+            horizontalOffset: Number
+        })
+    },
+})
+
+const sync = ref(true);
+
+const emits = defineEmits(["remove"]);
+
+const enhancedCameraBrands = computedAsync(async () => {
+    return await Promise.all(cameraBrands.map(async brand => {
+        return {
+            ...brand,
+            thumbnail: await getBrandImageThumbnail(brand.logo)
+        }
+    }))
+})
+
+function syncHeight() {
+    if (sync.value) {
+        props.config.height = props.config.width;
+    }
+}
+</script>
+
+<style lang='less' scoped></style>

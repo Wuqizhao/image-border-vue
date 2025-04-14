@@ -19,7 +19,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			(rect2.y - rect1.y) / 2 -
 			logoConfig.height / 2 -
 			(logoConfig.verticalOffset - 1) * logoConfig.height;
-		drawLogo(config, ctx, logoX, _y);
+		drawLogo(logoConfig, ctx, logoX, _y);
 	}
 
 	const SPACE = 0.2 * logoConfig.width;

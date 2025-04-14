@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { cameraBrands } from '../assets/tools';
 import { computedAsync } from '@vueuse/core';
-import { compressImage, isMobile } from '../utils';
+import { getBrandImageThumbnail, isMobile } from '../utils';
 
 const config = defineProps({
     logo: {
@@ -90,11 +90,6 @@ const enhancedCameraBrands = computedAsync(async () => {
     }))
 })
 
-async function getBrandImageThumbnail(logo: string) {
-    if (logo.startsWith('http')) return logo;
-    const { pathname } = new URL(`../assets/logos/${logo}.png`, import.meta.url)
-    return compressImage(pathname)
-}
 
 </script>
 

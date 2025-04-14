@@ -152,7 +152,7 @@ declare interface Blur {
 	 */
 	size: number;
 }
-declare interface Logo {
+export declare interface Logo {
 	/**
 	 * 是否支持logo
 	 */
@@ -268,6 +268,34 @@ declare interface Shadow {
 	 */
 	y: number;
 }
+
+export declare type TextAlign = "left" | "center" | "right";
+export declare type TextVerticalAlign = "top" | "middle" | "bottom";
+export declare interface LabelConfigItem {
+	name: string;
+	x: number;
+	y: number;
+	align: TextAlign;
+	verticalAlign: TextVerticalAlign;
+	font: string;
+	show: boolean;
+	text: string;
+	color: string;
+	size: number;
+	italic: boolean;
+	bold: boolean;
+}
+export declare interface ImagesConfigItem {
+	title: string;
+	show: boolean;
+	circle: boolean;
+	url: string;
+	width: number;
+	height: number;
+	name: string;
+	verticalOffset: number;
+	horizontalOffset: number;
+}
 declare interface BaseConfig {
 	/**
 	 * 水印名称，和文件名一致
@@ -332,16 +360,8 @@ declare interface BaseConfig {
 	divider: Divider;
 	shadow: Shadow;
 	location?: Location;
-	labels?: Array<
-		Lens & {
-			name: string;
-			x: number;
-			y: number;
-			align: "left" | "center" | "right";
-			verticalAlign: "top" | "middle" | "bottom";
-			font: string;
-		}
-	>;
+	labels?: Array<LabelConfigItem>;
+	images?: Array<ImagesConfigItem>;
 }
 declare interface Config extends BaseConfig {
 	/**

@@ -11,7 +11,7 @@ const doDraw: DrawFun = async (_, config, context) => {
 			canvas.height -
 			logoConfig.height -
 			(logoConfig.verticalOffset || 1) * 1.6 * imgPaddings.bottom;
-		drawLogo(config, ctx, logoX, logoY);
+		drawLogo(logoConfig, ctx, logoX, logoY);
 	}
 };
 

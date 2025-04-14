@@ -17,7 +17,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height;
 		}
 		logoY -= (logoConfig.verticalOffset - 1) * logoConfig.height;
-		drawLogo(config, ctx, logoX, logoY);
+		drawLogo(logoConfig, ctx, logoX, logoY);
 	}
 
 	// 绘制参数

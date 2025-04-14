@@ -1,14 +1,14 @@
 <template>
     <h3 style="display: flex;justify-content: space-between;align-items: center;padding:10px;">
         <el-divider content-position="left">{{ props.config.name }}</el-divider>
-        <el-button type="danger" :text="true" plain @click="$emit('remove', props.config.name)">删除</el-button>
+        <el-button type="danger" :text="true" plain @click="emits('remove', props.config.name)">删除</el-button>
     </h3>
     <el-form label-width="80px">
         <el-form-item label="显示">
             <el-switch v-model="props.config.show"></el-switch>
         </el-form-item>
         <el-form-item label="文本">
-            <el-input v-model="props.config.text" placeholder="自定义文本，留空不显示~">
+            <el-input v-model="props.config.text" placeholder="自定义文本，留空不显示~" clearable>
                 <template #append>
                     <el-button disabled>读取</el-button>
                 </template></el-input>
@@ -28,7 +28,7 @@
             </el-radio-group>
         </el-form-item>
         <el-form-item label="颜色">
-            <el-color-picker v-model="props.config.color" :predefine="preDefineColors"></el-color-picker>
+            <el-color-picker v-model="props.config.color" :predefine="preDefineColors" show-alpha></el-color-picker>
         </el-form-item>
         <el-form-item label="大小">
             <el-slider show-input v-model="props.config.size" :min="12" :max="250">
@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import { preDefineColors, getSupportedFonts } from '../assets/tools';
+
 const props = defineProps({
     config: {
         type: Object,
@@ -78,6 +79,8 @@ const props = defineProps({
 })
 
 const fontList = getSupportedFonts()
+
+const emits = defineEmits(['remove'])
 </script>
 
 <style lang='less' scoped></style>

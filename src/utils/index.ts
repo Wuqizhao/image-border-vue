@@ -1,5 +1,5 @@
 import { ElMessage, ElNotification } from "element-plus";
-import type { Config, ImgExt } from "../types";
+import type { ImagesConfigItem, ImgExt, LabelConfigItem, Logo } from "../types";
 
 /**
  * 将曝光时间转换为分数字符串格式
@@ -106,6 +106,18 @@ export function compressImage(file: File | string) {
 }
 
 /**
+ * 获取品牌图片
+ * @param logo 品牌logo路径或URL
+ * @returns 返回处理后的图片URL
+ * @description 如果logo是http开头的URL则直接返回,否则从本地assets目录获取并压缩处理
+ */
+export async function getBrandImageThumbnail(logo: string) {
+	if (logo.startsWith("http")) return logo;
+	const { pathname } = new URL(`../assets/logos/${logo}.png`, import.meta.url);
+	return compressImage(pathname);
+}
+
+/**
  * 获取 Logo 图片的源地址
  * @param config 配置对象，包含 logo 相关配置
  * @returns 返回 Promise<string> 类型的 logo 图片地址
@@ -114,14 +126,13 @@ export function compressImage(file: File | string) {
  * 2. 使用 name 属性指定的 http(s) 链接
  * 3. 从本地 assets/logos 目录下按 name 属性加载图片
  */
-export async function getLogoSrc(config: Config) {
-	const { logo: logoConfig } = config;
-	if (logoConfig.url) {
-		return logoConfig.url;
-	} else if (logoConfig.name.startsWith("http")) {
-		return logoConfig.name;
+export async function getLogoSrc(logo: Logo | ImagesConfigItem) {
+	if (logo.url) {
+		return logo.url;
+	} else if (logo.name.startsWith("http")) {
+		return logo.name;
 	} else {
-		return (await import(`../assets/logos/${logoConfig.name}.png`)).default;
+		return (await import(`../assets/logos/${logo.name}.png`)).default;
 	}
 }
 
@@ -140,16 +151,15 @@ export async function getLogoSrc(config: Config) {
  * @throws 当Logo图片加载失败时，会通过ElNotification显示错误信息
  */
 export async function drawLogo(
-	config: Config,
+	logoConfig: Logo | ImagesConfigItem,
 	ctx: CanvasRenderingContext2D,
 	x: number,
 	y: number
 ) {
 	const img = new Image();
-	img.src = await getLogoSrc(config);
+	img.src = await getLogoSrc(logoConfig);
 	img.onload = () => {
 		ctx.save();
-		const logoConfig = config.logo;
 		if (logoConfig.circle) {
 			// 绘制圆形LOGO
 			ctx.beginPath();
@@ -185,4 +195,38 @@ export function isMobile() {
 			navigator.userAgent
 		);
 	return isMobile;
+}
+
+export function drawCustomLabelsAndImages(
+	ctx: CanvasRenderingContext2D,
+	labels: LabelConfigItem[],
+	images: ImagesConfigItem[]
+) {
+	// 渲染自定义文本
+	if (labels) {
+		for (const label of labels) {
+			if (!label.show) continue;
+
+			ctx.save();
+			ctx.textAlign = label.align;
+			ctx.textBaseline = label.verticalAlign;
+			ctx.fillStyle = label.color;
+			ctx.font = `${label.bold ? "bold" : ""} ${label.italic ? "italic" : ""} ${
+				label.size
+			}px ${label.font}`;
+
+			ctx.fillText(label.text, label.x, label.y);
+			ctx.restore();
+		}
+	}
+
+	// 绘制自定义图片
+	if (images) {
+		for (const image of images) {
+			if (!image.show) continue;
+			ctx.save();
+			drawLogo(image, ctx, image.horizontalOffset, image.verticalOffset);
+			ctx.restore();
+		}
+	}
 }

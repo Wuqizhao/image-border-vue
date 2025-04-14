@@ -124,13 +124,21 @@
                                 </template>
                                 <LocationConfig :loc="config.location" :text="img.locationText" />
                             </el-collapse-item>
-                            <el-collapse-item>
+                            <el-collapse-item v-if="config.labels">
                                 <template #title>
                                     <h3>自定义文本</h3>
                                 </template>
                                 <LabelsConfig v-for="label in config.labels" :config="label" :key="label.name"
                                     @remove="removeCustomLabel" />
                                 <el-button @click="addCustomLabel">添加自定义文本</el-button>
+                            </el-collapse-item>
+                            <el-collapse-item v-if="config.images">
+                                <template #title>
+                                    <h3>自定义图片</h3>
+                                </template>
+                                <ImageConfig v-for="image in config?.images" :config="image" :key="image.title"
+                                    @remove="removeCustomImage(image.title)"></ImageConfig>
+                                <el-button @click="addCustomImage">添加自定义图片</el-button>
                             </el-collapse-item>
                         </el-collapse>
                     </el-tab-pane>
@@ -211,7 +219,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { print, cameraBrands, getWatermarkList, getSupportedFonts } from '../assets/tools'
+import { print, cameraBrands, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
 import { download, convertExposureTime, compressImage, deepClone, isMobile } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
@@ -233,6 +241,7 @@ import PaddingConfig from '../components/PaddingConfig.vue'
 import ImageInfo from '../components/ImageInfo.vue'
 import LocationConfig from '../components/LocationConfig.vue'
 import LabelsConfig from '../components/LabelsConfig.vue';
+import ImageConfig from '../components/ImageConfig.vue'
 const store = useStore();
 
 // 是否开发环境
@@ -791,26 +800,20 @@ const preview = () => {
 }
 
 function addCustomLabel() {
-    config.value?.labels?.push({
-        name: `自定义文本(${new Date().getTime()})`,
-        enable: true,
-        show: true,
-        align: 'left',
-        verticalAlign: 'middle',
-        color: '#F00',
-        size: 160,
-        italic: false,
-        bold: false,
-        text: '',
-        x: 100,
-        y: 100,
-        font: '微软雅黑',
-    });
+    config.value?.labels?.unshift(defaultLabelConfig);
 }
 
 function removeCustomLabel(name: string) {
     // 根据name属性删除
     config.value?.labels?.splice(config.value?.labels?.findIndex(item => item.name === name), 1);
+}
+
+function addCustomImage() {
+    config.value?.images?.unshift(defaultImageConfig);
+}
+function removeCustomImage(title: string) {
+    // 根据title属性删除
+    config.value?.images?.splice(config.value?.images?.findIndex(item => item.title === title), 1);
 }
 </script>
 

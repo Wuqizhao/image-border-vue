@@ -150,7 +150,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	// 绘制LOGO
 	if (logoConfig.show) {
-		drawLogo(config, ctx, logoX, logoY);
+		drawLogo(logoConfig, ctx, logoX, logoY);
 	}
 
 	// 绘制分割线
@@ -204,6 +204,18 @@ const doDraw: DrawFun = async (img, config, context) => {
 			}px ${label.font}`;
 
 			ctx.fillText(label.text, label.x, label.y);
+			ctx.restore();
+		}
+	}
+
+	// 绘制自定义图片
+	if (config?.images) {
+		for (const image of config.images) {
+			if (!image.show) continue;
+
+			ctx.save();
+			drawLogo(image, ctx, image.horizontalOffset, image.verticalOffset);
+			ctx.restore();
 		}
 	}
 };
@@ -304,6 +316,7 @@ const config: Config = {
 		text: "",
 	},
 	labels: [],
+	images: [],
 	draw: doDraw,
 };
 
