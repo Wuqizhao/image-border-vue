@@ -9,10 +9,10 @@
         </el-form-item>
         <el-form-item label="宽度">
             <el-slider show-input v-model="props.config.width" :min="1" :max="1000" @change="syncHeight"></el-slider>
-            <el-checkbox v-model="sync">高度和宽度同步</el-checkbox>
         </el-form-item>
         <el-form-item label="高度">
             <el-slider show-input v-model="props.config.height" :min="1" :max="1000"></el-slider>
+            <el-checkbox v-model="sync">高度和宽度同步</el-checkbox>
         </el-form-item>
         <el-form-item label="圆形裁切">
             <el-switch v-model="props.config.circle"></el-switch>

@@ -13,7 +13,7 @@
                     style="width: 200px;" v-model="config.logo.name">
                     <el-option v-for="item in enhancedCameraBrands" :label="item.name" :key="item.name"
                         :value="item.logo">
-                        <div style="display: flex;align-items: center;gap: 10px;">
+                        <div style="display: flex;;align-items: center;gap: 10px;">
                             <img :width="24" :height="24" :src="item.thumbnail"
                                 :style="{ background: item.logo.indexOf('white') >= 0 ? 'rgba(0,0,0,0.08)' : '' }" />
                             <span>{{ item.name }}</span>

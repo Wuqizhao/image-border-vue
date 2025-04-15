@@ -91,7 +91,7 @@
                                     <h3>型号</h3>
                                 </template>
                                 <ModelConfig :config="config.watermark.model" :params-config="config.watermark.params"
-                                    :time-config="config.watermark.time" :text="img.modelText" />
+                                    :time-config="config.watermark.time" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.params.enable">
                                 <template #title>
@@ -218,7 +218,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch, provide } from 'vue'
 import { print, cameraBrands, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
 import { download, convertExposureTime, compressImage, deepClone, isMobile, drawCustomLabelsAndImages } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
@@ -243,6 +243,7 @@ import LocationConfig from '../components/LocationConfig.vue'
 import LabelsConfig from '../components/LabelsConfig.vue';
 import ImageConfig from '../components/ImageConfig.vue'
 const store = useStore();
+
 
 // 是否开发环境
 const isDev = computed(() => import.meta.env.DEV)
@@ -288,6 +289,7 @@ const saveConfigDialog = reactive({
     config: '',
 })
 
+provide('img', img)
 function deleteWatermark(name: string, event: Event) {
     // 阻止事件冒泡
     event.stopPropagation();

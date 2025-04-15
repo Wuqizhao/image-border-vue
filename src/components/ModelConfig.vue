@@ -10,7 +10,6 @@
                         <el-button @click="useExifModelText">读取</el-button>
                     </template>
                 </el-input>
-
             </el-form-item>
             <el-form-item label="颜色">
                 <el-color-picker :predefine="preDefineColors" show-alpha v-model="props.config.color"
@@ -39,6 +38,9 @@
 
 <script setup lang="ts">
 import { preDefineColors } from '../assets/tools';
+import { inject } from 'vue';
+import type { Img } from '../types';
+const injectData = inject<Img>('img');
 
 const props = defineProps({
     config: {
@@ -71,13 +73,12 @@ const props = defineProps({
             enable: Boolean,
             color: String
         })
-    },
-    text: String
+    }
 });
 
 
 function useExifModelText() {
-    props.config.text = props.text;
+    props.config.text = injectData?.modelText;
 }
 </script>
 
