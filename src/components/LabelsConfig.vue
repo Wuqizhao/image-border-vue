@@ -22,7 +22,7 @@
             </HorizontalScroll>
             <p class="tips">可以水平滑动选择~</p>
         </el-form-item>
-        <el-form-item label="对齐方式">
+        <!-- <el-form-item label="对齐方式">
             <el-radio-group v-model="props.config.align">
                 <el-radio label="left" value="left">左对齐</el-radio>
                 <el-radio label="center" value="center">居中</el-radio>
@@ -35,7 +35,7 @@
                 <el-radio label="center" value="middle">居中</el-radio>
                 <el-radio label="bottom" value="right">底部对齐</el-radio>
             </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="颜色">
             <el-color-picker v-model="props.config.color" :predefine="preDefineColors" show-alpha></el-color-picker>
         </el-form-item>
@@ -49,11 +49,11 @@
                 </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="斜体">
-            <el-switch v-model="props.config.italic"></el-switch>
-        </el-form-item>
-        <el-form-item label="加粗">
-            <el-switch v-model="props.config.bold"></el-switch>
+        <el-form-item label="斜体/加粗">
+            <label>斜体：<el-switch v-model="props.config.italic"></el-switch></label>
+            <label style="margin-left: 10px;">加粗:
+                <el-switch v-model="props.config.bold"></el-switch>
+            </label>
         </el-form-item>
         <el-form-item label="水平移动">
             <el-slider show-input v-model="props.config.x" :min="-1000" :max="8000"></el-slider>

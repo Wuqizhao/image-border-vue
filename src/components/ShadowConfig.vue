@@ -18,7 +18,7 @@
             <el-form-item label="垂直偏移">
                 <el-slider show-input v-model="config.shadow.y" :min="-1000" :max="1000"></el-slider>
             </el-form-item>
-            <el-form-item label="重置">
+            <el-form-item label="">
                 <el-button size="small" @click="resetSize">重置大小</el-button>
                 <el-button size="small" @click="resetOffset">重置偏移量</el-button>
             </el-form-item>

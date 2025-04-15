@@ -128,17 +128,17 @@
                                 <template #title>
                                     <h3>自定义文本</h3>
                                 </template>
+                                <el-button @click="addCustomLabel">添加自定义文本</el-button>
                                 <LabelsConfig v-for="label in config.labels" :config="label" :key="label.name"
                                     @remove="removeCustomLabel" />
-                                <el-button @click="addCustomLabel">添加自定义文本</el-button>
                             </el-collapse-item>
                             <el-collapse-item>
                                 <template #title>
                                     <h3>自定义图片</h3>
                                 </template>
+                                <el-button @click="addCustomImage">添加自定义图片</el-button>
                                 <ImageConfig v-for="image in config?.images" :config="image" :key="image.title"
                                     @remove="removeCustomImage(image.title)"></ImageConfig>
-                                <el-button @click="addCustomImage">添加自定义图片</el-button>
                             </el-collapse-item>
                         </el-collapse>
                     </el-tab-pane>
