@@ -515,6 +515,7 @@ declare type LocalWaterMarkItem = {
 declare type WatermarkListBaseItem = {
 	name: string;
 	config: string;
+	url?: string;
 };
 declare type WatermarkListItem = WatermarkListBaseItem & {
 	index: number;

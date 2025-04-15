@@ -18,10 +18,13 @@
                                 <el-button plain @click="selectFile(true)">添加</el-button>
                             </div>
                         </HorizontalScroll>
+
                         <h3>样式</h3>
                         <el-form label-width="80px">
                             <el-form-item label="选择样式">
-                                <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式">
+                                <el-button @click="showConfigDrawer = true" plain type="primary">模板(已选择：{{
+                                    watermarks[curWatermarkIndex]['name'] }})</el-button>
+                                <!-- <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式">
                                     <el-option v-for="(item, index) in watermarks" :key="index" :value="index"
                                         :label="item.name">
                                         <div style="display: flex;align-items: center;justify-content: space-between;">
@@ -32,7 +35,7 @@
                                                 @click="deleteWatermark(item.name, $event)">删 除</el-button>
                                         </div>
                                     </el-option>
-                                </el-select>
+                                </el-select> -->
 
                                 <div style="padding-top: 5px;width: 100%;">
                                     <el-button @click="showConfigDialog">保存配置</el-button>
@@ -214,6 +217,25 @@
                 <el-button type="primary" @click="saveConfig">保存</el-button>
             </template>
         </el-dialog>
+
+        <el-drawer v-model="showConfigDrawer" :with-header="false" title="模板列表" :direction="isMobile() ? 'btt' : 'rtl'"
+            size="50%">
+            <h3 style="display: flex;justify-content: space-between;align-items: center;">
+                <b>样式模板</b>
+                <el-button :text="true" @click="showConfigDrawer = false" style="font-size: 1.5rem;">&times;</el-button>
+            </h3>
+            <HorizontalScroll style="gap:10px;">
+                <div v-for="(item, index) in watermarks" :key="item.name"
+                    style="display: flex;flex-direction: column;justify-content: space-between;align-items: center;margin-top: 1rem;">
+                    <el-image fit="cover" @click="curWatermarkIndex = index"
+                        style="width: 240px;max-height: 180px;border: 1px solid #ccc;border-radius: 5px;"
+                        :style="{ border: (index === curWatermarkIndex) ? '5px solid salmon' : '1px solid #ccc' }"
+                        :src="item?.url || 'https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMNZ_5tZsOBwnYbd5s3-FCydbOA_pEAAoXDMRs4AAH4V_8bu-m8GC3aAQADAgADdwADNgQ.jfif'"></el-image>
+                    <b>{{ item.name }}</b>
+                    <el-button :text="true" type="danger" v-if="item?.is_local" @click="deleteWatermark(item.name, $event)">删除</el-button>
+                </div>
+            </HorizontalScroll>
+        </el-drawer>
     </div>
 </template>
 
@@ -247,6 +269,7 @@ const store = useStore();
 
 // 是否开发环境
 const isDev = computed(() => import.meta.env.DEV)
+const showConfigDrawer = ref(false);
 // 辅助线配置
 const auxiliaryLines = reactive({
     verticalCenter: false, // 垂直中心线

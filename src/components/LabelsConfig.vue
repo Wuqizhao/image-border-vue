@@ -9,7 +9,7 @@
         </el-form-item>
         <el-form-item label="文本">
             <el-input v-model="props.config.text" placeholder="自定义文本，留空不显示~" clearable></el-input>
-            <HorizontalScroll>
+            <HorizontalScroll style="margin-top: 5px;">
                 <el-button size="small" @click="props.config.text = injectImg?.modelText">型号</el-button>
                 <el-button size="small" @click="props.config.text = injectImg?.paramsText">参数</el-button>
                 <el-button size="small" @click="props.config.text = injectImg?.timeText">时间</el-button>

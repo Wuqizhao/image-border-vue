@@ -24,6 +24,7 @@ onMounted(() => {
     overflow: auto;
     white-space: nowrap;
     scroll-behavior: smooth;
+    display: flex;
     &::-webkit-scrollbar {
         display: none;
     }

@@ -130,38 +130,47 @@ export const watermarkList: WatermarkListBaseItem[] = [
 	{
 		name: "小米徕卡",
 		config: "小米徕卡",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMEZ_5rRw5CVPpsGb88YlmJczm3178AAn3DMRs4AAH4V7vXffdQ9OpZAQADAgADdwADNgQ.jpeg",
 	},
 	{
 		name: "小米徕卡2",
 		config: "小米徕卡2",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMFZ_5sF_T-Bl3s1eS_0L_y4iPZEqIAAoDDMRs4AAH4VzQEPoriSRGGAQADAgADdwADNgQ.jpeg",
 	},
 	{
 		name: "蔡司水印",
 		config: "蔡司水印",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMGZ_5sKIzBgYwoCj_7vnyIREeKaAwAAoHDMRs4AAH4V9VqnRTq_IDHAQADAgADdwADNgQ.jpeg",
 	},
 	{
 		name: "默认样式",
 		config: "默认样式",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMHZ_5sN9t_sDqdgYjPgJnh9Yk5k2sAAnsWAAI4AAH4V5_DjmQifqsdNgQ.jpeg",
 	},
 	{
 		name: "纯图标",
 		config: "纯图标",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMIZ_5sQzG9ZlG49Or4jht-2Fb-4xwAAoLDMRs4AAH4V_-Idc9UfSNSAQADAgADdwADNgQ.jpeg",
 	},
 	{
 		name: "经典模式",
 		config: "经典模式",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMJZ_5sUyE_ShlkB7EWFyVhz3ptAAGfAAJ8FgACOAAB-FcmokZYpDK4yTYE.jpeg",
 	},
 	{
 		name: "经典模糊",
 		config: "经典模糊",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMKZ_5sYa6xUVcMdWXFMOqRseFUCo4AAn0WAAI4AAH4V_NxgUJcVsFaNgQ.jpeg",
 	},
 	{
 		name: "印象毛玻璃",
 		config: "印象毛玻璃",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMLZ_5sdfggwZHkmAZVXkqsLs4DzAUAAn4WAAI4AAH4V7HKDo2kzJPONgQ.jpeg",
 	},
 	{
 		name: "时间+型号",
 		config: "时间+型号",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMMZ_5sg0Lc_hvP3K8OVzMuerQKaR4AAoPDMRs4AAH4V0c1EWPvf2iBAQADAgADdwADNgQ.jpeg",
 	},
 ];
 
