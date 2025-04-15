@@ -79,7 +79,7 @@
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="调整" name="watermark">
-                        <el-collapse accordion>
+                        <el-collapse accordion :collapse-transition="false">
                             <el-collapse-item v-if="config.logo.enable">
                                 <template #title>
                                     <h3>图标</h3>
