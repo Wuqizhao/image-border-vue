@@ -227,10 +227,15 @@
             <HorizontalScroll style="gap:10px;">
                 <div v-for="(item, index) in watermarks" :key="item.name"
                     style="display: flex;flex-direction: column;justify-content: space-between;align-items: center;margin-top: 1rem;">
-                    <el-image fit="cover" @click="curWatermarkIndex = index"
+                    <el-image :width="240" :height="180" fit="cover" @click="curWatermarkIndex = index"
                         style="width: 240px;max-height: 180px;border: 1px solid #ccc;border-radius: 5px;"
                         :style="{ border: (index === curWatermarkIndex) ? '5px solid salmon' : '1px solid #ccc' }"
-                        :src="item?.url || 'https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMNZ_5tZsOBwnYbd5s3-FCydbOA_pEAAoXDMRs4AAH4V_8bu-m8GC3aAQADAgADdwADNgQ.jfif'"></el-image>
+                        :src="item?.url" >
+                    <template #error>
+                        <div class="flex-center" style="width: 240px;height: 180px;color: #ccc;">图片加载失败</div>
+                    </template>
+                    </el-image>
+                    
                     <b>{{ item.name }}</b>
                     <el-button :text="true" type="danger" v-if="item?.is_local"
                         @click="deleteWatermark(item.name, $event)">删除</el-button>
