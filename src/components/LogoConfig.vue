@@ -22,10 +22,6 @@
                 </el-select>
                 <p class="tips" v-if="config.logo.url">您已输入logo地址，选择被禁用</p>
             </el-form-item>
-            <el-form-item label="输入地址">
-                <el-input v-model="config.logo.url" placeholder="输入logo地址（http(s)://...）" clearable></el-input>
-                <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！</p>
-            </el-form-item>
             <el-form-item label="宽度">
                 <el-slider show-input v-model="config.logo.width" :min="0" :max="5000" :step="10"></el-slider>
             </el-form-item>
@@ -47,8 +43,13 @@
                 <el-slider show-input v-model="config.logo.verticalOffset" :min="-20" :max="20" :step="0.01">
                 </el-slider>
                 <p class="tips">默认：{{ defaultVerticalOffset }}
-                    <el-button size="small" @click="config.logo.verticalOffset = defaultVerticalOffset">恢复默认</el-button>
+                    <el-button size="small" @click="config.logo.verticalOffset = defaultVerticalOffset"
+                        style="margin-left: 10px;">恢复默认</el-button>
                 </p>
+            </el-form-item>
+            <el-form-item label="输入地址">
+                <el-input v-model="config.logo.url" placeholder="输入logo地址（http(s)://...）" clearable></el-input>
+                <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！</p>
             </el-form-item>
         </div>
     </el-form>

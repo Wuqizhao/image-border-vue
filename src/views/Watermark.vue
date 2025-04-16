@@ -11,11 +11,11 @@
                     <el-tab-pane label="文件" name="info">
                         <HorizontalScroll class="img-list" v-if="fileList.length">
                             <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
-                                :src="item.url" @click="changeCurFile(fileList[index])"
-                                :data-index="index + 1"></el-image>
+                                :src="item.url" @click="changeCurFile(fileList[index])" :data-index="index + 1">
+                            </el-image>
                             <div class="btn-box">
-                                <el-button @click="clearFileList" plain>清空</el-button>
-                                <el-button plain @click="selectFile(true)">添加</el-button>
+                                <el-button @click="clearFileList" plain size="small">清空</el-button>
+                                <el-button plain @click="selectFile(true)" size="small">添加</el-button>
                             </div>
                         </HorizontalScroll>
 
@@ -232,7 +232,8 @@
                         :style="{ border: (index === curWatermarkIndex) ? '5px solid salmon' : '1px solid #ccc' }"
                         :src="item?.url || 'https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMNZ_5tZsOBwnYbd5s3-FCydbOA_pEAAoXDMRs4AAH4V_8bu-m8GC3aAQADAgADdwADNgQ.jfif'"></el-image>
                     <b>{{ item.name }}</b>
-                    <el-button :text="true" type="danger" v-if="item?.is_local" @click="deleteWatermark(item.name, $event)">删除</el-button>
+                    <el-button :text="true" type="danger" v-if="item?.is_local"
+                        @click="deleteWatermark(item.name, $event)">删除</el-button>
                 </div>
             </HorizontalScroll>
         </el-drawer>
@@ -828,10 +829,7 @@ const preview = () => {
 }
 
 function addCustomLabel() {
-    if (!config.value?.labels) {
-        config.value.labels = [defaultLabelConfig];
-    }
-    config.value?.labels?.unshift(defaultLabelConfig);
+    config.value?.labels?.unshift(JSON.parse(JSON.stringify(defaultLabelConfig)));
 }
 
 function removeCustomLabel(name: string) {
@@ -840,10 +838,7 @@ function removeCustomLabel(name: string) {
 }
 
 function addCustomImage() {
-    if (!config.value?.images) {
-        config.value.images = [defaultImageConfig];
-    }
-    config.value?.images?.unshift(defaultImageConfig);
+    config.value?.images?.unshift(JSON.parse(JSON.stringify(defaultImageConfig)));
 }
 function removeCustomImage(title: string) {
     // 根据title属性删除
@@ -936,9 +931,9 @@ function removeCustomImage(title: string) {
             cursor: pointer;
             border: 2px solid transparent;
             border-radius: 10%;
-            min-width: 64px;
-            width: 64px;
-            height: 64px;
+            min-width: 48px;
+            width: 48px;
+            height: 48px;
 
 
             &::before {
