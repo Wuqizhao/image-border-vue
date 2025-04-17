@@ -44,8 +44,8 @@
                                 </div>
                             </el-form-item>
                             <el-form-item label="基础高度">
-                                <el-input-number :min="0" :max="1" :step="0.01"
-                                    v-model="config.watermark.height"></el-input-number>
+                                <el-slider show-input :min="0" :max="1" :step="0.01"
+                                    v-model="config.watermark.height"></el-slider>
                                 <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
                             </el-form-item>
                             <el-form-item label="字体">
