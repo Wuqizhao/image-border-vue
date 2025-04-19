@@ -98,42 +98,20 @@ export function deepClone<T>(value: T): T {
  * @param file - 图片文件对象或图片URL字符串
  * @returns 如果输入为字符串则直接返回,否则返回文件的对象URL
  */
-export function compressImage(file: File | string) {
+export function getImageSrc(file: File | string) {
 	if (typeof file === "string") {
-		return file;
+		if (file.startsWith("http")) {
+			return file;
+		}
+
+		const { pathname } = new URL(
+			`../assets/logos/${file}.png`,
+			import.meta.url
+		);
+		return pathname;
 	}
+
 	return URL.createObjectURL(file);
-}
-
-/**
- * 获取品牌图片
- * @param logo 品牌logo路径或URL
- * @returns 返回处理后的图片URL
- * @description 如果logo是http开头的URL则直接返回,否则从本地assets目录获取并压缩处理
- */
-export async function getBrandImageThumbnail(logo: string) {
-	if (logo.startsWith("http")) return logo;
-	const { pathname } = new URL(`../assets/logos/${logo}.png`, import.meta.url);
-	return compressImage(pathname);
-}
-
-/**
- * 获取 Logo 图片的源地址
- * @param config 配置对象，包含 logo 相关配置
- * @returns 返回 Promise<string> 类型的 logo 图片地址
- * @description 根据配置获取 logo 图片地址,支持以下三种方式:
- * 1. 直接使用 url 属性指定的地址
- * 2. 使用 name 属性指定的 http(s) 链接
- * 3. 从本地 assets/logos 目录下按 name 属性加载图片
- */
-export async function getLogoSrc(logo: Logo | ImagesConfigItem) {
-	if (logo.url) {
-		return logo.url;
-	} else if (logo.name.startsWith("http")) {
-		return logo.name;
-	} else {
-		return (await import(`../assets/logos/${logo.name}.png`)).default;
-	}
 }
 
 /**
@@ -157,7 +135,7 @@ export async function drawLogo(
 	y: number
 ) {
 	const img = new Image();
-	img.src = await getLogoSrc(logoConfig);
+	img.src = getImageSrc(logoConfig.url || logoConfig.name);
 	img.onload = () => {
 		ctx.save();
 		if (logoConfig.circle) {

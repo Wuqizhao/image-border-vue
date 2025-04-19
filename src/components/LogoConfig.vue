@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import { cameraBrands } from '../assets/tools';
 import { computedAsync } from '@vueuse/core';
-import { getBrandImageThumbnail, isMobile } from '../utils';
+import { getImageSrc, isMobile } from '../utils';
 
 const config = defineProps({
     logo: {
@@ -86,7 +86,7 @@ const enhancedCameraBrands = computedAsync(async () => {
     return await Promise.all(cameraBrands.map(async brand => {
         return {
             ...brand,
-            thumbnail: await getBrandImageThumbnail(brand.logo)
+            thumbnail: getImageSrc(brand.logo)
         }
     }))
 })

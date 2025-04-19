@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { computedAsync } from '@vueuse/core';
 import { cameraBrands } from '../assets/tools';
-import { getBrandImageThumbnail } from '../utils';
+import { getImageSrc } from '../utils';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -73,7 +73,7 @@ const enhancedCameraBrands = computedAsync(async () => {
     return await Promise.all(cameraBrands.map(async brand => {
         return {
             ...brand,
-            thumbnail: await getBrandImageThumbnail(brand.logo)
+            thumbnail: getImageSrc(brand.logo)
         }
     }))
 })
