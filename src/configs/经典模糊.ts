@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { drawLogo } from "../utils";
+import { drawLogo, replaceZ } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context) => {
 	const { logo: logoConfig, watermark } = config;
@@ -21,7 +21,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.textAlign = "center";
 
 		let _modelText = modelConfig.replaceZ
-			? img.modelText.replace(/z|Z/, "ℤ")
+			? replaceZ(img.modelText)
 			: img.modelText;
 
 		// 计算宽度

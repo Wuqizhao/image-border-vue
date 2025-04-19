@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { drawLogo } from "../utils";
+import { drawLogo, replaceZ } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
 	const {
@@ -51,7 +51,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "");
 		modelText = modelConfig.replaceZ
-			? modelText.replace(/Z|z/, "ℤ")
+			? replaceZ(modelText)
 			: modelText;
 		ctx.fillText(modelText, _x + companyWidth, _y);
 		ctx.restore(); // 恢复之前的绘图状态

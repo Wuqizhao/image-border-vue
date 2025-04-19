@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { drawLogo } from "../utils";
+import { drawLogo, replaceZ } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context) => {
 	const {
@@ -40,7 +40,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 		ctx.font = `${modelConfig.size}px ${config.font || "Arial"}`;
 		const modelText = modelConfig.replaceZ
-			? img.modelText.replace(/z|Z/, "ℤ")
+			? replaceZ(img.modelText)
 			: img.modelText;
 		ctx.fillText(
 			modelText.replace(company, ""),

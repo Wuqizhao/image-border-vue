@@ -1,4 +1,5 @@
 import type { Config, DrawFun } from "../types";
+import { replaceZ } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, divider: dividerConfig } = config;
@@ -26,7 +27,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "") + "  |  LEICA";
 		modelText = modelConfig.replaceZ
-			? modelText.replace(/Z|z/, "ℤ")
+			? replaceZ(modelText)
 			: modelText;
 		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${modelConfig.size}px ${
 			config.font
