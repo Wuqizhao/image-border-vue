@@ -84,8 +84,8 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus';
-import { ref, watch } from 'vue';
+import { ElMessage, type UploadFile } from 'element-plus';
+import { nextTick, ref, watch } from 'vue';
 import { UploadFilled, PictureFilled, Delete, Loading } from '@element-plus/icons-vue';
 
 interface ImageItem {
@@ -113,14 +113,10 @@ const beforeUpload = () => {
 };
 
 // 处理文件选择
-const handleFileChange = async (file: any) => {
-    if (!beforeUpload()) {
-        return;
-    }
-
+const handleFileChange = async (file: UploadFile) => {
     loading.value = true;
     try {
-        const imageItem = await loadImage(file.raw);
+        const imageItem = await loadImage(file.raw!);
         imageList.value.push(imageItem);
 
         // 如果是第一张图片，自动选中
@@ -177,7 +173,9 @@ const selectImage = (index: number) => {
         currentImageIndex.value = index;
         currentImage.value = imageList.value[index].image;
         calculateDimensions(currentImage.value);
-        drawImageWithGrid(currentImage.value);
+        nextTick(()=>{
+            drawImageWithGrid(currentImage.value!);
+        })
         loading.value = false;
     }
 };
