@@ -128,7 +128,7 @@ const config: Config = {
 		},
 		paddings: {
 			lr: 120,
-			tb: 0,
+			tb: 50,
 		},
 		bgColor: "#FFF",
 	},

@@ -173,7 +173,7 @@ const selectImage = (index: number) => {
         currentImageIndex.value = index;
         currentImage.value = imageList.value[index].image;
         calculateDimensions(currentImage.value);
-        nextTick(()=>{
+        nextTick(() => {
             drawImageWithGrid(currentImage.value!);
         })
         loading.value = false;
@@ -385,6 +385,7 @@ watch([scale, splitMode], () => {
 .right-panel {
     border: 5px solid gainsboro;
     border-radius: 5px;
+    flex: 1;
 
     canvas {
         width: 100%;

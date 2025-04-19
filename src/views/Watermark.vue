@@ -10,9 +10,14 @@
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="文件" name="info">
                         <HorizontalScroll class="img-list" v-if="fileList.length">
-                            <el-image v-for="(item, index) in enhancedFileList" :key="item.name" fit="cover"
-                                :src="item.url" @click="changeCurFile(fileList[index])" :data-index="index + 1">
-                            </el-image>
+                            <div class="img-item" v-for="(item, index) in enhancedFileList" :key="item.name">
+                                <el-image fit="cover" :src="item.url" @click="changeCurFile(fileList[index])"
+                                    :data-index="index + 1">
+                                </el-image>
+                                <el-icon class="delete-icon" @click="removeImg(index)">
+                                    <delete />
+                                </el-icon>
+                            </div>
                             <div class="btn-box">
                                 <el-button @click="clearFileList" plain size="small">清空</el-button>
                                 <el-button plain @click="selectFile(true)" size="small">添加</el-button>
@@ -22,9 +27,7 @@
                         <h3>样式</h3>
                         <el-form label-width="80px">
                             <el-form-item label="选择样式">
-                                <el-button @click="showConfigDrawer = true" plain type="primary">模板(已选择：{{
-                                    watermarks[curWatermarkIndex]['name'] }})</el-button>
-                                <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式">
+                                <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式" v-if="!isMobile()">
                                     <el-option v-for="(item, index) in watermarks" :key="index" :value="index"
                                         :label="item.name">
                                         <div style="display: flex;align-items: center;justify-content: space-between;">
@@ -36,6 +39,9 @@
                                         </div>
                                     </el-option>
                                 </el-select>
+
+                                <el-button @click="showConfigDrawer = true" plain type="primary">模板(已选择：{{
+                                    watermarks[curWatermarkIndex]['name'] }})</el-button>
 
                                 <div style="padding-top: 5px;width: 100%;">
                                     <el-button @click="showConfigDialog">保存配置</el-button>
@@ -251,6 +257,7 @@ import { print, cameraBrands, getWatermarkList, getSupportedFonts, defaultLabelC
 import { download, convertExposureTime, compressImage, deepClone, isMobile, drawCustomLabelsAndImages } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
+import { Delete } from '@element-plus/icons-vue';
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
@@ -455,6 +462,20 @@ const saveConfig = () => {
     }
     catch (e) {
         ElMessage.error('保存失败:格式错误！' + e);
+    }
+}
+
+function removeImg(index: number) {
+    const isCurrentFile = fileList.value[index] == curFile.value;
+
+    // 删除指定下标的图片文件
+    fileList.value = fileList.value.filter((_, i) => i !== index);
+
+    if (fileList.value.length === 0) {
+        changeCurFile(null);
+    }
+    if (isCurrentFile) {
+        changeCurFile(fileList.value[0]);
     }
 }
 
@@ -935,13 +956,13 @@ function removeCustomImage(title: string) {
             }
         }
 
-        >.el-image {
+        .el-image {
             cursor: pointer;
             border: 2px solid transparent;
             border-radius: 10%;
-            min-width: 48px;
-            width: 48px;
-            height: 48px;
+            min-width: 64px;
+            width: 64px;
+            height: 64px;
 
 
             &::before {
@@ -960,6 +981,24 @@ function removeCustomImage(title: string) {
                 border: 2px solid gainsboro;
                 transform: scale(1.1);
                 transition-duration: 0.5s;
+            }
+        }
+
+        .img-item {
+            position: relative;
+
+            .delete-icon {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                color: #FFF;
+                cursor: pointer;
+                opacity: 0.7;
+                font-size: 14px;
+
+                &:hover {
+                    opacity: 1;
+                }
             }
         }
     }
