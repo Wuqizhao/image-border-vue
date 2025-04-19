@@ -2,7 +2,10 @@ import type { Config, DrawFun } from "../types";
 import { drawLogo } from "../utils";
 
 const doDraw: DrawFun = async (_, config, context) => {
-	const { logo: logoConfig, paddings: imgPaddings } = config;
+	const {
+		logo: logoConfig,
+		watermark: { paddings },
+	} = config;
 	const { ctx, canvas } = context;
 
 	if (logoConfig.show) {
@@ -10,7 +13,7 @@ const doDraw: DrawFun = async (_, config, context) => {
 		const logoY =
 			canvas.height -
 			logoConfig.height -
-			(logoConfig.verticalOffset || 1) * 1.6 * imgPaddings.bottom;
+			(logoConfig.verticalOffset || 1) * paddings.tb;
 		drawLogo(logoConfig, ctx, logoX, logoY);
 	}
 };
@@ -25,6 +28,7 @@ const config: Config = {
 		bottom: 150,
 	},
 	watermark: {
+		position: "inner",
 		height: 0,
 		model: {
 			enable: false,
@@ -62,7 +66,7 @@ const config: Config = {
 		},
 		paddings: {
 			lr: 0,
-			tb: 0,
+			tb: 200,
 		},
 		bgColor: "#ffffff",
 	},

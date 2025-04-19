@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { drawLogo } from "../utils";
+import { drawLogo, replaceZ } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
 	const {
@@ -9,11 +9,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	} = watermark;
 	const { ctx, canvas } = context;
 
-	let _y =
-		canvas.height -
-		watermarkPaddings.tb -
-		imgPaddings.bottom -
-		0.07 * img.height;
+	let _y = canvas.height - watermarkPaddings.tb - imgPaddings.bottom;
 
 	// 绘制辅助线
 	// ctx.beginPath();
@@ -37,12 +33,10 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const company = img.modelText.split(" ")[0];
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
-		ctx.fillText(company, imgPaddings.left + config.watermark.paddings.lr, _y);
+		ctx.fillText(company, imgPaddings.left + watermarkPaddings.lr, _y);
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "");
-		modelText = modelConfig.replaceZ
-			? modelText.replace(/Z|z/, "ℤ")
-			: modelText;
+		modelText = modelConfig.replaceZ ? replaceZ(modelText) : modelText;
 		ctx.fillText(
 			modelText,
 			imgPaddings.left + watermarkPaddings.lr + companyWidth,
@@ -87,6 +81,7 @@ const config: Config = {
 		bottom: 0,
 	},
 	watermark: {
+		position: "inner",
 		height: 0,
 		model: {
 			enable: true,
@@ -124,7 +119,7 @@ const config: Config = {
 		},
 		paddings: {
 			lr: 150,
-			tb: 0,
+			tb: 300,
 		},
 		bgColor: "#FFF",
 	},

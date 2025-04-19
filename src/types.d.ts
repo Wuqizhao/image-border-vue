@@ -295,6 +295,7 @@ export declare interface ImagesConfigItem {
 	name: string;
 	verticalOffset: number;
 	horizontalOffset: number;
+	alpha: number;
 }
 declare interface BaseConfig {
 	/**
@@ -330,7 +331,7 @@ declare interface BaseConfig {
 		/**
 		 * 水印所在的位置,用于调整水印高（宽）度
 		 */
-		position?: "bottom" | "top" | "left" | "right";
+		position?: "bottom" | "top" | "left" | "right" | "inner";
 		/**
 		 * 水印的基础高度，水印在上下对应高度的倍数，水印在左右对应宽度的倍数
 		 */
@@ -363,6 +364,8 @@ declare interface BaseConfig {
 	labels?: Array<LabelConfigItem>;
 	images?: Array<ImagesConfigItem>;
 }
+
+export declare type AfterDrawFun = (ctx: CanvasRenderingContext2D) => void;
 declare interface Config extends BaseConfig {
 	/**
 	 * 绘制函数，从配置到最终图片的具体实现。
@@ -376,7 +379,7 @@ declare interface Config extends BaseConfig {
 	/**
 	 * 调用draw函数之后执行的操作
 	 */
-	afterDraw?: () => void;
+	afterDraw?: AfterDrawFun;
 }
 
 declare type DrawFun = (img: Img, config: Config, context: Context) => void;

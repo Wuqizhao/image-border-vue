@@ -273,4 +273,5 @@ export const defaultImageConfig = {
 	height: 300,
 	circle: false,
 	name: "nikon",
+	alpha: 1,
 };

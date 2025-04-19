@@ -48,7 +48,11 @@
                 </p>
             </el-form-item>
             <el-form-item label="输入地址">
-                <el-input v-model="config.logo.url" placeholder="输入logo地址（http(s)://...）" clearable></el-input>
+                <el-input v-model="config.logo.url" placeholder="输入logo地址（http(s)://...）" clearable>
+                    <template #append>
+                        <el-button size="small" @click="selectLocalImage">选择本地</el-button>
+                    </template>
+                </el-input>
                 <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！</p>
             </el-form-item>
         </div>
@@ -91,7 +95,19 @@ const enhancedCameraBrands = computedAsync(async () => {
     }))
 })
 
-
+function selectLocalImage() {
+    // 选择文件
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e: any) => {
+        const file = e.target.files[0];
+        if (file) {
+            config.logo.url = getImageSrc(file);
+        }
+    }
+    input.click();
+}
 </script>
 
 <style lang='less' scoped></style>

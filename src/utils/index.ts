@@ -100,7 +100,7 @@ export function deepClone<T>(value: T): T {
  */
 export function getImageSrc(file: File | string) {
 	if (typeof file === "string") {
-		if (file.startsWith("http")) {
+		if (file.startsWith("http") || file.startsWith("blob")) {
 			return file;
 		}
 
@@ -132,7 +132,8 @@ export async function drawLogo(
 	logoConfig: Logo | ImagesConfigItem,
 	ctx: CanvasRenderingContext2D,
 	x: number,
-	y: number
+	y: number,
+	opacity: number = 1
 ) {
 	const img = new Image();
 	img.src = getImageSrc(logoConfig.url || logoConfig.name);
@@ -150,6 +151,7 @@ export async function drawLogo(
 			);
 			ctx.clip();
 		}
+		ctx.globalAlpha = opacity;
 		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
 		ctx.restore();
 	};
@@ -203,7 +205,13 @@ export function drawCustomLabelsAndImages(
 		for (const image of images) {
 			if (!image.show) continue;
 			ctx.save();
-			drawLogo(image, ctx, image.horizontalOffset, image.verticalOffset);
+			drawLogo(
+				image,
+				ctx,
+				image.horizontalOffset,
+				image.verticalOffset,
+				image.alpha
+			);
 			ctx.restore();
 		}
 	}
@@ -211,4 +219,26 @@ export function drawCustomLabelsAndImages(
 
 export function replaceZ(text: string) {
 	return text.replace(/Z/g, "ℤ");
+}
+
+export function drawRadiusRect(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+	radius: number
+) {
+	ctx.beginPath();
+	ctx.moveTo(x + radius, y);
+	ctx.lineTo(x + width - radius, y);
+	ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+	ctx.lineTo(x + width, y + height - radius);
+	ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	ctx.lineTo(x + radius, y + height);
+	ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+	ctx.lineTo(x, y + radius);
+	ctx.quadraticCurveTo(x, y, x + radius, y);
+	ctx.closePath();
+	ctx.stroke();
 }

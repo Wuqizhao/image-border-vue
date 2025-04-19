@@ -54,7 +54,7 @@
                                     v-model="config.watermark.height"></el-slider>
                                 <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
                             </el-form-item>
-                            <el-form-item label="字体">
+                            <el-form-item label="全局字体">
                                 <el-select :filterable="!isMobile()" v-model="config.font" clearable>
                                     <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
                                         :value="item" :style="{ fontFamily: item }"></el-option>
@@ -584,11 +584,24 @@ const handleDraw = useDebounceFn(() => {
                 const rect1 = { x: 0, y: 0 }; const rect2 = { x: 0, y: 0 };
                 if (config.value.watermark.position === "left" || config.value.watermark.position === "right") {
                     canvas.width += config.value.watermark.height * canvas.width + 2 * watermarkPaddings.lr;
-                    // 底部水印的坐标范围
-                    rect1.x = imgPaddings.left + realImgWidth;
+
                     rect1.y = imgPaddings.top;
-                    rect2.x = canvas.width - imgPaddings.right;
-                    rect2.y = canvas.height - watermarkPaddings.tb - imgPaddings.bottom;
+                    rect2.y = canvas.height - imgPaddings.bottom;
+                    // 底部水印的坐标范围
+                    if (config.value.watermark.position === "left") {
+                        rect1.x = imgPaddings.left;
+                        rect2.x = canvas.width - imgPaddings.right - realImgWidth - watermarkPaddings.lr;
+                    }
+                    else {
+                        rect1.x = imgPaddings.left + realImgWidth;
+                        rect2.x = canvas.width - imgPaddings.right;
+                    }
+                }
+                else if (config.value.watermark.position === "inner") {
+                    rect1.x = watermarkPaddings.lr;
+                    rect1.y = watermarkPaddings.tb;
+                    rect2.x = canvas.width - watermarkPaddings.lr;
+                    rect2.y = canvas.height - watermarkPaddings.tb;
                 }
                 else {
                     canvas.height += config.value.watermark.height * canvas.height + 2 * watermarkPaddings.tb;
@@ -782,6 +795,10 @@ const handleDraw = useDebounceFn(() => {
                     ctx.strokeStyle = "#FF0000";
                     ctx.stroke();
                     ctx.restore();
+                }
+
+                if (config.value.afterDraw) {
+                    config.value.afterDraw(ctx);
                 }
             }
         }
