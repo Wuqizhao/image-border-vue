@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="80px">
+    <el-form label-width="50px">
         <el-form-item label="显示">
             <el-switch v-model="loc.show"></el-switch>
         </el-form-item>
@@ -15,12 +15,14 @@
         </el-form-item>
         <el-form-item label="加粗">
             <el-switch v-model="loc.bold"></el-switch>
-        </el-form-item>
-        <el-form-item label="斜体">
-            <el-switch v-model="loc.italic"></el-switch>
-        </el-form-item>
-        <el-form-item label="颜色">
-            <el-color-picker v-model="loc.color" :predefine="preDefineColors"></el-color-picker>
+            <label for="">
+                <span style="margin:0 5px 0px 25px;">斜体</span>
+                <el-switch v-model="loc.italic"></el-switch>
+            </label>
+            <label for="">
+                <span style="margin:0 5px 0px 25px;">文本颜色</span>
+                <el-color-picker v-model="loc.color" :predefine="preDefineColors"></el-color-picker>
+            </label>
         </el-form-item>
     </el-form>
 </template>

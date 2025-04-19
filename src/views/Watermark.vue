@@ -25,9 +25,10 @@
                         </HorizontalScroll>
 
                         <h3>样式</h3>
-                        <el-form label-width="80px">
+                        <el-form label-width="70px">
                             <el-form-item label="选择样式">
-                                <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式" v-if="!isMobile()">
+                                <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式" v-if="!isMobile()"
+                                    style="margin-bottom: 10px;">
                                     <el-option v-for="(item, index) in watermarks" :key="index" :value="index"
                                         :label="item.name">
                                         <div style="display: flex;align-items: center;justify-content: space-between;">
@@ -234,17 +235,23 @@
             </h3>
             <HorizontalScroll style="gap:10px;">
                 <div v-for="(item, index) in watermarks" :key="item.name"
-                    style="display: flex;flex-direction: column;justify-content: space-between;align-items: center;margin-top: 1rem;">
+                    style="display: flex;flex-direction: column;justify-content: space-between;align-items: center;margin-top: 1rem;gap: 20px;">
                     <el-image :width="240" :height="180" fit="cover" @click="curWatermarkIndex = index"
-                        style="width: 240px;max-height: 180px;border: 1px solid #ccc;border-radius: 5px;"
-                        :style="{ border: (index === curWatermarkIndex) ? '5px solid salmon' : '1px solid #ccc' }"
+                        style="width: 240px;max-height: 180px;border: 1px solid #ccc;cursor: pointer;box-shadow: 1px 5px 10px rgba(0,0,0,0.3);"
+                        :style="{ border: (index === curWatermarkIndex) ? '2px solid salmon' : '2px solid #ccc' }"
                         :src="item?.url">
+                        <template #placeholder>
+                            <el-icon>
+                                <Loading style="width: 48px;height: 48px;animation: rotate 1s linear infinite;">加载中...
+                                </Loading>
+                            </el-icon>
+                        </template>
                         <template #error>
                             <div class="flex-center" style="width: 240px;height: 180px;color: #ccc;">图片加载失败</div>
                         </template>
                     </el-image>
 
-                    <b>{{ item.name }}</b>
+                    <b :style="{ color: (index === curWatermarkIndex) ? 'salmon' : 'black' }">{{ item.name }}</b>
                     <el-button :text="true" type="danger" v-if="item?.is_local"
                         @click="deleteWatermark(item.name, $event)">删除</el-button>
                 </div>
@@ -259,7 +266,7 @@ import { print, cameraBrands, getWatermarkList, getSupportedFonts, defaultLabelC
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
-import { Delete } from '@element-plus/icons-vue';
+import { Delete, Loading } from '@element-plus/icons-vue';
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
@@ -1051,6 +1058,11 @@ function removeCustomImage(title: string) {
 
 }
 
+@keyframes rotate {
+    0% {
+        transform: rotateZ(360deg);
+    }
+}
 
 
 @media screen and (max-width: 768px) {

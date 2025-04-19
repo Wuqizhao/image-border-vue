@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="80px">
+    <el-form label-width="50px">
         <el-form-item label="显示">
             <el-switch v-model="props.config.show"></el-switch>
         </el-form-item>
@@ -18,9 +18,10 @@
         </el-form-item>
         <el-form-item label="斜体">
             <el-switch v-model="props.config.italic"></el-switch>
-        </el-form-item>
-        <el-form-item label="加粗">
-            <el-switch v-model="props.config.bold"></el-switch>
+            <label for="">
+                <span style="margin:0 10px 0px 30px;">加粗</span>
+                <el-switch v-model="props.config.bold"></el-switch>
+            </label>
         </el-form-item>
     </el-form>
 </template>

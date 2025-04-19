@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="80px">
+    <el-form label-width="70px">
         <el-form-item label="显示">
             <el-switch v-model="props.params.show"></el-switch>
         </el-form-item>
@@ -21,13 +21,14 @@
             </el-form-item>
             <el-form-item label="字母大写">
                 <el-switch v-model="props.params.letterUpperCase"></el-switch>
+                <label for="">
+                    <span style="margin:0 10px 0px 30px;">斜体</span>
+                    <el-switch v-model="props.params.italic"></el-switch>
+                </label>
             </el-form-item>
             <el-form-item label="等效焦距">
                 <el-switch v-model="props.params.useEquivalentFocalLength"></el-switch>
                 <p class="tips">等效全画幅焦段，是否支持看图片Exif信息</p>
-            </el-form-item>
-            <el-form-item label="斜体文字">
-                <el-switch v-model="props.params.italic"></el-switch>
             </el-form-item>
         </div>
     </el-form>

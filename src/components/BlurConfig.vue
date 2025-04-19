@@ -1,6 +1,6 @@
 <template>
-    <el-form label-width="80px">
-        <h3 style="margin-left: 10px;">背景模糊</h3>
+    <el-form label-width="50px">
+        <h3 style="margin-bottom: 1rem;">背景模糊</h3>
         <el-form-item label="模糊">
             <el-switch v-model="config.blur.enable"></el-switch>
         </el-form-item>

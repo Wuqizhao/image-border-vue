@@ -4,7 +4,7 @@
             <el-divider content-position="left">{{ props.config.name }}</el-divider>
             <el-button type="danger" :text="true" plain @click="emits('remove', props.config.name)">删除</el-button>
         </h3>
-        <el-form label-width="80px">
+        <el-form label-width="70px">
             <el-form-item label="显示">
                 <el-switch v-model="props.config.show"></el-switch>
             </el-form-item>
@@ -36,9 +36,6 @@
                 <el-radio label="bottom" value="right">底部对齐</el-radio>
             </el-radio-group>
         </el-form-item> -->
-            <el-form-item label="颜色">
-                <el-color-picker v-model="props.config.color" :predefine="preDefineColors" show-alpha></el-color-picker>
-            </el-form-item>
             <el-form-item label="大小">
                 <el-slider show-input v-model="props.config.size" :min="12" :max="250">
                 </el-slider>
@@ -49,10 +46,16 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="斜体/加粗">
-                <label>斜体：<el-switch v-model="props.config.italic"></el-switch></label>
-                <label style="margin-left: 10px;">加粗:
+            <el-form-item label="斜体">
+                <el-switch v-model="props.config.italic"></el-switch>
+                <label>
+                    <span style="margin: 0px 10px 0px 20px;">加粗</span>
                     <el-switch v-model="props.config.bold"></el-switch>
+                </label>
+                <label for="">
+                    <span style="margin: 0px 10px 0px 20px;">颜色</span>
+                    <el-color-picker v-model="props.config.color" :predefine="preDefineColors"
+                        show-alpha></el-color-picker>
                 </label>
             </el-form-item>
             <el-form-item label="水平移动">

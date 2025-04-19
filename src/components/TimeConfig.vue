@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="80px">
+    <el-form label-width="70px">
         <el-form-item label="显示">
             <el-switch v-model="props.time.show" :active-value="true" :inactive-value="false"></el-switch>
         </el-form-item>

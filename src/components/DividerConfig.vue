@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="80">
+    <el-form label-width="70">
         <el-form-item label="显示">
             <el-switch v-model="props.divider.show"></el-switch>
         </el-form-item>

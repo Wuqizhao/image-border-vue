@@ -1,7 +1,7 @@
 <template>
     <div v-if="config.radius.enable">
-        <h3 style="margin-left: 10px;">圆角</h3>
-        <el-form label-width="80px">
+        <h3>圆角</h3>
+        <el-form label-width="50px" style="margin-top: 1rem;">
             <el-form-item label="显示">
                 <el-switch v-model="config.radius.show"></el-switch>
             </el-form-item>

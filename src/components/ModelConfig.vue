@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="80px">
+    <el-form label-width="50px">
         <el-form-item label="显示">
             <el-switch v-model="props.config.show"></el-switch>
         </el-form-item>
@@ -25,12 +25,14 @@
             </el-form-item>
             <el-form-item label="加粗">
                 <el-switch v-model="props.config.bold"></el-switch>
-            </el-form-item>
-            <el-form-item label="斜体文字">
-                <el-switch v-model="props.config.italic"></el-switch>
-            </el-form-item>
-            <el-form-item label="替换Z为ℤ">
-                <el-switch v-model="props.config.replaceZ"></el-switch>
+                <label for="">
+                    <span style="margin:0 10px 0px 20px;">斜体</span>
+                    <el-switch v-model="props.config.italic"></el-switch>
+                </label>
+                <label for="">
+                    <span style="margin:0 10px 0px 20px;">替换Z为ℤ</span>
+                    <el-switch v-model="props.config.replaceZ"></el-switch>
+                </label>
             </el-form-item>
         </div>
     </el-form>
