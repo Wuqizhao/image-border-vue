@@ -44,7 +44,8 @@ export const cameraBrands: CameraBrands[] = [
 	{ name: "红米(黑)", logo: "redmi-black" },
 	{ name: "红米(白)", logo: "redmi-white" },
 	{ name: "华为", logo: "huawei" },
-	{ name: "华为-XMAGE", logo: "xmage" },
+	{ name: "XMAGE-2", logo: "xmage-2" },
+	{ name: "XMAGE", logo: "xmage" },
 	{ name: "华为(黑)", logo: "huawei-black" },
 	{ name: "华为(白)", logo: "huawei-white" },
 	{ name: "荣耀", logo: "honor" },
@@ -131,6 +132,11 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		name: "小米徕卡",
 		config: "小米徕卡",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMEZ_5rRw5CVPpsGb88YlmJczm3178AAn3DMRs4AAH4V7vXffdQ9OpZAQADAgADdwADNgQ.jpeg",
+	},
+	{
+		name: "XMAGE",
+		config: "XMAGE",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMOaAMgQ-9qLslbLbeaPWsrN8vc0S8AAgnGMRuH_RlUBHf9LifJp8oBAAMCAAN3AAM2BA.jpeg",
 	},
 	{
 		name: "小米徕卡2",

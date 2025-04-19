@@ -190,7 +190,7 @@ export async function drawLogo(
  * @returns {boolean} 如果是移动设备返回 true,否则返回 false
  */
 export function isMobile() {
-	let isMobile =
+	const isMobile =
 		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
 			navigator.userAgent
 		);
@@ -229,4 +229,8 @@ export function drawCustomLabelsAndImages(
 			ctx.restore();
 		}
 	}
+}
+
+export function replaceZ(text: string) {
+	return text.replace(/Z/g, "ℤ");
 }

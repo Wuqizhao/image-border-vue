@@ -24,7 +24,7 @@
                             <el-form-item label="选择样式">
                                 <el-button @click="showConfigDrawer = true" plain type="primary">模板(已选择：{{
                                     watermarks[curWatermarkIndex]['name'] }})</el-button>
-                                <!-- <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式">
+                                <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式">
                                     <el-option v-for="(item, index) in watermarks" :key="index" :value="index"
                                         :label="item.name">
                                         <div style="display: flex;align-items: center;justify-content: space-between;">
@@ -35,7 +35,7 @@
                                                 @click="deleteWatermark(item.name, $event)">删 除</el-button>
                                         </div>
                                     </el-option>
-                                </el-select> -->
+                                </el-select>
 
                                 <div style="padding-top: 5px;width: 100%;">
                                     <el-button @click="showConfigDialog">保存配置</el-button>
@@ -230,12 +230,12 @@
                     <el-image :width="240" :height="180" fit="cover" @click="curWatermarkIndex = index"
                         style="width: 240px;max-height: 180px;border: 1px solid #ccc;border-radius: 5px;"
                         :style="{ border: (index === curWatermarkIndex) ? '5px solid salmon' : '1px solid #ccc' }"
-                        :src="item?.url" >
-                    <template #error>
-                        <div class="flex-center" style="width: 240px;height: 180px;color: #ccc;">图片加载失败</div>
-                    </template>
+                        :src="item?.url">
+                        <template #error>
+                            <div class="flex-center" style="width: 240px;height: 180px;color: #ccc;">图片加载失败</div>
+                        </template>
                     </el-image>
-                    
+
                     <b>{{ item.name }}</b>
                     <el-button :text="true" type="danger" v-if="item?.is_local"
                         @click="deleteWatermark(item.name, $event)">删除</el-button>
@@ -523,7 +523,7 @@ const handleDraw = useDebounceFn(() => {
             // 大写
             img.paramsText = paramsConfig.letterUpperCase
                 ? img.paramsText.toUpperCase()
-                : img.paramsText.toLocaleLowerCase();
+                : img.paramsText;
 
             img.timeText = timeConfig.text || formatDate(
                 new Date(img.exif?.DateTimeOriginal as number),
@@ -796,6 +796,9 @@ function importConfig(val: number): void {
             break;
         case "蔡司水印":
             configPromise = import("../configs/蔡司水印");
+            break;
+        case "XMAGE":
+            configPromise = import("../configs/XMAGE");
             break;
         default:
             configPromise = import("../configs/小米徕卡");
