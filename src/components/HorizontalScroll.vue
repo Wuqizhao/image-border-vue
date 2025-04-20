@@ -1,21 +1,27 @@
 <template>
-    <div class="horizontal-scroll">
+    <div ref="container" class="horizontal-scroll">
         <slot></slot>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+
+const container = ref<HTMLElement | null>(null);
 
 onMounted(() => {
-    // 获取dom
-    const container = document.querySelector('.horizontal-scroll') as HTMLElement;
-    // 修改鼠标滚动事件为横向
-    container.addEventListener('wheel', (e) => {
+    if (!container.value) return;
+    // 监听滚动事件
+    container.value.addEventListener('wheel', (e) => {
+        if(!container.value) return;
         e.preventDefault();
-        container.scrollLeft += e.deltaY;
-
+        container.value.scrollLeft += e.deltaY;
     });
+});
+
+onUnmounted(() => {
+    if (!container.value) return;
+    container.value.removeEventListener('wheel', () => {});
 });
 </script>
 
@@ -25,9 +31,11 @@ onMounted(() => {
     white-space: nowrap;
     scroll-behavior: smooth;
     display: flex;
+
     &::-webkit-scrollbar {
         display: none;
     }
+
     &::-webkit-scrollbar-thumb {
         display: none;
     }

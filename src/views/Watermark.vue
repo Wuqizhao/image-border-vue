@@ -10,6 +10,8 @@
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="文件" name="info">
                         <HorizontalScroll class="img-list" v-if="fileList.length">
+                            <el-button plain @click="selectFile(true)"
+                                style="height: 64px;position: sticky;left: 0px;z-index:1;">添加</el-button>
                             <div class="img-item" v-for="(item, index) in enhancedFileList" :key="item.name">
                                 <el-image fit="cover" :src="item.url" @click="changeCurFile(fileList[index])"
                                     :data-index="index + 1">
@@ -18,13 +20,8 @@
                                     <delete />
                                 </el-icon>
                             </div>
-                            <div class="btn-box">
-                                <el-button @click="clearFileList" plain size="small">清空</el-button>
-                                <el-button plain @click="selectFile(true)" size="small">添加</el-button>
-                            </div>
                         </HorizontalScroll>
-
-                        <h3>样式</h3>
+                        <h3 style="margin-top: 10px;">样式</h3>
                         <el-form label-width="70px">
                             <el-form-item label="选择样式">
                                 <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式" v-if="!isMobile()"
@@ -388,20 +385,6 @@ const selectFile = (append = false) => {
     }
 }
 
-const clearFileList = () => {
-    fileList.value = [];
-    changeCurFile(null);
-
-    const canvas = document.getElementById('imgCanvas') as HTMLCanvasElement;
-    if (!canvas) return;
-    // 清空画布
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ElMessage.success('已清空列表~')
-    }
-}
-
 const batchExport = () => {
     if (fileList.value.length === 0) {
         ElMessage.warning('请先选择图片~');
@@ -544,7 +527,7 @@ const handleDraw = useDebounceFn(() => {
                 }
 
                 img.exif = exif;
-                img.modelText = model.text || img.exif?.Model;
+                img.modelText = model.text || img.exif?.Model || '--';
                 // 曝光时间
                 const exposureTime = convertExposureTime(exif?.ExposureTime);
                 // 焦距
@@ -890,6 +873,7 @@ const preview = () => {
 }
 
 function addCustomLabel() {
+    config.value.labels = config.value?.labels || [];
     config.value?.labels?.unshift(JSON.parse(JSON.stringify(defaultLabelConfig)));
 }
 
@@ -899,6 +883,7 @@ function removeCustomLabel(name: string) {
 }
 
 function addCustomImage() {
+    config.value.images = config.value?.images || [];
     config.value?.images?.unshift(JSON.parse(JSON.stringify(defaultImageConfig)));
 }
 function removeCustomImage(title: string) {
@@ -966,71 +951,64 @@ function removeCustomImage(title: string) {
     }
 
 
-    .img-list {
-        padding: 0px;
-        gap: 5px;
-        display: flex;
-        align-items: center;
-        flex-shrink: 1;
-        position: relative;
+}
 
-        >.btn-box {
-            display: flex;
-            flex-direction: column;
-            position: sticky;
-            right: 0px;
-            top: 0px;
-            background: #FFF;
-            z-index: 1;
+.img-list {
+    padding: 0px;
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 1;
+    width: 100%;
+    position: sticky;
+    bottom: 0px;
+    left: 0;
+    z-index: 1;
 
-            >.el-button {
-                margin: 2px 0px 2px 2px;
-            }
+    .el-image {
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 10%;
+        min-width: 64px;
+        width: 64px;
+        height: 64px;
+
+        &::before {
+            content: attr(data-index);
+            color: #FFF;
+            position: absolute;
+            font-size: 12px;
+            padding: 0 5px;
+            top: 8px;
+            left: 0px;
+            width: 20px;
+            height: 20px;
         }
 
-        .el-image {
+        &:hover {
+            border: 2px solid gainsboro;
+            transform: scale(1.1);
+            transition-duration: 0.5s;
+        }
+    }
+
+    .img-item {
+        position: relative;
+        vertical-align: center;
+        line-height: 0;
+
+
+        .delete-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #FFF;
             cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 10%;
-            min-width: 64px;
-            width: 64px;
-            height: 64px;
-
-
-            &::before {
-                content: attr(data-index);
-                color: #FFF;
-                position: absolute;
-                font-size: 12px;
-                padding: 0 5px;
-                top: 0;
-                left: 0;
-                width: 20px;
-                height: 20px;
-            }
+            opacity: 0.7;
+            font-size: 14px;
 
             &:hover {
-                border: 2px solid gainsboro;
-                transform: scale(1.1);
-                transition-duration: 0.5s;
-            }
-        }
-
-        .img-item {
-            position: relative;
-
-            .delete-icon {
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                color: #FFF;
-                cursor: pointer;
-                opacity: 0.7;
-                font-size: 14px;
-
-                &:hover {
-                    opacity: 1;
-                }
+                opacity: 1;
             }
         }
     }
@@ -1055,7 +1033,6 @@ function removeCustomImage(title: string) {
         box-sizing: border-box;
         max-height: 100%;
     }
-
 }
 
 @keyframes rotate {

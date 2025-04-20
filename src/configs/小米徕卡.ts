@@ -32,7 +32,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			_y = rect1.y + (rect2.y - rect1.y) / 3;
 		}
 		// 截取厂商
-		const company = img.modelText.split(" ")[0];
+		const company = img.modelText?.split(" ")[0];
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
 
