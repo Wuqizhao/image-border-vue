@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="50">
+    <el-form label-width="70">
         <h3 style="margin-bottom: 1rem;">阴影</h3>
         <el-form-item label="显示">
             <el-switch v-model="config.shadow.show"></el-switch>

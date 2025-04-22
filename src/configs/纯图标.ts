@@ -4,6 +4,7 @@ import { drawLogo } from "../utils";
 const doDraw: DrawFun = async (_, config, context) => {
 	const {
 		logo: logoConfig,
+		paddings: { bottom },
 		watermark: { paddings },
 	} = config;
 	const { ctx, canvas } = context;
@@ -13,7 +14,9 @@ const doDraw: DrawFun = async (_, config, context) => {
 		const logoY =
 			canvas.height -
 			logoConfig.height -
-			(logoConfig.verticalOffset || 1) * paddings.tb;
+			paddings.tb -
+			bottom -
+			(logoConfig.verticalOffset - 1) * logoConfig.height;
 		drawLogo(logoConfig, ctx, logoX, logoY);
 	}
 };
