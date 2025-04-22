@@ -529,6 +529,18 @@ declare type WatermarkListItem = WatermarkListBaseItem & {
 	config_name?: string;
 };
 
+export declare type AuxiliaryLines = {
+	horizontalCenter: boolean;
+	watermarkRange: boolean;
+	verticalCenter: boolean;
+	watermarkHorizontalCenter: boolean;
+}
+
+export declare type Point = {
+	x: number;
+	y: number;
+}
+
 export {
 	Config,
 	Img,

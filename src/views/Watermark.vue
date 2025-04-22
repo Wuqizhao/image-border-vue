@@ -259,8 +259,8 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch, provide } from 'vue'
-import { print, cameraBrands, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
-import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages } from "../utils"
+import { print, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
+import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawRadiusRect, drawAuxiliaryLines, getLogoName, caculateCanvasSize } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading } from '@element-plus/icons-vue';
@@ -495,7 +495,6 @@ const handleDraw = useDebounceFn(() => {
             model,
             params: paramsConfig,
             time: timeConfig,
-            paddings: watermarkPaddings,
             lens,
             bgColor
         } = watermark;
@@ -514,7 +513,7 @@ const handleDraw = useDebounceFn(() => {
                 // 使用exifr库读取exifs信息
                 const exif = await Exifr.parse(file);
 
-                if (exif?.Make === undefined) {
+                if (exif === undefined) {
                     ElNotification({
                         title: '错误',
                         message: '未读取到Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
@@ -571,39 +570,7 @@ const handleDraw = useDebounceFn(() => {
                 canvas.height =
                     realImgHeight + imgPaddings.top + imgPaddings.bottom;
 
-                const rect1 = { x: 0, y: 0 }; const rect2 = { x: 0, y: 0 };
-                if (config.value.watermark.position === "left" || config.value.watermark.position === "right") {
-                    canvas.width += config.value.watermark.height * canvas.width + 2 * watermarkPaddings.lr;
-
-                    rect1.y = imgPaddings.top;
-                    rect2.y = canvas.height - imgPaddings.bottom;
-                    // 底部水印的坐标范围
-                    if (config.value.watermark.position === "left") {
-                        rect1.x = imgPaddings.left;
-                        rect2.x = canvas.width - imgPaddings.right - realImgWidth - watermarkPaddings.lr;
-                    }
-                    else {
-                        rect1.x = imgPaddings.left + realImgWidth;
-                        rect2.x = canvas.width - imgPaddings.right;
-                    }
-                }
-                else if (config.value.watermark.position === "inner") {
-                    rect1.x = watermarkPaddings.lr;
-                    rect1.y = watermarkPaddings.tb;
-                    rect2.x = canvas.width - watermarkPaddings.lr;
-                    rect2.y = canvas.height - watermarkPaddings.tb;
-                }
-                else {
-                    canvas.height += config.value.watermark.height * canvas.height + 2 * watermarkPaddings.tb;
-
-                    rect1.x = imgPaddings.left;
-                    rect1.y = realImgHeight +
-                        imgPaddings.top +
-                        imgPaddings.bottom +
-                        watermarkPaddings.tb;
-                    rect2.x = canvas.width - imgPaddings.right;
-                    rect2.y = canvas.height - watermarkPaddings.tb;
-                }
+                const { rect1, rect2 } = caculateCanvasSize(config.value, canvas, img)
 
                 // 绘制背景
                 if (blurConfig.enable) {
@@ -611,107 +578,43 @@ const handleDraw = useDebounceFn(() => {
                     ctx.filter = `blur(${blurConfig.size}px)`;
                     ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
                     ctx.restore();
-                } else if (bgColor) {
-                    ctx.fillStyle = bgColor;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
                 } else {
-                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillStyle = bgColor || "#FFF";
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
                 ctx.restore();
 
                 // 绘制阴影
+                const x = imgPaddings.left + shadowConfig.x;
+                const y = imgPaddings.top + shadowConfig.y;
                 if (radiusConfig.show) {
-                    const radius = radiusConfig.size;
-                    const x = imgPaddings.left + shadowConfig.x;
-                    const y = imgPaddings.top + shadowConfig.y;
-                    const width = img.width;
-                    const height = img.height;
-
-                    ctx.beginPath();
-                    ctx.moveTo(x + radius, y);
-                    ctx.quadraticCurveTo(x, y, x, y + radius);
-
-                    ctx.lineTo(x + width - radius, y);
-                    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-
-                    ctx.lineTo(x + width, y + height - radius);
-                    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-
-                    ctx.lineTo(x + radius, y + height);
-                    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-
-                    ctx.closePath();
+                    drawRadiusRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size);
                     ctx.fill();
                     ctx.restore();
                 } else {
                     // 绘制直角矩形
-                    ctx.fillRect(
-                        imgPaddings.left + shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y,
-                        img.width,
-                        img.height
-                    );
+                    ctx.fillRect(x, y, realImgWidth, realImgHeight);
                 }
                 // 绘制阴影
                 if (shadowConfig.show) {
                     ctx.save();
                     ctx.fillStyle = shadowConfig.color;
                     ctx.filter = `blur(${shadowConfig.size}px)`;
-                    ctx.fillRect(
-                        imgPaddings.left + shadowConfig.x,
-                        imgPaddings.top + shadowConfig.y,
-                        realImgWidth,
-                        realImgHeight
-                    );
+                    ctx.fillRect(x, y, realImgWidth, realImgHeight);
                     ctx.restore();
                 }
-
 
                 // 绘制圆角图片区域
                 if (radiusConfig.show) {
                     ctx.save();
-                    const radius = radiusConfig.size;
-                    ctx.beginPath();
-                    ctx.moveTo(imgPaddings.left + radius, imgPaddings.top);
-                    ctx.lineTo(
-                        canvas.width - imgPaddings.right - radius,
-                        imgPaddings.top
-                    );
-                    ctx.quadraticCurveTo(
-                        canvas.width - imgPaddings.right,
-                        imgPaddings.top,
-                        canvas.width - imgPaddings.right,
-                        imgPaddings.top + radius
-                    );
-                    ctx.lineTo(
-                        canvas.width - imgPaddings.right,
-                        realImgHeight + imgPaddings.top - radius
-                    );
-                    ctx.quadraticCurveTo(
-                        canvas.width - imgPaddings.right,
-                        realImgHeight + imgPaddings.top,
-                        canvas.width - imgPaddings.right - radius,
-                        realImgHeight + imgPaddings.top
-                    );
-                    ctx.lineTo(
-                        imgPaddings.left + radius,
-                        realImgHeight + imgPaddings.top
-                    );
-                    ctx.quadraticCurveTo(
-                        imgPaddings.left,
-                        realImgHeight + imgPaddings.top,
-                        imgPaddings.left,
-                        realImgHeight + imgPaddings.top - radius
-                    );
-                    ctx.lineTo(imgPaddings.left, imgPaddings.top + radius);
-                    ctx.quadraticCurveTo(
+                    drawRadiusRect(
+                        ctx,
                         imgPaddings.left,
                         imgPaddings.top,
-                        imgPaddings.left + radius,
-                        imgPaddings.top
+                        realImgWidth,
+                        realImgHeight,
+                        radiusConfig.size
                     );
-                    ctx.closePath();
                     ctx.clip();
                 }
 
@@ -728,13 +631,10 @@ const handleDraw = useDebounceFn(() => {
 
                 // 自动匹配logo
                 if (logoConfig.enable && logoConfig.auto) {
-                    cameraBrands.forEach((brand) => {
-                        if (brand.make && brand.make?.map(item => item.toUpperCase()).includes(exif.Make.toUpperCase())) {
-                            logoConfig.name = brand.logo;
-                        }
-                    });
+                    logoConfig.name = getLogoName(exif?.Make);
                 }
 
+                // 执行模板的绘制函数
                 config.value.draw(img, config.value, {
                     ctx: ctx,
                     canvas: canvas,
@@ -745,55 +645,18 @@ const handleDraw = useDebounceFn(() => {
                 });
 
 
+                // 绘制自定义的标签和图片
                 drawCustomLabelsAndImages(ctx, config.value.labels, config.value.images);
 
                 // 绘制辅助线
-                if (auxiliaryLines.horizontalCenter) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.moveTo(0, canvas.height / 2);
-                    ctx.lineTo(canvas.width, canvas.height / 2);
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = "#FF0000";
-                    ctx.stroke();
+                drawAuxiliaryLines(canvas, auxiliaryLines, rect1, rect2);
 
-                    ctx.restore();
-                }
-                if (auxiliaryLines.verticalCenter) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.moveTo(canvas.width / 2, 0);
-                    ctx.lineTo(canvas.width / 2, canvas.height);
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = "#FF0000";
-                    ctx.stroke();
-                    ctx.restore();
-                }
-                if (auxiliaryLines.watermarkRange) {
-                    ctx.save();
-                    ctx.lineWidth = 10;
-                    ctx.strokeStyle = "#00FF00";
-                    ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
-                    ctx.restore();
-                }
-                if (auxiliaryLines.watermarkHorizontalCenter) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.moveTo(rect1.x, rect1.y + (rect2.y - rect1.y) / 2);
-                    ctx.lineTo(rect2.x, rect1.y + (rect2.y - rect1.y) / 2);
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = "#FF0000";
-                    ctx.stroke();
-                    ctx.restore();
-                }
-
-                if (config.value.afterDraw) {
-                    config.value.afterDraw(ctx);
-                }
+                // 执行绘制结束后的操作
+                config.value.afterDraw && config.value.afterDraw(ctx);
             }
         }
     } catch (e) {
-        console.log('发生错误：', e);
+        console.log('绘制发生错误：', e);
     }
 }, 200)
 

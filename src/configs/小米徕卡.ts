@@ -201,6 +201,7 @@ const config: Config = {
 		bottom: 0,
 	},
 	watermark: {
+		position: "bottom",
 		height: 0.1,
 		model: {
 			enable: true,

@@ -1,5 +1,15 @@
 import { ElMessage, ElNotification } from "element-plus";
-import type { ImagesConfigItem, ImgExt, LabelConfigItem, Logo } from "../types";
+import type {
+	AuxiliaryLines,
+	Config,
+	ImagesConfigItem,
+	Img,
+	ImgExt,
+	LabelConfigItem,
+	Logo,
+	Point,
+} from "../types";
+import { cameraBrands } from "../assets/tools";
 
 /**
  * 将曝光时间转换为分数字符串格式
@@ -227,7 +237,8 @@ export function drawRadiusRect(
 	y: number,
 	width: number,
 	height: number,
-	radius: number
+	radius: number,
+	stroke: boolean = false
 ) {
 	ctx.beginPath();
 	ctx.moveTo(x + radius, y);
@@ -240,5 +251,132 @@ export function drawRadiusRect(
 	ctx.lineTo(x, y + radius);
 	ctx.quadraticCurveTo(x, y, x + radius, y);
 	ctx.closePath();
-	ctx.stroke();
+	if (stroke) {
+		ctx.stroke();
+	}
+}
+
+/**
+ * 在指定的Canvas上绘制辅助线。
+ *
+ * @param canvas - 用于绘制辅助线的HTMLCanvasElement对象。
+ * @param auxiliaryLines - 包含辅助线配置的对象，决定哪些辅助线需要绘制。
+ * @param rect1 - 水印范围左上角点。
+ * @param rect2 - 水印范围右下角点。。
+ */
+export function drawAuxiliaryLines(
+	canvas: HTMLCanvasElement,
+	auxiliaryLines: AuxiliaryLines,
+	rect1: Point,
+	rect2: Point
+) {
+	const ctx = canvas.getContext("2d")!;
+	if (!ctx) return;
+
+	if (auxiliaryLines.horizontalCenter) {
+		ctx.save();
+		ctx.beginPath();
+		ctx.moveTo(0, canvas.height / 2);
+		ctx.lineTo(canvas.width, canvas.height / 2);
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = "#FF0000";
+		ctx.stroke();
+
+		ctx.restore();
+	}
+	if (auxiliaryLines.verticalCenter) {
+		ctx.save();
+		ctx.beginPath();
+		ctx.moveTo(canvas.width / 2, 0);
+		ctx.lineTo(canvas.width / 2, canvas.height);
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = "#FF0000";
+		ctx.stroke();
+		ctx.restore();
+	}
+	if (auxiliaryLines.watermarkRange) {
+		ctx.save();
+		ctx.lineWidth = 10;
+		ctx.strokeStyle = "#00FF00";
+		ctx.strokeRect(rect1.x, rect1.y, rect2.x - rect1.x, rect2.y - rect1.y);
+		ctx.restore();
+	}
+	if (auxiliaryLines.watermarkHorizontalCenter) {
+		ctx.save();
+		ctx.beginPath();
+		ctx.moveTo(rect1.x, rect1.y + (rect2.y - rect1.y) / 2);
+		ctx.lineTo(rect2.x, rect1.y + (rect2.y - rect1.y) / 2);
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = "#FF0000";
+		ctx.stroke();
+		ctx.restore();
+	}
+}
+
+/**
+ * 根据相机品牌名称获取对应的Logo名称。
+ *
+ * @param {string} [make=""] - 相机品牌名称，默认为空字符串。函数会根据该名称在预定义的品牌列表中查找对应的Logo名称。
+ * @returns {string} - 返回匹配的Logo名称。如果未找到匹配的品牌，则返回默认的"leica"。
+ */
+export function getLogoName(make: string = ""): string {
+	let name = "leica";
+	cameraBrands.forEach((brand) => {
+		if (
+			brand.make &&
+			brand.make?.map((item) => item.toUpperCase()).includes(make.toUpperCase())
+		) {
+			name = brand.logo;
+		}
+	});
+	return name;
+}
+
+export function caculateCanvasSize(
+	config: Config,
+	canvas: HTMLCanvasElement,
+	img: Img
+) {
+	const rect1 = { x: 0, y: 0 };
+	const rect2 = { x: 0, y: 0 };
+	const { paddings: imgPaddings, watermark } = config;
+	const {
+		position,
+		height: watermarkHeight,
+		paddings: watermarkPaddings,
+	} = watermark;
+
+	if (position === "left" || position === "right") {
+		canvas.width += watermarkHeight * canvas.width + 2 * watermarkPaddings.lr;
+		rect1.y = imgPaddings.top;
+		rect2.y = canvas.height - imgPaddings.bottom;
+
+		if (position === "left") {
+			rect1.x = 0;
+			rect2.x = watermarkHeight * canvas.width + 2 * watermarkPaddings.lr;
+		} else {
+			rect1.x = imgPaddings.left + img.width;
+			rect2.x = canvas.width;
+		}
+	} else if (position === "inner") {
+		// 画布大小不需要修改
+		rect1.x = watermarkPaddings.lr;
+		rect1.y = watermarkPaddings.tb;
+		rect2.x = canvas.width - watermarkPaddings.lr;
+		rect2.y = canvas.height - watermarkPaddings.tb;
+	} else {
+		canvas.height += watermarkHeight * canvas.height + 2 * watermarkPaddings.tb;
+		rect1.x = imgPaddings.left;
+		rect2.x = canvas.width - imgPaddings.right;
+
+		if (position === "top") {
+			rect1.y = watermarkPaddings.tb;
+			rect2.y = 2 * watermarkPaddings.tb + watermarkHeight * canvas.height;
+		} else {
+			rect1.y = imgPaddings.top + img.height + imgPaddings.bottom;
+			rect2.y = canvas.height;
+		}
+	}
+
+	return { rect1, rect2 };
 }
