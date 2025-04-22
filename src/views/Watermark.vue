@@ -260,7 +260,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch, provide } from 'vue'
 import { print, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
-import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawRadiusRect, drawAuxiliaryLines, getLogoName, caculateCanvasSize } from "../utils"
+import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawRadiusRect, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading } from '@element-plus/icons-vue';
@@ -547,11 +547,7 @@ const handleDraw = useDebounceFn(() => {
                 img.lensText = lens.text || exif?.LensModel;
 
                 if (img.exif?.GPSLatitude && img.exif?.GPSLongitude) {
-                    img.locationText = locationConfig?.text || `${img.exif?.GPSLatitude[0]}°${img.exif?.GPSLatitude[1]
-                        }'${(img.exif?.GPSLatitude[2]).toFixed(0)}''${img.exif?.GPSLatitudeRef} ${img.exif?.GPSLongitude[0]
-                        }°${img.exif?.GPSLongitude[1]}'${(img.exif?.GPSLongitude[2]).toFixed(
-                            0
-                        )}''${img.exif?.GPSLongitudeRef}`;
+                    img.locationText = locationConfig?.text || getLocationText(img.exif);
                 }
 
                 const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
@@ -634,6 +630,10 @@ const handleDraw = useDebounceFn(() => {
                     logoConfig.name = getLogoName(exif?.Make);
                 }
 
+
+                // 执行绘制前的操作
+                config.value.beforeDraw && config.value.beforeDraw(canvas);
+
                 // 执行模板的绘制函数
                 config.value.draw(img, config.value, {
                     ctx: ctx,
@@ -704,7 +704,7 @@ function importConfig(val: number): void {
             break;
     }
     configPromise.then(res => {
-        let config_value = deepClone(<Config>res.default);
+        let config_value = deepClone(res.default as Config);
         if (watermark.is_local) {
             let local_value = JSON.parse(watermark.config) as Config;
             // 合并对象
@@ -725,12 +725,9 @@ const preview = () => {
     const canvasBox = document.getElementById('canvasBox') as HTMLCanvasElement;
     if (!canvasBox) return;
 
-    // 判断最大高度是不是100vh
-    if (canvasBox.style.maxHeight === '100vh') {
-        // 修改最大高度为100%
-        canvasBox.style.maxHeight = window.innerWidth > 768 ? '100vh' : '300px';
+    if (canvasBox.style.maxHeight === '100vh' && window.innerWidth <= 768) {
+        canvasBox.style.maxHeight = '300px';
     } else {
-        // 修改最大高度为100vh
         canvasBox.style.maxHeight = '100vh';
     }
 }
@@ -741,7 +738,6 @@ function addCustomLabel() {
 }
 
 function removeCustomLabel(name: string) {
-    // 根据name属性删除
     config.value?.labels?.splice(config.value?.labels?.findIndex(item => item.name === name), 1);
 }
 
@@ -750,12 +746,9 @@ function addCustomImage() {
     config.value?.images?.unshift(JSON.parse(JSON.stringify(defaultImageConfig)));
 }
 function removeCustomImage(title: string) {
-    // 根据title属性删除
     config.value?.images?.splice(config.value?.images?.findIndex(item => item.title === title), 1);
 }
 </script>
-
-
 
 <style lang='less' scoped>
 .box {
@@ -765,7 +758,6 @@ function removeCustomImage(title: string) {
     width: 100%;
     height: 100vh;
 }
-
 
 .config-box {
     padding: 10px 15px;
@@ -898,13 +890,6 @@ function removeCustomImage(title: string) {
     }
 }
 
-@keyframes rotate {
-    0% {
-        transform: rotateZ(360deg);
-    }
-}
-
-
 @media screen and (max-width: 768px) {
     .box {
         gap: 5px;
@@ -929,13 +914,18 @@ function removeCustomImage(title: string) {
         .btns {
             justify-content: space-between;
         }
+    }
+}
 
+@keyframes rotate {
+    0% {
+        transform: rotateZ(360deg);
+    }
+}
 
-        @keyframes flow {
-            from {
-                transform: translateY(50%);
-            }
-        }
+@keyframes flow {
+    from {
+        transform: translateY(50%);
     }
 }
 </style>

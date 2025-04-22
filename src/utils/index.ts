@@ -373,10 +373,25 @@ export function caculateCanvasSize(
 			rect1.y = watermarkPaddings.tb;
 			rect2.y = 2 * watermarkPaddings.tb + watermarkHeight * canvas.height;
 		} else {
-			rect1.y = imgPaddings.top + img.height + imgPaddings.bottom;
-			rect2.y = canvas.height;
+			rect1.y = imgPaddings.top + img.height + imgPaddings.bottom + watermarkPaddings.tb;
+			rect2.y = canvas.height - watermarkPaddings.tb;
 		}
 	}
 
 	return { rect1, rect2 };
+}
+
+// 拼接经纬度
+export function getLocationText(exif: any, split: string = " ") {
+	try {
+		return `${exif?.GPSLatitude[0]}°${
+			exif?.GPSLatitude[1]
+		}'${(exif?.GPSLatitude[2]).toFixed(0)}''${exif?.GPSLatitudeRef}${split}${
+			exif?.GPSLongitude[0]
+		}°${exif?.GPSLongitude[1]}'${(exif?.GPSLongitude[2]).toFixed(0)}''${
+			exif?.GPSLongitudeRef
+		}`;
+	} catch (error) {
+		return "";
+	}
 }

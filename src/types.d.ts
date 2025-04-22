@@ -366,7 +366,7 @@ declare interface BaseConfig {
 }
 
 export declare type AfterDrawFun = (ctx: CanvasRenderingContext2D) => void;
-declare interface Config extends BaseConfig {
+export declare interface Config extends BaseConfig {
 	/**
 	 * 绘制函数，从配置到最终图片的具体实现。
 	 */
@@ -382,7 +382,11 @@ declare interface Config extends BaseConfig {
 	afterDraw?: AfterDrawFun;
 }
 
-declare type DrawFun = (img: Img, config: Config, context: Context) => void;
+export declare type DrawFun = (
+	img: Img,
+	config: Config,
+	context: Context
+) => void;
 declare interface Context {
 	/**
 	 * 画布上下文
@@ -416,7 +420,7 @@ declare interface Context {
 	focalLength?: string;
 }
 
-declare interface Img {
+export declare interface Img {
 	/**
 	 * 当前图片的宽度
 	 */
@@ -484,7 +488,7 @@ declare interface Img {
 	locationText: string;
 }
 
-declare type CameraBrands = {
+export declare type CameraBrands = {
 	/**
 	 * 显示的名称
 	 */
@@ -499,10 +503,10 @@ declare type CameraBrands = {
 	make?: string[];
 };
 
-declare type ImgExt = "jpeg" | "png";
+export declare type ImgExt = "jpeg" | "png";
 
 // 保存在pinia的单个水印配置
-declare type LocalWaterMarkItem = {
+export declare type LocalWaterMarkItem = {
 	name: string;
 	/**
 	 * 从哪个内置配置文件修改来的，要调用对应的draw函数
@@ -515,12 +519,12 @@ declare type LocalWaterMarkItem = {
 	is_local?: boolean;
 };
 
-declare type WatermarkListBaseItem = {
+export declare type WatermarkListBaseItem = {
 	name: string;
 	config: string;
 	url?: string;
 };
-declare type WatermarkListItem = WatermarkListBaseItem & {
+export declare type WatermarkListItem = WatermarkListBaseItem & {
 	index: number;
 	is_local?: boolean;
 	/**
@@ -530,24 +534,31 @@ declare type WatermarkListItem = WatermarkListBaseItem & {
 };
 
 export declare type AuxiliaryLines = {
+	/**
+	 * 是否显示水平中心线
+	 */
 	horizontalCenter: boolean;
+	/**
+	 * 是否显示水印范围
+	 */
 	watermarkRange: boolean;
+	/**
+	 * 是否显示垂直中心线
+	 */
 	verticalCenter: boolean;
+	/**
+	 * 是否显示水印水平中心线
+	 */
 	watermarkHorizontalCenter: boolean;
-}
+};
 
 export declare type Point = {
+	/**
+	 * 点x坐标
+	 */
 	x: number;
+	/**
+	 * 点y坐标
+	 */
 	y: number;
-}
-
-export {
-	Config,
-	Img,
-	DrawFun,
-	CameraBrands,
-	ImgExt,
-	LocalWaterMarkItem,
-	WatermarkListItem,
-	WatermarkListBaseItem,
 };
