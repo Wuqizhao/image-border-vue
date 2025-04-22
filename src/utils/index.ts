@@ -332,6 +332,15 @@ export function getLogoName(make: string = ""): string {
 	return name;
 }
 
+/**
+ * 计算画布尺寸和水印位置
+ * @param config - 配置对象,包含图片内边距和水印配置
+ * @param canvas - HTML Canvas 元素
+ * @param img - 图片对象,包含宽高信息
+ * @returns 返回水印的起始点和终点坐标
+ * - rect1: 水印起始点坐标 {x, y}
+ * - rect2: 水印终点坐标 {x, y}
+ */
 export function caculateCanvasSize(
 	config: Config,
 	canvas: HTMLCanvasElement,
@@ -373,7 +382,11 @@ export function caculateCanvasSize(
 			rect1.y = watermarkPaddings.tb;
 			rect2.y = 2 * watermarkPaddings.tb + watermarkHeight * canvas.height;
 		} else {
-			rect1.y = imgPaddings.top + img.height + imgPaddings.bottom + watermarkPaddings.tb;
+			rect1.y =
+				imgPaddings.top +
+				img.height +
+				imgPaddings.bottom +
+				watermarkPaddings.tb;
 			rect2.y = canvas.height - watermarkPaddings.tb;
 		}
 	}
@@ -381,7 +394,13 @@ export function caculateCanvasSize(
 	return { rect1, rect2 };
 }
 
-// 拼接经纬度
+
+/**
+ * 将 EXIF 中的 GPS 坐标信息拼接成经纬度
+ * @param exif - 包含 GPS 信息的 EXIF 数据对象
+ * @param split - 纬度和经度之间的分隔符,默认为空格
+ * @returns 格式化的位置文本,格式为: "纬度°分'秒''N/S 经度°分'秒''E/W"。如果转换失败则返回空字符串
+ */
 export function getLocationText(exif: any, split: string = " ") {
 	try {
 		return `${exif?.GPSLatitude[0]}°${

@@ -545,10 +545,7 @@ const handleDraw = useDebounceFn(() => {
                     timeConfig.format
                 );
                 img.lensText = lens.text || exif?.LensModel;
-
-                if (img.exif?.GPSLatitude && img.exif?.GPSLongitude) {
-                    img.locationText = locationConfig?.text || getLocationText(img.exif);
-                }
+                img.locationText = locationConfig?.text || getLocationText(img.exif);
 
                 const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
                 const ctx = canvas.getContext("2d");
