@@ -369,10 +369,10 @@ export function caculateCanvasSize(
 		}
 	} else if (position === "inner") {
 		// 画布大小不需要修改
-		rect1.x = watermarkPaddings.lr;
+		rect1.x = watermarkPaddings.lr + imgPaddings.left;
 		rect1.y = watermarkPaddings.tb;
-		rect2.x = canvas.width - watermarkPaddings.lr;
-		rect2.y = canvas.height - watermarkPaddings.tb;
+		rect2.x = canvas.width - watermarkPaddings.lr - imgPaddings.right;
+		rect2.y = canvas.height - watermarkPaddings.tb - imgPaddings.bottom;
 	} else {
 		canvas.height += watermarkHeight * canvas.height + 2 * watermarkPaddings.tb;
 		rect1.x = imgPaddings.left;

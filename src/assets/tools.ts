@@ -134,6 +134,11 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMEZ_5rRw5CVPpsGb88YlmJczm3178AAn3DMRs4AAH4V7vXffdQ9OpZAQADAgADdwADNgQ.jpeg",
 	},
 	{
+		name: "Lumix",
+		config: "Lumix",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMPaAjt_05QYVvgKJltAhWbbFX3QXkAAp3NMRvi30hUEZeq9yNUbYMBAAMCAAN3AAM2BA.jpeg",
+	},
+	{
 		name: "XMAGE",
 		config: "XMAGE",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMOaAMgQ-9qLslbLbeaPWsrN8vc0S8AAgnGMRuH_RlUBHf9LifJp8oBAAMCAAN3AAM2BA.jpeg",

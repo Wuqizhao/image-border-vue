@@ -685,6 +685,9 @@ function importConfig(val: number): void {
         case "XMAGE":
             configPromise = import("../configs/XMAGE");
             break;
+        case "Lumix":
+            configPromise = import("../configs/Lumix");
+            break;
         default:
             configPromise = import("../configs/小米徕卡");
             break;
