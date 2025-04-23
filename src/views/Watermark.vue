@@ -491,13 +491,7 @@ const handleDraw = useDebounceFn(() => {
         if (!file) return;
 
         const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig, location: locationConfig } = config.value;
-        const {
-            model,
-            params: paramsConfig,
-            time: timeConfig,
-            lens,
-            bgColor
-        } = watermark;
+        const { model, params: paramsConfig, time: timeConfig, lens, bgColor } = watermark;
 
         const reader = new FileReader();
         reader.readAsDataURL(file);
