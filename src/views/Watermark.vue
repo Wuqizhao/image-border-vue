@@ -627,12 +627,7 @@ const handleDraw = useDebounceFn(() => {
 
                 // 执行模板的绘制函数
                 config.value.draw(img, config.value, {
-                    ctx: ctx,
-                    canvas: canvas,
-                    rect1: rect1,
-                    rect2: rect2,
-                    exposureTime: exposureTime,
-                    focalLength: focalLength,
+                    ctx, canvas, rect1, rect2, exposureTime, focalLength,
                 });
 
 
@@ -915,8 +910,7 @@ function removeCustomImage(title: string) {
 }
 
 @keyframes flow {
-    from {
-        transform: translateY(50%);
+    from {      transform: translateY(50%);
     }
 }
 </style>
