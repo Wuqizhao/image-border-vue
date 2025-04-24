@@ -203,6 +203,7 @@ const config: Config = {
 	watermark: {
 		position: "bottom",
 		height: 0.1,
+		bgColor: "#FFF",
 		model: {
 			enable: true,
 			show: true,
@@ -241,7 +242,6 @@ const config: Config = {
 			lr: 120,
 			tb: 120,
 		},
-		bgColor: "#FFF",
 	},
 	radius: {
 		enable: true,

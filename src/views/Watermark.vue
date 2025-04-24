@@ -153,6 +153,13 @@
                         <RadiusConfig :radius="config.radius" />
                         <BlurConfig :blur="config.blur" :bg="config.watermark" />
                         <ShadowConfig :shadow="config.shadow" />
+
+                        <h3>水印背景</h3>
+                        <el-form lable="80px">
+                            <el-form-item label="背景颜色">
+                                <el-color-picker v-model="config.watermark.bg" show-alpha></el-color-picker>
+                            </el-form-item>
+                        </el-form>
                     </el-tab-pane>
                     <el-tab-pane label="边距" name="border">
                         <PaddingConfig :paddings="config.paddings" :watermark="config.watermark" />
@@ -557,7 +564,7 @@ const handleDraw = useDebounceFn(() => {
                 canvas.height =
                     realImgHeight + imgPaddings.top + imgPaddings.bottom;
 
-                const { rect1, rect2 } = caculateCanvasSize(config.value, canvas, img)
+                const { rect1, rect2 } = caculateCanvasSize(config.value, canvas, img);
 
                 // 绘制背景
                 if (blurConfig.enable) {
@@ -567,6 +574,7 @@ const handleDraw = useDebounceFn(() => {
                     ctx.restore();
                 } else {
                     ctx.fillStyle = bgColor || "#FFF";
+                    console.log('绘制背景颜色', bgColor);
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
                 ctx.restore();
@@ -634,6 +642,13 @@ const handleDraw = useDebounceFn(() => {
 
                 // 执行绘制前的操作
                 config.value.beforeDraw && config.value.beforeDraw(canvas);
+
+
+                // 绘制水印范围的背景颜色
+                if (watermark.position !== 'inner') {
+                    ctx.fillStyle = watermark.bg || "rgba(0,0,0,0)";
+                    ctx.fillRect(0, rect1.y - watermark.paddings.tb, canvas.width, rect2.y - rect1.y + 2 * watermark.paddings.tb);
+                }
 
                 // 执行模板的绘制函数
                 config.value.draw(img, config.value, {

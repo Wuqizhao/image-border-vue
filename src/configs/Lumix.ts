@@ -13,7 +13,7 @@ const draw: DrawFun = async (img, config, context) => {
 
 	rect1.y = paddings.top + tb + img.height * (1 - watermark.height);
 	// 绘制水印范围的背景
-	ctx.fillStyle = "rgba(0,0,0,0.4)";
+	ctx.fillStyle = watermark.bg || "rgba(0,0,0,0.4)";
 	if (radius.show) {
 		drawRadiusRect(
 			ctx,
@@ -147,6 +147,7 @@ const config: Config = {
 	},
 	watermark: {
 		position: "inner",
+		bgColor: "#50000000",
 		height: 0.15,
 		model: {
 			enable: true,
@@ -187,7 +188,7 @@ const config: Config = {
 			lr: 100,
 			tb: 0,
 		},
-		bgColor: "#50000000",
+		bg: "rgba(0, 0, 0, 0.4)",
 	},
 	radius: {
 		enable: true,

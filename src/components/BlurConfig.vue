@@ -28,9 +28,9 @@ const config = defineProps({
     bg: {
         type: Object,
         required: true,
-        default: () => ({
-            bgColor: '#ffffff'
-        })
+        default: () => {
+            return { bgCOlorolor: '#FFF' }
+        }
     }
 })
 </script>

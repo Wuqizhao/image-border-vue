@@ -353,9 +353,13 @@ declare interface BaseConfig {
 			tb: number;
 		};
 		/**
-		 * 水印的背景颜色（包含图片的边距空位的颜色）
+		 * 整体背景颜色（包含水印绘制部分和图片的边距空位的颜色）
 		 */
 		bgColor: string;
+		/**
+		 * 水印范围的颜色（仅仅在水印范围内生效）
+		 */
+		bg?: string;
 	};
 	radius: Radius;
 	blur: Blur;
