@@ -260,7 +260,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch, provide } from 'vue'
 import { print, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
-import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawRadiusRect, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText } from "../utils"
+import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading } from '@element-plus/icons-vue';
@@ -574,8 +574,15 @@ const handleDraw = useDebounceFn(() => {
                 // 绘制阴影
                 const x = imgPaddings.left + shadowConfig.x;
                 const y = imgPaddings.top + shadowConfig.y;
+
+
+                const rt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rt;
+                const rb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rb;
+                const lt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lt;
+                const lb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lb;
+
                 if (radiusConfig.show) {
-                    drawRadiusRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size);
+                    drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
                     ctx.fill();
                     ctx.restore();
                 } else {
@@ -594,14 +601,17 @@ const handleDraw = useDebounceFn(() => {
                 // 绘制圆角图片区域
                 if (radiusConfig.show) {
                     ctx.save();
-                    drawRadiusRect(
-                        ctx,
-                        imgPaddings.left,
-                        imgPaddings.top,
-                        realImgWidth,
-                        realImgHeight,
-                        radiusConfig.size
-                    );
+                    // drawRadiusRect(
+                    //     ctx,
+                    //     imgPaddings.left,
+                    //     imgPaddings.top,
+                    //     realImgWidth,
+                    //     realImgHeight,
+                    //     radiusConfig.size
+                    // );
+
+
+                    drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
                     ctx.clip();
                 }
 
@@ -913,7 +923,8 @@ function removeCustomImage(title: string) {
 }
 
 @keyframes flow {
-    from {      transform: translateY(50%);
+    from {
+        transform: translateY(50%);
     }
 }
 </style>

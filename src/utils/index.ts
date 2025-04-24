@@ -394,7 +394,6 @@ export function caculateCanvasSize(
 	return { rect1, rect2 };
 }
 
-
 /**
  * 将 EXIF 中的 GPS 坐标信息拼接成经纬度
  * @param exif - 包含 GPS 信息的 EXIF 数据对象
@@ -412,5 +411,51 @@ export function getLocationText(exif: any, split: string = " ") {
 		}`;
 	} catch (error) {
 		return "";
+	}
+}
+
+// 绘制可控制圆角的矩形
+export function drawRoundedRect(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+	radius: number,
+	stroke:boolean,
+	lt: number,
+	rt: number,
+	rb: number,
+	lb: number
+) {
+	ctx.beginPath();
+	ctx.moveTo(x + radius, y);
+	if (lt) {
+		ctx.lineTo(x + width - lt, y);
+		ctx.arcTo(x + width, y, x + width, y + lt, lt);
+	} else {
+		ctx.lineTo(x + width, y);
+	}
+	if (rt) {
+		ctx.lineTo(x + width, y + height - rt);
+		ctx.arcTo(x + width, y + height, x + width - rt, y + height, rt);
+	} else {
+		ctx.lineTo(x + width, y + height);
+	}
+	if (rb) {
+		ctx.lineTo(x + rb, y + height);
+		ctx.arcTo(x, y + height, x, y + height - rb, rb);
+	} else {
+		ctx.lineTo(x, y + height);
+	}
+	if (lb) {
+		ctx.lineTo(x, y + lb);
+		ctx.arcTo(x, y, x + lb, y, lb);
+	} else {
+		ctx.lineTo(x, y);
+	}
+	ctx.closePath();
+	if (stroke) {
+		ctx.stroke();
 	}
 }

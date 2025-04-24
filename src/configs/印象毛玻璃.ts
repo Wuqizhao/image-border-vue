@@ -144,8 +144,12 @@ const config: Config = {
 	radius: {
 		enable: true,
 		show: true,
-		position: ["lt", "rt", "lb", "rb"],
 		size: 100,
+		uniform: true,
+		lt: 100,
+		rt: 100,
+		lb: 100,
+		rb: 100,
 	},
 	blur: {
 		enable: true,

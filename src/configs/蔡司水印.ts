@@ -170,7 +170,11 @@ const config: Config = {
 		enable: true,
 		show: false,
 		size: 100,
-		position: ["lt", "rt", "lb", "rb"],
+		uniform: true,
+		lt: 100,
+		rt: 100,
+		lb: 100,
+		rb: 100,
 	},
 	blur: {
 		enable: false,

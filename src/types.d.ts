@@ -134,13 +134,15 @@ declare interface Radius {
 	 */
 	show: boolean;
 	/**
-	 * 圆角位置
-	 */
-	position: Array<"lt" | "rt" | "lb" | "rb">;
-	/**
 	 * 圆角大小
 	 */
 	size: number;
+	// 是否统一半径
+	uniform: boolean;
+	lt: number;
+	rt: number;
+	lb: number;
+	rb: number;
 }
 declare interface Blur {
 	/**
