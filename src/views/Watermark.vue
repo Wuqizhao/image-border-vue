@@ -574,7 +574,6 @@ const handleDraw = useDebounceFn(() => {
                     ctx.restore();
                 } else {
                     ctx.fillStyle = bgColor || "#FFF";
-                    console.log('绘制背景颜色', bgColor);
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
                 ctx.restore();
