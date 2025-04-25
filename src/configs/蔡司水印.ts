@@ -2,12 +2,7 @@ import type { Config, DrawFun } from "../types";
 import { convertExposureTime, drawLogo } from "../utils";
 
 const doDraw: DrawFun = (img, config, context) => {
-	const {
-		watermark,
-		paddings: imgPaddings,
-		divider: dividerConfig,
-		logo: logoConfig,
-	} = config;
+	const { watermark, divider: dividerConfig, logo: logoConfig } = config;
 	const {
 		model: modelConfig,
 		paddings: watermarkPaddings,
@@ -17,7 +12,7 @@ const doDraw: DrawFun = (img, config, context) => {
 	const { ctx, rect1, rect2 } = context;
 
 	// 绘制型号
-	const _x = imgPaddings.left + watermarkPaddings.lr;
+	const _x = rect1.x + watermarkPaddings.lr;
 	const _y = rect1.y + (rect2.y - rect1.y) / 2;
 	let modelWidth = 0;
 	if (modelConfig.show) {

@@ -26,15 +26,13 @@
         <el-form-item label="上下">
             <el-slider v-model="config.watermark.paddings.tb" :min="0" :max="2000" :step="10" show-input></el-slider>
         </el-form-item>
-        <!-- <h3 style="margin-bottom: 1rem;">水印移动</h3>
+        <h3 style="margin-bottom: 1rem;">水印移动</h3>
         <el-form-item label="水平">
-            <el-slider v-model="config.watermark.paddings.tb" :min="-2000" :max="2000" :step="10"
-                show-input disabled></el-slider>
+            <el-slider v-model="config.watermark.offsetX" :min="-10000" :max="10000" :step="10" show-input></el-slider>
         </el-form-item>
         <el-form-item label="垂直">
-            <el-slider v-model="config.watermark.paddings.tb" :min="-2000" :max="2000" :step="10"
-                show-input disabled></el-slider>
-        </el-form-item> -->
+            <el-slider v-model="config.watermark.offsetY" :min="-10000" :max="10000" :step="10" show-input></el-slider>
+        </el-form-item>
     </el-form>
 </template>
 

@@ -4,7 +4,6 @@ import { drawLogo, replaceZ } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const {
 		watermark,
-		paddings: imgPaddings,
 		divider: dividerConfig,
 		logo: logoConfig,
 		location: locationConfig,
@@ -16,7 +15,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		lens: lensConfig,
 		paddings: watermarkPaddings,
 	} = watermark;
-	const { ctx, canvas, rect1, rect2, focalLength, exposureTime } = context;
+	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
 
 	// 绘制型号
 	if (modelConfig.show) {
@@ -36,7 +35,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
 
-		ctx.fillText(company, imgPaddings.left + watermarkPaddings.lr, _y);
+		ctx.fillText(company, rect1.x + watermarkPaddings.lr, _y);
 
 		ctx.font = `${modelConfig.size}px ${config.font || "Arial"}`;
 		const modelText = modelConfig.replaceZ
@@ -44,7 +43,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			: img.modelText;
 		ctx.fillText(
 			modelText.replace(company, ""),
-			imgPaddings.left + watermarkPaddings.lr + companyWidth,
+			rect1.x + watermarkPaddings.lr + companyWidth,
 			_y
 		);
 		ctx.restore(); // 恢复之前的绘图状态
@@ -72,11 +71,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		let _y =
 			rect1.y +
 			(rect2.y - rect1.y) / (timeConfig.show || locationConfig?.show ? 3 : 2);
-		ctx.fillText(
-			paramsText,
-			canvas.width - imgPaddings.right - watermarkPaddings.lr,
-			_y
-		);
+		ctx.fillText(paramsText, rect2.x - watermarkPaddings.lr, _y);
 	}
 
 	let lensWidth = 0;
@@ -97,7 +92,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			ctx.textBaseline = "middle";
 		}
 		lensWidth = ctx.measureText(text).width;
-		ctx.fillText(text, imgPaddings.left + watermarkPaddings.lr, _y);
+		ctx.fillText(text, rect1.x + watermarkPaddings.lr, _y);
 		ctx.restore();
 	}
 
@@ -107,8 +102,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.save();
 		ctx.textAlign = paramsConfig.show ? "left" : "right";
 		let _x = paramsConfig.show
-			? canvas.width - imgPaddings.right - watermarkPaddings.lr - paramsWidth
-			: canvas.width - imgPaddings.right - watermarkPaddings.lr;
+			? rect2.x - watermarkPaddings.lr - paramsWidth
+			: rect2.x - watermarkPaddings.lr;
 		const _y =
 			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
 		ctx.textBaseline = paramsConfig.show ? "top" : "middle";
@@ -122,7 +117,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		} else {
 			ctx.textAlign = "left";
 			ctx.textBaseline = "top";
-			let _x = imgPaddings.left + watermarkPaddings.lr;
+			let _x = rect1.x + watermarkPaddings.lr;
 			if (lensConfig.show) {
 				const SPACE = 50;
 				_x += lensWidth + SPACE * dividerConfig.margin;
@@ -136,11 +131,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	// 计算横坐标
 	const _x =
-		canvas.width -
-		imgPaddings.right -
-		watermarkPaddings.lr -
-		Math.max(paramsWidth, timeWidth) -
-		space;
+		rect2.x - watermarkPaddings.lr - Math.max(paramsWidth, timeWidth) - space;
 	const logoX = _x - space - logoConfig.width;
 	// 计算纵坐标
 	const logoY =
@@ -181,8 +172,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const text = locationConfig.text || img.locationText;
 
 		const _x = paramsConfig.show
-			? canvas.width - imgPaddings.right - watermarkPaddings.lr - paramsWidth
-			: canvas.width - imgPaddings.right - watermarkPaddings.lr;
+			? rect2.x - watermarkPaddings.lr - paramsWidth
+			: rect2.x - watermarkPaddings.lr;
 		const _y =
 			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
 

@@ -1,7 +1,7 @@
 import type { Config, DrawFun } from "../types";
 import { drawLogo, replaceZ } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
-	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
+	const { watermark, logo: logoConfig } = config;
 	const {
 		model: modelConfig,
 		params: paramsConfig,
@@ -9,11 +9,11 @@ const doDraw: DrawFun = async (img, config, context) => {
 		paddings: watermarkPaddings,
 		lens: lensConfig,
 	} = watermark;
-	const { ctx, canvas, rect1, rect2 } = context;
+	const { ctx, rect1, rect2 } = context;
 
 	// 绘制Logo
 	if (logoConfig.show) {
-		const logoX = imgPaddings.left + watermarkPaddings.lr;
+		const logoX = rect1.x + watermarkPaddings.lr;
 		const _y =
 			rect1.y +
 			(rect2.y - rect1.y) / 2 -
@@ -24,7 +24,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	const SPACE = 0.2 * logoConfig.width;
 	const _x =
-		imgPaddings.left +
+		rect1.x +
 		watermarkPaddings.lr +
 		(logoConfig.show ? logoConfig.width + SPACE : 0);
 	// 绘制型号
@@ -50,9 +50,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.fillText(company, _x, _y);
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "");
-		modelText = modelConfig.replaceZ
-			? replaceZ(modelText)
-			: modelText;
+		modelText = modelConfig.replaceZ ? replaceZ(modelText) : modelText;
 		ctx.fillText(modelText, _x + companyWidth, _y);
 		ctx.restore(); // 恢复之前的绘图状态
 	}
@@ -96,7 +94,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		}
 		ctx.fillText(
 			lensConfig.text || img.exif?.LensModel,
-			canvas.width - imgPaddings.right - watermarkPaddings.lr,
+			rect2.x - watermarkPaddings.lr,
 			_y
 		);
 
@@ -115,11 +113,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		if (lensConfig.show) {
 			_y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
 		}
-		ctx.fillText(
-			img.timeText,
-			canvas.width - imgPaddings.right - watermarkPaddings.lr,
-			_y
-		);
+		ctx.fillText(img.timeText, rect2.x - watermarkPaddings.lr, _y);
 		ctx.restore();
 	}
 };

@@ -564,6 +564,10 @@ const handleDraw = useDebounceFn(() => {
                     realImgHeight + imgPaddings.top + imgPaddings.bottom;
 
                 const { rect1, rect2 } = caculateCanvasSize(config, canvas, img);
+                rect1.x += watermark.offsetX || 0;
+                rect1.y += watermark.offsetY || 0;
+                rect2.x += watermark.offsetX || 0;
+                rect2.y += watermark.offsetY || 0;
 
                 // 绘制背景
                 if (blurConfig.enable) {

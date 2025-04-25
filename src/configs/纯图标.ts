@@ -7,10 +7,11 @@ const doDraw: DrawFun = async (_, config, context) => {
 		paddings: { bottom },
 		watermark: { paddings },
 	} = config;
-	const { ctx, canvas } = context;
+	const { ctx, canvas, rect1, rect2 } = context;
 
+	const centerX = (rect1.x + rect2.x) / 2;
 	if (logoConfig.show) {
-		const logoX = canvas.width / 2 - logoConfig.width / 2;
+		const logoX = centerX - logoConfig.width / 2;
 		const logoY =
 			canvas.height -
 			logoConfig.height -

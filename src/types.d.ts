@@ -360,6 +360,8 @@ declare interface BaseConfig {
 		 * 水印范围的颜色（仅仅在水印范围内生效）
 		 */
 		bg?: string;
+		offsetX?: number;
+		offsetY?: number;
 	};
 	radius: Radius;
 	blur: Blur;

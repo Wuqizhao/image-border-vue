@@ -1,15 +1,15 @@
 import type { Config, DrawFun } from "../types";
 import { drawLogo, replaceZ } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
-	const { watermark, paddings: imgPaddings, logo: logoConfig } = config;
+	const { watermark, logo: logoConfig } = config;
 	const {
 		model: modelConfig,
 		time: timeConfig,
 		paddings: watermarkPaddings,
 	} = watermark;
-	const { ctx, canvas } = context;
+	const { ctx, rect1, rect2 } = context;
 
-	let _y = canvas.height - watermarkPaddings.tb - imgPaddings.bottom;
+	let _y = rect2.y;
 
 	// 绘制辅助线
 	// ctx.beginPath();
@@ -33,15 +33,11 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const company = img.modelText.split(" ")[0];
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
-		ctx.fillText(company, imgPaddings.left + watermarkPaddings.lr, _y);
+		ctx.fillText(company, rect1.x + watermarkPaddings.lr, _y);
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "");
 		modelText = modelConfig.replaceZ ? replaceZ(modelText) : modelText;
-		ctx.fillText(
-			modelText,
-			imgPaddings.left + watermarkPaddings.lr + companyWidth,
-			_y
-		);
+		ctx.fillText(modelText, rect1.x + watermarkPaddings.lr + companyWidth, _y);
 		ctx.restore(); // 恢复之前的绘图状态
 	}
 
@@ -52,16 +48,12 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = timeConfig.color;
 		ctx.font = `${timeConfig.size}px ${config.font}`;
-		ctx.fillText(
-			img.timeText,
-			canvas.width - imgPaddings.right - watermarkPaddings.lr,
-			_y
-		);
+		ctx.fillText(img.timeText, rect2.x - watermarkPaddings.lr, _y);
 		ctx.restore();
 	}
 
 	if (logoConfig.show) {
-		const logoX = canvas.width / 2 - logoConfig.width / 2;
+		const logoX = rect1.x + (rect2.x - rect1.x) / 2 - logoConfig.width / 2;
 		const logoY =
 			_y -
 			logoConfig.height / 2 -

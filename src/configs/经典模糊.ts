@@ -10,6 +10,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	} = watermark;
 	const { ctx, canvas, rect1, rect2 } = context;
 
+	const centerX = (rect1.x + rect2.x) / 2;
 	let totalWidth = 0;
 	if (modelConfig.show) {
 		ctx.save();
@@ -29,10 +30,10 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const space = 0.02 * canvas.width; // 图标和型号之间的间隔
 		totalWidth = modelWidth + logoConfig.width + space;
 
-		let _x = canvas.width / 2;
+		let _x = centerX;
 		if (logoConfig.show) {
 			ctx.textAlign = "left";
-			_x = canvas.width / 2 - totalWidth / 2 + logoConfig.width + space;
+			_x = centerX - totalWidth / 2 + logoConfig.width + space;
 		}
 
 		let _y = rect1.y + (rect2.y - rect1.y) / 3;
@@ -45,9 +46,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 	}
 
 	if (logoConfig.show) {
-		let logoX = canvas.width / 2 - logoConfig.width / 2;
+		let logoX = centerX - logoConfig.width / 2;
 		if (modelConfig.show) {
-			logoX = canvas.width / 2 - totalWidth / 2;
+			logoX = centerX - totalWidth / 2;
 		}
 
 		let logoY = rect1.y + (rect2.y - rect1.y) / 3 - logoConfig.height / 2;
@@ -76,7 +77,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		if (!logoConfig.show && !timeConfig.show && !modelConfig.show) {
 			_y = rect1.y + (rect2.y - rect1.y) / 2;
 		}
-		ctx.fillText(img.paramsText, canvas.width / 2, _y);
+		ctx.fillText(img.paramsText, centerX, _y);
 	}
 
 	// 绘制时间
@@ -93,7 +94,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		} else if (!paramsConfig.show) {
 			_y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
 		}
-		ctx.fillText(img.timeText, canvas.width / 2, _y);
+		ctx.fillText(img.timeText, centerX, _y);
 	}
 };
 

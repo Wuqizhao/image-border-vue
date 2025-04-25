@@ -4,10 +4,11 @@ import { drawLogo } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { logo: logoConfig, watermark } = config;
 	const { params: paramsConfig, time: timeConfig } = watermark;
-	const { ctx, canvas, rect1, rect2 } = context;
+	const { ctx, rect1, rect2 } = context;
 
+	const centerX = (rect1.x + rect2.x) / 2;
 	if (logoConfig.show) {
-		const logoX = canvas.width / 2 - logoConfig.width / 2;
+		const logoX = centerX - logoConfig.width / 2;
 		let logoY = rect1.y + (rect2.y - rect1.y) / 4 - logoConfig.height / 2;
 		if (!timeConfig.show && !paramsConfig.show) {
 			// 时间和参数都不显示
@@ -38,7 +39,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		} else {
 			_y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
 		}
-		ctx.fillText(img.paramsText, canvas.width / 2, _y);
+		ctx.fillText(img.paramsText, centerX, _y);
 	}
 
 	// 绘制时间
@@ -56,7 +57,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		} else {
 			_y = rect2.y;
 		}
-		ctx.fillText(img.timeText, canvas.width / 2, _y);
+		ctx.fillText(img.timeText, centerX, _y);
 	}
 };
 

@@ -4,8 +4,9 @@ import { replaceZ } from "../utils";
 const doDraw: DrawFun = async (img, config, context) => {
 	const { watermark, divider: dividerConfig } = config;
 	const { params: paramsConfig, model: modelConfig } = watermark;
-	const { ctx, canvas, rect1, rect2, focalLength, exposureTime } = context;
+	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
 
+	const centerX = (rect1.x + rect2.x) / 2;
 	// 绘制型号
 	if (modelConfig.show) {
 		ctx.save();
@@ -26,9 +27,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const companyWidth = ctx.measureText(company).width;
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "") + "  |  LEICA";
-		modelText = modelConfig.replaceZ
-			? replaceZ(modelText)
-			: modelText;
+		modelText = modelConfig.replaceZ ? replaceZ(modelText) : modelText;
 		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${modelConfig.size}px ${
 			config.font
 		}`;
@@ -38,9 +37,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const totalWidth = companyWidth + modelWidth;
 
 		ctx.textAlign = "left";
-		ctx.fillText(company, canvas.width / 2 - totalWidth / 2, modelY);
+		ctx.fillText(company, centerX - totalWidth / 2, modelY);
 		ctx.textAlign = "right";
-		ctx.fillText(modelText, canvas.width / 2 + totalWidth / 2, modelY);
+		ctx.fillText(modelText, centerX + totalWidth / 2, modelY);
 
 		ctx.restore();
 	}
@@ -91,24 +90,20 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 		ctx.textAlign = "left";
 		// 焦距
-		const lensX = canvas.width / 2 - totalWidth / 2;
+		const lensX = centerX - totalWidth / 2;
 		ctx.fillText(`${lensText}`, lensX, _y);
 		// 光圈
-		const apertureX = canvas.width / 2 - totalWidth / 2 + 2 * space + lensWidth;
+		const apertureX = centerX - totalWidth / 2 + 2 * space + lensWidth;
 		ctx.fillText(`${apertureText}`, apertureX, _y);
 
 		ctx.textAlign = "right";
 		// 曝光时间
 		const exposureX =
-			canvas.width / 2 +
-			totalWidth / 2 -
-			2 * space -
-			dividerConfig.width -
-			isoWidth;
+			centerX + totalWidth / 2 - 2 * space - dividerConfig.width - isoWidth;
 		ctx.fillText(`${exposureText}`, exposureX, _y);
 
 		// ISO
-		const isoX = canvas.width / 2 + totalWidth / 2;
+		const isoX = centerX + totalWidth / 2;
 		ctx.fillText(`${isoText}`, isoX, _y);
 
 		ctx.restore();
@@ -121,7 +116,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 			// 中间的分割线
 			ctx.beginPath();
 			let _x =
-				canvas.width / 2 -
+				centerX -
 				totalWidth / 2 +
 				lensWidth +
 				3 * space +
@@ -133,14 +128,14 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 			// 左侧分割线
 			ctx.beginPath();
-			_x = canvas.width / 2 - totalWidth / 2 + lensWidth + space;
+			_x = centerX - totalWidth / 2 + lensWidth + space;
 			ctx.moveTo(_x, _y - (dividerConfig.scale * paramsConfig.size) / 2);
 			ctx.lineTo(_x, _y + (dividerConfig.scale * paramsConfig.size) / 2);
 			ctx.stroke();
 
 			// 右侧分割线
 			ctx.beginPath();
-			_x = canvas.width / 2 + totalWidth / 2 - space - isoWidth;
+			_x = centerX + totalWidth / 2 - space - isoWidth;
 			ctx.moveTo(_x, _y - (dividerConfig.scale * paramsConfig.size) / 2);
 			ctx.lineTo(_x, _y + (dividerConfig.scale * paramsConfig.size) / 2);
 			ctx.stroke();
