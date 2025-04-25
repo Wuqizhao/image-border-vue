@@ -91,45 +91,43 @@
                                 <template #title>
                                     <h3>图标</h3>
                                 </template>
-                                <LogoConfig :logo="config.logo" />
+                                <LogoConfig />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.model.enable">
                                 <template #title>
                                     <h3>型号</h3>
                                 </template>
-                                <ModelConfig :config="config.watermark.model" :params-config="config.watermark.params"
-                                    :time-config="config.watermark.time" />
+                                <ModelConfig />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.params.enable">
                                 <template #title>
                                     <h3>参数</h3>
                                 </template>
-                                <ParamsConfig :params="config.watermark.params" :divider="config.divider"
-                                    :text="img.paramsText" />
+                                <ParamsConfig :text="img.paramsText" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.time.enable">
                                 <template #title>
                                     <h3>时间</h3>
                                 </template>
-                                <TimeConfig :time="config.watermark.time" :text="img.timeText" />
+                                <TimeConfig :text="img.timeText" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.watermark.lens.enable">
                                 <template #title>
                                     <h3>镜头</h3>
                                 </template>
-                                <LensConfig :config="config.watermark.lens" :text="img.lensText" />
+                                <LensConfig :text="img.lensText" />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.divider.enable">
                                 <template #title>
                                     <h3>分割线</h3>
                                 </template>
-                                <DividerConfig :divider="config.divider" />
+                                <DividerConfig />
                             </el-collapse-item>
                             <el-collapse-item v-if="config.location?.enable">
                                 <template #title>
                                     <h3>地理位置</h3>
                                 </template>
-                                <LocationConfig :loc="config.location" :text="img.locationText" />
+                                <LocationConfig :text="img.locationText" />
                             </el-collapse-item>
                             <el-collapse-item>
                                 <template #title>
@@ -151,7 +149,7 @@
                     </el-tab-pane>
                     <el-tab-pane label="图片" name="picture">
                         <RadiusConfig :radius="config.radius" />
-                        <BlurConfig :blur="config.blur" :bg="config.watermark" />
+                        <BlurConfig />
                         <ShadowConfig :shadow="config.shadow" />
 
                         <h3>水印背景</h3>
@@ -162,7 +160,7 @@
                         </el-form>
                     </el-tab-pane>
                     <el-tab-pane label="边距" name="border">
-                        <PaddingConfig :paddings="config.paddings" :watermark="config.watermark" />
+                        <PaddingConfig />
                     </el-tab-pane>
                     <el-tab-pane label="导出" name="export">
                         <h3>导出配置</h3>
@@ -268,7 +266,7 @@
 import { computed, reactive, ref, watch, provide } from 'vue'
 import { print, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
-import defaultWaterMark from '../configs/小米徕卡'
+// import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading } from '@element-plus/icons-vue';
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
@@ -326,7 +324,8 @@ const defaultImgValue: Img = {
 const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
 const fileList = ref<File[]>([]);
-const config = ref<Config>(defaultWaterMark);
+// const config = ref<Config>(defaultWaterMark);
+const config = (store.config);
 
 const watermarks = ref<WatermarkListItem[]>(getWatermarkList())
 const curWatermarkIndex = ref<number>(0)
@@ -436,7 +435,7 @@ const showConfigDialog = () => {
     // 弹出对话框
     saveConfigDialog.show = true;
     saveConfigDialog.name = '自定义配置' + new Date().getTime();
-    saveConfigDialog.config = JSON.stringify(config.value, null, 4);
+    saveConfigDialog.config = JSON.stringify(config, null, 4);
 }
 
 const saveConfig = () => {
@@ -451,7 +450,7 @@ const saveConfig = () => {
         const watermark: LocalWaterMarkItem = {
             name: saveConfigDialog.name,
             config: temp_config,
-            config_name: config.value.name,
+            config_name: config.name,
         };
 
         // 保存到pinia
@@ -497,7 +496,7 @@ const handleDraw = useDebounceFn(() => {
         const file = curFile.value;
         if (!file) return;
 
-        const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig, location: locationConfig } = config.value;
+        const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig, location: locationConfig } = config;
         const { model, params: paramsConfig, time: timeConfig, lens, bgColor } = watermark;
 
         const reader = new FileReader();
@@ -564,7 +563,7 @@ const handleDraw = useDebounceFn(() => {
                 canvas.height =
                     realImgHeight + imgPaddings.top + imgPaddings.bottom;
 
-                const { rect1, rect2 } = caculateCanvasSize(config.value, canvas, img);
+                const { rect1, rect2 } = caculateCanvasSize(config, canvas, img);
 
                 // 绘制背景
                 if (blurConfig.enable) {
@@ -640,7 +639,7 @@ const handleDraw = useDebounceFn(() => {
 
 
                 // 执行绘制前的操作
-                config.value.beforeDraw && config.value.beforeDraw(canvas);
+                config.beforeDraw && config.beforeDraw(canvas);
 
 
                 // 绘制水印范围的背景颜色
@@ -650,19 +649,19 @@ const handleDraw = useDebounceFn(() => {
                 }
 
                 // 执行模板的绘制函数
-                config.value.draw(img, config.value, {
+                config.draw(img, config, {
                     ctx, canvas, rect1, rect2, exposureTime, focalLength,
                 });
 
 
                 // 绘制自定义的标签和图片
-                drawCustomLabelsAndImages(ctx, config.value.labels, config.value.images);
+                drawCustomLabelsAndImages(ctx, config.labels, config.images);
 
                 // 绘制辅助线
                 drawAuxiliaryLines(canvas, auxiliaryLines, rect1, rect2);
 
                 // 执行绘制结束后的操作
-                config.value.afterDraw && config.value.afterDraw(ctx);
+                config.afterDraw && config.afterDraw(ctx);
             }
         }
     } catch (e) {
@@ -723,7 +722,10 @@ function importConfig(val: number): void {
             // 合并对象
             config_value = Object.assign(config_value, local_value);
         }
-        config.value = config_value;
+        // config = config_value;
+        Object.assign(config, config_value);
+        // config = config_value;
+
         ElMessage.success(`配置【${watermark.name}】导入成功~`);
     }).catch(err => {
         ElNotification.error({
@@ -746,20 +748,20 @@ const preview = () => {
 }
 
 function addCustomLabel() {
-    config.value.labels = config.value?.labels || [];
-    config.value?.labels?.unshift(JSON.parse(JSON.stringify(defaultLabelConfig)));
+    config.labels = config?.labels || [];
+    config?.labels?.unshift(JSON.parse(JSON.stringify(defaultLabelConfig)));
 }
 
 function removeCustomLabel(name: string) {
-    config.value?.labels?.splice(config.value?.labels?.findIndex(item => item.name === name), 1);
+    config?.labels?.splice(config?.labels?.findIndex(item => item.name === name), 1);
 }
 
 function addCustomImage() {
-    config.value.images = config.value?.images || [];
-    config.value?.images?.unshift(JSON.parse(JSON.stringify(defaultImageConfig)));
+    config.images = config?.images || [];
+    config?.images?.unshift(JSON.parse(JSON.stringify(defaultImageConfig)));
 }
 function removeCustomImage(title: string) {
-    config.value?.images?.splice(config.value?.images?.findIndex(item => item.title === title), 1);
+    config?.images?.splice(config?.images?.findIndex(item => item.title === title), 1);
 }
 </script>
 

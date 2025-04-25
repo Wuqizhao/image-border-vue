@@ -33,22 +33,8 @@
 </template>
 
 <script setup lang="ts">
-const config = defineProps({
-    radius: {
-        type: Object,
-        required: true,
-        default: () => {
-            return {
-                show: Boolean,
-                position: Array,
-                size: Number,
-                lt: Number,
-                rt: Number,
-                lb: Number,
-                rb: Number,
-                uniform: Boolean
-            }
-        }
-    }
-})
+import { storeToRefs } from 'pinia';
+import { useStore } from '../stores';
+
+const { config } = storeToRefs(useStore());
 </script>

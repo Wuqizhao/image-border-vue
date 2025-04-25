@@ -1,7 +1,10 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import type { LocalWaterMarkItem } from "../types";
+import type { Config, LocalWaterMarkItem } from "../types";
 import { ElMessage } from "element-plus";
+
+import defaultWaterMark from "../configs/小米徕卡";
+import { deepClone } from "../utils";
 
 export const useStore = defineStore(
 	"store",
@@ -23,10 +26,13 @@ export const useStore = defineStore(
 			return true;
 		}
 
+		const config = ref<Config>(deepClone(defaultWaterMark));
+
 		return {
 			localWatermarks,
 			addWatermark,
 			deleteLocalWatermark,
+			config,
 		};
 	},
 	{

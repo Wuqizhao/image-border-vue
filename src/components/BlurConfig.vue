@@ -8,31 +8,18 @@
             <el-slider show-input v-model="config.blur.size" :min="0" :max="2000" :step="100"></el-slider>
         </el-form-item>
         <el-form-item label="颜色" v-if="!config.blur.enable">
-            <el-color-picker :predefine="preDefineColors" show-alpha v-model="config.bg.bgColor"></el-color-picker>
+            <el-color-picker :predefine="preDefineColors" show-alpha
+                v-model="config.watermark.bgColor"></el-color-picker>
         </el-form-item>
     </el-form>
 </template>
 
 <script setup lang="ts">
 import { preDefineColors } from '../assets/tools';
-const config = defineProps({
-    blur: {
-        type: Object,
-        required: true,
-        default: () => {
-            return {
-                size: Number,
-            }
-        }
-    },
-    bg: {
-        type: Object,
-        required: true,
-        default: () => {
-            return { bgCOlorolor: '#FFF' }
-        }
-    }
-})
+import { storeToRefs } from 'pinia';
+import { useStore } from '../stores';
+
+const { config } = storeToRefs(useStore());
 </script>
 
 <style lang='less' scoped></style>

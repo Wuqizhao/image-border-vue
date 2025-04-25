@@ -39,28 +39,10 @@
 </template>
 
 <script setup lang="ts">
-const config = defineProps({
-    paddings: {
-        type: Object,
-        required: true,
-        default: () => ({
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0
-        })
-    },
-    watermark: {
-        type: Object,
-        required: true,
-        default: () => ({
-            paddings: {
-                lr: 0,
-                tb: 0
-            }
-        })
-    }
-})
+import { storeToRefs } from 'pinia';
+import { useStore } from '../stores';
+
+const { config } = storeToRefs(useStore());
 </script>
 
 <style lang='less' scoped></style>

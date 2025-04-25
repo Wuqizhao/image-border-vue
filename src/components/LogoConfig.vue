@@ -63,28 +63,12 @@
 import { cameraBrands } from '../assets/tools';
 import { computedAsync } from '@vueuse/core';
 import { getImageSrc, isMobile } from '../utils';
+import { storeToRefs } from 'pinia';
+import { useStore } from '../stores';
 
-const config = defineProps({
-    logo: {
-        type: Object,
-        required: true,
-        default: () => (
-            {
-                show: Boolean,
-                auto: Boolean,
-                url: String,
-                name: String,
-                width: Number,
-                height: Number,
-                circle: Boolean,
-                verticalOffset: Number,
-            }
-        )
-    },
-});
+const { config } = storeToRefs(useStore());
 
-const defaultVerticalOffset = config.logo.verticalOffset || 0;
-
+const defaultVerticalOffset = config.value.logo.verticalOffset || 0;
 
 const enhancedCameraBrands = computedAsync(async () => {
     return await Promise.all(cameraBrands.map(async brand => {
@@ -103,11 +87,9 @@ function selectLocalImage() {
     input.onchange = (e: any) => {
         const file = e.target.files[0];
         if (file) {
-            config.logo.url = getImageSrc(file);
+            config.value.logo.url = getImageSrc(file);
         }
     }
     input.click();
 }
 </script>
-
-<style lang='less' scoped></style>

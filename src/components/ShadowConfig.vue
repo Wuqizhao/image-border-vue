@@ -28,30 +28,19 @@
 
 <script setup lang="ts">
 import { preDefineColors } from '../assets/tools';
-const config = defineProps({
-    shadow: {
-        type: Object,
-        required: true,
-        default: () => {
-            return {
-                show: Boolean,
-                color: String,
-                size: Number,
-                x: Number,
-                y: Number,
-            }
-        }
-    }
-})
+import { storeToRefs } from 'pinia';
+import { useStore } from '../stores';
 
-const defaultConfig = JSON.parse(JSON.stringify(config.shadow));
+const { config } = storeToRefs(useStore());
+
+const defaultConfig = JSON.parse(JSON.stringify(config.value.shadow));
 
 function resetSize() {
-    config.shadow.size = defaultConfig.size;
+    config.value.shadow.size = defaultConfig.size;
 }
 function resetOffset() {
-    config.shadow.x = defaultConfig.x;
-    config.shadow.y = defaultConfig.y;
+    config.value.shadow.x = defaultConfig.x;
+    config.value.shadow.y = defaultConfig.y;
 }
 </script>
 
