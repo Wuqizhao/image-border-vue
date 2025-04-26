@@ -303,7 +303,7 @@ declare interface BaseConfig {
 	/**
 	 * 水印名称，和文件名一致
 	 */
-	name: string;
+	readonly name: string;
 	/**
 	 * 全局字体，移动端不一定支持某些字体
 	 */

@@ -228,7 +228,7 @@ export function drawCustomLabelsAndImages(
 }
 
 export function replaceZ(text: string) {
-	return text.replace(/Z/g, "ℤ");
+	return text.replace(/z|Z/g, "ℤ");
 }
 
 export function drawRadiusRect(

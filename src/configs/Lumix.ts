@@ -138,7 +138,7 @@ const draw: DrawFun = async (img, config, context) => {
 };
 const config: Config = {
 	name: "Lumix",
-	font: "微软雅黑",
+	font: "sans-serif",
 	paddings: {
 		top: 200, // 图片上边距
 		right: 150,

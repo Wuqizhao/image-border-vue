@@ -19,7 +19,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.save();
 		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
 			modelConfig.bold ? "bold" : ""
-		} ${modelConfig.size}px ${config.font || "Arial"}`;
+		} ${modelConfig.size}px ${config.font || "sans-serif"}`;
 		ctx.fillStyle = modelConfig.color;
 		ctx.textAlign = "left";
 		ctx.textBaseline = "middle";
@@ -70,7 +70,7 @@ const doDraw: DrawFun = (img, config, context) => {
 	if (paramsConfig.show) {
 		ctx.save();
 		ctx.font = `${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${
-			config.font || "Arial"
+			config.font || "sans-serif"
 		}`;
 		ctx.fillStyle = paramsConfig.color;
 		ctx.textAlign = "right";
@@ -96,7 +96,7 @@ const doDraw: DrawFun = (img, config, context) => {
 	// 绘制时间
 	if (timeConfig.show) {
 		ctx.save();
-		ctx.font = `${timeConfig.size}px ${config.font || "Arial"}`;
+		ctx.font = `${timeConfig.size}px ${config.font || "sans-serif"}`;
 		ctx.fillStyle = timeConfig.color;
 		ctx.textAlign = "right";
 		ctx.textBaseline = "middle";
@@ -112,7 +112,7 @@ const doDraw: DrawFun = (img, config, context) => {
 
 const config: Config = {
 	name: "蔡司水印",
-	font: "微软雅黑",
+	font: "sans-serif",
 	paddings: {
 		top: 0, // 图片上边距
 		right: 0,

@@ -22,7 +22,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.save(); // 保存当前绘图状态
 		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
 			modelConfig.bold ? "bold" : ""
-		} ${modelConfig.size}px ${config.font || "Arial"}`;
+		} ${modelConfig.size}px ${config.font || "sans-serif"}`;
 		ctx.fillStyle = modelConfig.color;
 		ctx.textAlign = "left";
 		ctx.textBaseline = "middle";
@@ -37,7 +37,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 		ctx.fillText(company, rect1.x + watermarkPaddings.lr, _y);
 
-		ctx.font = `${modelConfig.size}px ${config.font || "Arial"}`;
+		ctx.font = `${modelConfig.size}px ${config.font || "sans-serif"}`;
 		const modelText = modelConfig.replaceZ
 			? replaceZ(img.modelText)
 			: img.modelText;
@@ -60,7 +60,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.fillStyle = paramsConfig.color;
 		ctx.font = `bold ${paramsConfig.italic ? "Italic" : ""} ${
 			paramsConfig.size
-		}px ${config.font || "Arial"}`;
+		}px ${config.font || "sans-serif"}`;
 
 		let paramsText =
 			paramsConfig?.text ||
@@ -184,7 +184,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 const config: Config = {
 	name: "小米徕卡",
-	font: "微软雅黑",
+	font: "sans-serif",
 	paddings: {
 		top: 0, // 图片上边距
 		right: 0,

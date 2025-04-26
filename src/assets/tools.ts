@@ -226,6 +226,7 @@ export function getWatermarkList(): WatermarkListItem[] {
  */
 export const getSupportedFonts = (): string[] => {
 	return [
+		"sans-serif",
 		"Arial",
 		"Long Cang",
 		"Zhi Mang Xing",

@@ -24,7 +24,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.save();
 		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
 			modelConfig.bold ? "bold" : ""
-		} ${modelConfig.size}px ${config.font || "Arial"}`;
+		} ${modelConfig.size}px ${config.font || "sans-serif"}`;
 		ctx.fillStyle = modelConfig.color;
 		ctx.textAlign = "left";
 		ctx.textBaseline = "middle";
@@ -65,7 +65,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 const config: Config = {
 	name: "时间+型号",
-	font: "微软雅黑",
+	font: "sans-serif",
 	paddings: {
 		top: 0, // 图片上边距
 		right: 0,

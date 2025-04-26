@@ -100,7 +100,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 const config: Config = {
 	name: "经典模糊",
-	font: "微软雅黑",
+	font: "sans-serif",
 	paddings: {
 		top: 300, // 图片上边距
 		right: 700,

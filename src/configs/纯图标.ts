@@ -24,7 +24,7 @@ const doDraw: DrawFun = async (_, config, context) => {
 
 const config: Config = {
 	name: "纯图标",
-	font: "微软雅黑",
+	font: "sans-serif",
 	paddings: {
 		top: 150, // 图片上边距
 		right: 150,
