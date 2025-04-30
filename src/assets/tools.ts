@@ -38,6 +38,8 @@ export const cameraBrands: CameraBrands[] = [
 	{ name: "Lumix(白)", logo: "lumix-white" },
 	{ name: "小米", logo: "xiaomi", make: ["Xiaomi"] },
 	{ name: "小米-2", logo: "xiaomi-2" },
+	{ name: "小米-文本", logo: "xiaomi-text" },
+	{ name: "小米-文本(白)", logo: "xiaomi-text-white" },
 	{ name: "小米汽车", logo: "xiaomi-car" },
 	{ name: "小米澎湃", logo: "hyperos" },
 	{ name: "红米(彩色)", logo: "redmi" },

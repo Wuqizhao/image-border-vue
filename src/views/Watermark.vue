@@ -47,11 +47,6 @@
                                     <el-button @click="handleDraw" :disabled="!curFile" plain>重绘</el-button>
                                 </div>
                             </el-form-item>
-                            <el-form-item label="基础高度">
-                                <el-slider show-input :min="0" :max="1" :step="0.01"
-                                    v-model="config.watermark.height"></el-slider>
-                                <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
-                            </el-form-item>
                             <el-form-item label="全局字体">
                                 <el-select :filterable="!isMobile()" v-model="config.font" clearable>
                                     <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
@@ -160,6 +155,14 @@
                         </el-form>
                     </el-tab-pane>
                     <el-tab-pane label="边距" name="border">
+                        <el-form label-width="70px">
+                            <h3>水印高度</h3>
+                            <el-form-item label="基础高度">
+                                <el-slider show-input :min="0" :max="1" :step="0.01"
+                                    v-model="config.watermark.height"></el-slider>
+                                <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
+                            </el-form-item>
+                        </el-form>
                         <PaddingConfig />
                     </el-tab-pane>
                     <el-tab-pane label="导出" name="export">
