@@ -46,10 +46,20 @@
                 <el-slider show-input v-model="props.config.verticalOffset" :min="-1000" :max="5000"></el-slider>
             </el-form-item>
             <el-form-item label="不透明度">
-                <el-slider show-input v-model="props.config.alpha" :min="0" :max="1" :step="0.01" @dblclick="props.config.alpha = 1"></el-slider>
+                <el-slider show-input v-model="props.config.alpha" :min="0" :max="1" :step="0.01"
+                    @dblclick="props.config.alpha = 1"></el-slider>
             </el-form-item>
             <el-form-item label="旋转角度">
-                <el-slider show-input v-model="props.config.rotate" :min="-180" :max="180" :step="1" @dblclick="props.config.rotate = 0"></el-slider>
+                <el-slider show-input v-model="props.config.rotate" :min="-180" :max="180" :step="1"
+                    @dblclick="props.config.rotate = 0"></el-slider>
+            </el-form-item>
+            <el-form-item label="混合模式">
+                <el-select v-model="props.config.blendMode">
+                    <el-option v-for="item in blendMode" :key="item.mode" :value="item.mode">
+                        <b>{{ item.desc }}</b>
+                        <span style="float: right;">{{ item.mode }}</span>
+                    </el-option>
+                </el-select>
             </el-form-item>
         </el-form>
     </div>
@@ -60,6 +70,7 @@ import { computedAsync } from '@vueuse/core';
 import { cameraBrands } from '../assets/tools';
 import { getImageSrc } from '../utils';
 import { ref } from 'vue';
+import { blendMode } from '../utils';
 
 const props = defineProps({
     config: {

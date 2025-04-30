@@ -301,7 +301,37 @@ export declare interface ImagesConfigItem {
 	horizontalOffset: number;
 	alpha: number;
 	rotate: number;
+	blendMode: BlendMode;
 }
+
+/**
+ * 混合模式
+ */
+export declare type BlendMode =
+	| "normal"
+	| "multiply"
+	| "screen"
+	| "overlay"
+	| "darken"
+	| "lighten"
+	| "color-dodge"
+	| "color-burn"
+	| "hard-light"
+	| "soft-light"
+	| "difference"
+	| "exclusion"
+	| "hue"
+	| "saturation"
+	| "color"
+	| "luminosity";
+export declare type BlendModeItem = {
+	/**
+	 * 混合模式
+	 */
+	mode: BlendMode;
+	desc: string;
+}
+
 declare interface BaseConfig {
 	/**
 	 * 水印名称，和文件名一致

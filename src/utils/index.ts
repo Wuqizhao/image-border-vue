@@ -1,6 +1,8 @@
 import { ElMessage, ElNotification } from "element-plus";
 import type {
 	AuxiliaryLines,
+	BlendMode,
+	BlendModeItem,
 	Config,
 	ImagesConfigItem,
 	Img,
@@ -144,7 +146,8 @@ export async function drawLogo(
 	x: number,
 	y: number,
 	opacity: number = 1,
-	rotate: number = 0
+	rotate: number = 0,
+	blendMode: BlendMode = "normal"
 ) {
 	const img = new Image();
 	img.src = getImageSrc(logoConfig.url || logoConfig.name);
@@ -164,11 +167,14 @@ export async function drawLogo(
 		}
 		ctx.globalAlpha = opacity;
 
-
 		// 旋转角度
 		ctx.translate(x + logoConfig.width / 2, y + logoConfig.height / 2);
 		ctx.rotate((rotate * Math.PI) / 180);
 		ctx.translate(-(x + logoConfig.width / 2), -(y + logoConfig.height / 2));
+
+		// 混合模式
+		ctx.globalCompositeOperation =
+			blendMode as CanvasRenderingContext2D["globalCompositeOperation"];
 
 		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
 		ctx.restore();
@@ -216,8 +222,7 @@ export function drawCustomLabelsAndImages(
 				ctx.lineWidth = label.strokeWidth;
 				ctx.strokeStyle = label.color;
 				ctx.strokeText(label.text, label.x, label.y);
-			}
-			else {
+			} else {
 				ctx.fillStyle = label.color;
 				ctx.fillText(label.text, label.x, label.y);
 			}
@@ -236,7 +241,8 @@ export function drawCustomLabelsAndImages(
 				image.horizontalOffset,
 				image.verticalOffset,
 				image.alpha,
-				image.rotate
+				image.rotate,
+				image.blendMode
 			);
 			ctx.restore();
 		}
@@ -438,7 +444,7 @@ export function drawRoundedRect(
 	width: number,
 	height: number,
 	radius: number,
-	stroke:boolean,
+	stroke: boolean,
 	lt: number,
 	rt: number,
 	rb: number,
@@ -475,3 +481,22 @@ export function drawRoundedRect(
 		ctx.stroke();
 	}
 }
+
+export const blendMode: BlendModeItem[] = [
+	{ mode: "normal", desc: "正常" },
+	{ mode: "multiply", desc: "正片叠底" },
+	{ mode: "screen", desc: "滤色" },
+	{ mode: "overlay", desc: "叠加" },
+	{ mode: "darken", desc: "变暗" },
+	{ mode: "lighten", desc: "变亮" },
+	{ mode: "color-dodge", desc: "颜色减淡" },
+	{ mode: "color-burn", desc: "颜色加深" },
+	{ mode: "hard-light", desc: "强光" },
+	{ mode: "soft-light", desc: "柔光" },
+	{ mode: "difference", desc: "差值" },
+	{ mode: "exclusion", desc: "排除" },
+	{ mode: "hue", desc: "色相" },
+	{ mode: "saturation", desc: "饱和度" },
+	{ mode: "color", desc: "颜色" },
+	{ mode: "luminosity", desc: "亮度" },
+];

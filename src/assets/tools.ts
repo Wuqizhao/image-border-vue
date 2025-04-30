@@ -287,4 +287,5 @@ export const defaultImageConfig: ImagesConfigItem = {
 	name: "nikon",
 	alpha: 1,
 	rotate: 0,
+	blendMode: "normal",
 };

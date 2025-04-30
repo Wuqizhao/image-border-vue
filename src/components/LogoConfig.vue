@@ -40,7 +40,7 @@
                 <el-switch v-model="config.logo.circle"></el-switch>
             </el-form-item>
             <el-form-item label="垂直偏移" v-if="config.logo.verticalOffset !== undefined">
-                <el-slider show-input v-model="config.logo.verticalOffset" :min="-20" :max="20" :step="0.01">
+                <el-slider show-input v-model="config.logo.verticalOffset" :min="-20" :max="20" :step="0.01" @dblclick="config.logo.verticalOffset = defaultVerticalOffset">
                 </el-slider>
                 <p class="tips">默认：{{ defaultVerticalOffset }}
                     <el-button size="small" @click="config.logo.verticalOffset = defaultVerticalOffset"
@@ -53,7 +53,7 @@
                         <el-button size="small" @click="selectLocalImage">选择本地</el-button>
                     </template>
                 </el-input>
-                <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！</p>
+                <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！建议下载后本地选择。</p>
             </el-form-item>
         </div>
     </el-form>
