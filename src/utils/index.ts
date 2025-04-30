@@ -143,7 +143,8 @@ export async function drawLogo(
 	ctx: CanvasRenderingContext2D,
 	x: number,
 	y: number,
-	opacity: number = 1
+	opacity: number = 1,
+	rotate: number = 0
 ) {
 	const img = new Image();
 	img.src = getImageSrc(logoConfig.url || logoConfig.name);
@@ -162,6 +163,13 @@ export async function drawLogo(
 			ctx.clip();
 		}
 		ctx.globalAlpha = opacity;
+
+
+		// 旋转角度
+		ctx.translate(x + logoConfig.width / 2, y + logoConfig.height / 2);
+		ctx.rotate((rotate * Math.PI) / 180);
+		ctx.translate(-(x + logoConfig.width / 2), -(y + logoConfig.height / 2));
+
 		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
 		ctx.restore();
 	};
@@ -200,12 +208,19 @@ export function drawCustomLabelsAndImages(
 			ctx.save();
 			ctx.textAlign = label.align;
 			ctx.textBaseline = label.verticalAlign;
-			ctx.fillStyle = label.color;
 			ctx.font = `${label.bold ? "bold" : ""} ${label.italic ? "italic" : ""} ${
 				label.size
 			}px ${label.font}`;
 
-			ctx.fillText(label.text, label.x, label.y);
+			if (label.stroke) {
+				ctx.lineWidth = label.strokeWidth;
+				ctx.strokeStyle = label.color;
+				ctx.strokeText(label.text, label.x, label.y);
+			}
+			else {
+				ctx.fillStyle = label.color;
+				ctx.fillText(label.text, label.x, label.y);
+			}
 			ctx.restore();
 		}
 	}
@@ -220,7 +235,8 @@ export function drawCustomLabelsAndImages(
 				ctx,
 				image.horizontalOffset,
 				image.verticalOffset,
-				image.alpha
+				image.alpha,
+				image.rotate
 			);
 			ctx.restore();
 		}

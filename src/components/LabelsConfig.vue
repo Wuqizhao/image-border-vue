@@ -64,6 +64,12 @@
             <el-form-item label="垂直移动">
                 <el-slider show-input v-model="props.config.y" :min="-1000" :max="5000"></el-slider>
             </el-form-item>
+            <el-form-item label="文字描边">
+                <el-switch show-input v-model="props.config.stroke"></el-switch>
+            </el-form-item>
+            <el-form-item label="描边宽度" v-show="props.config.stroke">
+                <el-slider show-input v-model="props.config.strokeWidth" :min="0" :max="100"></el-slider>
+            </el-form-item>
         </el-form>
     </div>
 </template>

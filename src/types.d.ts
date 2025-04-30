@@ -286,6 +286,8 @@ export declare interface LabelConfigItem {
 	size: number;
 	italic: boolean;
 	bold: boolean;
+	stroke: boolean;
+	strokeWidth: number;
 }
 export declare interface ImagesConfigItem {
 	title: string;
@@ -298,6 +300,7 @@ export declare interface ImagesConfigItem {
 	verticalOffset: number;
 	horizontalOffset: number;
 	alpha: number;
+	rotate: number;
 }
 declare interface BaseConfig {
 	/**

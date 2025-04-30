@@ -1,7 +1,9 @@
 import type {
 	CameraBrands,
 	Config,
+	ImagesConfigItem,
 	Img,
+	LabelConfigItem,
 	TextAlign,
 	TextVerticalAlign,
 	WatermarkListBaseItem,
@@ -256,7 +258,7 @@ export const preDefineColors = [
 	"#0000FF",
 ];
 
-export const defaultLabelConfig = {
+export const defaultLabelConfig: LabelConfigItem = {
 	name: `自定义文本(${new Date().getTime()})`,
 	show: true,
 	align: "left" as TextAlign,
@@ -269,9 +271,11 @@ export const defaultLabelConfig = {
 	x: 100,
 	y: 100,
 	font: "微软雅黑",
+	stroke: false,
+	strokeWidth: 3,
 };
 
-export const defaultImageConfig = {
+export const defaultImageConfig: ImagesConfigItem = {
 	title: `自定义图片(${new Date().getTime()})`,
 	show: true,
 	url: "",
@@ -282,4 +286,5 @@ export const defaultImageConfig = {
 	circle: false,
 	name: "nikon",
 	alpha: 1,
+	rotate: 0,
 };

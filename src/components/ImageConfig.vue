@@ -45,8 +45,11 @@
             <el-form-item label="垂直偏移">
                 <el-slider show-input v-model="props.config.verticalOffset" :min="-1000" :max="5000"></el-slider>
             </el-form-item>
-            <el-form-item label="透明度">
-                <el-slider show-input v-model="props.config.alpha" :min="0" :max="1" :step="0.01"></el-slider>
+            <el-form-item label="不透明度">
+                <el-slider show-input v-model="props.config.alpha" :min="0" :max="1" :step="0.01" @dblclick="props.config.alpha = 1"></el-slider>
+            </el-form-item>
+            <el-form-item label="旋转角度">
+                <el-slider show-input v-model="props.config.rotate" :min="-180" :max="180" :step="1" @dblclick="props.config.rotate = 0"></el-slider>
             </el-form-item>
         </el-form>
     </div>
