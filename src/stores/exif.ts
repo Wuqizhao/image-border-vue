@@ -2,19 +2,12 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useExifStore = defineStore("exif", () => {
-	const localExifList = ref(new WeakMap<String, any>());
+	const localExifList = ref(new WeakMap<File, any>());
 	function addExif(file: File, exif: any) {
-		// 生成一个唯一的key
-		const key = generateId(file);
-		localExifList.value.set(key, exif);
+		localExifList.value.set(file, exif);
 	}
 	function getExif(file: File) {
-		return localExifList.value.get(generateId(file));
-	}
-
-	// 生成id
-	function generateId(file: File) {
-		return file.name + file.lastModified;
+		return localExifList.value.get(file);
 	}
 
 	return { localExifList, addExif, getExif };
