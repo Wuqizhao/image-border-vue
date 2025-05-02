@@ -668,6 +668,9 @@ const handleDraw = useDebounceFn(() => {
 
                 // 执行绘制结束后的操作
                 config.afterDraw && config.afterDraw(ctx);
+
+                // 释放图片
+                URL.revokeObjectURL(_img.src);
             }
         }
     } catch (e) {

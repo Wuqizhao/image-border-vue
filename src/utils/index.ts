@@ -178,6 +178,7 @@ export async function drawLogo(
 
 		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
 		ctx.restore();
+		URL.revokeObjectURL(img.src);
 	};
 	img.onerror = (err) => {
 		console.error("Logo加载失败:", err);
