@@ -292,6 +292,9 @@ import LabelsConfig from '../components/LabelsConfig.vue';
 import ImageConfig from '../components/ImageConfig.vue'
 const store = useStore();
 
+import { useExifStore } from '../stores/exif'
+const exifStore = useExifStore();
+
 
 // 是否开发环境
 const isDev = computed(() => import.meta.env.DEV)
@@ -503,7 +506,7 @@ const handleDraw = useDebounceFn(() => {
         const { model, params: paramsConfig, time: timeConfig, lens, bgColor } = watermark;
 
         const reader = new FileReader();
-        reader.readAsDataURL(file);
+        reader.readAsDataURL((file));
         reader.onload = (e) => {
             const _img = new Image();
             if (e.target === null) throw new Error("图片不存在...");
@@ -513,8 +516,10 @@ const handleDraw = useDebounceFn(() => {
                 // 更新宽高
                 img.width = _img.width;
                 img.height = _img.height;
-                // 使用exifr库读取exifs信息
-                const exif = await Exifr.parse(file);
+
+                // 读取exif信息
+                const exif = exifStore.getExif(file) || await Exifr.parse(file);
+                exifStore.addExif(file, exif);
 
                 if (exif === undefined) {
                     ElNotification({
