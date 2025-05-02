@@ -492,7 +492,7 @@ watch(curWatermarkIndex, (newIndex) => {
 
 watchThrottled([() => config, () => curFile, () => auxiliaryLines], () => {
     handleDraw();
-}, { throttle: 250, deep: true })
+}, { throttle: 50, deep: true })
 
 const handleDraw = useDebounceFn(() => {
     try {
@@ -668,7 +668,7 @@ const handleDraw = useDebounceFn(() => {
     } catch (e) {
         console.log('绘制发生错误：', e);
     }
-}, 200)
+}, 50)
 
 function importConfig(val: number): void {
     // 获取对应的水印
