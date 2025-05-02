@@ -41,6 +41,14 @@ const doDraw: DrawFun = async (img, config, context) => {
 			_y = rect1.y + (rect2.y - rect1.y) / 2;
 		}
 
+		// 绘制辅助线
+		// ctx.strokeStyle = "#FFF";
+		// ctx.lineWidth = 3;
+		// ctx.beginPath();
+		// ctx.moveTo(0, _y);
+		// ctx.lineTo(canvas.width, _y);
+		// ctx.stroke();
+
 		ctx.fillText(_modelText, _x, _y);
 		ctx.restore();
 	}
@@ -57,10 +65,16 @@ const doDraw: DrawFun = async (img, config, context) => {
 			logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height / 2;
 		} else if (!paramsConfig.show || !timeConfig.show) {
 			// 不显示时间或者不显示参数
-			logoY = rect1.y + (rect2.y - rect1.y) / 2 - logoConfig.height;
+			logoY = rect1.y + (rect2.y - rect1.y) / 3 - logoConfig.height / 2;
 		}
 
 		logoY -= (logoConfig.verticalOffset - 1) * logoConfig.height;
+
+		// 绘制logo范围辅助线
+		// ctx.strokeStyle = "#F00";
+		// ctx.lineWidth = 15;
+		// ctx.strokeRect(logoX, logoY, logoConfig.width, logoConfig.height);
+
 		drawLogo(logoConfig, ctx, logoX, logoY);
 	}
 
@@ -115,7 +129,7 @@ const config: Config = {
 			color: "#FFF",
 			size: 200,
 			replaceZ: true,
-			italic: true, // 斜体
+			italic: false, // 斜体
 			bold: true, // 加粗
 		},
 		params: {
@@ -182,8 +196,8 @@ const config: Config = {
 		margin: 1,
 	},
 	shadow: {
-		show: false,
-		color: "#808080",
+		show: true,
+		color: "#000",
 		x: 0,
 		y: 0,
 		size: 100,

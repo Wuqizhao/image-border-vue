@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
-            <canvas id="imgCanvas" v-if="curFile" @click="preview"></canvas>
+            <canvas ref="imgCanvas" id="imgCanvas" v-if="curFile" @click="preview">您的浏览器不支持Canvas!</canvas>
             <el-empty description="点击添加图片~" v-else @click="selectFile"></el-empty>
         </div>
 
@@ -269,7 +269,6 @@
 import { computed, reactive, ref, watch, provide } from 'vue'
 import { print, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
-// import defaultWaterMark from '../configs/小米徕卡'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading } from '@element-plus/icons-vue';
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
@@ -296,6 +295,8 @@ const store = useStore();
 
 // 是否开发环境
 const isDev = computed(() => import.meta.env.DEV)
+// 画布
+const imgCanvas = ref<HTMLCanvasElement | null>(null)
 const showConfigDrawer = ref(false);
 // 辅助线配置
 const auxiliaryLines = reactive({
@@ -327,7 +328,6 @@ const defaultImgValue: Img = {
 const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
 const fileList = ref<File[]>([]);
-// const config = ref<Config>(defaultWaterMark);
 const config = (store.config);
 
 const watermarks = ref<WatermarkListItem[]>(getWatermarkList())
@@ -550,10 +550,14 @@ const handleDraw = useDebounceFn(() => {
                 img.lensText = lens.text || exif?.LensModel;
                 img.locationText = locationConfig?.text || getLocationText(img.exif);
 
-                const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
+                const canvas = imgCanvas.value;
+                if (!canvas) {
+                    ElMessage.error("没有找到画布~");
+                    return;
+                }
                 const ctx = canvas.getContext("2d");
                 if (!ctx) {
-                    ElMessage.error("没有找到画布~");
+                    ElMessage.error("获取画布上下文失败~");
                     return;
                 }
 
@@ -614,16 +618,6 @@ const handleDraw = useDebounceFn(() => {
                 // 绘制圆角图片区域
                 if (radiusConfig.show) {
                     ctx.save();
-                    // drawRadiusRect(
-                    //     ctx,
-                    //     imgPaddings.left,
-                    //     imgPaddings.top,
-                    //     realImgWidth,
-                    //     realImgHeight,
-                    //     radiusConfig.size
-                    // );
-
-
                     drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
                     ctx.clip();
                 }
@@ -661,7 +655,7 @@ const handleDraw = useDebounceFn(() => {
                 });
 
 
-                // 绘制自定义的标签和图片
+                // 绘制自定义的文本和图片
                 drawCustomLabelsAndImages(ctx, config.labels, config.images);
 
                 // 绘制辅助线
@@ -743,14 +737,12 @@ function importConfig(val: number): void {
 }
 
 const preview = () => {
-    // 获取dom
-    const canvasBox = document.getElementById('canvasBox') as HTMLCanvasElement;
-    if (!canvasBox) return;
+    if (!imgCanvas.value) return;
 
-    if (canvasBox.style.maxHeight === '100vh' && window.innerWidth <= 768) {
-        canvasBox.style.maxHeight = '300px';
+    if (imgCanvas.value.style.maxHeight === '100vh' && window.innerWidth <= 768) {
+        imgCanvas.value.style.maxHeight = '300px';
     } else {
-        canvasBox.style.maxHeight = '100vh';
+        imgCanvas.value.style.maxHeight = '100vh';
     }
 }
 
@@ -904,7 +896,7 @@ function removeCustomImage(title: string) {
     transition-duration: 1s;
     width: 100%;
 
-    #imgCanvas {
+    canvas {
         border: 1px solid gainsboro;
         max-width: 100%;
         box-sizing: border-box;
@@ -921,7 +913,7 @@ function removeCustomImage(title: string) {
     #canvasBox {
         max-height: 300px;
 
-        #imgCanvas {
+        canvas {
             max-height: 100%;
         }
     }

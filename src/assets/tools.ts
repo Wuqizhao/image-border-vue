@@ -106,6 +106,7 @@ export const cameraBrands: CameraBrands[] = [
 	{ name: "CCTV", logo: "cctv" },
 	{ name: "BBC", logo: "bbc" },
 	{ name: "抖音", logo: "douyin" },
+	{ name: "小红书", logo: "xhs" },
 	{ name: "QQ", logo: "qq" },
 	{ name: "QQ空间", logo: "qzone" },
 	{ name: "Java", logo: "java" },
@@ -158,6 +159,11 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMGZ_5sKIzBgYwoCj_7vnyIREeKaAwAAoHDMRs4AAH4V9VqnRTq_IDHAQADAgADdwADNgQ.jpeg",
 	},
 	{
+		name: "经典模糊",
+		config: "经典模糊",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMKZ_5sYa6xUVcMdWXFMOqRseFUCo4AAn0WAAI4AAH4V_NxgUJcVsFaNgQ.jpeg",
+	},
+	{
 		name: "默认样式",
 		config: "默认样式",
 		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMHZ_5sN9t_sDqdgYjPgJnh9Yk5k2sAAnsWAAI4AAH4V5_DjmQifqsdNgQ.jpeg",
@@ -171,11 +177,6 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		name: "经典模式",
 		config: "经典模式",
 		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMJZ_5sUyE_ShlkB7EWFyVhz3ptAAGfAAJ8FgACOAAB-FcmokZYpDK4yTYE.jpeg",
-	},
-	{
-		name: "经典模糊",
-		config: "经典模糊",
-		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMKZ_5sYa6xUVcMdWXFMOqRseFUCo4AAn0WAAI4AAH4V_NxgUJcVsFaNgQ.jpeg",
 	},
 	{
 		name: "印象毛玻璃",
