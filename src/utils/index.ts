@@ -364,10 +364,7 @@ export function getLogoName(make: string = ""): string {
  * - rect1: 水印起始点坐标 {x, y}
  * - rect2: 水印终点坐标 {x, y}
  */
-export function caculateCanvasSize(
-	config: Config,
-	img: Img
-) {
+export function caculateCanvasSize(config: Config, img: Img) {
 	const rect1 = { x: 0, y: 0 };
 	const rect2 = { x: 0, y: 0 };
 	const { paddings: imgPaddings, watermark } = config;
@@ -446,13 +443,22 @@ export function drawRoundedRect(
 	y: number,
 	width: number,
 	height: number,
-	radius: number,
-	stroke: boolean,
-	lt: number,
-	rt: number,
-	rb: number,
-	lb: number
+	_radius: number | number[],
+	stroke: boolean = false
 ) {
+	let lt = 0,
+		rt = 0,
+		rb = 0,
+		lb = 0,
+		radius = 0;
+	if (typeof _radius === "number") {
+		radius = lt = rt = rb = lb = _radius;
+	} else {
+		lt = _radius[0];
+		rt = _radius[1];
+		rb = _radius[2];
+		lb = _radius[3];
+	}
 	ctx.beginPath();
 	ctx.moveTo(x + radius, y);
 	if (lt) {

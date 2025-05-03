@@ -588,40 +588,29 @@ const handleDraw = useDebounceFn(() => {
             }
             ctx.restore();
 
-            // 绘制阴影
-            const x = imgPaddings.left + shadowConfig.x;
-            const y = imgPaddings.top + shadowConfig.y;
-
-
-            const rt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rt;
-            const rb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rb;
-            const lt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lt;
-            const lb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lb;
-
-            if (radiusConfig.show) {
-                drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
-                ctx.fill();
-                ctx.restore();
-            } else {
-                // 绘制直角矩形
-                ctx.fillRect(x, y, realImgWidth, realImgHeight);
-            }
-            // 绘制阴影
+            // 绘制圆角和阴影
+            ctx.save();
+            let radius: number | number[] = 0;
             if (shadowConfig.show) {
-                ctx.save();
-                ctx.fillStyle = shadowConfig.color;
-                ctx.filter = `blur(${shadowConfig.size}px)`;
-                ctx.fillRect(x, y, realImgWidth, realImgHeight);
-                ctx.restore();
+                ctx.shadowBlur = shadowConfig.size;
+                ctx.shadowColor = shadowConfig.color;
+                ctx.shadowOffsetX = shadowConfig.x;
+                ctx.shadowOffsetY = shadowConfig.y;
             }
-
-            // 绘制圆角图片区域
             if (radiusConfig.show) {
-                ctx.save();
-                drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
-                ctx.clip();
+                const rt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rt;
+                const rb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rb;
+                const lt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lt;
+                const lb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lb;
+                radius = radiusConfig.uniform ? radiusConfig.size : [rt, rb, lb, lt];
             }
 
+            drawRoundedRect(ctx, imgPaddings.left, imgPaddings.top, realImgWidth, realImgHeight, radius);
+            ctx.fill();
+            ctx.restore();
+
+            ctx.save();
+            ctx.clip();
             // 绘制图片
             ctx.drawImage(
                 _img,
@@ -725,9 +714,7 @@ function importConfig(val: number): void {
             // 合并对象
             config_value = Object.assign(config_value, local_value);
         }
-        // config = config_value;
         Object.assign(config, config_value);
-        // config = config_value;
 
         ElMessage.success(`配置【${watermark.name}】导入成功~`);
     }).catch(err => {
