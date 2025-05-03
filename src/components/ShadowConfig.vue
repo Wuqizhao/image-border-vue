@@ -10,13 +10,13 @@
                     v-model="config.shadow.color"></el-color-picker>
             </el-form-item>
             <el-form-item label="大小">
-                <el-slider show-input v-model="config.shadow.size" :min="1" :max="500"></el-slider>
+                <el-slider show-input v-model="config.shadow.size" :min="1" :max="300"></el-slider>
             </el-form-item>
             <el-form-item label="水平偏移">
-                <el-slider show-input v-model="config.shadow.x" :min="-1000" :max="1000"></el-slider>
+                <el-slider show-input v-model="config.shadow.x" :min="-100" :max="100"></el-slider>
             </el-form-item>
             <el-form-item label="垂直偏移">
-                <el-slider show-input v-model="config.shadow.y" :min="-1000" :max="1000"></el-slider>
+                <el-slider show-input v-model="config.shadow.y" :min="-100" :max="100"></el-slider>
             </el-form-item>
             <el-form-item label="">
                 <el-button size="small" @click="resetSize">重置大小</el-button>

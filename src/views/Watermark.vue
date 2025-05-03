@@ -473,16 +473,13 @@ const saveConfig = () => {
 
 function removeImg(index: number) {
     const isCurrentFile = fileList.value[index] == curFile.value;
-
     // 删除指定下标的图片文件
     fileList.value = fileList.value.filter((_, i) => i !== index);
 
-    if (fileList.value.length === 0) {
-        changeCurFile(null);
-    }
-    if (isCurrentFile) {
-        changeCurFile(fileList.value[0]);
-    }
+    // 全部删除了：隐藏画布
+    fileList.value.length === 0 && changeCurFile(null);
+    // 删除的是当前图片：切换到第一张
+    isCurrentFile && changeCurFile(fileList.value[0]);
 }
 
 
@@ -571,6 +568,7 @@ const handleDraw = useDebounceFn(() => {
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
 
+            // 根据偏移量计算水印范围
             rect1.x += watermark.offsetX || 0;
             rect1.y += watermark.offsetY || 0;
             rect2.x += watermark.offsetX || 0;
