@@ -116,11 +116,7 @@ export function getImageSrc(file: File | string) {
 			return file;
 		}
 
-		const { pathname } = new URL(
-			`../assets/logos/${file}.png`,
-			import.meta.url
-		);
-		return pathname;
+		return "./logos/" + file + ".png";
 	}
 
 	return URL.createObjectURL(file);
