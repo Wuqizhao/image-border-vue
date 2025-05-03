@@ -747,7 +747,6 @@ function importConfig(val: number): void {
 const preview = () => {
     const canvasBox = document.getElementById('canvasBox') as HTMLCanvasElement;
     if (!canvasBox) throw '未找到画布容器！';
-    console.log('预览', canvasBox);
 
     if (canvasBox.style.maxHeight === '65vh' && window.innerWidth <= 768) {
         canvasBox.style.maxHeight = '300px';
