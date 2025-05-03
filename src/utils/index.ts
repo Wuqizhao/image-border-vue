@@ -378,43 +378,46 @@ export function caculateCanvasSize(
 		paddings: watermarkPaddings,
 	} = watermark;
 
+	let canvasWidth = img.width + imgPaddings.left + imgPaddings.right;
+	let canvasHeight = img.height + imgPaddings.top + imgPaddings.bottom;
+
 	if (position === "left" || position === "right") {
-		canvas.width += watermarkHeight * canvas.width + 2 * watermarkPaddings.lr;
+		canvasWidth += watermarkHeight * canvasWidth + 2 * watermarkPaddings.lr;
 		rect1.y = imgPaddings.top;
-		rect2.y = canvas.height - imgPaddings.bottom;
+		rect2.y = canvasHeight - imgPaddings.bottom;
 
 		if (position === "left") {
 			rect1.x = 0;
-			rect2.x = watermarkHeight * canvas.width + 2 * watermarkPaddings.lr;
+			rect2.x = watermarkHeight * canvasWidth + 2 * watermarkPaddings.lr;
 		} else {
 			rect1.x = imgPaddings.left + img.width;
-			rect2.x = canvas.width;
+			rect2.x = canvasWidth;
 		}
 	} else if (position === "inner") {
 		// 画布大小不需要修改
 		rect1.x = watermarkPaddings.lr + imgPaddings.left;
 		rect1.y = watermarkPaddings.tb;
-		rect2.x = canvas.width - watermarkPaddings.lr - imgPaddings.right;
-		rect2.y = canvas.height - watermarkPaddings.tb - imgPaddings.bottom;
+		rect2.x = canvasWidth - watermarkPaddings.lr - imgPaddings.right;
+		rect2.y = canvasHeight - watermarkPaddings.tb - imgPaddings.bottom;
 	} else {
-		canvas.height += watermarkHeight * canvas.height + 2 * watermarkPaddings.tb;
+		canvasHeight += watermarkHeight * canvasHeight + 2 * watermarkPaddings.tb;
 		rect1.x = imgPaddings.left;
-		rect2.x = canvas.width - imgPaddings.right;
+		rect2.x = canvasWidth - imgPaddings.right;
 
 		if (position === "top") {
 			rect1.y = watermarkPaddings.tb;
-			rect2.y = 2 * watermarkPaddings.tb + watermarkHeight * canvas.height;
+			rect2.y = 2 * watermarkPaddings.tb + watermarkHeight * canvasHeight;
 		} else {
 			rect1.y =
 				imgPaddings.top +
 				img.height +
 				imgPaddings.bottom +
 				watermarkPaddings.tb;
-			rect2.y = canvas.height - watermarkPaddings.tb;
+			rect2.y = canvasHeight - watermarkPaddings.tb;
 		}
 	}
 
-	return { rect1, rect2 };
+	return { rect1, rect2, canvasWidth, canvasHeight };
 }
 
 /**

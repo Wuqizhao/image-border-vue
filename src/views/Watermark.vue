@@ -497,6 +497,8 @@ watchThrottled([() => config, () => curFile, () => auxiliaryLines], () => {
     handleDraw();
 }, { throttle: 250, deep: true })
 
+
+const _img = new Image();
 const handleDraw = useDebounceFn(() => {
     try {
         const file = curFile.value;
@@ -505,173 +507,165 @@ const handleDraw = useDebounceFn(() => {
         const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig, location: locationConfig } = config;
         const { model, params: paramsConfig, time: timeConfig, lens, bgColor } = watermark;
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const _img = new Image();
-            if (e.target === null) throw new Error("图片不存在...");
-            _img.src = <string>e.target.result;
+        _img.src = getImageSrc(file);
+        _img.onload = async () => {
+            // 更新宽高
+            img.width = _img.width;
+            img.height = _img.height;
 
-            _img.onload = async () => {
-                // 更新宽高
-                img.width = _img.width;
-                img.height = _img.height;
+            // 读取exif信息
+            const exif = exifStore.getExif(file) || await Exifr.parse(file);
+            exifStore.addExif(file, exif);
 
-                // 读取exif信息
-                const exif = exifStore.getExif(file) || await Exifr.parse(file);
-                exifStore.addExif(file, exif);
-
-                if (exif === undefined) {
-                    ElNotification({
-                        title: '错误',
-                        message: '未读取到Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
-                        type: 'error',
-                    });
-                    // 从文件列表删除当前图片
-                    fileList.value = fileList.value.filter(item => item !== file);
-                    curFile.value = null;
-                    return;
-                }
-
-                img.exif = exif;
-                img.modelText = model.text || img.exif?.Model || '--';
-                // 曝光时间
-                const exposureTime = convertExposureTime(exif?.ExposureTime);
-                // 焦距
-                const focalLength = (paramsConfig.useEquivalentFocalLength
-                    ? exif?.FocalLengthIn35mmFormat
-                    : exif?.FocalLength) || exif?.FocalLength;
-                img.paramsText = paramsConfig.text || `${exposureTime}s  f/${exif?.FNumber
-                    }  iso ${exif?.ISO}  ${focalLength}mm`;
-                // 大写
-                img.paramsText = paramsConfig.letterUpperCase
-                    ? img.paramsText.toUpperCase()
-                    : img.paramsText;
-
-                img.timeText = timeConfig.text || formatDate(
-                    new Date(img.exif?.DateTimeOriginal as number),
-                    timeConfig.format
-                );
-                img.lensText = lens.text || exif?.LensModel;
-                img.locationText = locationConfig?.text || getLocationText(img.exif);
-
-                const canvas = imgCanvas.value;
-                if (!canvas) {
-                    ElMessage.error("没有找到画布~");
-                    return;
-                }
-                const ctx = canvas.getContext("2d");
-                if (!ctx) {
-                    ElMessage.error("获取画布上下文失败~");
-                    return;
-                }
-
-                const realImgWidth = img.width;
-                const realImgHeight = img.height;
-
-                // 修改画布大小
-                canvas.width =
-                    realImgWidth + imgPaddings.left + imgPaddings.right;
-                canvas.height =
-                    realImgHeight + imgPaddings.top + imgPaddings.bottom;
-
-                const { rect1, rect2 } = caculateCanvasSize(config, canvas, img);
-                rect1.x += watermark.offsetX || 0;
-                rect1.y += watermark.offsetY || 0;
-                rect2.x += watermark.offsetX || 0;
-                rect2.y += watermark.offsetY || 0;
-
-                // 绘制背景
-                if (blurConfig.enable) {
-                    ctx.save();
-                    ctx.filter = `blur(${blurConfig.size}px)`;
-                    ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
-                    ctx.restore();
-                } else {
-                    ctx.fillStyle = bgColor || "#FFF";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                }
-                ctx.restore();
-
-                // 绘制阴影
-                const x = imgPaddings.left + shadowConfig.x;
-                const y = imgPaddings.top + shadowConfig.y;
-
-
-                const rt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rt;
-                const rb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rb;
-                const lt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lt;
-                const lb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lb;
-
-                if (radiusConfig.show) {
-                    drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
-                    ctx.fill();
-                    ctx.restore();
-                } else {
-                    // 绘制直角矩形
-                    ctx.fillRect(x, y, realImgWidth, realImgHeight);
-                }
-                // 绘制阴影
-                if (shadowConfig.show) {
-                    ctx.save();
-                    ctx.fillStyle = shadowConfig.color;
-                    ctx.filter = `blur(${shadowConfig.size}px)`;
-                    ctx.fillRect(x, y, realImgWidth, realImgHeight);
-                    ctx.restore();
-                }
-
-                // 绘制圆角图片区域
-                if (radiusConfig.show) {
-                    ctx.save();
-                    drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
-                    ctx.clip();
-                }
-
-                // 绘制图片
-                ctx.drawImage(
-                    _img,
-                    imgPaddings.left,
-                    imgPaddings.top,
-                    realImgWidth,
-                    realImgHeight
-                );
-
-                ctx.restore();
-
-                // 自动匹配logo
-                if (logoConfig.enable && logoConfig.auto) {
-                    logoConfig.name = getLogoName(exif?.Make);
-                }
-
-
-                // 执行绘制前的操作
-                config.beforeDraw && config.beforeDraw(canvas);
-
-
-                // 绘制水印范围的背景颜色
-                if (watermark.position !== 'inner') {
-                    ctx.fillStyle = watermark.bg || "rgba(0,0,0,0)";
-                    ctx.fillRect(0, rect1.y - watermark.paddings.tb, canvas.width, rect2.y - rect1.y + 2 * watermark.paddings.tb);
-                }
-
-                // 执行模板的绘制函数
-                config.draw(img, config, {
-                    ctx, canvas, rect1, rect2, exposureTime, focalLength,
+            if (exif === undefined) {
+                ElNotification({
+                    title: '错误',
+                    message: '未读取到Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
+                    type: 'error',
                 });
-
-
-                // 绘制自定义的文本和图片
-                drawCustomLabelsAndImages(ctx, config.labels, config.images);
-
-                // 绘制辅助线
-                drawAuxiliaryLines(canvas, auxiliaryLines, rect1, rect2);
-
-                // 执行绘制结束后的操作
-                config.afterDraw && config.afterDraw(ctx);
-
-                // 释放图片
-                URL.revokeObjectURL(_img.src);
+                // 从文件列表删除当前图片
+                fileList.value = fileList.value.filter(item => item !== file);
+                curFile.value = null;
+                return;
             }
+
+            img.exif = exif;
+            img.modelText = model.text || img.exif?.Model || '--';
+            // 曝光时间
+            const exposureTime = convertExposureTime(exif?.ExposureTime);
+            // 焦距
+            const focalLength = (paramsConfig.useEquivalentFocalLength
+                ? exif?.FocalLengthIn35mmFormat
+                : exif?.FocalLength) || exif?.FocalLength;
+            img.paramsText = paramsConfig.text || `${exposureTime}s  f/${exif?.FNumber
+                }  iso ${exif?.ISO}  ${focalLength}mm`;
+            // 大写
+            img.paramsText = paramsConfig.letterUpperCase
+                ? img.paramsText.toUpperCase()
+                : img.paramsText;
+
+            img.timeText = timeConfig.text || formatDate(
+                new Date(img.exif?.DateTimeOriginal as number),
+                timeConfig.format
+            );
+            img.lensText = lens.text || exif?.LensModel;
+            img.locationText = locationConfig?.text || getLocationText(img.exif);
+
+            const canvas = imgCanvas.value;
+            if (!canvas) {
+                ElMessage.error("没有找到画布~");
+                return;
+            }
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                ElMessage.error("获取画布上下文失败~");
+                return;
+            }
+
+            const realImgWidth = img.width;
+            const realImgHeight = img.height;
+
+
+            const { rect1, rect2, canvasWidth, canvasHeight } = caculateCanvasSize(config, canvas, img);
+            // 修改画布大小
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            rect1.x += watermark.offsetX || 0;
+            rect1.y += watermark.offsetY || 0;
+            rect2.x += watermark.offsetX || 0;
+            rect2.y += watermark.offsetY || 0;
+
+            // 绘制背景
+            if (blurConfig.enable) {
+                ctx.save();
+                ctx.filter = `blur(${blurConfig.size}px)`;
+                ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
+                ctx.restore();
+            } else {
+                ctx.fillStyle = bgColor || "#FFF";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            ctx.restore();
+
+            // 绘制阴影
+            const x = imgPaddings.left + shadowConfig.x;
+            const y = imgPaddings.top + shadowConfig.y;
+
+
+            const rt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rt;
+            const rb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rb;
+            const lt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lt;
+            const lb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lb;
+
+            if (radiusConfig.show) {
+                drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
+                ctx.fill();
+                ctx.restore();
+            } else {
+                // 绘制直角矩形
+                ctx.fillRect(x, y, realImgWidth, realImgHeight);
+            }
+            // 绘制阴影
+            if (shadowConfig.show) {
+                ctx.save();
+                ctx.fillStyle = shadowConfig.color;
+                ctx.filter = `blur(${shadowConfig.size}px)`;
+                ctx.fillRect(x, y, realImgWidth, realImgHeight);
+                ctx.restore();
+            }
+
+            // 绘制圆角图片区域
+            if (radiusConfig.show) {
+                ctx.save();
+                drawRoundedRect(ctx, x, y, realImgWidth, realImgHeight, radiusConfig.size, false, rt, rb, lb, lt);
+                ctx.clip();
+            }
+
+            // 绘制图片
+            ctx.drawImage(
+                _img,
+                imgPaddings.left,
+                imgPaddings.top,
+                realImgWidth,
+                realImgHeight
+            );
+
+            ctx.restore();
+
+            // 自动匹配logo
+            if (logoConfig.enable && logoConfig.auto) {
+                logoConfig.name = getLogoName(exif?.Make);
+            }
+
+
+            // 执行绘制前的操作
+            config.beforeDraw && config.beforeDraw(canvas);
+
+
+            // 绘制水印范围的背景颜色
+            if (watermark.position !== 'inner') {
+                ctx.fillStyle = watermark.bg || "rgba(0,0,0,0)";
+                ctx.fillRect(0, rect1.y - watermark.paddings.tb, canvas.width, rect2.y - rect1.y + 2 * watermark.paddings.tb);
+            }
+
+            // 执行模板的绘制函数
+            config.draw(img, config, {
+                ctx, canvas, rect1, rect2, exposureTime, focalLength,
+            });
+
+
+            // 绘制自定义的文本和图片
+            drawCustomLabelsAndImages(ctx, config.labels, config.images);
+
+            // 绘制辅助线
+            drawAuxiliaryLines(canvas, auxiliaryLines, rect1, rect2);
+
+            // 执行绘制结束后的操作
+            config.afterDraw && config.afterDraw(ctx);
+
+            // 释放图片
+            URL.revokeObjectURL(_img.src);
         }
     } catch (e) {
         console.log('绘制发生错误：', e);
@@ -908,6 +902,7 @@ function removeCustomImage(title: string) {
         max-width: 100%;
         box-sizing: border-box;
         transition-duration: 1s;
+        max-height: 100vh;
     }
 }
 
