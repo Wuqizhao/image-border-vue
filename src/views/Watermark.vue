@@ -566,11 +566,11 @@ const handleDraw = useDebounceFn(() => {
             const realImgHeight = img.height;
 
 
-            const { rect1, rect2, canvasWidth, canvasHeight } = caculateCanvasSize(config, canvas, img);
+            const { rect1, rect2, canvasWidth, canvasHeight } = caculateCanvasSize(config, img);
             // 修改画布大小
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
-            
+
             rect1.x += watermark.offsetX || 0;
             rect1.y += watermark.offsetY || 0;
             rect2.x += watermark.offsetX || 0;

@@ -366,7 +366,6 @@ export function getLogoName(make: string = ""): string {
  */
 export function caculateCanvasSize(
 	config: Config,
-	canvas: HTMLCanvasElement,
 	img: Img
 ) {
 	const rect1 = { x: 0, y: 0 };
