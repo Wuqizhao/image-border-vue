@@ -158,7 +158,7 @@
                         <el-form label-width="70px">
                             <h3>水印高度</h3>
                             <el-form-item label="基础高度">
-                                <el-slider show-input :min="0" :max="1" :step="0.01"
+                                <el-slider :show-input="!isMobile()" :min="0" :max="0.5" :step="0.01"
                                     v-model="config.watermark.height"></el-slider>
                                 <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
                             </el-form-item>
@@ -506,7 +506,7 @@ const handleDraw = useDebounceFn(() => {
         const { model, params: paramsConfig, time: timeConfig, lens, bgColor } = watermark;
 
         const reader = new FileReader();
-        reader.readAsDataURL((file));
+        reader.readAsDataURL(file);
         reader.onload = (e) => {
             const _img = new Image();
             if (e.target === null) throw new Error("图片不存在...");
@@ -745,12 +745,14 @@ function importConfig(val: number): void {
 }
 
 const preview = () => {
-    if (!imgCanvas.value) return;
+    const canvasBox = document.getElementById('canvasBox') as HTMLCanvasElement;
+    if (!canvasBox) throw '未找到画布容器！';
+    console.log('预览', canvasBox);
 
-    if (imgCanvas.value.style.maxHeight === '100vh' && window.innerWidth <= 768) {
-        imgCanvas.value.style.maxHeight = '300px';
+    if (canvasBox.style.maxHeight === '65vh' && window.innerWidth <= 768) {
+        canvasBox.style.maxHeight = '300px';
     } else {
-        imgCanvas.value.style.maxHeight = '100vh';
+        canvasBox.style.maxHeight = '65vh';
     }
 }
 
@@ -826,8 +828,6 @@ function removeCustomImage(title: string) {
     h3 {
         padding-bottom: 10px;
     }
-
-
 }
 
 .img-list {
@@ -899,16 +899,16 @@ function removeCustomImage(title: string) {
     justify-content: space-between;
     align-items: center;
     background: rgb(255, 255, 255);
-    padding: 10px;
     max-height: 100vh;
     transition-duration: 1s;
     width: 100%;
+    padding: 5px 10px;
 
     canvas {
         border: 1px solid gainsboro;
         max-width: 100%;
         box-sizing: border-box;
-        max-height: 100%;
+        transition-duration: 1s;
     }
 }
 
