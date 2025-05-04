@@ -144,15 +144,24 @@ declare interface Radius {
 	lb: number;
 	rb: number;
 }
+export declare type BackgroundType = "color" | "blur" | "gradient";
 declare interface Blur {
+	/**
+	 * 背景类型（0-纯色 1-模糊 2-渐变）
+	 */
+	type: BackgroundType;
 	/**
 	 * 是否支持模糊
 	 */
-	enable: boolean;
+	// enable: boolean;
 	/**
 	 * 模糊大小
 	 */
 	size: number;
+	gradient?: {
+		angle: number;
+		colors: string[];
+	};
 }
 export declare interface Logo {
 	/**

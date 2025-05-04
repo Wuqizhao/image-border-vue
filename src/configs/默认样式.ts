@@ -180,7 +180,7 @@ const config: Config = {
 		rb: 80,
 	},
 	blur: {
-		enable: false,
+		type: "color",
 		size: 1000,
 	},
 	logo: {

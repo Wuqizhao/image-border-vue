@@ -152,7 +152,7 @@ const config: Config = {
 		rb: 100,
 	},
 	blur: {
-		enable: true,
+		type: "color",
 		size: 200,
 	},
 	logo: {

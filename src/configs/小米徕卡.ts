@@ -245,8 +245,12 @@ const config: Config = {
 		rb: 100,
 	},
 	blur: {
-		enable: false,
+		type: "color",
 		size: 1000,
+		gradient: {
+			angle: 0,
+			colors: ["pink", "white", "lightblue"],
+		},
 	},
 	logo: {
 		enable: true,

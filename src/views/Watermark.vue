@@ -149,9 +149,9 @@
                         </el-collapse>
                     </el-tab-pane>
                     <el-tab-pane label="图片" name="picture">
-                        <RadiusConfig :radius="config.radius" />
+                        <RadiusConfig />
+                        <ShadowConfig />
                         <BlurConfig />
-                        <ShadowConfig :shadow="config.shadow" />
 
                         <h3>水印背景</h3>
                         <el-form lable="80px">
@@ -162,18 +162,12 @@
                     </el-tab-pane>
                     <el-tab-pane label="边距" name="border">
                         <el-form label-width="70px">
-                            <h3>水印高度</h3>
-                            <el-form-item label="基础高度">
-                                <el-slider :show-input="!isMobile()" :min="0" :max="0.5" :step="0.01"
-                                    v-model="config.watermark.height"></el-slider>
-                                <p class="tips">水印在左右：相对于图片宽度的倍数；水印在上下：相对于图片高度的倍数。影响底部水印绘制范围的大小。</p>
-                            </el-form-item>
+
                         </el-form>
                         <PaddingConfig />
                     </el-tab-pane>
                     <el-tab-pane label="导出" name="export">
-                        <h3>导出配置</h3>
-                        <el-form label-width="80">
+                        <el-form label-width="70" style="margin-top: 10px;">
                             <el-form-item label="文件名">
                                 <el-input v-model="img.export.name" :disabled="!curFile" placeholder="留空则由浏览器决定"
                                     clearable></el-input>
@@ -181,7 +175,7 @@
                             <el-form-item label="格式">
                                 <el-radio-group v-model="img.export.ext">
                                     <el-radio value="jpeg">JPEG</el-radio>
-                                    <el-radio value="png">PNG(支持透明背景)</el-radio>
+                                    <el-radio value="png">PNG(支持透明背景，体积更大)</el-radio>
                                 </el-radio-group>
                             </el-form-item>
                             <el-form-item label="导出质量">
@@ -582,12 +576,28 @@ const handleDraw = useDebounceFn(() => {
             rect2.y += watermark.offsetY || 0;
 
             // 绘制背景
-            if (blurConfig.enable) {
+            if (blurConfig.type === 'blur') {
                 ctx.save();
                 ctx.filter = `blur(${blurConfig.size}px)`;
                 ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
                 ctx.restore();
-            } else {
+            }
+            else if (blurConfig.type === 'gradient') {
+                const angle = blurConfig?.gradient?.angle || 0; // 角度值
+                const radians = angle * Math.PI / 180
+                const x1 = Math.cos(radians) * canvas.width
+                const y1 = Math.sin(radians) * canvas.height
+                const gradient = ctx.createLinearGradient(0, 0, x1, y1)
+
+                const colors = blurConfig?.gradient?.colors || ["lightblue", "white", "pink"];
+                for (let i = 0; i < colors.length; i++) {
+                    gradient.addColorStop(1 / (colors.length - 1) * i, colors[i]);
+                }
+                ctx.fillStyle = gradient;
+
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            else {
                 ctx.fillStyle = bgColor || "#FFF";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
