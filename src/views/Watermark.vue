@@ -82,6 +82,12 @@
                     </el-tab-pane>
                     <el-tab-pane label="调整" name="watermark">
                         <el-collapse accordion :collapse-transition="false">
+                            <el-collapse-item>
+                                <template #title>
+                                    <h3>滤镜</h3>
+                                </template>
+                                <Filter></Filter>
+                            </el-collapse-item>
                             <el-collapse-item v-if="config.logo.enable">
                                 <template #title>
                                     <h3>图标</h3>
@@ -293,6 +299,7 @@ import ImageConfig from '../components/ImageConfig.vue'
 const store = useStore();
 
 import { useExifStore } from '../stores/exif'
+import Filter from '../components/Filter.vue';
 const exifStore = useExifStore();
 
 
@@ -609,6 +616,11 @@ const handleDraw = useDebounceFn(() => {
 
             ctx.save();
             ctx.clip();
+
+            // 滤镜
+            if (config.filter) {
+                ctx.filter = `brightness(${config.filter.brightness}%) contrast(${config.filter.contrast}%) saturate(${config.filter.saturation}%) grayscale(${config.filter.grayscale}%) invert(${config.filter.invert}%)`;
+            }
             // 绘制图片
             ctx.drawImage(
                 _img,

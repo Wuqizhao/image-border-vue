@@ -271,6 +271,29 @@ declare interface Shadow {
 	y: number;
 }
 
+declare interface Filter {
+	/**
+	 * 饱和度(0-200%，默认100)
+	 */
+	saturation: number;
+	/**
+	 * 亮度(0-200%，默认100)
+	 */
+	brightness: number;
+	/**
+	 * 对比度(0-200%，默认100)
+	 */
+	contrast: number;
+	/**
+	 * 灰度(0-100%，默认0)
+	 */
+	grayscale: number;
+	/**
+	 * 反色(0-100%，默认0)
+	 */
+	invert: number;
+}
+
 export declare type TextAlign = "left" | "center" | "right";
 export declare type TextVerticalAlign = "top" | "middle" | "bottom";
 export declare interface LabelConfigItem {
@@ -330,7 +353,7 @@ export declare type BlendModeItem = {
 	 */
 	mode: BlendMode;
 	desc: string;
-}
+};
 
 declare interface BaseConfig {
 	/**
@@ -402,6 +425,7 @@ declare interface BaseConfig {
 	divider: Divider;
 	shadow: Shadow;
 	location?: Location;
+	filter: Filter;
 	labels?: Array<LabelConfigItem>;
 	images?: Array<ImagesConfigItem>;
 }

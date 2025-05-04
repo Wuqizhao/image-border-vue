@@ -284,6 +284,13 @@ const config: Config = {
 	},
 	labels: [],
 	images: [],
+	filter: {
+		saturation: 100,
+		brightness: 100,
+		contrast: 100,
+		grayscale: 0,
+		invert: 0,
+	},
 	draw: doDraw,
 };
 

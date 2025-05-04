@@ -151,6 +151,13 @@ const config: Config = {
 		y: 0,
 		size: 50,
 	},
+	filter: {
+		saturation: 100,
+		brightness: 100,
+		contrast: 100,
+		grayscale: 0,
+		invert: 0,
+	},
 	draw: doDraw,
 };
 
