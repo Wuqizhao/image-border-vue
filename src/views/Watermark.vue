@@ -80,7 +80,7 @@
                             </router-link>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="调整" name="watermark">
+                    <el-tab-pane label="水印" name="watermark">
                         <div class="float-menu">
                             <HorizontalScroll>
                                 <div v-for="item in menuItems" class="float-menu-item"
@@ -96,18 +96,6 @@
                         <RadiusConfig />
                         <ShadowConfig />
                         <BlurConfig />
-
-                        <h3>水印背景</h3>
-                        <el-form lable="80px">
-                            <el-form-item label="背景颜色">
-                                <el-color-picker v-model="config.watermark.bg" show-alpha></el-color-picker>
-                            </el-form-item>
-                        </el-form>
-                    </el-tab-pane>
-                    <el-tab-pane label="边距" name="border">
-                        <el-form label-width="70px">
-
-                        </el-form>
                         <PaddingConfig />
                     </el-tab-pane>
                     <el-tab-pane label="导出" name="export">
@@ -122,7 +110,7 @@
                                     <el-radio value="png">PNG(支持透明背景，体积更大)</el-radio>
                                 </el-radio-group>
                             </el-form-item>
-                            <el-form-item label="导出质量">
+                            <el-form-item label="图片质量" v-show="img.export.ext === 'jpeg'">
                                 <el-slider v-model="img.export.quality" :min="0.01" :max="1" :step="0.01" show-tooltip
                                     :format-tooltip="(val) => (val * 100).toFixed(0) + '%'" show-input></el-slider>
                                 <p class="tips">推荐0.97，兼顾画质和文件大小。</p>
@@ -220,6 +208,7 @@ import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueus
 import Exifr from "exifr";
 import HorizontalScroll from '../components/HorizontalScroll.vue'
 import { useStore } from '../stores';
+const store = useStore();
 import LensConfig from '../components/LensConfig.vue'
 import ModelConfig from '../components/ModelConfig.vue'
 import ParamsConfig from '../components/ParamsConfig.vue'
@@ -233,16 +222,17 @@ import PaddingConfig from '../components/PaddingConfig.vue'
 import ImageInfo from '../components/ImageInfo.vue'
 import LocationConfig from '../components/LocationConfig.vue'
 import Filter from '../components/Filter.vue';
-const store = useStore();
 
 import { useExifStore } from '../stores/exif'
+const exifStore = useExifStore();
 import CustomLabels from '../components/CustomLabels.vue';
 import CustomImages from '../components/CustomImages.vue';
-const exifStore = useExifStore();
+import WatermarkPadding from '../components/WatermarkPadding.vue'
 
 
 const menuItems = ref([
     { label: '滤镜', value: 'filter', component: markRaw(Filter) },
+    { label: '边距', value: 'padding', component: markRaw(WatermarkPadding) },
     { label: 'Logo', value: 'logo', component: markRaw(LogoConfig) },
     { label: '型号', value: 'model', component: markRaw(ModelConfig) },
     { label: '参数', value: 'params', component: markRaw(ParamsConfig) },
@@ -253,7 +243,7 @@ const menuItems = ref([
     { label: '自定义文本', value: 'labels', component: markRaw(CustomLabels) },
     { label: '自定义图片', value: 'images', component: markRaw(CustomImages) },
 ])
-const curConfigComponent = shallowRef<Component>(Filter);
+const curConfigComponent = shallowRef<Component>(LogoConfig);
 
 // 是否开发环境
 const isDev = computed(() => import.meta.env.DEV)

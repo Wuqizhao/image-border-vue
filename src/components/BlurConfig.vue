@@ -41,6 +41,10 @@
                 </div>
             </el-form-item>
         </div>
+
+        <el-form-item label="水印背景">
+            <el-color-picker v-model="config.watermark.bg" show-alpha></el-color-picker>
+        </el-form-item>
     </el-form>
 </template>
 
