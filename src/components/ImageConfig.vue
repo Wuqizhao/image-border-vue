@@ -85,7 +85,10 @@ const props = defineProps({
             width: Number,
             height: Number,
             verticalOffset: Number,
-            horizontalOffset: Number
+            horizontalOffset: Number,
+            alpha: Number,
+            rotate: Number,
+            blendMode: String,
         })
     },
 })

@@ -7,7 +7,7 @@
             <el-form-item label="文本">
                 <el-input placeholder="留空则自动读取" v-model="config.watermark.params.text" clearable>
                     <template #append>
-                        <el-button size="small" @click="config.watermark.params.text = props.text">读取</el-button>
+                        <el-button size="small" @click="config.watermark.params.text = img?.paramsText">读取</el-button>
                     </template>
                 </el-input>
             </el-form-item>
@@ -38,12 +38,12 @@
 import { preDefineColors } from '../assets/tools';
 import { storeToRefs } from 'pinia';
 import { useStore } from '../stores';
+import { inject } from 'vue';
+import type { Img } from '../types';
+
+const img = inject<Img>('img');
 
 const { config } = storeToRefs(useStore());
-
-const props = defineProps({
-    text: String
-});
 </script>
 
 <style lang='less' scoped></style>

@@ -6,7 +6,7 @@
         <el-form-item label="文本">
             <el-input v-model="config.watermark.lens.text" placeholder="自定义文本，留空自动读取~" clearable>
                 <template #append>
-                    <el-button @click="config.watermark.lens.text = props.text">读取</el-button>
+                    <el-button @click="config.watermark.lens.text = (img?.lensText as string)">读取</el-button>
                 </template></el-input>
         </el-form-item>
         <el-form-item label="颜色">
@@ -30,26 +30,11 @@
 import { preDefineColors } from '../assets/tools';
 import { storeToRefs } from 'pinia';
 import { useStore } from '../stores';
+import { inject } from 'vue';
+import type { Img } from '../types';
 
 const { config } = storeToRefs(useStore());
-const props = defineProps({
-    // config: {
-    //     type: Object,
-    //     required: true,
-    //     default: () => ({
-    //         show: Boolean,
-    //         text: String,
-    //         color: String,
-    //         size: Number,
-    //         italic: Boolean,
-    //         bold: Boolean,
-    //     })
-    // },
-    text: {
-        type: String,
-        default: ''
-    }
-})
+const img = inject<Img>('img');
 </script>
 
 <style lang='less' scoped></style>

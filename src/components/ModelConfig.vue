@@ -7,7 +7,7 @@
             <el-form-item label="文本">
                 <el-input placeholder="留空则自动读取" v-model="config.watermark.model.text" clearable>
                     <template #append>
-                        <el-button @click="useExifModelText">读取</el-button>
+                        <el-button @click="config.watermark.model.text = injectData?.modelText">读取</el-button>
                     </template>
                 </el-input>
             </el-form-item>
@@ -47,11 +47,6 @@ import { storeToRefs } from 'pinia';
 import { useStore } from '../stores';
 
 const { config } = storeToRefs(useStore());
-
-
-function useExifModelText() {
-    config.value.watermark.model.text = injectData?.modelText;
-}
 </script>
 
 <style lang='less' scoped></style>

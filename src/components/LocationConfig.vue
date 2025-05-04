@@ -6,7 +6,7 @@
         <el-form-item label="文本">
             <el-input v-model="config.location.text" placeholder="自定义位置文本，留空自动读取~" clearable>
                 <template #append>
-                    <el-button @click="readText">读取</el-button>
+                    <el-button @click="config.location.text = (img?.locationText || '')">读取</el-button>
                 </template>
             </el-input>
         </el-form-item>
@@ -32,32 +32,11 @@
 import { preDefineColors } from '../assets/tools';
 import { storeToRefs } from 'pinia';
 import { useStore } from '../stores';
+import { inject } from 'vue';
+import type { Img } from '../types';
 
 const { config } = storeToRefs(useStore());
-const props = defineProps({
-    // loc: {
-    //     type: Object,
-    //     required: true,
-    //     default: () => ({
-    //         show: Boolean,
-    //         text: String,
-    //         color: String,
-    //         size: Number,
-    //         italic: Boolean,
-    //         bold: Boolean,
-    //     })
-    // },
-    text: {
-        type: String,
-        default: ''
-    }
-})
-
-function readText() {
-    if (config.value.location) {
-        config.value.location.text = props.text;
-    }
-}
+const img = inject<Img>('img');
 </script>
 
 <style lang='less' scoped></style>

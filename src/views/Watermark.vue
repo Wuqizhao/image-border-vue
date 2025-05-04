@@ -81,72 +81,16 @@
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="调整" name="watermark">
-                        <el-collapse accordion :collapse-transition="false">
-                            <el-collapse-item>
-                                <template #title>
-                                    <h3>滤镜</h3>
-                                </template>
-                                <Filter></Filter>
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.logo.enable">
-                                <template #title>
-                                    <h3>图标</h3>
-                                </template>
-                                <LogoConfig />
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.watermark.model.enable">
-                                <template #title>
-                                    <h3>型号</h3>
-                                </template>
-                                <ModelConfig />
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.watermark.params.enable">
-                                <template #title>
-                                    <h3>参数</h3>
-                                </template>
-                                <ParamsConfig :text="img.paramsText" />
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.watermark.time.enable">
-                                <template #title>
-                                    <h3>时间</h3>
-                                </template>
-                                <TimeConfig :text="img.timeText" />
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.watermark.lens.enable">
-                                <template #title>
-                                    <h3>镜头</h3>
-                                </template>
-                                <LensConfig :text="img.lensText" />
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.divider.enable">
-                                <template #title>
-                                    <h3>分割线</h3>
-                                </template>
-                                <DividerConfig />
-                            </el-collapse-item>
-                            <el-collapse-item v-if="config.location?.enable">
-                                <template #title>
-                                    <h3>地理位置</h3>
-                                </template>
-                                <LocationConfig :text="img.locationText" />
-                            </el-collapse-item>
-                            <el-collapse-item>
-                                <template #title>
-                                    <h3>自定义文本</h3>
-                                </template>
-                                <el-button @click="addCustomLabel">添加自定义文本</el-button>
-                                <LabelsConfig v-for="label in config.labels" :config="label" :key="label.name"
-                                    @remove="removeCustomLabel" />
-                            </el-collapse-item>
-                            <el-collapse-item>
-                                <template #title>
-                                    <h3>自定义图片</h3>
-                                </template>
-                                <el-button @click="addCustomImage">添加自定义图片</el-button>
-                                <ImageConfig v-for="image in config?.images" :config="image" :key="image.title"
-                                    @remove="removeCustomImage(image.title)"></ImageConfig>
-                            </el-collapse-item>
-                        </el-collapse>
+                        <div class="float-menu">
+                            <HorizontalScroll>
+                                <div v-for="item in menuItems" class="float-menu-item"
+                                    :class="item.component === curConfigComponent ? 'active' : ''" :key="item.value"
+                                    @click="curConfigComponent = item.component">
+                                    {{ item.label }}
+                                </div>
+                            </HorizontalScroll>
+                        </div>
+                        <component :is="curConfigComponent"></component>
                     </el-tab-pane>
                     <el-tab-pane label="图片" name="picture">
                         <RadiusConfig />
@@ -266,8 +210,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch, provide } from 'vue'
-import { print, getWatermarkList, getSupportedFonts, defaultLabelConfig, defaultImageConfig } from '../assets/tools'
+import { computed, reactive, ref, watch, provide, type Component, shallowRef, markRaw } from 'vue'
+import { print, getWatermarkList, getSupportedFonts } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading } from '@element-plus/icons-vue';
@@ -288,14 +232,28 @@ import ShadowConfig from '../components/ShadowConfig.vue'
 import PaddingConfig from '../components/PaddingConfig.vue'
 import ImageInfo from '../components/ImageInfo.vue'
 import LocationConfig from '../components/LocationConfig.vue'
-import LabelsConfig from '../components/LabelsConfig.vue';
-import ImageConfig from '../components/ImageConfig.vue'
+import Filter from '../components/Filter.vue';
 const store = useStore();
 
 import { useExifStore } from '../stores/exif'
-import Filter from '../components/Filter.vue';
+import CustomLabels from '../components/CustomLabels.vue';
+import CustomImages from '../components/CustomImages.vue';
 const exifStore = useExifStore();
 
+
+const menuItems = ref([
+    { label: '滤镜', value: 'filter', component: markRaw(Filter) },
+    { label: 'Logo', value: 'logo', component: markRaw(LogoConfig) },
+    { label: '型号', value: 'model', component: markRaw(ModelConfig) },
+    { label: '参数', value: 'params', component: markRaw(ParamsConfig) },
+    { label: '时间', value: 'time', component: markRaw(TimeConfig) },
+    { label: '位置', value: 'location', component: markRaw(LocationConfig) },
+    { label: '镜头', value: 'lens', component: markRaw(LensConfig) },
+    { label: '分割线', value: 'divider', component: markRaw(DividerConfig) },
+    { label: '自定义文本', value: 'labels', component: markRaw(CustomLabels) },
+    { label: '自定义图片', value: 'images', component: markRaw(CustomImages) },
+])
+const curConfigComponent = shallowRef<Component>(Filter);
 
 // 是否开发环境
 const isDev = computed(() => import.meta.env.DEV)
@@ -546,7 +504,7 @@ const handleDraw = useDebounceFn(() => {
                 new Date(img.exif?.DateTimeOriginal as number),
                 timeConfig.format
             );
-            img.lensText = lens.text || exif?.LensModel;
+            img.lensText = lens.text || exif?.LensModel || "";
             img.locationText = locationConfig?.text || getLocationText(img.exif);
 
             const canvas = imgCanvas.value;
@@ -755,23 +713,6 @@ const preview = () => {
         canvasBox.style.maxHeight = '65vh';
     }
 }
-
-function addCustomLabel() {
-    config.labels = config?.labels || [];
-    config?.labels?.unshift(JSON.parse(JSON.stringify(defaultLabelConfig)));
-}
-
-function removeCustomLabel(name: string) {
-    config?.labels?.splice(config?.labels?.findIndex(item => item.name === name), 1);
-}
-
-function addCustomImage() {
-    config.images = config?.images || [];
-    config?.images?.unshift(JSON.parse(JSON.stringify(defaultImageConfig)));
-}
-function removeCustomImage(title: string) {
-    config?.images?.splice(config?.images?.findIndex(item => item.title === title), 1);
-}
 </script>
 
 <style lang='less' scoped>
@@ -910,6 +851,36 @@ function removeCustomImage(title: string) {
         box-sizing: border-box;
         transition-duration: 1s;
         max-height: 100vh;
+    }
+}
+
+.float-menu {
+    position: sticky;
+    top: 0px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    padding-bottom: 10px;
+    z-index: 2;
+    background-color: #FFF;
+
+    >div {
+        gap: 10px;
+    }
+
+    .float-menu-item {
+        padding: 3px 10px;
+        cursor: pointer;
+        border: 1.5px solid gainsboro;
+        border-radius: 30px;
+        font-size: 12px;
+
+        &.active {
+            @color: var(--el-color-primary);
+            color: @color;
+            border-color: @color;
+        }
     }
 }
 

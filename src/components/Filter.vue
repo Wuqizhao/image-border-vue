@@ -20,6 +20,9 @@
             <el-slider v-model="store.config.filter.invert" :min="0" :max="100"
                 @dblclick="store.config.filter.invert = 0"></el-slider>
         </el-form-item>
+        <el-form-item>
+            <el-button type="default" size="small" plain @click="reset">重置滤镜</el-button>
+        </el-form-item>
     </el-form>
 </template>
 
@@ -28,6 +31,11 @@ import { useStore } from '../stores/index'
 const store = useStore();
 
 const filter = store.config.filter;
+const backup = JSON.parse(JSON.stringify(filter));
+
+function reset() {
+    Object.assign(store.config.filter, backup);
+}
 </script>
 
 <style lang='less' scoped></style>
