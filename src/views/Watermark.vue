@@ -199,7 +199,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch, provide, type Component, shallowRef, markRaw } from 'vue'
-import { print, getWatermarkList, getSupportedFonts } from '../assets/tools'
+import { print, getWatermarkList, getSupportedFonts, defaultConfig } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading } from '@element-plus/icons-vue';
@@ -228,6 +228,7 @@ const exifStore = useExifStore();
 import CustomLabels from '../components/CustomLabels.vue';
 import CustomImages from '../components/CustomImages.vue';
 import WatermarkPadding from '../components/WatermarkPadding.vue'
+import { storeToRefs } from 'pinia';
 
 
 const menuItems = ref([
@@ -280,7 +281,7 @@ const defaultImgValue: Img = {
 const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
 const fileList = ref<File[]>([]);
-const config = (store.config);
+const { config } = storeToRefs(store);
 
 const watermarks = ref<WatermarkListItem[]>(getWatermarkList())
 const curWatermarkIndex = ref<number>(0)
@@ -390,7 +391,7 @@ const showConfigDialog = () => {
     // 弹出对话框
     saveConfigDialog.show = true;
     saveConfigDialog.name = '自定义配置' + new Date().getTime();
-    saveConfigDialog.config = JSON.stringify(config, null, 4);
+    saveConfigDialog.config = JSON.stringify(config.value, null, 4);
 }
 
 const saveConfig = () => {
@@ -405,7 +406,7 @@ const saveConfig = () => {
         const watermark: LocalWaterMarkItem = {
             name: saveConfigDialog.name,
             config: temp_config,
-            config_name: config.name,
+            config_name: config.value.name,
         };
 
         // 保存到pinia
@@ -450,7 +451,7 @@ const handleDraw = useDebounceFn(() => {
         const file = curFile.value;
         if (!file) return;
 
-        const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig, location: locationConfig } = config;
+        const { watermark, paddings: imgPaddings, blur: blurConfig, shadow: shadowConfig, radius: radiusConfig, logo: logoConfig, location: locationConfig } = config.value;
         const { model, params: paramsConfig, time: timeConfig, lens, bgColor } = watermark;
 
         _img.src = getImageSrc(file);
@@ -512,7 +513,7 @@ const handleDraw = useDebounceFn(() => {
             const realImgHeight = img.height;
 
 
-            const { rect1, rect2, canvasWidth, canvasHeight } = caculateCanvasSize(config, img);
+            const { rect1, rect2, canvasWidth, canvasHeight } = caculateCanvasSize(config.value, img);
             // 修改画布大小
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
@@ -576,8 +577,8 @@ const handleDraw = useDebounceFn(() => {
             ctx.clip();
 
             // 滤镜
-            if (config.filter) {
-                ctx.filter = `brightness(${config.filter.brightness}%) contrast(${config.filter.contrast}%) saturate(${config.filter.saturation}%) grayscale(${config.filter.grayscale}%) invert(${config.filter.invert}%)`;
+            if (config.value.filter) {
+                ctx.filter = `brightness(${config.value.filter.brightness}%) contrast(${config.value.filter.contrast}%) saturate(${config.value.filter.saturation}%) grayscale(${config.value.filter.grayscale}%) invert(${config.value.filter.invert}%)`;
             }
             // 绘制图片
             ctx.drawImage(
@@ -597,7 +598,7 @@ const handleDraw = useDebounceFn(() => {
 
 
             // 执行绘制前的操作
-            config.beforeDraw && config.beforeDraw(canvas);
+            config.value.beforeDraw && config.value.beforeDraw(canvas);
 
 
             // 绘制水印范围的背景颜色
@@ -607,19 +608,19 @@ const handleDraw = useDebounceFn(() => {
             }
 
             // 执行模板的绘制函数
-            config.draw(img, config, {
+            config.value.draw(img, config.value, {
                 ctx, canvas, rect1, rect2, exposureTime, focalLength,
             });
 
 
             // 绘制自定义的文本和图片
-            drawCustomLabelsAndImages(ctx, config.labels, config.images);
+            drawCustomLabelsAndImages(ctx, config.value.labels, config.value.images);
 
             // 绘制辅助线
             drawAuxiliaryLines(canvas, auxiliaryLines, rect1, rect2);
 
             // 执行绘制结束后的操作
-            config.afterDraw && config.afterDraw(ctx);
+            config.value.afterDraw && config.value.afterDraw(ctx);
 
             // 释放图片
             URL.revokeObjectURL(_img.src);
@@ -676,13 +677,19 @@ function importConfig(val: number): void {
             break;
     }
     configPromise.then(res => {
+        // 内置配置
         let config_value = deepClone(res.default as Config);
+
         if (watermark.is_local) {
             let local_value = JSON.parse(watermark.config) as Config;
-            // 合并对象
             config_value = Object.assign(config_value, local_value);
         }
-        Object.assign(config, config_value);
+
+        store.config = Object.assign({}, config_value, defaultConfig, config_value);
+
+        console.log('store', store.config.watermark.bg);
+
+
 
         ElMessage.success(`配置【${watermark.name}】导入成功~`);
     }).catch(err => {

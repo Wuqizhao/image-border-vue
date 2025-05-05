@@ -169,13 +169,13 @@ export declare interface Logo {
 	 */
 	enable: boolean;
 	/**
-	 * 是否自动匹配logo
-	 */
-	auto: boolean;
-	/**
 	 * 是否显示logo
 	 */
 	show: boolean;
+	/**
+	 * 是否自动匹配logo
+	 */
+	auto: boolean;
 	/**
 	 * logo名称
 	 */
