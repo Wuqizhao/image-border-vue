@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <div class="config-box" v-show="!fileList.length">
+        <div class="config-box">
             <div class="tabs-container">
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="文件" name="info">
