@@ -25,7 +25,7 @@
             </label>
         </el-form-item>
     </el-form>
-    <div v-else>配置不可用</div>
+    <el-result icon="error" title="当前模板不支持该配置~" v-else></el-result>
 </template>
 
 <script setup lang="ts">

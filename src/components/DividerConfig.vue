@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="70">
+    <el-form label-width="70" v-if="config.divider.enable">
         <el-form-item label="显示">
             <el-switch v-model="config.divider.show"></el-switch>
         </el-form-item>
@@ -19,6 +19,7 @@
             </el-form-item>
         </div>
     </el-form>
+    <el-result icon="error" title="当前模板不支持该配置~" v-else></el-result>
 </template>
 
 <script setup lang="ts">

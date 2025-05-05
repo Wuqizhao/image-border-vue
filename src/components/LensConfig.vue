@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="50px">
+    <el-form label-width="50px" v-if="config.watermark.lens.enable">
         <el-form-item label="显示">
             <el-switch v-model="config.watermark.lens.show"></el-switch>
         </el-form-item>
@@ -24,6 +24,7 @@
             </label>
         </el-form-item>
     </el-form>
+    <el-result icon="error" title="当前模板不支持该配置~" v-else></el-result>
 </template>
 
 <script setup lang="ts">
