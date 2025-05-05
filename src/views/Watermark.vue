@@ -686,11 +686,6 @@ function importConfig(val: number): void {
         }
 
         store.config = Object.assign({}, config_value, defaultConfig, config_value);
-
-        console.log('store', store.config.watermark.bg);
-
-
-
         ElMessage.success(`配置【${watermark.name}】导入成功~`);
     }).catch(err => {
         ElNotification.error({
