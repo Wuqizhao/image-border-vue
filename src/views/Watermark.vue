@@ -6,14 +6,15 @@
 
             <div class="download" v-show="showTools && fileList.length > 0">
                 <Plus @click="selectFile(true)" />
-                <ArrowLeft v-if="fileList.length>1" @click="prev" />
-                <ArrowRight v-if="fileList.length>1" @click="next" />
+                <Delete @click="removeImg" />
+                <ArrowLeft v-if="fileList.length > 1" @click="prev" />
+                <ArrowRight v-if="fileList.length > 1" @click="next" />
                 <RefreshLeft @click="resetWatermark" />
                 <Download @click="download(img.export.name, img.export.quality, img.export.ext)" />
             </div>
         </div>
 
-        <div class="config-box">
+        <div class="config-box" v-show="!fileList.length">
             <div class="tabs-container">
                 <el-tabs v-model="activeName">
                     <el-tab-pane label="文件" name="info">
@@ -433,7 +434,9 @@ const saveConfig = () => {
     }
 }
 
-function removeImg(index: number) {
+function removeImg(index?: number) {
+    index = (index === undefined || typeof index != 'number') ? fileList.value.findIndex((item) => item === curFile.value) : index;
+    index === -1 && ElMessage.error('文件不存在！');
     const isCurrentFile = fileList.value[index] == curFile.value;
     // 删除指定下标的图片文件
     fileList.value = fileList.value.filter((_, i) => i !== index);
@@ -869,6 +872,13 @@ function next() {
         transition-duration: 1s;
         max-height: 100vh;
     }
+
+    &:hover {
+        .download {
+            transform: translateY(0px);
+            transition-duration: .5s;
+        }
+    }
 }
 
 .float-menu {
@@ -904,13 +914,12 @@ function next() {
 .download {
     background-color: rgba(0, 0, 0, 0.2);
     position: absolute;
-    // top: 10px;
-    // left: 20px;
     display: flex;
     align-items: center;
     gap: 5px;
     padding: 3px;
     border-radius: 3px;
+    transform: translateY(-200%);
 
     >* {
         color: #FFF;
@@ -949,6 +958,10 @@ function next() {
         .btns {
             justify-content: space-between;
         }
+    }
+
+    .download {
+        transform: translateY(0px);
     }
 }
 
