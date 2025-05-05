@@ -3,6 +3,14 @@
         <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
             <canvas ref="imgCanvas" id="imgCanvas" v-if="curFile" @click="preview">您的浏览器不支持Canvas!</canvas>
             <el-empty description="点击添加图片~" v-else @click="selectFile"></el-empty>
+
+            <div class="download" v-show="showTools && fileList.length > 0">
+                <Plus @click="selectFile(true)" />
+                <ArrowLeft v-if="fileList.length>1" @click="prev" />
+                <ArrowRight v-if="fileList.length>1" @click="next" />
+                <RefreshLeft @click="resetWatermark" />
+                <Download @click="download(img.export.name, img.export.quality, img.export.ext)" />
+            </div>
         </div>
 
         <div class="config-box">
@@ -54,6 +62,9 @@
                                 </el-select>
                                 <p class="tips">仅支持部分字体！</p>
                             </el-form-item>
+                            <el-form-item label="悬浮工具">
+                                <el-switch v-model="showTools"></el-switch>
+                            </el-form-item>
                         </el-form>
 
                         <ImageInfo v-if="curFile" :img="img" />
@@ -92,10 +103,7 @@
                         </div>
                         <component :is="curConfigComponent"></component>
                     </el-tab-pane>
-                    <el-tab-pane label="图片" name="picture">
-                        <RadiusConfig />
-                        <ShadowConfig />
-                        <BlurConfig />
+                    <el-tab-pane label="边距" name="picture">
                         <PaddingConfig />
                     </el-tab-pane>
                     <el-tab-pane label="导出" name="export">
@@ -202,7 +210,7 @@ import { computed, reactive, ref, watch, provide, type Component, shallowRef, ma
 import { print, getWatermarkList, getSupportedFonts, defaultConfig } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
-import { Delete, Loading } from '@element-plus/icons-vue';
+import { Delete, Loading, Download, Plus, ArrowLeft, ArrowRight, RefreshLeft } from '@element-plus/icons-vue';
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
@@ -241,6 +249,9 @@ const menuItems = ref([
     { label: '位置', value: 'location', component: markRaw(LocationConfig) },
     { label: '镜头', value: 'lens', component: markRaw(LensConfig) },
     { label: '分割线', value: 'divider', component: markRaw(DividerConfig) },
+    { label: '圆角', value: 'radius', component: markRaw(RadiusConfig) },
+    { label: '阴影', value: 'shadow', component: markRaw(ShadowConfig) },
+    { label: '背景', value: 'background', component: markRaw(BlurConfig) },
     { label: '自定义文本', value: 'labels', component: markRaw(CustomLabels) },
     { label: '自定义图片', value: 'images', component: markRaw(CustomImages) },
 ])
@@ -292,6 +303,7 @@ const saveConfigDialog = reactive({
     name: '',
     config: '',
 })
+const showTools = ref(true)
 
 provide('img', img)
 function deleteWatermark(name: string, event: Event) {
@@ -705,6 +717,19 @@ const preview = () => {
         canvasBox.style.maxHeight = '65vh';
     }
 }
+
+function prev() {
+    const index = fileList.value.findIndex(item => curFile.value === item)
+    if (index !== -1) {
+        // 找到上一张的坐标，支持循环
+        changeCurFile(fileList.value[(index - 1 + fileList.value.length) % (fileList.value.length)])
+    }
+}
+function next() {
+    const index = fileList.value.findIndex(item => curFile.value === item)
+    if (index === -1) return;
+    changeCurFile(fileList.value[(index + 1) % (fileList.value.length)])
+}
 </script>
 
 <style lang='less' scoped>
@@ -874,6 +899,30 @@ const preview = () => {
             border-color: @color;
         }
     }
+}
+
+.download {
+    background-color: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    // top: 10px;
+    // left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px;
+    border-radius: 3px;
+
+    >* {
+        color: #FFF;
+        width: 20px;
+        height: 20px;
+
+        &:hover {
+            color: var(--el-color-primary);
+        }
+    }
+
+    cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {

@@ -1,6 +1,6 @@
 <template>
     <el-form label-width="70px">
-        <h3 style="margin-bottom: 1rem;">背景</h3>
+        <!-- <h3 style="margin-bottom: 1rem;">背景</h3> -->
         <el-form-item label="类型">
             <el-radio-group v-model="config.blur.type">
                 <el-radio label="纯色" value="color"></el-radio>
