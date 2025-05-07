@@ -10,7 +10,7 @@
                 <ArrowLeft v-if="fileList.length > 1" @click="prev" />
                 <ArrowRight v-if="fileList.length > 1" @click="next" />
                 <RefreshLeft @click="resetWatermark" />
-                <Download @click="download(img.export.name, img.export.quality, img.export.ext)" />
+                <Download @click="download(imgCanvas, img)" />
             </div>
         </div>
 
@@ -125,8 +125,7 @@
                                 <p class="tips">推荐0.97，兼顾画质和文件大小。</p>
                             </el-form-item>
                             <el-form-item label="">
-                                <el-button type="primary" plain
-                                    @click="download(img.export.name, img.export.quality, img.export.ext)"
+                                <el-button type="primary" plain @click="download(imgCanvas, img)"
                                     :disabled="!curFile">导出当前图片</el-button>
                                 <el-button v-show="fileList.length > 1" type="success" plain
                                     @click="batchExportVisible = true">批量导出</el-button>

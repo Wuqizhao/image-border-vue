@@ -6,7 +6,6 @@ import type {
 	Config,
 	ImagesConfigItem,
 	Img,
-	ImgExt,
 	LabelConfigItem,
 	Logo,
 	Point,
@@ -35,12 +34,12 @@ export function convertExposureTime(exposureTime: number) {
  * @returns Promise<void>t download('my-image', 0.8, 'png')
  * ```
  */
-export async function download(
-	name: string,
-	quality: number = 0.97,
-	ext: ImgExt = "jpeg"
-) {
-	const canvas = document.getElementById("imgCanvas") as HTMLCanvasElement;
+export async function download(canvas: null | HTMLCanvasElement, config: Img) {
+	const {
+		name = config.fileName,
+		quality = 0.97,
+		ext = "jpeg",
+	} = config.export;
 	if (!canvas) throw new Error("canvas不存在");
 	const mimeType = `image/${ext.toLowerCase()}`;
 
