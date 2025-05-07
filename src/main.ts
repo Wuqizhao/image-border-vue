@@ -9,6 +9,7 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 // 引入中文语言包
 import { zhCn } from "element-plus/es/locales.mjs";
+import "uno.css";
 
 import router from "./routers";
 
