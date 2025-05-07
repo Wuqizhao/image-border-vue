@@ -207,7 +207,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch, provide, type Component, shallowRef, markRaw } from 'vue'
-import { print, getWatermarkList, getSupportedFonts, defaultConfig } from '../assets/tools'
+import { print, getWatermarkList, getSupportedFonts, defaultConfig, defaultExif } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
 import { Delete, Loading, Download, Plus, ArrowLeft, ArrowRight, RefreshLeft } from '@element-plus/icons-vue';
@@ -475,20 +475,17 @@ const handleDraw = useDebounceFn(() => {
             img.height = _img.height;
 
             // 读取exif信息
-            const exif = exifStore.getExif(file) || await Exifr.parse(file);
-            exifStore.addExif(file, exif);
+            let exif = exifStore.getExif(file) || await Exifr.parse(file);
 
             if (exif === undefined) {
                 ElNotification({
                     title: '错误',
-                    message: '未读取到Exif信息，请更换图片！(比如相机或者原相机拍摄的原图)',
+                    message: '未读取到Exif信息，请手动更改参数或者更换图片！(比如相机或者原相机拍摄的原图)',
                     type: 'error',
                 });
-                // 从文件列表删除当前图片
-                fileList.value = fileList.value.filter(item => item !== file);
-                curFile.value = null;
-                return;
+                exif = defaultExif;
             }
+            exifStore.addExif(file, exif);
 
             img.exif = exif;
             img.modelText = model.text || img.exif?.Model || '--';
@@ -525,6 +522,10 @@ const handleDraw = useDebounceFn(() => {
 
             const realImgWidth = img.width;
             const realImgHeight = img.height;
+
+            if (realImgWidth <= 800 || realImgHeight <= 800) {
+                ElMessage.warning("图片尺寸过小，样式可能错乱！");
+            }
 
 
             const { rect1, rect2, canvasWidth, canvasHeight } = caculateCanvasSize(config.value, img);
