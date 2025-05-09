@@ -12,6 +12,10 @@ const routes = [
 		name: "grid",
 		component: () => import("../views/Grid.vue"),
 	},
+	{
+		path: "/:pathMatch(.*)*",
+		redirect: "/",
+	},
 ];
 
 const router = createRouter({
