@@ -13,11 +13,6 @@ const routes = [
 		component: () => import("../views/Grid.vue"),
 	},
 	{
-		path: "/handwritting",
-		name: "handwritting",
-		component: () => import("../views/Handwritting.vue"),
-	},
-	{
 		path: "/:pathMatch(.*)*",
 		redirect: "/",
 	},
