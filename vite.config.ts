@@ -8,7 +8,7 @@ export default defineConfig({
 		host: "0.0.0.0", // 允许外部访问
 		proxy: {
 			'/img': {
-				target: 'http://api.lsfd.asia/public/index.php/common/proxy_img',
+				target: 'http://api.lsfd.asia',
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/img/, '/public/index.php/common/proxy_img')
 			}
