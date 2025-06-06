@@ -17,14 +17,14 @@ const doDraw: DrawFun = async (img, config, context) => {
 	} = watermark;
 	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
 
-	config.font = config.font.replace(/\.ttf|\.TTF/, '');
+	config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, '');
 
 	// 绘制型号
 	if (modelConfig.show) {
 		ctx.save(); // 保存当前绘图状态
 		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
 			modelConfig.bold ? "bold" : ""
-		} ${modelConfig.size}px ${config.font || "隶书"}`;
+		} ${modelConfig.size}px ${config.font}`;
 		ctx.fillStyle = modelConfig.color;
 		ctx.textAlign = "left";
 		ctx.textBaseline = "middle";
