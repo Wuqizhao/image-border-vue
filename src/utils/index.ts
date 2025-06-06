@@ -214,7 +214,7 @@ export function drawCustomLabelsAndImages(
 			ctx.save();
 			ctx.textAlign = label.align;
 			ctx.textBaseline = label.verticalAlign;
-			const font = label.font.replace(/\.ttf|\.TTF/, '');
+			const font = label.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
 			ctx.font = `${label.bold ? "bold" : ""} ${label.italic ? "italic" : ""} ${
 				label.size
 			}px ${font}`;
