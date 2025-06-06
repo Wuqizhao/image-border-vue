@@ -111,8 +111,12 @@ export function deepClone<T>(value: T): T {
  */
 export function getImageSrc(file: File | string) {
 	if (typeof file === "string") {
-		if (file.startsWith("http") || file.startsWith("blob")) {
+		if (file.startsWith("blob")) {
 			return file;
+		}
+
+		if (file.startsWith("http")) {
+			return "/img?url=" + file;
 		}
 
 		return "./logos/" + file + ".png";
@@ -210,9 +214,10 @@ export function drawCustomLabelsAndImages(
 			ctx.save();
 			ctx.textAlign = label.align;
 			ctx.textBaseline = label.verticalAlign;
+			const font = label.font.replace(/\.ttf|\.TTF/, '');
 			ctx.font = `${label.bold ? "bold" : ""} ${label.italic ? "italic" : ""} ${
 				label.size
-			}px ${label.font}`;
+			}px ${font}`;
 
 			if (label.stroke) {
 				ctx.lineWidth = label.strokeWidth;

@@ -206,7 +206,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch, provide, type Component, shallowRef, markRaw } from 'vue'
+import { computed, reactive, ref, watch, provide, type Component, shallowRef, markRaw, onMounted } from 'vue'
 import { print, getWatermarkList, getSupportedFonts, defaultConfig, defaultExif } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
@@ -733,6 +733,31 @@ function next() {
     if (index === -1) return;
     changeCurFile(fileList.value[(index + 1) % (fileList.value.length)])
 }
+
+function loadFonts(fonts: string[]) {
+    // 1. 创建<style>元素
+    const style = document.createElement('style');
+    style.id = 'dynamic-fonts';
+    fonts.reverse();
+    // 2. 生成CSS规则
+    let css = '';
+    fonts.forEach(font => {
+        let fontName = font.replace(/(\.ttf|\.TTF)$/, '');
+        css += `
+            @font-face {
+                font-family: '${fontName}';
+                src: url('fonts/${font}');
+            }
+    `;
+    });
+
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
+onMounted(() => {
+    loadFonts(getSupportedFonts());
+})
 </script>
 
 <style lang='less' scoped>
