@@ -1,7 +1,8 @@
 <template>
     <div class="box">
         <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
-            <canvas ref="imgCanvas" id="imgCanvas" v-if="curFile" @click="preview">您的浏览器不支持Canvas!</canvas>
+            <canvas ref="imgCanvas" id="imgCanvas" v-if="curFile" @click="preview" @mousedown="onMouseDown"
+                @mouseup="onMouseUp" @mousemove="onMouseMove">您的浏览器不支持Canvas!</canvas>
             <el-empty description="点击添加图片~" v-else @click="selectFile"></el-empty>
 
             <div class="download" v-show="showTools && fileList.length > 0">
@@ -16,12 +17,20 @@
 
         <div class="config-box">
             <div class="tabs-container">
-                <el-tabs v-model="activeName">
-                    <el-tab-pane label="文件" name="info">
-                        <HorizontalScroll class="img-list" v-if="fileList.length">
+                <el-tabs v-model="activeName" :tab-position="isMobile() ? 'bottom' : 'right'" type="border-card">
+                    <el-tab-pane name="info">
+                        <template #label>
+                            <el-icon>
+                                <Files />
+                            </el-icon>
+                            <span>文件</span>
+                        </template>
+                        <h3>文件列表</h3>
+                        <HorizontalScroll class="img-list" style="margin-bottom: 20px;">
                             <el-button plain @click="selectFile(true)"
                                 style="height: 64px;position: sticky;left: 0px;z-index:1;">添加</el-button>
-                            <div class="img-item" v-for="(item, index) in enhancedFileList" :key="item.name">
+                            <div class="img-item" v-for="(item, index) in enhancedFileList" :key="item.name"
+                                v-if="fileList.length">
                                 <el-image fit="cover" :src="item.url" @click="changeCurFile(fileList[index])"
                                     :data-index="index + 1">
                                 </el-image>
@@ -30,7 +39,41 @@
                                 </el-icon>
                             </div>
                         </HorizontalScroll>
-                        <h3 style="margin-top: 10px;">样式</h3>
+
+
+                        <ImageInfo :img="img" />
+
+                        <h3>辅助工具</h3>
+                        <el-form-item label="悬浮工具">
+                            <el-switch v-model="showTools"></el-switch>
+                        </el-form-item>
+                        <el-form-item label="辅助线">
+                            <b style="margin-left: 20px;">水平中心线：</b>
+                            <el-switch v-model="auxiliaryLines.horizontalCenter"></el-switch>
+                            <b style="margin-left: 20px;">垂直中心线：</b>
+                            <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
+
+                            <b style="margin-left: 20px;">水印水平中心线：</b>
+                            <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
+                        </el-form-item>
+                        <el-form-item label="水印范围">
+                            <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
+                        </el-form-item>
+
+                        <div style="padding:10px 0px">
+                            <router-link to="/grid">
+                                <el-button>九宫格分割工具</el-button>
+                            </router-link>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="template">
+                        <template #label>
+                            <el-icon>
+                                <Notebook />
+                            </el-icon>
+                            <span>模板</span>
+                        </template>
+                        <h3>模板</h3>
                         <el-form label-width="70px">
                             <el-form-item label="选择样式">
                                 <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式" v-if="!isMobile()"
@@ -63,36 +106,16 @@
                                 </el-select>
                                 <p class="tips">仅支持部分字体！</p>
                             </el-form-item>
-                            <el-form-item label="悬浮工具">
-                                <el-switch v-model="showTools"></el-switch>
-                            </el-form-item>
+                            <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
                         </el-form>
-
-                        <ImageInfo v-if="curFile" :img="img" />
-
-
-                        <div v-if="isDev">
-                            <h3>开发工具</h3>
-                            <el-form-item label="辅助线">
-                                <b style="margin-left: 20px;">水平中心线：</b>
-                                <el-switch v-model="auxiliaryLines.horizontalCenter"></el-switch>
-                                <b style="margin-left: 20px;">垂直中心线：</b>
-                                <el-switch v-model="auxiliaryLines.verticalCenter"></el-switch>
-                                <b style="margin-left: 20px;">水印范围：</b>
-                                <el-switch v-model="auxiliaryLines.watermarkRange"></el-switch>
-                                <b style="margin-left: 20px;">水印水平中心线：</b>
-                                <el-switch v-model="auxiliaryLines.watermarkHorizontalCenter"></el-switch>
-                                <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
-                            </el-form-item>
-                        </div>
-
-                        <div style="padding:10px 0px">
-                            <router-link to="/grid">
-                                <el-button>九宫格分割工具</el-button>
-                            </router-link>
-                        </div>
                     </el-tab-pane>
-                    <el-tab-pane label="水印" name="watermark">
+                    <el-tab-pane name="watermark">
+                        <template #label>
+                            <el-icon>
+                                <EditPen />
+                            </el-icon>
+                            <span>编辑</span>
+                        </template>
                         <div class="float-menu">
                             <HorizontalScroll>
                                 <div v-for="item in menuItems" class="float-menu-item"
@@ -104,10 +127,43 @@
                         </div>
                         <component :is="curConfigComponent"></component>
                     </el-tab-pane>
-                    <el-tab-pane label="边距" name="picture">
+                    <el-tab-pane name="picture">
+                        <template #label>
+                            <el-icon>
+                                <Cellphone />
+                            </el-icon>
+                            <span>边距</span>
+                        </template>
+                        <h3>水印边距</h3>
+                        <WatermarkPadding />
                         <PaddingConfig />
                     </el-tab-pane>
-                    <el-tab-pane label="导出" name="export">
+                    <el-tab-pane name="custom-labels">
+                        <template #label>
+                            <el-icon>
+                                <EditPen />
+                            </el-icon>
+                            <span>文本</span>
+                        </template>
+                        <CustomLabels />
+                    </el-tab-pane>
+                    <el-tab-pane name="custom-images">
+                        <template #label>
+                            <el-icon>
+                                <Picture />
+                            </el-icon>
+                            <span>图片</span>
+                        </template>
+                        <CustomImages />
+                    </el-tab-pane>
+                    <el-tab-pane name="export">
+                        <template #label>
+                            <el-icon>
+                                <FolderChecked />
+                            </el-icon>
+                            <span>导出</span>
+                        </template>
+                        <h3>导出配置</h3>
                         <el-form label-width="70" style="margin-top: 10px;">
                             <el-form-item label="文件名">
                                 <el-input v-model="img.export.name" :disabled="!curFile" placeholder="留空则由浏览器决定"
@@ -183,7 +239,7 @@
                     style="display: flex;flex-direction: column;justify-content: space-between;align-items: center;margin-top: 1rem;gap: 20px;">
                     <el-image :width="240" :height="180" fit="cover" @click="curWatermarkIndex = index"
                         style="width: 240px;max-height: 180px;border: 1px solid #ccc;cursor: pointer;box-shadow: 1px 5px 10px rgba(0,0,0,0.3);"
-                        :style="{ border: (index === curWatermarkIndex) ? '2px solid salmon' : '2px solid #ccc' }"
+                        :style="{ border: (index === curWatermarkIndex) ? '2px solid gray' : '2px solid #ccc' }"
                         :src="item?.url">
                         <template #placeholder>
                             <el-icon>
@@ -206,10 +262,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch, provide, type Component, shallowRef, markRaw, onMounted } from 'vue'
+import { reactive, ref, watch, provide, type Component, shallowRef, markRaw, onMounted } from 'vue'
 import { print, getWatermarkList, getSupportedFonts, defaultConfig, defaultExif } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
+import { Files, EditPen, FolderChecked, Cellphone, Picture, Notebook } from '@element-plus/icons-vue'
 import { Delete, Loading, Download, Plus, ArrowLeft, ArrowRight, RefreshLeft } from '@element-plus/icons-vue';
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
@@ -241,7 +298,6 @@ import { storeToRefs } from 'pinia';
 
 const menuItems = ref([
     { label: '滤镜', value: 'filter', component: markRaw(Filter) },
-    { label: '边距', value: 'padding', component: markRaw(WatermarkPadding) },
     { label: 'Logo', value: 'logo', component: markRaw(LogoConfig) },
     { label: '型号', value: 'model', component: markRaw(ModelConfig) },
     { label: '参数', value: 'params', component: markRaw(ParamsConfig) },
@@ -258,7 +314,7 @@ const menuItems = ref([
 const curConfigComponent = shallowRef<Component>(LogoConfig);
 
 // 是否开发环境
-const isDev = computed(() => import.meta.env.DEV)
+// const isDev = computed(() => import.meta.env.DEV)
 // 画布
 const imgCanvas = ref<HTMLCanvasElement | null>(null)
 const showConfigDrawer = ref(false);
@@ -314,6 +370,56 @@ function deleteWatermark(name: string, event: Event) {
         watermarks.value = getWatermarkList();
         curWatermarkIndex.value = 0;
     }
+}
+
+const mousedownPosition = ref({
+    x: 0,
+    y: 0,
+});
+function onMouseDown(event: MouseEvent) {
+    console.log('onMouseDown', event);
+    mousedownPosition.value = {
+        x: event.clientX,
+        y: event.clientY,
+    };
+}
+function onMouseMove(event: MouseEvent) {
+    // console.log('onMouseMove',event);
+    event
+}
+function onMouseUp(event: MouseEvent) {
+    console.log('onMouseUp', event);
+
+    // 获取自定义文本列表
+    const customTextList = config.value.labels;
+    // 更新位置
+    if (customTextList) {
+        customTextList.forEach((item, index) => {
+            if (!imgCanvas.value) return;
+            if (!item.draggable) return;
+            // canvas实际渲染大小
+            const canvasWidth = imgCanvas.value.clientWidth;
+            const canvasHeight = imgCanvas.value.clientHeight;
+
+            // 计算缩放比例
+            const scaleX = imgCanvas.value.width / canvasWidth;
+            const scaleY = imgCanvas.value.height / canvasHeight;
+
+
+            const mouseX = item.x + (event.clientX - mousedownPosition.value.x) * scaleX;
+            const mouseY = item.y + (event.clientY - mousedownPosition.value.y) * scaleY;
+
+
+            // 更新config
+            customTextList[index].x = mouseX;
+            customTextList[index].y = mouseY;
+        })
+    };
+
+    mousedownPosition.value = {
+        x: 0,
+        y: 0,
+    };
 }
 
 const onDrop = (event: DragEvent) => {
@@ -804,6 +910,16 @@ onMounted(() => {
                 overflow-y: auto;
             }
 
+            :deep(.el-tabs__item) {
+                padding: 40px 10px;
+                display: flex;
+                flex-direction: column;
+                font-size: 16px;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
             .el-tab-pane {
                 height: auto;
             }
@@ -982,6 +1098,10 @@ onMounted(() => {
 
         .btns {
             justify-content: space-between;
+        }
+
+        :deep(.el-tabs__item) {
+            flex-direction: row;
         }
     }
 

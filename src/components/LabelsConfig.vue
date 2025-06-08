@@ -6,7 +6,8 @@
         </h3>
         <el-form label-width="70px">
             <el-form-item label="显示">
-                <el-switch v-model="props.config.show"></el-switch>
+                <el-switch v-model="props.config.show" style="margin-right: 20px;"></el-switch>
+                <el-checkbox label="拖动模式" v-model="props.config.draggable"></el-checkbox>
             </el-form-item>
             <el-form-item label="文本">
                 <el-input v-model="props.config.text" placeholder="自定义文本，留空不显示~" clearable></el-input>
@@ -22,20 +23,20 @@
                     <el-button size="small" @click="props.config.text = injectImg?.locationText">位置</el-button>
                 </HorizontalScroll>
             </el-form-item>
-            <!-- <el-form-item label="对齐方式">
-            <el-radio-group v-model="props.config.align">
-                <el-radio label="left" value="left">左对齐</el-radio>
-                <el-radio label="center" value="center">居中</el-radio>
-                <el-radio label="right" value="right">右对齐</el-radio>
-            </el-radio-group>
-        </el-form-item>
-        <el-form-item label="垂直对齐">
-            <el-radio-group v-model="props.config.verticalAlign">
-                <el-radio label="top" value="left">顶部对齐</el-radio>
-                <el-radio label="center" value="middle">居中</el-radio>
-                <el-radio label="bottom" value="right">底部对齐</el-radio>
-            </el-radio-group>
-        </el-form-item> -->
+            <el-form-item label="对齐方式">
+                <el-radio-group v-model="props.config.align">
+                    <el-radio value="left">左对齐</el-radio>
+                    <el-radio value="center">居中</el-radio>
+                    <el-radio value="right">右对齐</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="垂直对齐">
+                <el-radio-group v-model="props.config.verticalAlign">
+                    <el-radio value="top">顶部对齐</el-radio>
+                    <el-radio value="center">居中</el-radio>
+                    <el-radio value="bottom">底部对齐</el-radio>
+                </el-radio-group>
+            </el-form-item>
             <el-form-item label="大小">
                 <el-slider show-input v-model="props.config.size" :min="12" :max="250">
                 </el-slider>
@@ -99,6 +100,7 @@ const props = defineProps({
             bold: Boolean,
             x: Number,
             y: Number,
+            draggable: Boolean,
         })
     },
 })

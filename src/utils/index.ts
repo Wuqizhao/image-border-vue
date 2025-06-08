@@ -219,6 +219,7 @@ export function drawCustomLabelsAndImages(
 				label.size
 			}px ${font}`;
 
+			// 描边效果
 			if (label.stroke) {
 				ctx.lineWidth = label.strokeWidth;
 				ctx.strokeStyle = label.color;
@@ -227,6 +228,7 @@ export function drawCustomLabelsAndImages(
 				ctx.fillStyle = label.color;
 				ctx.fillText(label.text, label.x, label.y);
 			}
+
 			ctx.restore();
 		}
 	}
