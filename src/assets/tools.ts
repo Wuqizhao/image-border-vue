@@ -274,6 +274,7 @@ export const defaultLabelConfig: LabelConfigItem = {
 	font: "微软雅黑",
 	stroke: false,
 	strokeWidth: 3,
+	draggable: false,
 };
 
 export const defaultImageConfig: ImagesConfigItem = {

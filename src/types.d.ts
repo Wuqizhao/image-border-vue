@@ -320,7 +320,7 @@ export declare interface LabelConfigItem {
 	bold: boolean;
 	stroke: boolean;
 	strokeWidth: number;
-	draggable: boolean;
+	draggable?: boolean;
 }
 export declare interface ImagesConfigItem {
 	title: string;
