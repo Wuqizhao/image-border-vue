@@ -229,6 +229,13 @@ export function drawCustomLabelsAndImages(
 				ctx.fillText(label.text, label.x, label.y);
 			}
 
+			if (label?.draggable) {
+				// 绘制边框
+				ctx.lineWidth = 3;
+				ctx.strokeStyle = "red";
+				ctx.strokeRect(label.x, label.y, ctx.measureText(label.text).width, label.size);
+			}
+
 			ctx.restore();
 		}
 	}

@@ -263,7 +263,7 @@ export const defaultLabelConfig: LabelConfigItem = {
 	name: `自定义文本(${new Date().getTime()})`,
 	show: true,
 	align: "left" as TextAlign,
-	verticalAlign: "middle" as TextVerticalAlign,
+	verticalAlign: "top" as TextVerticalAlign,
 	color: "#F00",
 	size: 160,
 	italic: false,

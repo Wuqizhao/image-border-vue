@@ -74,8 +74,8 @@
                             <span>模板</span>
                         </template>
                         <h3>模板</h3>
-                        <el-form label-width="70px">
-                            <el-form-item label="选择样式">
+                        <el-form label-width="40px">
+                            <el-form-item label="样式">
                                 <el-select v-model="curWatermarkIndex" placeholder="请选择水印样式" v-if="!isMobile()"
                                     style="margin-bottom: 10px;">
                                     <el-option v-for="(item, index) in watermarks" :key="index" :value="index"
@@ -99,7 +99,7 @@
                                     <el-button @click="handleDraw" :disabled="!curFile" plain>重绘</el-button>
                                 </div>
                             </el-form-item>
-                            <el-form-item label="全局字体">
+                            <el-form-item label="字体">
                                 <el-select :filterable="!isMobile()" v-model="config.font" clearable>
                                     <el-option v-for="(item, index) in getSupportedFonts()" :key="index" :label="item"
                                         :value="item" :style="{ fontFamily: item }"></el-option>
@@ -141,7 +141,7 @@
                     <el-tab-pane name="custom-labels">
                         <template #label>
                             <el-icon>
-                                <EditPen />
+                                <PriceTag />
                             </el-icon>
                             <span>文本</span>
                         </template>
@@ -267,7 +267,7 @@ import { print, getWatermarkList, getSupportedFonts, defaultConfig, defaultExif 
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
 import { Files, EditPen, FolderChecked, Cellphone, Picture, Notebook } from '@element-plus/icons-vue'
-import { Delete, Loading, Download, Plus, ArrowLeft, ArrowRight, RefreshLeft } from '@element-plus/icons-vue';
+import { Delete, Loading, Download, Plus, ArrowLeft, ArrowRight, RefreshLeft, PriceTag } from '@element-plus/icons-vue';
 import type { Config, Img, LocalWaterMarkItem, WatermarkListItem } from '../types'
 import { useDebounceFn, watchThrottled, formatDate, computedAsync } from '@vueuse/core'
 import Exifr from "exifr";
@@ -1100,8 +1100,18 @@ onMounted(() => {
             justify-content: space-between;
         }
 
+        :deep(.el-tabs__nav) {
+            min-width: 100%;
+            justify-content: space-around;
+        }
+
         :deep(.el-tabs__item) {
             flex-direction: row;
+            padding: 0px 10px !important;
+
+            >span {
+                display: none;
+            }
         }
     }
 
