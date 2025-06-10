@@ -296,6 +296,7 @@ import WatermarkPadding from '../components/WatermarkPadding.vue'
 import { storeToRefs } from 'pinia';
 
 
+
 const menuItems = ref([
     { label: '滤镜', value: 'filter', component: markRaw(Filter) },
     { label: 'Logo', value: 'logo', component: markRaw(LogoConfig) },
