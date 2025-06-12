@@ -1,5 +1,6 @@
 <template>
-    <el-form label-width="80" v-if="config.logo.enable">
+    <ImageConfig :show-more="false" v-model:config="config.logo" v-if="config.logo.enable" :animate="false" :border="false" />
+    <!-- <el-form label-width="80" v-if="config.logo.enable">
         <el-form-item label="显示">
             <el-switch v-model="config.logo.show"></el-switch>
         </el-form-item>
@@ -44,54 +45,18 @@
                     <template #append>
                         <el-button size="small" @click="selectLocalImage">选择本地</el-button>
                     </template>
-                </el-input>
-                <p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！建议下载后本地选择。</p>
-            </el-form-item>
-        </div>
-    </el-form>
+</el-input>
+<p class="tips">⚠ 使用自定义的LOGO链接可能导致无法保存图片！建议下载后本地选择。</p>
+</el-form-item>
+</div>
+</el-form> -->
     <el-result icon="error" title="当前模板不支持该配置~" v-else></el-result>
 </template>
 
 <script setup lang="ts">
-import { cameraBrands } from '../assets/tools';
-import { computedAsync } from '@vueuse/core';
-import { getImageSrc, isMobile } from '../utils';
 import { storeToRefs } from 'pinia';
 import { useStore } from '../stores';
-import { ref } from 'vue';
+import ImageConfig from './ImageConfig.vue';
 
 const { config } = storeToRefs(useStore());
-
-const syncHeight = ref(true);
-
-const defaultVerticalOffset = config.value.logo.verticalOffset || 0;
-
-const changeLogoHeight = () => {
-    if (syncHeight.value) {
-        config.value.logo.height = config.value.logo.width;
-    }
-}
-
-const enhancedCameraBrands = computedAsync(async () => {
-    return await Promise.all(cameraBrands.map(async brand => {
-        return {
-            ...brand,
-            thumbnail: getImageSrc(brand.logo)
-        }
-    }))
-})
-
-function selectLocalImage() {
-    // 选择文件
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e: any) => {
-        const file = e.target.files[0];
-        if (file) {
-            config.value.logo.url = getImageSrc(file);
-        }
-    }
-    input.click();
-}
 </script>
