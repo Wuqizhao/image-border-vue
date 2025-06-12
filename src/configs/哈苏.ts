@@ -28,27 +28,30 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 		const h1 = rect1.y + (rect2.y - rect1.y) / 5;
 		const h2 = rect1.y + (4 * (rect2.y - rect1.y)) / 5;
 
-		// 绘制焦段
-		ctx.fillText(
+		let paramStr = [
 			(context.focalLength || img.exif?.FocalLengthIn35mmFilm || "--") + "mm",
-			start_x + W / 8,
-			h1
-		);
+			"f" + (img.exif?.FNumber || "--"),
+			(context.exposureTime || "--") + "s",
+			img.exif?.ISO || "--",
+		];
+		// 处理大写
+		if (paramsConfig.letterUpperCase) {
+			paramStr = paramStr.map((item) => item.toString().toUpperCase());
+		}
+
+		// 绘制焦段
+		ctx.fillText(paramStr[0], start_x + W / 8, h1);
 		ctx.fillText("FL", start_x + W / 8, h2);
 		// 绘制光圈
-		ctx.fillText("f" + (img.exif?.FNumber || "--"), start_x + (3 * W) / 8, h1);
+		ctx.fillText(paramStr[1], start_x + (3 * W) / 8, h1);
 		ctx.fillText("Aperture", start_x + (3 * W) / 8, h2);
 
 		// 绘制快门
-		ctx.fillText(
-			(context.exposureTime || "--") + "s",
-			start_x + (5 * W) / 8,
-			h1
-		);
+		ctx.fillText(paramStr[2], start_x + (5 * W) / 8, h1);
 		ctx.fillText("Shutter", start_x + (5 * W) / 8, h2);
 
 		// 绘制ISO
-		ctx.fillText(img.exif?.ISO || "--", start_x + (7 * W) / 8, h1);
+		ctx.fillText(paramStr[3], start_x + (7 * W) / 8, h1);
 		ctx.fillText("ISO", start_x + (7 * W) / 8, h2);
 	}
 
@@ -106,7 +109,7 @@ const config: Config = {
 		height: 0.08,
 		bgColor: "#FFF",
 		model: {
-			enable: true,
+			enable: false,
 			show: false,
 			color: "#CCCCCC",
 			size: 110,
@@ -118,7 +121,7 @@ const config: Config = {
 			enable: true,
 			show: true,
 			color: "rgb(128,128,128)",
-			size: 70,
+			size: 80,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
 			italic: false,
@@ -175,7 +178,7 @@ const config: Config = {
 	divider: {
 		enable: true,
 		show: true,
-		color: "gainsboro",
+		color: "rgb(220,220,220)",
 		width: 5,
 		scale: 1,
 		margin: 1,
