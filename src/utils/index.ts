@@ -189,6 +189,37 @@ export async function drawLogo(
 }
 
 /**
+ * 在画布上绘制一条直线
+ * @param ctx - Canvas 2D 渲染上下文
+ * @param x1 - 起点x坐标
+ * @param y1 - 起点y坐标
+ * @param x2 - 终点x坐标
+ * @param y2 - 终点y坐标
+ * @param config - 线条配置对象，包含颜色(color)和粗细(size)属性
+ */
+export function drawLine(
+	ctx: CanvasRenderingContext2D,
+	x1: number,
+	y1: number,
+	x2: number,
+	y2: number,
+	config: Record<string, any>
+) {
+	if (!ctx) return;
+	ctx.save();
+
+	ctx.strokeStyle = config.color;
+	ctx.lineWidth = config.size;
+
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.stroke();
+
+	ctx.restore();
+}
+
+/**
  * 检测当前设备是否为移动设备
  * 通过检查用户代理字符串判断是否为移动设备
  * @returns {boolean} 如果是移动设备返回 true,否则返回 false
@@ -233,7 +264,12 @@ export function drawCustomLabelsAndImages(
 				// 绘制边框
 				ctx.lineWidth = 3;
 				ctx.strokeStyle = "red";
-				ctx.strokeRect(label.x, label.y, ctx.measureText(label.text).width, label.size);
+				ctx.strokeRect(
+					label.x,
+					label.y,
+					ctx.measureText(label.text).width,
+					label.size
+				);
 			}
 
 			ctx.restore();

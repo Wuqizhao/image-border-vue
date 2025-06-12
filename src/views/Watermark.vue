@@ -764,6 +764,9 @@ function importConfig(val: number): void {
     const filename = watermark.is_local ? watermark.config_name : watermark.config;
     let configPromise = null;
     switch (filename) {
+        case "哈苏":
+            configPromise = import("../configs/哈苏");
+            break;
         case "小米徕卡2":
             configPromise = import("../configs/小米徕卡2");
             break;
