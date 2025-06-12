@@ -13,6 +13,9 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 
 	config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
 
+	// 参数区域的宽度：默认一半
+	const W = (rect2.x - rect1.x) / 2;
+	const start_x = rect1.x + W / 2;
 	// 绘制参数
 	if (paramsConfig.show) {
 		ctx.textAlign = "center";
@@ -28,29 +31,25 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 		// 绘制焦段
 		ctx.fillText(
 			(context.focalLength || img.exif?.FocalLengthIn35mmFilm || "--") + "mm",
-			(5 * (rect2.x - rect1.x)) / 16,
+			start_x + W / 8,
 			h1
 		);
-		ctx.fillText("FL", (5 * (rect2.x - rect1.x)) / 16, h2);
+		ctx.fillText("FL", start_x + W / 8, h2);
 		// 绘制光圈
-		ctx.fillText(
-			"f" + (img.exif?.FNumber || "--"),
-			(7 * (rect2.x - rect1.x)) / 16,
-			h1
-		);
-		ctx.fillText("Aperture", (7 * (rect2.x - rect1.x)) / 16, h2);
+		ctx.fillText("f" + (img.exif?.FNumber || "--"), start_x + (3 * W) / 8, h1);
+		ctx.fillText("Aperture", start_x + (3 * W) / 8, h2);
 
 		// 绘制快门
 		ctx.fillText(
 			(context.exposureTime || "--") + "s",
-			(9 * (rect2.x - rect1.x)) / 16,
+			start_x + (5 * W) / 8,
 			h1
 		);
-		ctx.fillText("Shutter", (9 * (rect2.x - rect1.x)) / 16, h2);
+		ctx.fillText("Shutter", start_x + (5 * W) / 8, h2);
 
 		// 绘制ISO
-		ctx.fillText(img.exif?.ISO || "--", (11 * (rect2.x - rect1.x)) / 16, h1);
-		ctx.fillText("ISO", (11 * (rect2.x - rect1.x)) / 16, h2);
+		ctx.fillText(img.exif?.ISO || "--", start_x + (7 * W) / 8, h1);
+		ctx.fillText("ISO", start_x + (7 * W) / 8, h2);
 	}
 
 	// 绘制LOGO
@@ -67,26 +66,26 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 
 		drawLine(
 			ctx,
-			(rect2.x - rect1.x) / 2,
+			rect1.x + (rect2.x - rect1.x) / 2,
 			rect1.y,
-			(rect2.x - rect1.x) / 2,
+			rect1.x + (rect2.x - rect1.x) / 2,
 			rect2.y,
 			dividerConfig
 		);
 		drawLine(
 			ctx,
-			(3 * (rect2.x - rect1.x)) / 8,
+			start_x + W / 4,
 			rect1.y,
-			(3 * (rect2.x - rect1.x)) / 8,
+			start_x + W / 4,
 			rect2.y,
 			dividerConfig
 		);
 
 		drawLine(
 			ctx,
-			(5 * (rect2.x - rect1.x)) / 8,
+			start_x + (3 * W) / 4,
 			rect1.y,
-			(5 * (rect2.x - rect1.x)) / 8,
+			start_x + (3 * W) / 4,
 			rect2.y,
 			dividerConfig
 		);
