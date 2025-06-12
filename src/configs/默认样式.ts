@@ -13,7 +13,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	// 绘制Logo
 	if (logoConfig.show) {
-		const logoX = rect1.x + watermarkPaddings.lr;
+		const logoX = rect1.x + watermarkPaddings.left;
 		const _y =
 			rect1.y +
 			(rect2.y - rect1.y) / 2 -
@@ -25,7 +25,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	const SPACE = 0.2 * logoConfig.width;
 	const _x =
 		rect1.x +
-		watermarkPaddings.lr +
+		watermarkPaddings.left +
 		(logoConfig.show ? logoConfig.width + SPACE : 0);
 	// 绘制型号
 	if (modelConfig.show) {
@@ -94,7 +94,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		}
 		ctx.fillText(
 			lensConfig.text || img.exif?.LensModel,
-			rect2.x - watermarkPaddings.lr,
+			rect2.x - watermarkPaddings.right,
 			_y
 		);
 
@@ -113,7 +113,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		if (lensConfig.show) {
 			_y = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
 		}
-		ctx.fillText(img.timeText, rect2.x - watermarkPaddings.lr, _y);
+		ctx.fillText(img.timeText, rect2.x - watermarkPaddings.right, _y);
 		ctx.restore();
 	}
 };
@@ -164,8 +164,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 0,
-			tb: 100,
+			top: 100,
+			bottom: 100,
+			left: 0,
+			right: 0,
 		},
 		bgColor: "#FFF",
 	},

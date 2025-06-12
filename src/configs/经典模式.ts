@@ -107,8 +107,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 0,
-			tb: 100,
+			top: 100,
+			bottom: 100,
+			left: 0,
+			right: 0,
 		},
 		bgColor: "#ffffff",
 	},

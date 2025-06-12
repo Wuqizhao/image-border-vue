@@ -8,7 +8,7 @@ const draw: DrawFun = async (img, config, context) => {
 		model,
 		params,
 		time,
-		paddings: { lr },
+		paddings: { left, right },
 	} = watermark;
 	const centerY = rect1.y + (rect2.y - rect1.y) / 2;
 
@@ -24,7 +24,7 @@ const draw: DrawFun = async (img, config, context) => {
 
 		const brand = img.modelText.split(" ")[0];
 		const brandWidth = ctx.measureText(brand).width;
-		ctx.fillText(brand, rect1.x + lr, time.show ? modelY : centerY);
+		ctx.fillText(brand, rect1.x + left, time.show ? modelY : centerY);
 
 		ctx.font = `${model.italic ? "italic" : ""} ${model.size}px ${config.font}`;
 		if (model.replaceZ) {
@@ -33,7 +33,7 @@ const draw: DrawFun = async (img, config, context) => {
 
 		ctx.fillText(
 			img.modelText.replace(brand, ""),
-			rect1.x + lr + brandWidth,
+			rect1.x + left + brandWidth,
 			time.show ? modelY : centerY
 		);
 		ctx.restore();
@@ -42,7 +42,7 @@ const draw: DrawFun = async (img, config, context) => {
 	// 绘制logo
 	if (logo.show) {
 		ctx.save();
-		const logoX = rect2.x - lr - logo.width;
+		const logoX = rect2.x - right - logo.width;
 		let logoY = rect1.y + (rect2.y - rect1.y) / 3 - logo.height / 2;
 		if (!params.show) {
 			logoY = centerY - logo.height / 2;
@@ -61,7 +61,7 @@ const draw: DrawFun = async (img, config, context) => {
 		ctx.textBaseline = "middle";
 
 		const paramY = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
-		ctx.fillText(img.paramsText, rect2.x - lr, logo.show ? paramY : centerY);
+		ctx.fillText(img.paramsText, rect2.x - right, logo.show ? paramY : centerY);
 		ctx.restore();
 	}
 
@@ -75,7 +75,7 @@ const draw: DrawFun = async (img, config, context) => {
 
 		const timeY = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
 
-		ctx.fillText(img.timeText, rect1.x + lr, model.show ? timeY : centerY);
+		ctx.fillText(img.timeText, rect1.x + left, model.show ? timeY : centerY);
 		ctx.restore();
 	}
 };
@@ -127,8 +127,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 120,
-			tb: 50,
+			top: 50,
+			bottom: 50,
+			left: 120,
+			right: 120,
 		},
 		bgColor: "#FFF",
 	},

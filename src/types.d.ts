@@ -409,14 +409,10 @@ declare interface BaseConfig {
 		time: Time;
 		lens: Lens;
 		paddings: {
-			/**
-			 * 水印额外的左右边距
-			 */
-			lr: number;
-			/**
-			 * 水印额外的上下边距
-			 */
-			tb: number;
+			top: number;
+			right: number;
+			bottom: number;
+			left: number;
 		};
 		/**
 		 * 整体背景颜色（包含水印绘制部分和图片的边距空位的颜色）

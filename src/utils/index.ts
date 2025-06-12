@@ -423,38 +423,50 @@ export function caculateCanvasSize(config: Config, img: Img) {
 	let canvasHeight = img.height + imgPaddings.top + imgPaddings.bottom;
 
 	if (position === "left" || position === "right") {
-		canvasWidth += watermarkHeight * canvasWidth + 2 * watermarkPaddings.lr;
+		canvasWidth +=
+			watermarkHeight * canvasWidth +
+			watermarkPaddings.left +
+			watermarkPaddings.right;
 		rect1.y = imgPaddings.top;
 		rect2.y = canvasHeight - imgPaddings.bottom;
 
 		if (position === "left") {
 			rect1.x = 0;
-			rect2.x = watermarkHeight * canvasWidth + 2 * watermarkPaddings.lr;
+			rect2.x =
+				watermarkHeight * canvasWidth +
+				watermarkPaddings.left +
+				watermarkPaddings.right;
 		} else {
 			rect1.x = imgPaddings.left + img.width;
 			rect2.x = canvasWidth;
 		}
 	} else if (position === "inner") {
 		// 画布大小不需要修改
-		rect1.x = watermarkPaddings.lr + imgPaddings.left;
-		rect1.y = watermarkPaddings.tb;
-		rect2.x = canvasWidth - watermarkPaddings.lr - imgPaddings.right;
-		rect2.y = canvasHeight - watermarkPaddings.tb - imgPaddings.bottom;
+		rect1.x = watermarkPaddings.left + imgPaddings.left;
+		rect1.y = watermarkPaddings.top;
+		rect2.x = canvasWidth - watermarkPaddings.right - imgPaddings.right;
+		rect2.y = canvasHeight - watermarkPaddings.bottom - imgPaddings.bottom;
 	} else {
-		canvasHeight += watermarkHeight * canvasHeight + 2 * watermarkPaddings.tb;
+		canvasHeight +=
+			watermarkHeight * canvasHeight +
+			watermarkPaddings.top +
+			watermarkPaddings.bottom;
 		rect1.x = imgPaddings.left;
 		rect2.x = canvasWidth - imgPaddings.right;
 
 		if (position === "top") {
-			rect1.y = watermarkPaddings.tb;
-			rect2.y = 2 * watermarkPaddings.tb + watermarkHeight * canvasHeight;
+			rect1.y = watermarkPaddings.top;
+			rect2.y =
+				watermarkPaddings.top +
+				watermarkPaddings.bottom +
+				watermarkHeight * canvasHeight;
 		} else {
 			rect1.y =
 				imgPaddings.top +
 				img.height +
 				imgPaddings.bottom +
-				watermarkPaddings.tb;
-			rect2.y = canvasHeight - watermarkPaddings.tb;
+				watermarkPaddings.top;
+			rect2.y = canvasHeight - watermarkPaddings.bottom;
 		}
 	}
 

@@ -12,7 +12,7 @@ const doDraw: DrawFun = (img, config, context) => {
 	const { ctx, rect1, rect2 } = context;
 
 	// 绘制型号
-	const _x = rect1.x + watermarkPaddings.lr;
+	const _x = rect1.x + watermarkPaddings.left;
 	const _y = rect1.y + (rect2.y - rect1.y) / 2;
 	let modelWidth = 0;
 	if (modelConfig.show) {
@@ -76,7 +76,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		ctx.textAlign = "right";
 		ctx.textBaseline = "middle";
 
-		const paramsX = rect2.x - watermarkPaddings.lr;
+		const paramsX = rect2.x - watermarkPaddings.right;
 		let paramsY = centerY;
 		if (timeConfig.show) {
 			paramsY = rect1.y + (rect2.y - rect1.y) / 3;
@@ -104,7 +104,7 @@ const doDraw: DrawFun = (img, config, context) => {
 		const timeY = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
 		ctx.fillText(
 			img.timeText,
-			rect2.x - watermarkPaddings.lr,
+			rect2.x - watermarkPaddings.right,
 			paramsConfig.show ? timeY : centerY
 		);
 	}
@@ -156,8 +156,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 100,
-			tb: 100,
+			top: 100,
+			bottom: 100,
+			left: 100,
+			right: 100,
 		},
 		bgColor: "#fff",
 	},

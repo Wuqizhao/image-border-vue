@@ -15,7 +15,7 @@ const doDraw: DrawFun = async (_, config, context) => {
 		const logoY =
 			canvas.height -
 			logoConfig.height -
-			paddings.tb -
+			paddings.bottom -
 			bottom -
 			(logoConfig.verticalOffset - 1) * logoConfig.height;
 		drawLogo(logoConfig, ctx, logoX, logoY);
@@ -69,8 +69,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 0,
-			tb: 200,
+			top: 0,
+			bottom: 0,
+			left: 0,
+			right: 0,
 		},
 		bgColor: "#ffffff",
 	},

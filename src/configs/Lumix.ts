@@ -8,16 +8,16 @@ const draw: DrawFun = async (img, config, context) => {
 		model,
 		params,
 		time,
-		paddings: { lr, tb },
+		paddings: { left, top },
 	} = watermark;
 
-	rect1.y = paddings.top + tb + img.height * (1 - watermark.height);
+	rect1.y = paddings.top + top + img.height * (1 - watermark.height);
 	// 绘制水印范围的背景
 	ctx.fillStyle = watermark.bg || "rgba(0,0,0,0.4)";
 	if (radius.show) {
 		drawRadiusRect(
 			ctx,
-			rect1.x - lr,
+			rect1.x - left,
 			rect1.y,
 			img.width,
 			canvas.height - paddings.bottom - rect1.y,
@@ -26,7 +26,7 @@ const draw: DrawFun = async (img, config, context) => {
 		ctx.fill();
 	} else {
 		ctx.fillRect(
-			rect1.x - lr,
+			rect1.x - left,
 			rect1.y,
 			img.width,
 			canvas.height - paddings.bottom - rect1.y
@@ -185,8 +185,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 100,
-			tb: 0,
+			top: 0,
+			bottom: 0,
+			left: 100,
+			right: 100,
 		},
 		bg: "rgba(0, 0, 0, 0.4)",
 	},

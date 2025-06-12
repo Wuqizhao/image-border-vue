@@ -726,7 +726,7 @@ const handleDraw = useDebounceFn(() => {
             // 绘制水印范围的背景颜色
             if (watermark.position !== 'inner') {
                 ctx.fillStyle = watermark.bg || "rgba(0,0,0,0)";
-                ctx.fillRect(0, rect1.y - watermark.paddings.tb, canvas.width, rect2.y - rect1.y + 2 * watermark.paddings.tb);
+                ctx.fillRect(0, rect1.y - watermark.paddings.top, canvas.width, rect2.y - rect1.y + watermark.paddings.top + watermark.paddings.bottom);
             }
 
             // 执行模板的绘制函数

@@ -13,9 +13,9 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 
 	config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
 
-	// 参数区域的宽度：默认一半
-	const W = (rect2.x - rect1.x) / 2;
-	const start_x = rect1.x + W / 2;
+	// 参数区域的宽度
+	const W = (3 * (rect2.x - rect1.x)) / 5;
+	const start_x = rect1.x + (rect2.x - rect1.x) / 2 - W / 2;
 	// 绘制参数
 	if (paramsConfig.show) {
 		ctx.textAlign = "center";
@@ -57,8 +57,8 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 
 	// 绘制LOGO
 	if (logoConfig.show) {
-		const logoX = rect2.x / 2 - logoConfig.width / 2;
-		const logoY = imgPaddings.top / 2 - logoConfig.height / 2;
+		const logoX = rect1.x + (rect2.x - rect1.x) / 2 - logoConfig.width / 2;
+		const logoY = (2 * imgPaddings.top) / 3 - logoConfig.height / 2;
 		drawLogo(logoConfig, ctx, logoX, logoY);
 	}
 
@@ -99,9 +99,9 @@ const config: Config = {
 	name: "哈苏",
 	font: "sans-serif",
 	paddings: {
-		top: 800, // 图片上边距
-		right: 200,
-		left: 200,
+		top: 2000, // 图片上边距
+		right: 400,
+		left: 400,
 		bottom: 0,
 	},
 	watermark: {
@@ -143,8 +143,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 0,
-			tb: 500,
+			top: 500,
+			bottom: 2000,
+			left: 0,
+			right: 0,
 		},
 	},
 	radius: {
@@ -169,8 +171,8 @@ const config: Config = {
 		enable: true,
 		auto: false,
 		show: true,
-		width: 1200,
-		height: 1200,
+		width: 1500,
+		height: 1500,
 		name: "hasselblad-2",
 		circle: false,
 		verticalOffset: 1,

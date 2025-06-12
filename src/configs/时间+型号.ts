@@ -33,11 +33,15 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const company = img.modelText.split(" ")[0];
 		// 计算厂商的宽度
 		const companyWidth = ctx.measureText(company).width;
-		ctx.fillText(company, rect1.x + watermarkPaddings.lr, _y);
+		ctx.fillText(company, rect1.x + watermarkPaddings.left, _y);
 		ctx.font = `${modelConfig.size}px ${config.font}`;
 		let modelText = img.modelText.replace(company, "");
 		modelText = modelConfig.replaceZ ? replaceZ(modelText) : modelText;
-		ctx.fillText(modelText, rect1.x + watermarkPaddings.lr + companyWidth, _y);
+		ctx.fillText(
+			modelText,
+			rect1.x + watermarkPaddings.left + companyWidth,
+			_y
+		);
 		ctx.restore(); // 恢复之前的绘图状态
 	}
 
@@ -48,7 +52,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = timeConfig.color;
 		ctx.font = `${timeConfig.size}px ${config.font}`;
-		ctx.fillText(img.timeText, rect2.x - watermarkPaddings.lr, _y);
+		ctx.fillText(img.timeText, rect2.x - watermarkPaddings.right, _y);
 		ctx.restore();
 	}
 
@@ -110,8 +114,10 @@ const config: Config = {
 			text: "",
 		},
 		paddings: {
-			lr: 150,
-			tb: 300,
+			top: 300,
+			bottom: 300,
+			left: 150,
+			right: 150,
 		},
 		bgColor: "#FFF",
 	},
