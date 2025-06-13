@@ -5,7 +5,7 @@
             <el-divider content-position="left">{{ props.config.title }}</el-divider>
             <el-button type="danger" :text="true" plain @click="emits('remove', props.config.title)">删除</el-button>
         </h3>
-        <el-form label-width="80px">
+        <el-form label-width="70px">
             <el-form-item label="显示">
                 <el-switch v-model="props.config.show"></el-switch>
             </el-form-item>

@@ -126,7 +126,7 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 		];
 		// 单行文本模式
 		if (paramsConfig?.styleIndex === 1 || paramsConfig?.styleIndex === 2) {
-			_h1 = rect1.y + (3 * (rect2.y - rect1.y)) / 4 - paramsConfig.size / 2;
+			_h1 += (rect2.y - rect1.y) / 4 - paramsConfig.size / 2;
 			_h2 = _h1 + paramsConfig.size;
 
 			xPositions = [

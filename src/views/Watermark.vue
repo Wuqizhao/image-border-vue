@@ -118,7 +118,7 @@
                         </template>
                         <div class="float-menu">
                             <HorizontalScroll>
-                                <div v-for="item in menuItems" class="float-menu-item"
+                                <div v-for="item in renderMenuItems" class="float-menu-item"
                                     :class="item.component === curConfigComponent ? 'active' : ''" :key="item.value"
                                     @click="curConfigComponent = item.component">
                                     {{ item.label }}
@@ -262,7 +262,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch, provide, type Component, shallowRef, markRaw, onMounted } from 'vue'
+import { reactive, ref, watch, provide, type Component, shallowRef, markRaw, onMounted, computed } from 'vue'
 import { print, getWatermarkList, getSupportedFonts, defaultConfig, defaultExif } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
@@ -298,22 +298,26 @@ import BorderConfig from '../components/BorderConfig.vue'
 
 
 
+const { config } = storeToRefs(store);
 const menuItems = ref([
-    { label: '滤镜', value: 'filter', component: markRaw(Filter) },
-    { label: 'Logo', value: 'logo', component: markRaw(LogoConfig) },
-    { label: '型号', value: 'model', component: markRaw(ModelConfig) },
-    { label: '参数', value: 'params', component: markRaw(ParamsConfig) },
-    { label: '时间', value: 'time', component: markRaw(TimeConfig) },
-    { label: '位置', value: 'location', component: markRaw(LocationConfig) },
-    { label: '镜头', value: 'lens', component: markRaw(LensConfig) },
-    { label: '分割线', value: 'divider', component: markRaw(DividerConfig) },
-    { label: '圆角', value: 'radius', component: markRaw(RadiusConfig) },
-    { label: '阴影', value: 'shadow', component: markRaw(ShadowConfig) },
-    { label: '背景', value: 'background', component: markRaw(BlurConfig) },
-    { label: '图片边框', value: 'border', component: markRaw(BorderConfig) },
-    { label: '自定义文本', value: 'labels', component: markRaw(CustomLabels) },
-    { label: '自定义图片', value: 'images', component: markRaw(CustomImages) },
+    { label: '滤镜', value: 'filter', component: markRaw(Filter), show: true },
+    { label: 'Logo', value: 'logo', component: markRaw(LogoConfig), show: config.value.logo.enable },
+    { label: '型号', value: 'model', component: markRaw(ModelConfig), show: config.value.watermark.model.enable },
+    { label: '参数', value: 'params', component: markRaw(ParamsConfig), show: config.value.watermark.model.enable },
+    { label: '时间', value: 'time', component: markRaw(TimeConfig), show: config.value.watermark.time.enable },
+    { label: '背景', value: 'background', component: markRaw(BlurConfig), show: true },
+    { label: '图片边框', value: 'border', component: markRaw(BorderConfig), show: config.value?.border?.enable },
+    { label: '地理位置', value: 'location', component: markRaw(LocationConfig), show: config.value.location?.enable },
+    { label: '镜头', value: 'lens', component: markRaw(LensConfig), show: config.value.watermark.lens.enable },
+    { label: '分割线', value: 'divider', component: markRaw(DividerConfig), show: config.value.divider.enable },
+    { label: '图片圆角', value: 'radius', component: markRaw(RadiusConfig), show: true },
+    { label: '图片阴影', value: 'shadow', component: markRaw(ShadowConfig), show: true },
+    { label: '自定义文本', value: 'labels', component: markRaw(CustomLabels), show: true },
+    { label: '自定义图片', value: 'images', component: markRaw(CustomImages), show: true },
 ])
+const renderMenuItems = computed(() => {
+    return menuItems.value.filter(item => item?.show === true);
+});
 const curConfigComponent = shallowRef<Component>(LogoConfig);
 
 // 是否开发环境
@@ -351,7 +355,6 @@ const defaultImgValue: Img = {
 const img = reactive<Img>({ ...defaultImgValue })
 const curFile = ref<File | null>(null)
 const fileList = ref<File[]>([]);
-const { config } = storeToRefs(store);
 
 const watermarks = ref<WatermarkListItem[]>(getWatermarkList())
 const curWatermarkIndex = ref<number>(0)
