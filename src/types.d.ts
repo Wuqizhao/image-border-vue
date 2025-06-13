@@ -620,6 +620,10 @@ export declare type CameraBrands = {
 	 * 自动匹配logo时使用的厂商名称
 	 */
 	make?: string[];
+	/**
+	 * logo对应的图床地址
+	 */
+	url: string;
 };
 
 export declare type ImgExt = "jpeg" | "png";

@@ -123,6 +123,14 @@ export function getImageSrc(file: File | string) {
 			return "/img?url=" + file;
 		}
 
+		// 优先返回cameraBrand的url
+		const cameraBrand = cameraBrands.filter((brand) => {
+			return brand.logo === file;
+		});
+		if (cameraBrand.length && cameraBrand[0].url) {
+			return "/img?url=" + cameraBrand[0].url;
+		}
+
 		return "./logos/" + file + ".png";
 	}
 

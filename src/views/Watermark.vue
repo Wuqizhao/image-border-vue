@@ -109,7 +109,7 @@
                             <el-button @click="print(config, img)" style="margin-left: 10px;">打印配置</el-button>
                         </el-form>
                     </el-tab-pane>
-                    <el-tab-pane name="watermark">
+                    <el-tab-pane name="watermark" :disabled="!curFile">
                         <template #label>
                             <el-icon>
                                 <EditPen />
@@ -127,7 +127,7 @@
                         </div>
                         <component :is="curConfigComponent"></component>
                     </el-tab-pane>
-                    <el-tab-pane name="picture">
+                    <el-tab-pane name="picture" :disabled="!curFile">
                         <template #label>
                             <el-icon>
                                 <Cellphone />
@@ -138,7 +138,7 @@
                         <WatermarkPadding />
                         <PaddingConfig />
                     </el-tab-pane>
-                    <el-tab-pane name="custom-labels">
+                    <el-tab-pane name="custom-labels" :disabled="!curFile">
                         <template #label>
                             <el-icon>
                                 <PriceTag />
@@ -147,7 +147,7 @@
                         </template>
                         <CustomLabels />
                     </el-tab-pane>
-                    <el-tab-pane name="custom-images">
+                    <el-tab-pane name="custom-images" :disabled="!curFile">
                         <template #label>
                             <el-icon>
                                 <Picture />
@@ -156,7 +156,7 @@
                         </template>
                         <CustomImages />
                     </el-tab-pane>
-                    <el-tab-pane name="export">
+                    <el-tab-pane name="export" :disabled="!curFile">
                         <template #label>
                             <el-icon>
                                 <FolderChecked />
@@ -489,6 +489,7 @@ const enhancedFileList = computedAsync(async () => {
 function changeCurFile(file: File | null) {
     if (!file) {
         curFile.value = null;
+        activeName.value = 'info';
         return;
     };
     // 更新基本信息
@@ -1018,7 +1019,6 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     background: rgb(255, 255, 255);
-    max-height: 100vh;
     transition-duration: 1s;
     width: 100%;
     padding: 5px 10px;

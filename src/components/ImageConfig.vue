@@ -27,6 +27,7 @@
                             <img :width="24" :height="24" :src="item.thumbnail"
                                 :style="{ background: item.logo.indexOf('white') >= 0 ? 'rgba(0,0,0,0.08)' : '' }" />
                             <span>{{ item.name }}</span>
+                            <span style="color:gainsboro;">{{ item.logo }}</span>
                         </div>
                     </el-option>
                 </el-select>
@@ -110,7 +111,7 @@ const enhancedCameraBrands = computedAsync(async () => {
     return await Promise.all(cameraBrands.map(async brand => {
         return {
             ...brand,
-            thumbnail: getImageSrc(brand.logo)
+            thumbnail: brand.url ?? getImageSrc(brand.logo)
         }
     }))
 })
