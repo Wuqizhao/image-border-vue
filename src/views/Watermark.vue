@@ -294,6 +294,7 @@ import CustomLabels from '../components/CustomLabels.vue';
 import CustomImages from '../components/CustomImages.vue';
 import WatermarkPadding from '../components/WatermarkPadding.vue'
 import { storeToRefs } from 'pinia';
+import BorderConfig from '../components/BorderConfig.vue'
 
 
 
@@ -309,6 +310,7 @@ const menuItems = ref([
     { label: '圆角', value: 'radius', component: markRaw(RadiusConfig) },
     { label: '阴影', value: 'shadow', component: markRaw(ShadowConfig) },
     { label: '背景', value: 'background', component: markRaw(BlurConfig) },
+    { label: '图片边框', value: 'border', component: markRaw(BorderConfig) },
     { label: '自定义文本', value: 'labels', component: markRaw(CustomLabels) },
     { label: '自定义图片', value: 'images', component: markRaw(CustomImages) },
 ])
@@ -743,6 +745,15 @@ const handleDraw = useDebounceFn(() => {
 
             // 执行绘制结束后的操作
             config.value.afterDraw && config.value.afterDraw(ctx);
+            if (config.value?.border?.enable && config.value?.border?.show) {
+                console.log('绘制边框');
+                ctx.save();
+                ctx.strokeStyle = config.value.border.color;
+                ctx.lineWidth = config.value.border.width;
+                // drawRoundedRect(ctx, imgPaddings.left, imgPaddings.top, realImgWidth, realImgHeight, 0);
+                ctx.strokeRect(imgPaddings.left, imgPaddings.top, realImgWidth, realImgHeight);
+                ctx.restore();
+            }
 
             // 释放图片
             URL.revokeObjectURL(_img.src);

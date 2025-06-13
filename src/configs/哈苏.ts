@@ -286,6 +286,12 @@ const config: Config = {
 		grayscale: 0,
 		invert: 0,
 	},
+	border: {
+		enable: true,
+		show: true,
+		width: 50,
+		color: "#ff0000",
+	},
 	draw: doDraw,
 };
 

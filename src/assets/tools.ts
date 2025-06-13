@@ -668,6 +668,12 @@ export const defaultConfig: Config = {
 		grayscale: 0,
 		invert: 0,
 	},
+	border: {
+		enable: true,
+		show: false,
+		width: 50,
+		color: "rgb(128,128,128)",
+	},
 	labels: [],
 	images: [],
 	draw: () => {},

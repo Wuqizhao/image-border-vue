@@ -314,6 +314,24 @@ declare interface Filter {
 	 */
 	invert: number;
 }
+declare interface Border {
+	/**
+	 * 是否支持
+	 */
+	enable: boolean;
+	/**
+	 * 是否显示
+	 */
+	show: boolean;
+	/**
+	 * 宽度
+	 */
+	width: number;
+	/**
+	 * 颜色
+	 */
+	color: string;
+}
 
 export declare type TextAlign = "left" | "center" | "right";
 export declare type TextVerticalAlign = "top" | "middle" | "bottom";
@@ -444,6 +462,7 @@ declare interface BaseConfig {
 	shadow: Shadow;
 	location?: Location;
 	filter: Filter;
+	border?: Border;
 	labels?: Array<LabelConfigItem>;
 	images?: Array<ImagesConfigItem>;
 }
