@@ -582,6 +582,7 @@ export const defaultConfig: Config = {
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
 			italic: false,
+			bold: false,
 		},
 		time: {
 			enable: false,

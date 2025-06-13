@@ -288,9 +288,9 @@ const config: Config = {
 	},
 	border: {
 		enable: true,
-		show: true,
+		show: false,
 		width: 50,
-		color: "#ff0000",
+		color: "#CCCCCC",
 	},
 	draw: doDraw,
 };
