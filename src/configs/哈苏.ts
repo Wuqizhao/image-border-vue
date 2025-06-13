@@ -1,5 +1,5 @@
 import type { Config, Context, DrawFun } from "../types";
-import { drawLogo, drawLine } from "../utils";
+import { drawLogo, drawLine, replaceZ } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context: Context) => {
 	const {
@@ -14,19 +14,19 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 	config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
 
 	// 参数区域的宽度
-	const W = (3 * (rect2.x - rect1.x)) / 5;
+	const W = (dividerConfig.margin * 3 * (rect2.x - rect1.x)) / 5;
 	const start_x = rect1.x + (rect2.x - rect1.x) / 2 - W / 2;
+	let leftX = 0;
+	let paramsWidths = [0, 0, 0, 0];
+	const SPACE = (dividerConfig.margin * (rect2.x - rect1.x)) / 10;
 	// 绘制参数
 	if (paramsConfig.show) {
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `${paramsConfig.italic ? "Italic" : ""} ${paramsConfig.size}px ${
-			config.font || "sans-serif"
-		}`;
-
-		const h1 = rect1.y + (rect2.y - rect1.y) / 5;
-		const h2 = rect1.y + (4 * (rect2.y - rect1.y)) / 5;
+		ctx.font = `${paramsConfig.bold ? "bold" : ""} ${
+			paramsConfig.italic ? "Italic" : ""
+		} ${paramsConfig.size}px ${config.font || "sans-serif"}`;
 
 		let paramStr = [
 			(context.focalLength || img.exif?.FocalLengthIn35mmFilm || "--") + "mm",
@@ -39,20 +39,65 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 			paramStr = paramStr.map((item) => item.toString().toUpperCase());
 		}
 
-		// 绘制焦段
-		ctx.fillText(paramStr[0], start_x + W / 8, h1);
-		ctx.fillText("FL", start_x + W / 8, h2);
-		// 绘制光圈
-		ctx.fillText(paramStr[1], start_x + (3 * W) / 8, h1);
-		ctx.fillText("Aperture", start_x + (3 * W) / 8, h2);
+		if (paramsConfig?.styleIndex === 0) {
+			let h1 = rect1.y + (6 * (rect2.y - rect1.y)) / 10;
+			let h2 = rect1.y + (9 * (rect2.y - rect1.y)) / 10;
+			if (!watermark.model.show) {
+				h1 -= (rect2.y - rect1.y) / 2;
+				h2 -= (rect2.y - rect1.y) / 2;
+			}
 
-		// 绘制快门
-		ctx.fillText(paramStr[2], start_x + (5 * W) / 8, h1);
-		ctx.fillText("Shutter", start_x + (5 * W) / 8, h2);
+			// 绘制焦段
+			ctx.fillText(paramStr[0], start_x + W / 8, h1);
+			ctx.fillText("FL", start_x + W / 8, h2);
+			// 绘制光圈
+			ctx.fillText(paramStr[1], start_x + (3 * W) / 8, h1);
+			ctx.fillText("Aperture", start_x + (3 * W) / 8, h2);
 
-		// 绘制ISO
-		ctx.fillText(paramStr[3], start_x + (7 * W) / 8, h1);
-		ctx.fillText("ISO", start_x + (7 * W) / 8, h2);
+			// 绘制快门
+			ctx.fillText(paramStr[2], start_x + (5 * W) / 8, h1);
+			ctx.fillText("Shutter", start_x + (5 * W) / 8, h2);
+
+			// 绘制ISO
+			ctx.fillText(paramStr[3], start_x + (7 * W) / 8, h1);
+			ctx.fillText("ISO", start_x + (7 * W) / 8, h2);
+		} else {
+			// 单行文本模式
+			let _h = rect1.y + (3 * (rect2.y - rect1.y)) / 4;
+			if (!watermark.model.show) {
+				_h -= (rect2.y - rect1.y) / 2;
+			}
+
+			paramStr[3] = (paramsConfig.bold ? "ISO" : "iso") + paramStr[3];
+
+			if (paramsConfig.styleIndex === 2) {
+				// 单行文本2:带上参数项目名
+				paramStr = [
+					"FL  " + paramStr[0].replace(/MM|mm/, ""),
+					"Aperture  " + paramStr[1].replace(/f|F/, ""),
+					"Shutter  " + paramStr[2].replace(/s$|S$/, ""),
+					"ISO  " + paramStr[3].replace(/ISO|iso/, ""),
+				];
+				if (!paramsConfig.bold) {
+					paramStr = paramStr.map((item) => item.toString().toLowerCase());
+				}
+			}
+			const w1 = ctx.measureText(paramStr[0]).width;
+			const w2 = ctx.measureText(paramStr[1]).width;
+			const w3 = ctx.measureText(paramStr[2]).width;
+			const w4 = ctx.measureText(paramStr[3]).width;
+			paramsWidths = [w1, w2, w3, w4];
+
+			const totalWidth = w1 + w2 + w3 + w4 + 3 * SPACE;
+			// 左侧的x坐标
+			leftX = rect1.x + (rect2.x - rect1.x) / 2 - totalWidth / 2;
+
+			ctx.textAlign = "left";
+			ctx.fillText(paramStr[0], leftX, _h);
+			ctx.fillText(paramStr[1], leftX + w1 + SPACE, _h);
+			ctx.fillText(paramStr[2], leftX + w1 + w2 + 2 * SPACE, _h);
+			ctx.fillText(paramStr[3], leftX + w1 + w2 + w3 + 3 * SPACE, _h);
+		}
 	}
 
 	// 绘制LOGO
@@ -67,30 +112,58 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 		ctx.strokeStyle = dividerConfig.color;
 		ctx.lineWidth = dividerConfig.width;
 
-		drawLine(
-			ctx,
-			rect1.x + (rect2.x - rect1.x) / 2,
-			rect1.y,
-			rect1.x + (rect2.x - rect1.x) / 2,
-			rect2.y,
-			dividerConfig
-		);
-		drawLine(
-			ctx,
-			start_x + W / 4,
-			rect1.y,
-			start_x + W / 4,
-			rect2.y,
-			dividerConfig
-		);
+		let _h1 = rect1.y + (rect2.y - rect1.y) / 2;
+		let _h2 = rect2.y;
+		if (!watermark.model.show) {
+			_h1 -= (rect2.y - rect1.y) / 2;
+			_h2 -= (rect2.y - rect1.y) / 2;
+		}
 
-		drawLine(
-			ctx,
+		let xPositions = [
+			rect1.x + (rect2.x - rect1.x) / 2,
+			start_x + W / 4,
 			start_x + (3 * W) / 4,
-			rect1.y,
-			start_x + (3 * W) / 4,
-			rect2.y,
-			dividerConfig
+		];
+		// 单行文本模式
+		if (paramsConfig?.styleIndex === 1 || paramsConfig?.styleIndex === 2) {
+			_h1 = rect1.y + (3 * (rect2.y - rect1.y)) / 4 - paramsConfig.size / 2;
+			_h2 = _h1 + paramsConfig.size;
+
+			xPositions = [
+				leftX + paramsWidths[0] + SPACE / 2,
+				leftX + paramsWidths[0] + paramsWidths[1] + (3 * SPACE) / 2,
+				leftX +
+					paramsWidths[0] +
+					paramsWidths[1] +
+					paramsWidths[2] +
+					(5 * SPACE) / 2,
+			];
+		}
+		const dividerHeight = (_h2 - _h1) * dividerConfig.scale;
+		const centerY = (_h1 + _h2) / 2;
+		_h1 = centerY - dividerHeight / 2;
+		_h2 = centerY + dividerHeight / 2;
+
+		drawLine(ctx, xPositions[0], _h1, xPositions[0], _h2, dividerConfig);
+		drawLine(ctx, xPositions[1], _h1, xPositions[1], _h2, dividerConfig);
+		drawLine(ctx, xPositions[2], _h1, xPositions[2], _h2, dividerConfig);
+
+		// 绘制分割线范围
+		// ctx.strokeRect(rect1.x, _h1, rect2.x - rect1.x, _h2 - _h1);
+	}
+
+	// 绘制型号
+	if (watermark.model.show) {
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.fillStyle = watermark.model.color;
+		ctx.font = `${watermark.model.italic ? "Italic" : ""} ${
+			watermark.model.bold ? "bold" : ""
+		} ${watermark.model.size}px ${config.font}`;
+		ctx.fillText(
+			watermark.model.replaceZ ? replaceZ(img.modelText) : img.modelText,
+			rect1.x + (rect2.x - rect1.x) / 2,
+			rect1.y + (rect2.y - rect1.y) / 6
 		);
 	}
 };
@@ -106,13 +179,13 @@ const config: Config = {
 	},
 	watermark: {
 		position: "bottom",
-		height: 0.08,
+		height: 0.18,
 		bgColor: "#FFF",
 		model: {
-			enable: false,
-			show: false,
-			color: "#CCCCCC",
-			size: 110,
+			enable: true,
+			show: true,
+			color: "#000000",
+			size: 200,
 			replaceZ: true,
 			italic: false,
 			bold: true,
@@ -121,10 +194,13 @@ const config: Config = {
 			enable: true,
 			show: true,
 			color: "rgb(128,128,128)",
-			size: 80,
+			size: 100,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
 			italic: false,
+			bold: true,
+			styleIndex: 0,
+			styles: ["双行文本", "单行文本", "单行文本2"],
 		},
 		time: {
 			enable: false,

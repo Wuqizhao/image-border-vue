@@ -24,11 +24,18 @@
                 <label for="">
                     <span style="margin:0 10px 0px 30px;">斜体</span>
                     <el-switch v-model="config.watermark.params.italic"></el-switch>
+                    <span style="margin:0 10px 0px 30px;">加粗</span>
+                    <el-switch v-model="config.watermark.params.bold"></el-switch>
                 </label>
             </el-form-item>
             <el-form-item label="等效焦距">
                 <el-switch v-model="config.watermark.params.useEquivalentFocalLength"></el-switch>
                 <p class="tips">等效全画幅焦段，是否支持看图片Exif信息</p>
+            </el-form-item>
+            <el-form-item label="样式" v-if="config.watermark.params.styles?.length">
+                <el-select v-model="config.watermark.params.styleIndex" placeholder="请选择样式">
+                    <el-option v-for="(item,index) in config.watermark.params.styles" :key="item" :label="item" :value="index"></el-option>
+                </el-select>
             </el-form-item>
         </div>
     </el-form>

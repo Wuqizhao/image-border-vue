@@ -1,7 +1,7 @@
 <template>
-    <el-form label-width="60px">
+    <el-form label-width="60px" label-position="top">
         <h3 style="margin-bottom: 1rem;">图片边距</h3>
-        <el-form-item label="同步">
+        <el-form-item label="同步" label-position="left">
             <el-radio-group v-model="syncType">
                 <el-radio label="不同步" :value="0"></el-radio>
                 <el-radio label="同步左右" :value="1"></el-radio>

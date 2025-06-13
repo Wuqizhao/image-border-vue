@@ -64,9 +64,21 @@ declare interface Params {
 	 */
 	italic: boolean;
 	/**
+	 * 是否加粗
+	 */
+	bold: boolean;
+	/**
 	 * 自定义文本
 	 */
 	text?: string;
+	/**
+	 * 样式索引
+	 */
+	styleIndex?: number;
+	/**
+	 * 样式名称列表
+	 */
+	styles?: Array<string>;
 }
 declare interface Time {
 	/**
