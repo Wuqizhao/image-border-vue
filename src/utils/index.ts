@@ -9,8 +9,12 @@ import type {
 	LabelConfigItem,
 	Logo,
 	Point,
+	TextAlign,
+	TextVerticalAlign,
 } from "../types";
 import { cameraBrands } from "../assets/tools";
+
+import { useStore } from "../stores/index";
 
 /**
  * 将曝光时间转换为分数字符串格式
@@ -412,7 +416,7 @@ export function getLogoName(make: string = ""): string {
 export function caculateCanvasSize(config: Config, img: Img) {
 	const rect1 = { x: 0, y: 0 };
 	const rect2 = { x: 0, y: 0 };
-	const { paddings: imgPaddings, watermark } = config;
+	const { paddings: imgPaddings, watermark, margin } = config;
 	const {
 		position,
 		height: watermarkHeight,
@@ -468,6 +472,11 @@ export function caculateCanvasSize(config: Config, img: Img) {
 				watermarkPaddings.top;
 			rect2.y = canvasHeight - watermarkPaddings.bottom;
 		}
+	}
+
+	if (margin) {
+		canvasWidth += margin.left + margin.right;
+		canvasHeight += margin.top + margin.bottom;
 	}
 
 	return { rect1, rect2, canvasWidth, canvasHeight };
@@ -566,3 +575,57 @@ export const blendMode: BlendModeItem[] = [
 	{ mode: "color", desc: "颜色" },
 	{ mode: "luminosity", desc: "亮度" },
 ];
+
+export function drawText(
+	ctx: CanvasRenderingContext2D,
+	text: string = "",
+	x: number = 0,
+	y: number = 0,
+	align: TextAlign = "left",
+	verticalAlign: TextVerticalAlign = "middle",
+	config: LabelConfigItem,
+	font: string = "sans-serif"
+) {
+	if (!ctx) return;
+
+	ctx.save();
+	ctx.textAlign = align;
+	ctx.textBaseline = verticalAlign;
+	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
+		config.size
+	}px ${config.font || font}`;
+
+	ctx.fillText(text, x, y);
+	ctx.restore();
+}
+
+/**
+ * 根据设置返回绘制文本的ctx
+ * @param ctx 上下文
+ * @param config 包含【加粗】【斜体】【字号】【颜色】【字体(可选)】的对象
+ * @param align 水平对齐方式：left(默认) | center | right
+ * @param verticalAlign 垂直对齐方式：top | middle(默认) | bottom
+ * @param font 字体，优先使用config.font
+ * @returns
+ */
+export function setTextCtx(
+	ctx: CanvasRenderingContext2D,
+	config: Pick<LabelConfigItem, "italic" | "size" | "color"> & {
+		font?: string;
+		bold?: boolean;
+	},
+	align: TextAlign = "left",
+	verticalAlign: TextVerticalAlign = "middle",
+	font: string = "sans-serif"
+): void | CanvasRenderingContext2D {
+	if (!ctx) return;
+
+	const store = useStore();
+	ctx.textAlign = align;
+	ctx.textBaseline = verticalAlign;
+	ctx.fillStyle = config.color;
+	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
+		config.size
+	}px ${config.font || store.config.font || font}`;
+	return ctx;
+}

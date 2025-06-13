@@ -1,5 +1,5 @@
 import type { Config, Context, DrawFun } from "../types";
-import { drawLogo, drawLine, replaceZ } from "../utils";
+import { drawLogo, drawLine, replaceZ, setTextCtx } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context: Context) => {
 	const {
@@ -21,12 +21,7 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 	const SPACE = (dividerConfig.margin * (rect2.x - rect1.x)) / 10;
 	// 绘制参数
 	if (paramsConfig.show) {
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `${paramsConfig.bold ? "bold" : ""} ${
-			paramsConfig.italic ? "Italic" : ""
-		} ${paramsConfig.size}px ${config.font || "sans-serif"}`;
+		setTextCtx(ctx, paramsConfig, "center");
 
 		let paramStr = [
 			(context.focalLength || img.exif?.FocalLengthIn35mmFilm || "--") + "mm",
@@ -164,12 +159,7 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 
 	// 绘制型号
 	if (watermark.model.show) {
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillStyle = watermark.model.color;
-		ctx.font = `${watermark.model.italic ? "Italic" : ""} ${
-			watermark.model.bold ? "bold" : ""
-		} ${watermark.model.size}px ${config.font}`;
+		setTextCtx(ctx, watermark.model, 'center');
 		ctx.fillText(
 			watermark.model.replaceZ ? replaceZ(img.modelText) : img.modelText,
 			rect1.x + (rect2.x - rect1.x) / 2,
@@ -302,6 +292,13 @@ const config: Config = {
 		show: false,
 		width: 50,
 		color: "#CCCCCC",
+	},
+	margin: {
+		show: true,
+		top: 500,
+		right: 0,
+		bottom: 0,
+		left: 0,
 	},
 	draw: doDraw,
 };

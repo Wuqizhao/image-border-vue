@@ -295,6 +295,7 @@ import CustomImages from '../components/CustomImages.vue';
 import WatermarkPadding from '../components/WatermarkPadding.vue'
 import { storeToRefs } from 'pinia';
 import BorderConfig from '../components/BorderConfig.vue'
+import MarginConfig from '../components/MarginConfig.vue'
 
 
 
@@ -307,6 +308,7 @@ const menuItems = ref([
     { label: '时间', value: 'time', component: markRaw(TimeConfig), show: config.value.watermark.time.enable },
     { label: '背景', value: 'background', component: markRaw(BlurConfig), show: true },
     { label: '图片边框', value: 'border', component: markRaw(BorderConfig), show: config.value?.border?.enable },
+    { label: '外边距', value: 'margin', component: markRaw(MarginConfig), show: false }, // 未实现
     { label: '地理位置', value: 'location', component: markRaw(LocationConfig), show: config.value.location?.enable },
     { label: '镜头', value: 'lens', component: markRaw(LensConfig), show: config.value.watermark.lens.enable },
     { label: '分割线', value: 'divider', component: markRaw(DividerConfig), show: config.value.divider.enable },
@@ -748,12 +750,12 @@ const handleDraw = useDebounceFn(() => {
 
             // 执行绘制结束后的操作
             config.value.afterDraw && config.value.afterDraw(ctx);
+
+            // 绘制边框
             if (config.value?.border?.enable && config.value?.border?.show) {
-                console.log('绘制边框');
                 ctx.save();
                 ctx.strokeStyle = config.value.border.color;
                 ctx.lineWidth = config.value.border.width;
-                // drawRoundedRect(ctx, imgPaddings.left, imgPaddings.top, realImgWidth, realImgHeight, 0);
                 ctx.strokeRect(imgPaddings.left, imgPaddings.top, realImgWidth, realImgHeight);
                 ctx.restore();
             }

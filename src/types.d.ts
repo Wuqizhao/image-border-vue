@@ -337,6 +337,14 @@ declare interface Border {
 	color: string;
 }
 
+declare interface Margin {
+	show: boolean;
+	top: number;
+	right: number;
+	bottom: number;
+	left: number;
+}
+
 export declare type TextAlign = "left" | "center" | "right";
 export declare type TextVerticalAlign = "top" | "middle" | "bottom";
 export declare interface LabelConfigItem {
@@ -467,6 +475,7 @@ declare interface BaseConfig {
 	location?: Location;
 	filter: Filter;
 	border?: Border;
+	margin?: Margin;
 	labels?: Array<LabelConfigItem>;
 	images?: Array<ImagesConfigItem>;
 }
