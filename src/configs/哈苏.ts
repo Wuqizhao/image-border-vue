@@ -11,7 +11,6 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 	const { params: paramsConfig } = watermark;
 	const { ctx, rect1, rect2 } = context;
 
-	config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
 
 	// 参数区域的宽度
 	const W = (dividerConfig.margin * 3 * (rect2.x - rect1.x)) / 5;

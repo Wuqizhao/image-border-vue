@@ -105,6 +105,10 @@ declare interface Time {
 	 * 自定义的文本
 	 */
 	text?: string;
+	/**
+	 * 是否斜体
+	 */
+	italic?: boolean;
 }
 declare interface Lens {
 	/**

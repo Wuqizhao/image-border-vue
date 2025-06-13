@@ -134,14 +134,14 @@ export const cameraBrands: CameraBrands[] = [
 
 export const watermarkList: WatermarkListBaseItem[] = [
 	{
-		name: "哈苏",
-		config: "哈苏",
-		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
-	},
-	{
 		name: "小米徕卡",
 		config: "小米徕卡",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMEZ_5rRw5CVPpsGb88YlmJczm3178AAn3DMRs4AAH4V7vXffdQ9OpZAQADAgADdwADNgQ.jpeg",
+	},
+	{
+		name: "哈苏",
+		config: "哈苏",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
 	},
 	{
 		name: "Lumix",

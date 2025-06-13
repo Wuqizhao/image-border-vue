@@ -1,5 +1,5 @@
 import type { Config, DrawFun } from "../types";
-import { drawLogo, replaceZ } from "../utils";
+import { drawLogo, replaceZ, setTextCtx } from "../utils";
 
 const doDraw: DrawFun = async (img, config, context) => {
 	const {
@@ -81,12 +81,13 @@ const doDraw: DrawFun = async (img, config, context) => {
 	if (lensConfig.show) {
 		ctx.save();
 		const text = lensConfig.text || img.exif?.LensModel;
-		ctx.textAlign = "left";
-		ctx.fillStyle = lensConfig.color;
-		ctx.font = `${lensConfig.bold ? "bold" : ""} ${
-			lensConfig.italic ? "italic" : ""
-		} ${lensConfig.size}px ${config.font}`;
-		ctx.textBaseline = "top";
+		// ctx.textAlign = "left";
+		// ctx.fillStyle = lensConfig.color;
+		// ctx.font = `${lensConfig.bold ? "bold" : ""} ${
+		// 	lensConfig.italic ? "italic" : ""
+		// } ${lensConfig.size}px ${config.font}`;
+		// ctx.textBaseline = "top";
+		setTextCtx(ctx, lensConfig, "left", 'top');
 
 		let _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
 		if (!modelConfig.show) {
@@ -112,9 +113,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 			: rect2.x - wPadding;
 		const _y =
 			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
-		ctx.textBaseline = paramsConfig.show ? "top" : "middle";
-		ctx.fillStyle = timeConfig.color;
-		ctx.font = `${timeConfig.size}px ${config.font}`;
+		
+		setTextCtx(ctx, timeConfig, "left", paramsConfig.show ? "top" : "middle");
 
 		timeWidth = ctx.measureText(img.timeText).width;
 
@@ -171,12 +171,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制位置
 	if (locationConfig?.show) {
 		ctx.save();
-		ctx.textAlign = "left";
-		ctx.textBaseline = "top";
-		ctx.fillStyle = locationConfig.color;
-		ctx.font = `${locationConfig.bold ? "bold" : ""} ${
-			locationConfig.italic ? "italic" : ""
-		} ${locationConfig.size}px ${config.font}`;
+		setTextCtx(ctx, locationConfig, "left", "top");
 
 		const text = locationConfig.text || img.locationText;
 

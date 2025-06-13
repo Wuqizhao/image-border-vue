@@ -610,9 +610,10 @@ export function drawText(
  */
 export function setTextCtx(
 	ctx: CanvasRenderingContext2D,
-	config: Pick<LabelConfigItem, "italic" | "size" | "color"> & {
+	config: Pick<LabelConfigItem, "size" | "color"> & {
 		font?: string;
 		bold?: boolean;
+		italic?: boolean;
 	},
 	align: TextAlign = "left",
 	verticalAlign: TextVerticalAlign = "middle",

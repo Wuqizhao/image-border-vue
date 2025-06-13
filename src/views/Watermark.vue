@@ -301,7 +301,6 @@ import MarginConfig from '../components/MarginConfig.vue'
 
 const { config } = storeToRefs(store);
 const menuItems = ref([
-    { label: '滤镜', value: 'filter', component: markRaw(Filter), show: true },
     { label: 'Logo', value: 'logo', component: markRaw(LogoConfig), show: config.value.logo.enable },
     { label: '型号', value: 'model', component: markRaw(ModelConfig), show: config.value.watermark.model.enable },
     { label: '参数', value: 'params', component: markRaw(ParamsConfig), show: config.value.watermark.model.enable },
@@ -314,8 +313,7 @@ const menuItems = ref([
     { label: '分割线', value: 'divider', component: markRaw(DividerConfig), show: config.value.divider.enable },
     { label: '图片圆角', value: 'radius', component: markRaw(RadiusConfig), show: true },
     { label: '图片阴影', value: 'shadow', component: markRaw(ShadowConfig), show: true },
-    { label: '自定义文本', value: 'labels', component: markRaw(CustomLabels), show: true },
-    { label: '自定义图片', value: 'images', component: markRaw(CustomImages), show: true },
+    { label: '滤镜', value: 'filter', component: markRaw(Filter), show: true },
 ])
 const renderMenuItems = computed(() => {
     return menuItems.value.filter(item => item?.show === true);
@@ -385,7 +383,6 @@ const mousedownPosition = ref({
     y: 0,
 });
 function onMouseDown(event: MouseEvent) {
-    console.log('onMouseDown', event);
     mousedownPosition.value = {
         x: event.clientX,
         y: event.clientY,
@@ -396,8 +393,6 @@ function onMouseMove(event: MouseEvent) {
     event
 }
 function onMouseUp(event: MouseEvent) {
-    console.log('onMouseUp', event);
-
     // 获取自定义文本列表
     const customTextList = config.value.labels;
     // 更新位置
@@ -602,7 +597,7 @@ const handleDraw = useDebounceFn(() => {
             exifStore.addExif(file, exif);
 
             img.exif = exif;
-            img.modelText = model.text || img.exif?.Model || '--';
+            img.modelText = model.text ?? img.exif?.Model ?? '--';
             // 曝光时间
             const exposureTime = convertExposureTime(exif?.ExposureTime);
             // 焦距
@@ -736,6 +731,8 @@ const handleDraw = useDebounceFn(() => {
                 ctx.fillRect(0, rect1.y - watermark.paddings.top, canvas.width, rect2.y - rect1.y + watermark.paddings.top + watermark.paddings.bottom);
             }
 
+
+            config.value.font = config.value.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
             // 执行模板的绘制函数
             config.value.draw(img, config.value, {
                 ctx, canvas, rect1, rect2, exposureTime, focalLength,
