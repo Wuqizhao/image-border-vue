@@ -144,9 +144,19 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 		_h1 = centerY - dividerHeight / 2;
 		_h2 = centerY + dividerHeight / 2;
 
-		drawLine(ctx, xPositions[0], _h1, xPositions[0], _h2, dividerConfig);
-		drawLine(ctx, xPositions[1], _h1, xPositions[1], _h2, dividerConfig);
-		drawLine(ctx, xPositions[2], _h1, xPositions[2], _h2, dividerConfig);
+		if (dividerConfig.separator) {
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.fillStyle = dividerConfig.color;
+
+			xPositions.map((_, i) => {
+				ctx.fillText(dividerConfig.separator || "", xPositions[i], centerY);
+			});
+		} else {
+			drawLine(ctx, xPositions[0], _h1, xPositions[0], _h2, dividerConfig);
+			drawLine(ctx, xPositions[1], _h1, xPositions[1], _h2, dividerConfig);
+			drawLine(ctx, xPositions[2], _h1, xPositions[2], _h2, dividerConfig);
+		}
 
 		// 绘制分割线范围
 		// ctx.strokeRect(rect1.x, _h1, rect2.x - rect1.x, _h2 - _h1);
@@ -260,6 +270,7 @@ const config: Config = {
 		width: 5,
 		scale: 1,
 		margin: 1,
+		separator: "",
 	},
 	shadow: {
 		show: false,

@@ -268,6 +268,10 @@ declare interface Divider {
 	 * 间隔
 	 */
 	margin: number;
+	/**
+	 * 分隔符
+	 */
+	separator?: string;
 }
 declare interface Shadow {
 	/**
