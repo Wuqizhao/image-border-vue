@@ -66,7 +66,7 @@ declare interface Params {
 	/**
 	 * 是否加粗
 	 */
-	bold: boolean;
+	bold?: boolean;
 	/**
 	 * 自定义文本
 	 */
