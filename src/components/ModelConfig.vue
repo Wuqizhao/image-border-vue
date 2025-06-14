@@ -1,8 +1,8 @@
 <template>
     <div v-if="config.watermark.model.enable">
-        <LabelsConfig :config="config.watermark.model" :show-more="false">
+        <LabelsConfig :config="config.watermark.model">
             <el-form-item label="替换Z为ℤ" label-width="85px">
-                    <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
+                <el-switch v-model="config.watermark.model.replaceZ"></el-switch>
             </el-form-item>
         </LabelsConfig>
     </div>

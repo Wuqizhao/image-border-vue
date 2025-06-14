@@ -970,7 +970,7 @@ export const preDefineColors = [
 ];
 
 export const defaultLabelConfig: LabelConfigItem = {
-	name: `自定义文本(${new Date().getTime()})`,
+	name: `文本(${new Date().getTime()})`,
 	show: true,
 	align: "left" as TextAlign,
 	verticalAlign: "top" as TextVerticalAlign,
@@ -985,6 +985,7 @@ export const defaultLabelConfig: LabelConfigItem = {
 	stroke: false,
 	strokeWidth: 3,
 	draggable: false,
+	showRect: false,
 };
 
 export const defaultImageConfig: ImagesConfigItem = {
@@ -1002,7 +1003,7 @@ export const defaultImageConfig: ImagesConfigItem = {
 	blendMode: "normal",
 };
 
-export const defaultConfig: Config = {
+export const defaultConfig: Required<Config> = {
 	name: "默认",
 	font: "sans-serif",
 	paddings: {
@@ -1014,42 +1015,22 @@ export const defaultConfig: Config = {
 	watermark: {
 		position: "bottom",
 		height: 0,
-		model: {
-			enable: false,
-			show: false,
-			color: "#000",
-			size: 100,
-			replaceZ: true,
-			italic: false,
-			bold: false,
-		},
+		model: { ...defaultLabelConfig, enable: false, replaceZ: false },
 		params: {
+			...defaultLabelConfig,
 			enable: false,
-			show: false,
-			color: "#000",
-			size: 100,
 			useEquivalentFocalLength: true,
-			letterUpperCase: false,
-			italic: false,
-			bold: false,
+			styleIndex: 0,
+			styles: [],
 		},
 		time: {
+			...defaultLabelConfig,
 			enable: false,
-			show: false,
-			color: "#000",
-			size: 100,
 			format: "YYYY.MM.DD HH:mm",
-			italic: false,
-			bold: false,
 		},
 		lens: {
+			...defaultLabelConfig,
 			enable: false,
-			show: false,
-			color: "#000",
-			size: 100,
-			italic: false,
-			bold: false,
-			text: "",
 		},
 		paddings: {
 			top: 0,
@@ -1105,13 +1086,8 @@ export const defaultConfig: Config = {
 		y: 0,
 	},
 	location: {
+		...defaultLabelConfig,
 		enable: false,
-		show: false,
-		text: "",
-		size: 100,
-		color: "#000",
-		bold: false,
-		italic: false,
 	},
 	filter: {
 		saturation: 100,
@@ -1126,9 +1102,18 @@ export const defaultConfig: Config = {
 		width: 50,
 		color: "rgb(128,128,128)",
 	},
+	margin: {
+		show: false,
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
+	},
 	labels: [],
 	images: [],
 	draw: () => {},
+	beforeDraw: () => {},
+	afterDraw: () => {},
 };
 
 export const defaultExif = {

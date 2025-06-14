@@ -28,11 +28,17 @@ export const useStore = defineStore(
 
 		const config = ref<Config>(deepClone(defaultConfig));
 
+		function setConfig(cfg: Config) {
+			const a = deepClone({ ...defaultConfig, ...cfg });
+			config.value = a;
+		}
+
 		return {
 			localWatermarks,
 			addWatermark,
 			deleteLocalWatermark,
 			config,
+			setConfig,
 		};
 	},
 	{

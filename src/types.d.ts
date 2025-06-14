@@ -254,6 +254,10 @@ export declare interface LabelConfigItem extends BaseLabelConfig {
 	 * 是否大写
 	 */
 	letterUpperCase?: boolean;
+	/**
+	 * 显示范围
+	 */
+	showRect?: boolean;
 }
 export declare interface ImagesConfigItem {
 	title: string;

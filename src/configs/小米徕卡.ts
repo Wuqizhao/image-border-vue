@@ -1,3 +1,4 @@
+import { defaultConfig } from "../assets/tools";
 import type { Config, DrawFun } from "../types";
 import { drawLogo, replaceZ, setTextCtx } from "../utils";
 
@@ -190,6 +191,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 };
 
 const config: Config = {
+	...defaultConfig,
 	name: "小米徕卡",
 	font: "sans-serif",
 	paddings: {
@@ -204,12 +206,14 @@ const config: Config = {
 		bgColor: "#FFF",
 		model: {
 			enable: true,
+			replaceZ: true,
 			show: true,
 			color: "#000000",
 			size: 110,
-			replaceZ: true,
 			italic: false,
 			bold: true,
+			align: "left",
+			verticalAlign: "middle",
 		},
 		params: {
 			enable: true,
@@ -222,6 +226,8 @@ const config: Config = {
 			bold: true,
 			x: 0,
 			y: 0,
+			align: "right",
+			verticalAlign: "middle",
 		},
 		time: {
 			enable: true,

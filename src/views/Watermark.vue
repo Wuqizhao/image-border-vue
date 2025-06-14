@@ -263,7 +263,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch, provide, type Component, shallowRef, markRaw, onMounted, computed } from 'vue'
-import { print, getWatermarkList, getSupportedFonts, defaultConfig, defaultExif } from '../assets/tools'
+import { print, getWatermarkList, getSupportedFonts, defaultExif, defaultConfig } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
 import { Files, EditPen, FolderChecked, Cellphone, Picture, Notebook } from '@element-plus/icons-vue'
@@ -389,7 +389,6 @@ function onMouseDown(event: MouseEvent) {
     };
 }
 function onMouseMove(event: MouseEvent) {
-    // console.log('onMouseMove',event);
     event
 }
 function onMouseUp(event: MouseEvent) {
@@ -775,7 +774,7 @@ const handleDraw = useDebounceFn(() => {
             URL.revokeObjectURL(_img.src);
         }
     } catch (e) {
-        console.log('绘制发生错误：', e);
+        console.error('绘制发生错误：', e);
     }
 }, 250)
 
@@ -830,14 +829,15 @@ function importConfig(val: number): void {
     }
     configPromise.then(res => {
         // 内置配置
-        let config_value = deepClone(res.default as Config);
+        const config_value = deepClone(res.default as Config);
+
 
         if (watermark.is_local) {
             let local_value = JSON.parse(watermark.config) as Config;
-            config_value = Object.assign(config_value, local_value);
+            Object.assign(config_value, local_value);
         }
 
-        store.config = Object.assign({}, config_value, defaultConfig, config_value);
+        store.setConfig(config_value);
         ElMessage.success(`配置【${watermark.name}】导入成功~`);
     }).catch(err => {
         ElNotification.error({

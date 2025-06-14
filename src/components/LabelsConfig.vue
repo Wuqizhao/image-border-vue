@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+
         <h3 style="display: flex;justify-content: space-between;align-items: center;padding:10px;"
             v-if="props.config.name">
             <el-divider content-position="left">{{ props.config.name }}</el-divider>
@@ -9,6 +10,7 @@
             <el-form-item label="显示">
                 <el-switch v-model="props.config.show" style="margin-right: 20px;"></el-switch>
                 <el-checkbox v-if="showMore" label="可拖动" v-model="props.config.draggable"></el-checkbox>
+                <el-checkbox label="显示范围" v-model="props.config.showRect"></el-checkbox>
             </el-form-item>
             <el-form-item label="颜色">
                 <el-color-picker v-model="props.config.color" :predefine="preDefineColors" show-alpha></el-color-picker>
@@ -26,7 +28,8 @@
                         @click="props.config.text = convertExposureTime(injectImg?.exif?.ExposureTime)">快门速度</el-button>
                     <el-button size="small" @click="props.config.text = injectImg?.locationText">位置</el-button>
                     <el-button size="small" @click="props.config.text = '中国 · 广东'">位置：中国·广东</el-button>
-                    <el-button size="small" @click="props.config.text = injectImg?.exif?.Copyright || '--'">版权</el-button>
+                    <el-button size="small"
+                        @click="props.config.text = injectImg?.exif?.Copyright || '--'">版权</el-button>
                 </HorizontalScroll>
             </el-form-item>
             <el-form-item label="字体">
@@ -66,22 +69,20 @@
                 <el-slider show-input v-model="props.config.y" :min="-5000" :max="5000"></el-slider>
                 <el-button type="default" plain @click="resetPosition">重置位置</el-button>
             </el-form-item>
-            <div v-if="showMore">
-                <el-form-item label="对齐方式" label-width="80px">
-                    <el-radio-group v-model="props.config.align">
-                        <el-radio value="left">左对齐</el-radio>
-                        <el-radio value="center">居中</el-radio>
-                        <el-radio value="right">右对齐</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="垂直对齐" label-width="80px">
-                    <el-radio-group v-model="props.config.verticalAlign">
-                        <el-radio value="top">顶部对齐</el-radio>
-                        <el-radio value="center">居中</el-radio>
-                        <el-radio value="bottom">底部对齐</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </div>
+            <el-form-item label="对齐方式" label-width="80px">
+                <el-radio-group v-model="props.config.align">
+                    <el-radio value="left" border>左对齐</el-radio>
+                    <el-radio value="center" border>居中</el-radio>
+                    <el-radio value="right" border>右对齐</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="垂直对齐" label-width="80px">
+                <el-radio-group v-model="props.config.verticalAlign">
+                    <el-radio value="top" border>顶部对齐</el-radio>
+                    <el-radio value="middle" border>居中</el-radio>
+                    <el-radio value="bottom" border>底部对齐</el-radio>
+                </el-radio-group>
+            </el-form-item>
             <slot></slot>
         </el-form>
     </div>
@@ -102,27 +103,30 @@ const props = defineProps({
         type: Object,
         required: true,
         default: () => ({
-            name: String,
-            show: Boolean,
-            text: String,
-            align: String,
-            verticalAlign: String,
-            color: String,
-            size: Number,
-            italic: Boolean,
-            bold: Boolean,
-            x: Number,
-            y: Number,
-            draggable: Boolean,
-            letterUpperCase: Boolean,
-            stroke: Boolean,
-            lineWidth: Number
+            name: { type: String, default: '' },
+            show: { type: Boolean, default: true },
+            text: { type: String, default: '' },
+            align: {
+                type: String,
+                default: 'left'
+            },
+            verticalAlign: { type: String, default: 'middle' },
+            color: { type: String, default: '#000' },
+            size: { type: Number, default: 16 },
+            italic: { type: Boolean, default: false },
+            bold: { type: Boolean, default: false },
+            x: { type: Number, default: 0 },
+            y: { type: Number, default: 0 },
+            draggable: { type: Boolean, default: false },
+            letterUpperCase: { type: Boolean, default: false },
+            stroke: { type: Boolean, default: false },
+            lineWidth: { type: Number, default: 5 },
+            showRect: { type: Boolean, required: true, default: true }
         })
     },
     showMore: { type: Boolean, default: true },
     maxSize: { type: Number, default: 1000 },
-    showReplaceZ: { type: Boolean, default: false },
-    labelWidth: { type: Number, default: 50 }
+    labelWidth: { type: Number, default: 50 },
 })
 
 const fontList = getSupportedFonts()
@@ -145,7 +149,7 @@ function resetPosition() {
     border: 1.5px solid gainsboro;
     border-radius: 5px;
     margin-top: 10px;
-    animation: container 0.5s ease-in-out;
+    animation: container 0.5s;
 
     &:hover {
         border-color: var(--el-color-primary);
@@ -154,7 +158,7 @@ function resetPosition() {
     @keyframes container {
         from {
             transform: translateX(50px);
-            opacity: 0.5;
+            opacity: 0.6;
         }
     }
 }

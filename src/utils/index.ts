@@ -82,30 +82,107 @@ export async function download(canvas: null | HTMLCanvasElement, config: Img) {
  * @returns {T} 返回克隆后的新值 cloned = deepClone(obj); // { a: 1, b: { c: 2 } }
  * ```
  */
-export function deepClone<T>(value: T): T {
-	// 如果值为 null 或者不是对象或函数，则直接返回该值
+// export function deepClone<T>(value: T): T {
+// 	// 如果值为 null 或者不是对象或函数，则直接返回该值
+// 	if (value === null || typeof value !== "object") {
+// 		return value;
+// 	}
+
+// 	// 如果是数组
+// 	if (Array.isArray(value)) {
+// 		return value.map((item) => deepClone(item)) as T;
+// 	}
+
+// 	// 如果是函数
+// 	if (typeof value === "function") {
+// 		return value as T;
+// 	}
+
+// 	// 如果是普通对象
+// 	const clone: Record<string, any> = {};
+// 	for (const key in value) {
+// 		if (Object.prototype.hasOwnProperty.call(value, key)) {
+// 			clone[key] = deepClone(value[key]);
+// 		}
+// 	}
+// 	return clone as T;
+// }
+export function deepClone<T>(value: T, seen = new WeakMap()): T {
+	// 基本类型直接返回
 	if (value === null || typeof value !== "object") {
 		return value;
 	}
 
-	// 如果是数组
+	// 处理循环引用
+	if (seen.has(value)) {
+		return seen.get(value);
+	}
+
+	// 处理特殊对象类型
+	if (value instanceof Date) {
+		const clone = new Date(value.getTime());
+		seen.set(value, clone);
+		return clone as T;
+	}
+
+	if (value instanceof RegExp) {
+		const clone = new RegExp(value.source, value.flags);
+		seen.set(value, clone);
+		return clone as T;
+	}
+
+	if (value instanceof Map) {
+		const clone = new Map();
+		seen.set(value, clone);
+		value.forEach((v, k) => clone.set(deepClone(k, seen), deepClone(v, seen)));
+		return clone as T;
+	}
+
+	if (value instanceof Set) {
+		const clone = new Set();
+		seen.set(value, clone);
+		value.forEach((v) => clone.add(deepClone(v, seen)));
+		return clone as T;
+	}
+
 	if (Array.isArray(value)) {
-		return value.map((item) => deepClone(item)) as T;
+		const clone: any[] = [];
+		seen.set(value, clone);
+		value.forEach((item, index) => {
+			clone[index] = deepClone(item, seen);
+		});
+		return clone as T;
 	}
 
-	// 如果是函数
 	if (typeof value === "function") {
-		return value as T;
+		return cloneFunction(value);
 	}
 
-	// 如果是普通对象
-	const clone: Record<string, any> = {};
+	// 处理普通对象
+	const clone = Object.create(Object.getPrototypeOf(value));
+	seen.set(value, clone);
 	for (const key in value) {
 		if (Object.prototype.hasOwnProperty.call(value, key)) {
-			clone[key] = deepClone(value[key]);
+			clone[key] = deepClone(value[key], seen);
 		}
 	}
 	return clone as T;
+}
+
+function cloneFunction<T extends Function>(fn: T): T {
+	// 创建一个新函数
+	const cloned = function (this: any, ...args: any[]) {
+		return fn.apply(this, args);
+	} as unknown as T; // 双重类型断言
+
+	// 复制函数属性
+	for (const key in fn) {
+		if (Object.prototype.hasOwnProperty.call(fn, key)) {
+			(cloned as any)[key] = deepClone(fn[key]);
+		}
+	}
+
+	return cloned;
 }
 
 /**
@@ -604,14 +681,18 @@ export function setTextCtx(
 		italic?: boolean;
 		stroke?: boolean;
 		lineWidth?: number;
+		align?: TextAlign;
+		verticalAlign?: TextVerticalAlign;
+		showRect?: boolean;
 	},
 	align: TextAlign = "left",
 	verticalAlign: TextVerticalAlign = "middle",
 	font: string = "sans-serif"
 ): { ctx: CanvasRenderingContext2D; drawTextFunc: Function } {
 	const store = useStore();
-	ctx.textAlign = align;
-	ctx.textBaseline = verticalAlign;
+
+	ctx.textAlign = config?.align || align;
+	ctx.textBaseline = config?.verticalAlign || verticalAlign;
 	ctx.fillStyle = config.color;
 	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
 		config.size
@@ -634,6 +715,56 @@ export function setTextCtx(
 		} else {
 			ctx.fillText(text, _x, _y);
 		}
+
+		if (config?.showRect) {
+			const _config = deepClone(config);
+			const _color = randomColor();
+			_config.color = _color;
+			const _size = 10 * Math.random() + 1;
+			_config.size = _size;
+			// 设置虚线
+			// ctx.setLineDash([5, 20]);
+			// 绘制十字基准点位置
+			drawLine(ctx, _x, 0, _x, ctx.canvas.height, _config);
+			drawLine(ctx, 0, _y, ctx.canvas.width, _y, _config);
+			// 绘制方框，考虑对齐方式
+			const rect = {
+				x: _x,
+				y: _y,
+			};
+			const textWidth = ctx.measureText(text).width;
+			switch (config?.align) {
+				case "left":
+					rect.x = _x;
+					break;
+				case "center":
+					rect.x = _x - textWidth / 2;
+					break;
+				case "right":
+					rect.x = _x - textWidth;
+					break;
+			}
+			const textHeight = config.size;
+			switch (config?.verticalAlign) {
+				case "top":
+					rect.y = _y;
+					break;
+				case "middle":
+					rect.y = _y - textHeight / 2;
+					break;
+				case "bottom":
+					rect.y = _y - textHeight;
+					break;
+			}
+
+			ctx.strokeStyle = _color;
+			ctx.lineWidth = 10;
+			ctx.strokeRect(rect.x, rect.y, textWidth, config.size);
+		}
 	};
 	return { ctx, drawTextFunc };
+}
+
+function randomColor() {
+	return `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
 }
