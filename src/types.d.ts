@@ -1,76 +1,24 @@
 import type { Exifr, Tags } from "exifr";
 
-declare interface Model {
+declare interface Model extends LabelConfigItem {
 	/**
 	 * 是否支持显示型号
 	 */
 	enable: boolean;
 	/**
-	 * 是否显示型号
-	 */
-	show: boolean;
-	/**
-	 * 型号文本的颜色
-	 */
-	color: string;
-	/**
-	 * 型号文本大小
-	 */
-	size: number;
-	/**
 	 * 型号文字是否替换Z为ℤ
 	 */
 	replaceZ: boolean;
-	/**
-	 * 型号文字是否斜体
-	 */
-	italic: boolean;
-	/**
-	 * 型号文字是否加粗，一般只加粗厂商
-	 */
-	bold: boolean;
-	/**
-	 * 自定义文本
-	 */
-	text?: string;
 }
-declare interface Params {
+declare interface Params extends LabelConfigItem {
 	/**
-	 * 是否支持参数
+	 * 是否支持
 	 */
 	enable: boolean;
-	/**
-	 * 是否显示参数
-	 */
-	show: boolean;
-	/**
-	 * 参数文本的颜色
-	 */
-	color: string;
-	/**
-	 * 参数文本大小
-	 */
-	size: number;
 	/**
 	 * 是否使用等效焦距
 	 */
 	useEquivalentFocalLength: boolean;
-	/**
-	 * 是否大写
-	 */
-	letterUpperCase: boolean;
-	/**
-	 * 是否斜体
-	 */
-	italic: boolean;
-	/**
-	 * 是否加粗
-	 */
-	bold?: boolean;
-	/**
-	 * 自定义文本
-	 */
-	text?: string;
 	/**
 	 * 样式索引
 	 */
@@ -80,65 +28,21 @@ declare interface Params {
 	 */
 	styles?: Array<string>;
 }
-declare interface Time {
+declare interface Time extends LabelConfigItem {
 	/**
 	 * 是否支持时间
 	 */
 	enable: boolean;
 	/**
-	 * 是否显示时间
-	 */
-	show: boolean;
-	/**
-	 * 时间文本的颜色
-	 */
-	color: string;
-	/**
-	 * 时间文本大小
-	 */
-	size: number;
-	/**
 	 * 时间格式(YYYY-MM-DD HH:mm:ss)
 	 */
 	format: string;
-	/**
-	 * 自定义的文本
-	 */
-	text?: string;
-	/**
-	 * 是否斜体
-	 */
-	italic?: boolean;
 }
-declare interface Lens {
+declare interface Lens extends LabelConfigItem {
 	/**
-	 * 是否支持镜头
+	 * 是否支持镜头信息
 	 */
 	enable: boolean;
-	/**
-	 * 是否显示镜头
-	 */
-	show: boolean;
-	/**
-	 * 镜头文本
-	 */
-	text: string;
-	/**
-	 * 镜头文本颜色
-	 */
-	color: string;
-	/**
-	 * 文字大小
-	 */
-	size: number;
-	/**
-	 * 是否斜体
-	 */
-	italic: boolean;
-	/**
-	 * 是否加粗
-	 */
-	bold: boolean;
 }
 declare interface Radius {
 	/**
@@ -217,35 +121,11 @@ export declare interface Logo {
 	 */
 	url?: string;
 }
-declare interface Location {
+declare interface Location extends LabelConfigItem {
 	/**
 	 * 是否支持位置功能
 	 */
 	enable: boolean;
-	/**
-	 * 是否显示位置
-	 */
-	show: boolean;
-	/**
-	 * 自定义的位置文本
-	 */
-	text: string;
-	/**
-	 * 位置文本大小
-	 */
-	size: number;
-	/**
-	 * 位置文本颜色
-	 */
-	color: string;
-	/**
-	 * 是否加粗
-	 */
-	bold: boolean;
-	/**
-	 * 是否斜体
-	 */
-	italic: boolean;
 }
 declare interface Divider {
 	/**
@@ -351,22 +231,29 @@ declare interface Margin {
 
 export declare type TextAlign = "left" | "center" | "right";
 export declare type TextVerticalAlign = "top" | "middle" | "bottom";
-export declare interface LabelConfigItem {
-	name: string;
-	x: number;
-	y: number;
-	align: TextAlign;
-	verticalAlign: TextVerticalAlign;
-	font: string;
+
+declare interface BaseLabelConfig {
 	show: boolean;
-	text: string;
 	color: string;
 	size: number;
 	italic: boolean;
 	bold: boolean;
-	stroke: boolean;
-	strokeWidth: number;
+	text?: string;
+}
+export declare interface LabelConfigItem extends BaseLabelConfig {
+	name?: string;
+	x?: number;
+	y?: number;
+	align?: TextAlign;
+	verticalAlign?: TextVerticalAlign;
+	font?: string;
+	stroke?: boolean;
+	strokeWidth?: number;
 	draggable?: boolean;
+	/**
+	 * 是否大写
+	 */
+	letterUpperCase?: boolean;
 }
 export declare interface ImagesConfigItem {
 	title: string;

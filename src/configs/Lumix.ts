@@ -167,6 +167,7 @@ const config: Config = {
 			letterUpperCase: false,
 			italic: false,
 			text: "",
+			bold: false,
 		},
 		time: {
 			enable: true,
@@ -174,6 +175,8 @@ const config: Config = {
 			color: "#FFF",
 			size: 80,
 			format: "YYYY-MM-DD HH:mm",
+			italic: false,
+			bold: false,
 		},
 		lens: {
 			enable: false,

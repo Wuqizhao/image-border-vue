@@ -29,32 +29,32 @@ export const cameraBrands: CameraBrands[] = [
 		logo: "canon",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMcaEwcgAABOGyKi_uwmPMeIUpdI1PcAAKhxDEbh8ppVv8B2VpqpmVdAQADAgADeQADNgQ.png",
 	},
-	{
-		name: "佳能(白)",
-		logo: "canon-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMeaEwcwjof7uGTnjFF2YuTD1Z0x-AAAqPEMRuHymlWLlMQEc-wPyYBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "佳能-2",
-		logo: "canon-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMdaEwcr866xCb84D6bPA90nNaoPxAAAqLEMRuHymlWZ8ZxRTbmNW8BAAMCAAN5AAM2BA.png",
-	},
+	// {
+	// 	name: "佳能(白)",
+	// 	logo: "canon-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMeaEwcwjof7uGTnjFF2YuTD1Z0x-AAAqPEMRuHymlWLlMQEc-wPyYBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "佳能-2",
+	// 	logo: "canon-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMdaEwcr866xCb84D6bPA90nNaoPxAAAqLEMRuHymlWZ8ZxRTbmNW8BAAMCAAN5AAM2BA.png",
+	// },
 	{
 		name: "尼康",
 		logo: "nikon",
 		make: ["NIKON CORPORATION"],
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANIaEwiv-eggtEiZVVeNyoqZ9IT7QwAAuDIMRvPAWFWD_DCJqPVvH4BAAMCAAN5AAM2BA.png",
 	},
-	{
-		name: "尼康-文字(黑)",
-		logo: "nikon-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANJaEwi2GnyUxMQ0_-d8ze5EknUUjQAAuHIMRvPAWFWPSvn2HOio-EBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "尼康-文字(白)",
-		logo: "nikon-2-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANKaEwi6I3bTgrdhMBAShb-OvdzhmwAAuLIMRvPAWFWKRnv2yqb6ocBAAMCAAN5AAM2BA.png",
-	},
+	// {
+	// 	name: "尼康-文字(黑)",
+	// 	logo: "nikon-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANJaEwi2GnyUxMQ0_-d8ze5EknUUjQAAuHIMRvPAWFWPSvn2HOio-EBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "尼康-文字(白)",
+	// 	logo: "nikon-2-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANKaEwi6I3bTgrdhMBAShb-OvdzhmwAAuLIMRvPAWFWKRnv2yqb6ocBAAMCAAN5AAM2BA.png",
+	// },
 	{
 		name: "索尼(黑)",
 		logo: "sony",
@@ -66,26 +66,26 @@ export const cameraBrands: CameraBrands[] = [
 		logo: "sony-white",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANpaEwnFLmLoDgq0EzxQJbFOPmLIT0AAo7JMRvPAWFWdUbpXmmcZiMBAAMCAAN5AAM2BA.png",
 	},
-	{
-		name: "索尼-Alpha(白)",
-		logo: "sony-alpha-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANoaEwm_xC0u9x7StWlihQkGdj8kSUAAo3JMRvPAWFW8pzPC1opLBABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "索尼-Alpha(黑)",
-		logo: "sony-alpha-black",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANnaEwm5q4ZlETNhdbEIwnyQhTkPRwAAozJMRvPAWFWkWHoa_oN-2ABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "索尼-Alpha2(黑)",
-		logo: "sony-alpha-2-black",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANlaEwmi65m7MTnlbYiNKIKLw1ooZUAAm_DMRsIRGBWzXO1dvclkbgBAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "索尼-Alpha2(白)",
-		logo: "sony-alpha-2-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANmaEwmnjzotzZ8WeGhlzkFq7w_2P0AAorJMRvPAWFW3_NDo3Z5y0ABAAMCAAN4AAM2BA.png",
-	},
+	// {
+	// 	name: "索尼-Alpha(白)",
+	// 	logo: "sony-alpha-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANoaEwm_xC0u9x7StWlihQkGdj8kSUAAo3JMRvPAWFW8pzPC1opLBABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "索尼-Alpha(黑)",
+	// 	logo: "sony-alpha-black",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANnaEwm5q4ZlETNhdbEIwnyQhTkPRwAAozJMRvPAWFWkWHoa_oN-2ABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "索尼-Alpha2(黑)",
+	// 	logo: "sony-alpha-2-black",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANlaEwmi65m7MTnlbYiNKIKLw1ooZUAAm_DMRsIRGBWzXO1dvclkbgBAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "索尼-Alpha2(白)",
+	// 	logo: "sony-alpha-2-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANmaEwmnjzotzZ8WeGhlzkFq7w_2P0AAorJMRvPAWFW3_NDo3Z5y0ABAAMCAAN4AAM2BA.png",
+	// },
 	{
 		name: "富士",
 		logo: "fuji",
@@ -133,451 +133,452 @@ export const cameraBrands: CameraBrands[] = [
 		logo: "xiaomi-text-white",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN3aEwoqkvrYVK_Z1Joc9tUQWAGVAMAAqHJMRvPAWFWcOn4TVC0txcBAAMCAAN4AAM2BA.png",
 	},
-	{
-		name: "小米汽车",
-		logo: "xiaomi-car",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN1aEwokc_nz2VBWms0ZfTvPpT-hqQAAp_JMRvPAWFWBpOMzjZQ6BEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "小米澎湃",
-		logo: "hyperos",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM0aEwfb45UjenAnf9yCDWJWkEubIoAAsXIMRvPAWFWNkigTPnNHKABAAMCAAN5AAM2BA.png",
-	},
+	// {
+	// 	name: "小米汽车",
+	// 	logo: "xiaomi-car",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN1aEwokc_nz2VBWms0ZfTvPpT-hqQAAp_JMRvPAWFWBpOMzjZQ6BEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "小米澎湃",
+	// 	logo: "hyperos",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM0aEwfb45UjenAnf9yCDWJWkEubIoAAsXIMRvPAWFWNkigTPnNHKABAAMCAAN5AAM2BA.png",
+	// },
 	{
 		name: "红米(彩色)",
 		logo: "redmi",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANeaEwlnhcKIeoOUI1hDO-9x099JKEAAnvJMRvPAWFWTfzyfcv7sa4BAAMCAAN5AAM2BA.png",
 	},
-	{
-		name: "红米(黑)",
-		logo: "redmi-black",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANfaEwlso2_SdS_T4j7gljonQFjXesAAnzJMRvPAWFW-pwWQpSF2QsBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "红米(白)",
-		logo: "redmi-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANgaEwl7PzWcocvBg29FgjEItXDSlEAAoDJMRvPAWFW7FXy9PsuQAcBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "华为",
-		logo: "huawei",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMxaEwfKXME2MJG9bKDgojy6ptkVqUAAsDIMRvPAWFWFXFom_hHCCsBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "XMAGE-2",
-		logo: "xmage-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN5aEwo1BxapWrzZU_wsceiCPTksS4AAqPJMRvPAWFWwCtB3kD5w4IBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "XMAGE",
-		logo: "xmage",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN4aEwoxdYqjxCmzAm7O7G3b8n81a8AAhfGMRs7YWBW4Nm-Lm_Kje4BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "华为(黑)",
-		logo: "huawei-black",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMyaEwfUjLMkLyIlMHwvk94Xylq6JIAAsLIMRvPAWFW4Sk6W5N9zosBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "华为(白)",
-		logo: "huawei-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMzaEwfXxZcmWYlAnnOOR1clrA6YroAAsTIMRvPAWFWzuLW_BVGRQgBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "荣耀",
-		logo: "honor",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMvaEwfBqr9CKShtT7lpWZvJzMBcc0AArzIMRvPAWFWKcDeRwwAAdehAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "苹果(黑)",
-		logo: "apple",
-		make: ["Apple"],
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMTaEwbUeTy-mvMMaOawfA4BCevYeEAApfEMRuHymlWc-vEQqIdiIEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "苹果(灰)",
-		logo: "apple-gray",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMUaEwbc-sZDSS-nnEZLQx-vB-tD4UAApnEMRuHymlWvAABTbrFxzUTAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "苹果(白)",
-		logo: "apple-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMVaEwbheDFRHhzwN_Xgv1mMSJf5tAAAprEMRuHymlWsrHR-aYB4MABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "OPPO",
-		logo: "oppo",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANVaEwkSRpGuM9XaL3QD0WvL1l_JXQAAvHIMRvPAWFWn5xh46ZFIGkBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "一加",
-		logo: "oneplus",
-		make: ["OnePlus"],
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANRaEwjkDeu2qVrmq4g-CudxsHEswgAAurIMRvPAWFWMBkvMfaz4pYBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "一加(黑)",
-		logo: "oneplus-black",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANSaEwjozHnRJQeQMPlmehJuu3SVaAAAuvIMRvPAWFW9WWhG9lBvsEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "一加(白)",
-		logo: "oneplus-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANUaEwjzJR5Ixb_HREi-ZfPh9JLxHgAAu7IMRvPAWFWBu_YVepBsKsBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "一加(红)",
-		logo: "oneplus-red",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANTaEwjt8PTWbtp66ccJAABVLL5NlYWAALsyDEbzwFhVjod7enZOXCqAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "vivo",
-		logo: "vivo",
-		make: ["vivo"],
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANtaEwnjD5AfPeWFH4cc7nEWDcZv34AApLJMRvPAWFWiIMQh3MaRNsBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "vivo-文字(黑)",
-		logo: "vivo-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANuaEwn3KIrosTFbsYR3XatVqltkVMAApPJMRvPAWFWF0-ELHbu2vEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "vivo-文字(白)",
-		logo: "vivo-2-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANvaEwn9YasyuFsqU5bNroPiuXOSEEAApTJMRvPAWFWnW_W5UeMcKUBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "IQOO",
-		logo: "iqoo",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM1aEwffLdEjgugYmD1dbf1yLbrEAsAAsbIMRvPAWFWzwIm6EhFWSMBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "IQOO-2",
-		logo: "iqoo-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM2aEwfjEwC9hHW0mPCtfqexMp-608AAsfIMRvPAWFWBTm-JHcxMyEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "真我",
-		logo: "realme",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANcaEwlQ2vn-bmV7cxD8Y2aWCF_sb0AAnfJMRvPAWFWAAEBVpVz88RDAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "真我-2",
-		logo: "realme-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANdaEwljN4gYrgXfTpCboxnHi6TM9cAAnrJMRvPAWFW8GBz75wRluQBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "努比亚",
-		logo: "nubia",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANPaEwjYZRNJqv5QJATyq6aOyJFMDUAAufIMRvPAWFWRPZ1nu47aJ4BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "适马",
-		logo: "sigma",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANjaEwmVhwOzwz7NiBbPGyOA7DwfY4AAoXJMRvPAWFWPyT4SF_FaIUBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "徕卡",
-		logo: "leica",
-		make: ["LEICA CAMERA AG"],
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMSaEwVCWJ_jB9NWK0UAm1U3eB1EEsAAjzMMRuHymFWdfcfYFNCmlABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "哈苏(黑)",
-		logo: "hasselblad",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMraEweutl33sxtB-SvXbysDiFK-n8AArjIMRvPAWFW4XC9rh41BI8BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "哈苏(白)",
-		logo: "hasselblad-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMuaEwe9omYoWWiZb6d11u4P5Sus74AArvIMRvPAWFWcktvPBdWoCEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "哈苏-2(黑)",
-		logo: "hasselblad-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMsaEwe0iBRVSaA1V8z6YOry_vC5fgAArnIMRvPAWFWk-bYDakuRlcBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "哈苏-2(白)",
-		logo: "hasselblad-2-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMtaEwe5HcchppXMnUrfrAoJqcj03YAArrIMRvPAWFWTk-L46i-4SABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "大疆",
-		logo: "dji",
-		make: ["DJI"],
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMkaEwdwVRV3-OCPPF5ge-UeO4qHP0AAq_IMRvPAWFWgkpquZSKNcoBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "大疆(白)",
-		logo: "dji-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMlaEweFNXf_k1OY5R58GZat-OtwUEAArDIMRvPAWFWBEa8S9hOmo4BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "蔡司",
-		logo: "zeiss",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAOBaEwp2G1Bp-_CdLf8EiGLT-TIvXoAAqrJMRvPAWFWbaj89Z0HVsYBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "奥林巴斯",
-		logo: "olympus",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANQaEwjeCXfmwSgFMmwlgZ37zqRIYsAAujIMRvPAWFWiFWAmCHf6EEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "诺基亚(新)",
-		logo: "nokia",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANNaEwjMtKkheeiYAiWDV5yCTp7ngkAAuXIMRvPAWFWikuSgeQm74sBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "诺基亚",
-		logo: "nokia-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANOaEwjRyvhEj9WN1OJxNGjOWD0flYAAubIMRvPAWFWddeuzlXTsBYBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "酷派",
-		logo: "coolpad",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMiaEwdUQAB38p2glhJh5hUP80x1vv5AAKtyDEbzwFhVoVTL7v_0x0dAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "酷派-2",
-		logo: "coolpad-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMjaEwdZmZmT6DseSay04-KT1eDqiUAAq7IMRvPAWFWX_VDENlZc-ABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "联想",
-		logo: "lenvo",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM-aEwgO4_vNugdwI_-cXo0Wg4pL64AAtLIMRvPAWFWLWfu0SGngJ8BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "柯达",
-		logo: "kodak",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM7aEwf1sxElsMZM26eIEpZISX2BXUAAtDIMRvPAWFWHHK53EQgmfEBAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "柯达-透明",
-		logo: "kodak-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM8aEwgB1X5XMxpyRaiHcE6xXD24mQAAtHIMRvPAWFW07Ueth7i4MABAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "央视新闻",
-		logo: "ysxw",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN9aEwpk6aTszjQgAQCJLhR2xgVRUIAAqbJMRvPAWFW7OxveIw69ScBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "中国国家地理(黑)",
-		logo: "cng",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMgaEwdL6ARWtPViwvhzmsDyyAjELcAAqvIMRvPAWFWHneFJboCFYkBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "中国国家地理(白)",
-		logo: "cng-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMhaEwdQWBeQmXnnKl36OVMUgQwvTsAAqzIMRvPAWFWP3oePYH-9aUBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "视觉中国(黑)",
-		logo: "vcg",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANraEwnbeYYz0Lk4mCNwm6gxZGK7MsAApDJMRvPAWFWO_25lA-WR4cBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "视觉中国(白)",
-		logo: "vcg-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANsaEwngmuhleXqsWBkVMI22trb4i8AApHJMRvPAWFW54soE8KHge4BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Photoshop",
-		logo: "ps",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANZaEwksv14mcoNuAHyTny37sJuPlcAAvbIMRvPAWFWFTHwOF8JM00BAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "Lightroom",
-		logo: "lightroom",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM_aEwgU2P5aTYJYj_RYN_TO0GhtgkAAtXIMRvPAWFW56-yIJeh-jEBAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "像素蛋糕",
-		logo: "xsdg",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN6aEwpKcgOfeGrw1hCHkXs9QdNDuYAAqTJMRvPAWFWtcYl-Vhegd8BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "像素蛋糕-2",
-		logo: "xsdg-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN7aEwpVXJ7xE4tFug5RsdDYebXfOcAAqXJMRvPAWFWKmHvXCc8HOEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Google",
-		logo: "google",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMpaEweiBZKGTyYSpA8pw0Z7lHWEgIAArbIMRvPAWFWZtwmU8KNdzgBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Google-2",
-		logo: "google-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMqaEweq8OrxdAdtYzn7v29eqeCNA4AArfIMRvPAWFWvhjDcMKLCpYBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Samsung",
-		logo: "samsung",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANhaEwmMnie6V_RJmGKK4qBSe1GSQQAAoPJMRvPAWFWPZRLRfX156oBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Samsung-2",
-		logo: "samsung-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANiaEwmSLmtZbhCJReaGcMWjZF3JvgAAoTJMRvPAWFWzq-E022dSQABAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "Microsoft",
-		logo: "microsoft",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANFaEwiWaPXrJhJLPbmO74FisHH3nkAAtzIMRvPAWFWB28sPu4HBUoBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Microsoft-2",
-		logo: "microsoft-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANGaEwim_XZ1IGXGEzbfAjGqq462OIAAt3IMRvPAWFWROWBVylGo2oBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Windows11",
-		logo: "windows11",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANwaEwoPwH0cmSk2kRMzo074UXSnj0AAprJMRvPAWFWRcBQjwSXTn8BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "WindowsXp",
-		logo: "windows-xp",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANxaEwoVcR2S1_JSGI-cmVhF7OAf2wAApvJMRvPAWFW4BrjnLcf5oABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "CCTV",
-		logo: "cctv",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMfaEwdAnJe87IcYXnOLRoV4cg8kTIAAqrIMRvPAWFW9OKBJTyPfhgBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "BBC",
-		logo: "bbc",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMaaEwcUliEQWe7SThnYi9lL3JkgQYAAp_EMRuHymlWPi-hYQMC8-0BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "抖音",
-		logo: "douyin",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMmaEweJ6hbeoL8zEbDNVGG80sr0CUAArLIMRvPAWFWzZxHoJZ0MNwBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "小红书",
-		logo: "xhs",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANyaEwoYCNh-edEZffx9zY7nyVJS9UAApzJMRvPAWFWpwwOxVrx94cBAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "QQ",
-		logo: "qq",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANaaEwk3uYh_u8nbyfu1gqjwYCj_EMAAvfIMRvPAWFWJh0Ft6FO0OgBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "QQ空间",
-		logo: "qzone",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANbaEwlMduBZBE_InEIL-JkmxlrVEsAAnPJMRvPAWFWCRBEKON-vzQBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Java",
-		logo: "java",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM3aEwfmVimC-e6_7rWchBK1jzIKwMAAsjIMRvPAWFWMCYE1W4z-N8BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "Javascript",
-		logo: "javascript",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM4aEwfqqThmjRd9jcupxceLeqgec8AAsrIMRvPAWFWsjqvwmErMlUBAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "nodejs",
-		logo: "nodejs",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANMaEwjF-cf2QsVzBXNZAbSHB4-mPgAAuTIMRvPAWFWlhTF6_w39aMBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "PHP",
-		logo: "php",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANYaEwknyYAAU4wrWd2c6QnxZBeT61gAAL0yDEbzwFhViLPst1aCufSAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "耐克",
-		logo: "nike",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANHaEwiqhNAokQ7oTm0XyKw8_2XMXwAAt_IMRvPAWFWqi77XCnwNLYBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "南极人",
-		logo: "njr",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANLaEwi_C3VWQUlYCCMou6XZnJ9DpYAAuPIMRvPAWFWIbmDCWDYF5YBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "拼多多",
-		logo: "pdd",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANXaEwkjCyHBjRH3r_-PQV9GN2tfEkAAvPIMRvPAWFWKwiw1IQofzABAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "菠萝",
-		logo: "boluo",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMbaEwcZQ-x5E1m-SEVUnghqi3XrXcAAqDEMRuHymlWuCAef-7LP1UBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "和平精英",
-		logo: "hpjy",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMwaEwfG52Nq6vOxta5whed_M2-BUYAAr3IMRvPAWFWolqepGkcMtEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "原神",
-		logo: "yuanshen",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN-aEwpsn226wG1mA55Z6JhPgs2bBQAAqfJMRvPAWFWHoRu0ZjlaPUBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "原神-2",
-		logo: "yuanshen-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN_aEwpw0gu9LqE8qCYUeGBP91At7sAAqjJMRvPAWFWdgk9AAHn9PPTAQADAgADeQADNgQ.png",
-	},
-	{
-		name: "原神-2(白)",
-		logo: "yuanshen-2-white",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAOAaEwpzvVs-_3_VXRzMH7MfaYMd9kAAqnJMRvPAWFW5qw5vWsa-3sBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "瑞幸",
-		logo: "luckin",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANBaEwgtJEsAc9BZZYRunSxx4z0mggAAtfIMRvPAWFWb68uQd7dVn4BAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "星巴克",
-		logo: "starbucks",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANqaEwnQkCDFmui5tWtU-bz27VyD_IAAo_JMRvPAWFW6jIop_QxcJgBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "KFC",
-		logo: "kfc",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM5aEwfunD8Seb7c89CRoWYJjdjdB8AAs7IMRvPAWFWXQ9H3fLO8YEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "KFC-2",
-		logo: "kfc-2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM5aEwfunD8Seb7c89CRoWYJjdjdB8AAs7IMRvPAWFWXQ9H3fLO8YEBAAMCAAN5AAM2BA.png",
-	},
-	{
-		name: "麦当劳",
-		logo: "mcd",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANEaEwhi4sEvM_vbgUvCoXJfvDye9kAAtrIMRvPAWFWxb36uQRsjXcBAAMCAAN5AAM2BA.png",
-	},
+	// {
+	// 	name: "红米(黑)",
+	// 	logo: "redmi-black",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANfaEwlso2_SdS_T4j7gljonQFjXesAAnzJMRvPAWFW-pwWQpSF2QsBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "红米(白)",
+	// 	logo: "redmi-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANgaEwl7PzWcocvBg29FgjEItXDSlEAAoDJMRvPAWFW7FXy9PsuQAcBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "华为",
+	// 	logo: "huawei",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMxaEwfKXME2MJG9bKDgojy6ptkVqUAAsDIMRvPAWFWFXFom_hHCCsBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "XMAGE-2",
+	// 	logo: "xmage-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN5aEwo1BxapWrzZU_wsceiCPTksS4AAqPJMRvPAWFWwCtB3kD5w4IBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "XMAGE",
+	// 	logo: "xmage",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN4aEwoxdYqjxCmzAm7O7G3b8n81a8AAhfGMRs7YWBW4Nm-Lm_Kje4BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "华为(黑)",
+	// 	logo: "huawei-black",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMyaEwfUjLMkLyIlMHwvk94Xylq6JIAAsLIMRvPAWFW4Sk6W5N9zosBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "华为(白)",
+	// 	logo: "huawei-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMzaEwfXxZcmWYlAnnOOR1clrA6YroAAsTIMRvPAWFWzuLW_BVGRQgBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "荣耀",
+	// 	logo: "honor",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMvaEwfBqr9CKShtT7lpWZvJzMBcc0AArzIMRvPAWFWKcDeRwwAAdehAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "苹果(黑)",
+	// 	logo: "apple",
+	// 	make: ["Apple"],
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMTaEwbUeTy-mvMMaOawfA4BCevYeEAApfEMRuHymlWc-vEQqIdiIEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "苹果(灰)",
+	// 	logo: "apple-gray",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMUaEwbc-sZDSS-nnEZLQx-vB-tD4UAApnEMRuHymlWvAABTbrFxzUTAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "苹果(白)",
+	// 	logo: "apple-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMVaEwbheDFRHhzwN_Xgv1mMSJf5tAAAprEMRuHymlWsrHR-aYB4MABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "OPPO",
+	// 	logo: "oppo",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANVaEwkSRpGuM9XaL3QD0WvL1l_JXQAAvHIMRvPAWFWn5xh46ZFIGkBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "一加",
+	// 	logo: "oneplus",
+	// 	make: ["OnePlus"],
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANRaEwjkDeu2qVrmq4g-CudxsHEswgAAurIMRvPAWFWMBkvMfaz4pYBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "一加(黑)",
+	// 	logo: "oneplus-black",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANSaEwjozHnRJQeQMPlmehJuu3SVaAAAuvIMRvPAWFW9WWhG9lBvsEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "一加(白)",
+	// 	logo: "oneplus-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANUaEwjzJR5Ixb_HREi-ZfPh9JLxHgAAu7IMRvPAWFWBu_YVepBsKsBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "一加(红)",
+	// 	logo: "oneplus-red",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANTaEwjt8PTWbtp66ccJAABVLL5NlYWAALsyDEbzwFhVjod7enZOXCqAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "vivo",
+	// 	logo: "vivo",
+	// 	make: ["vivo"],
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANtaEwnjD5AfPeWFH4cc7nEWDcZv34AApLJMRvPAWFWiIMQh3MaRNsBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "vivo-文字(黑)",
+	// 	logo: "vivo-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANuaEwn3KIrosTFbsYR3XatVqltkVMAApPJMRvPAWFWF0-ELHbu2vEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "vivo-文字(白)",
+	// 	logo: "vivo-2-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANvaEwn9YasyuFsqU5bNroPiuXOSEEAApTJMRvPAWFWnW_W5UeMcKUBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "IQOO",
+	// 	logo: "iqoo",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM1aEwffLdEjgugYmD1dbf1yLbrEAsAAsbIMRvPAWFWzwIm6EhFWSMBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "IQOO-2",
+	// 	logo: "iqoo-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM2aEwfjEwC9hHW0mPCtfqexMp-608AAsfIMRvPAWFWBTm-JHcxMyEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "真我",
+	// 	logo: "realme",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANcaEwlQ2vn-bmV7cxD8Y2aWCF_sb0AAnfJMRvPAWFWAAEBVpVz88RDAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "真我-2",
+	// 	logo: "realme-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANdaEwljN4gYrgXfTpCboxnHi6TM9cAAnrJMRvPAWFW8GBz75wRluQBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "努比亚",
+	// 	logo: "nubia",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANPaEwjYZRNJqv5QJATyq6aOyJFMDUAAufIMRvPAWFWRPZ1nu47aJ4BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "适马",
+	// 	logo: "sigma",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANjaEwmVhwOzwz7NiBbPGyOA7DwfY4AAoXJMRvPAWFWPyT4SF_FaIUBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "徕卡",
+	// 	logo: "leica",
+	// 	make: ["LEICA CAMERA AG"],
+	// 	url: "https://s21.ax1x.com/2025/06/13/pVAlBin.png",
+	// 	// url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMSaEwVCWJ_jB9NWK0UAm1U3eB1EEsAAjzMMRuHymFWdfcfYFNCmlABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "哈苏(黑)",
+	// 	logo: "hasselblad",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMraEweutl33sxtB-SvXbysDiFK-n8AArjIMRvPAWFW4XC9rh41BI8BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "哈苏(白)",
+	// 	logo: "hasselblad-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMuaEwe9omYoWWiZb6d11u4P5Sus74AArvIMRvPAWFWcktvPBdWoCEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "哈苏-2(黑)",
+	// 	logo: "hasselblad-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMsaEwe0iBRVSaA1V8z6YOry_vC5fgAArnIMRvPAWFWk-bYDakuRlcBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "哈苏-2(白)",
+	// 	logo: "hasselblad-2-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMtaEwe5HcchppXMnUrfrAoJqcj03YAArrIMRvPAWFWTk-L46i-4SABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "大疆",
+	// 	logo: "dji",
+	// 	make: ["DJI"],
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMkaEwdwVRV3-OCPPF5ge-UeO4qHP0AAq_IMRvPAWFWgkpquZSKNcoBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "大疆(白)",
+	// 	logo: "dji-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMlaEweFNXf_k1OY5R58GZat-OtwUEAArDIMRvPAWFWBEa8S9hOmo4BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "蔡司",
+	// 	logo: "zeiss",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAOBaEwp2G1Bp-_CdLf8EiGLT-TIvXoAAqrJMRvPAWFWbaj89Z0HVsYBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "奥林巴斯",
+	// 	logo: "olympus",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANQaEwjeCXfmwSgFMmwlgZ37zqRIYsAAujIMRvPAWFWiFWAmCHf6EEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "诺基亚(新)",
+	// 	logo: "nokia",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANNaEwjMtKkheeiYAiWDV5yCTp7ngkAAuXIMRvPAWFWikuSgeQm74sBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "诺基亚",
+	// 	logo: "nokia-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANOaEwjRyvhEj9WN1OJxNGjOWD0flYAAubIMRvPAWFWddeuzlXTsBYBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "酷派",
+	// 	logo: "coolpad",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMiaEwdUQAB38p2glhJh5hUP80x1vv5AAKtyDEbzwFhVoVTL7v_0x0dAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "酷派-2",
+	// 	logo: "coolpad-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMjaEwdZmZmT6DseSay04-KT1eDqiUAAq7IMRvPAWFWX_VDENlZc-ABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "联想",
+	// 	logo: "lenvo",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM-aEwgO4_vNugdwI_-cXo0Wg4pL64AAtLIMRvPAWFWLWfu0SGngJ8BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "柯达",
+	// 	logo: "kodak",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM7aEwf1sxElsMZM26eIEpZISX2BXUAAtDIMRvPAWFWHHK53EQgmfEBAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "柯达-透明",
+	// 	logo: "kodak-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM8aEwgB1X5XMxpyRaiHcE6xXD24mQAAtHIMRvPAWFW07Ueth7i4MABAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "央视新闻",
+	// 	logo: "ysxw",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN9aEwpk6aTszjQgAQCJLhR2xgVRUIAAqbJMRvPAWFW7OxveIw69ScBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "中国国家地理(黑)",
+	// 	logo: "cng",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMgaEwdL6ARWtPViwvhzmsDyyAjELcAAqvIMRvPAWFWHneFJboCFYkBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "中国国家地理(白)",
+	// 	logo: "cng-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMhaEwdQWBeQmXnnKl36OVMUgQwvTsAAqzIMRvPAWFWP3oePYH-9aUBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "视觉中国(黑)",
+	// 	logo: "vcg",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANraEwnbeYYz0Lk4mCNwm6gxZGK7MsAApDJMRvPAWFWO_25lA-WR4cBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "视觉中国(白)",
+	// 	logo: "vcg-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANsaEwngmuhleXqsWBkVMI22trb4i8AApHJMRvPAWFW54soE8KHge4BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Photoshop",
+	// 	logo: "ps",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANZaEwksv14mcoNuAHyTny37sJuPlcAAvbIMRvPAWFWFTHwOF8JM00BAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "Lightroom",
+	// 	logo: "lightroom",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM_aEwgU2P5aTYJYj_RYN_TO0GhtgkAAtXIMRvPAWFW56-yIJeh-jEBAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "像素蛋糕",
+	// 	logo: "xsdg",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN6aEwpKcgOfeGrw1hCHkXs9QdNDuYAAqTJMRvPAWFWtcYl-Vhegd8BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "像素蛋糕-2",
+	// 	logo: "xsdg-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN7aEwpVXJ7xE4tFug5RsdDYebXfOcAAqXJMRvPAWFWKmHvXCc8HOEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Google",
+	// 	logo: "google",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMpaEweiBZKGTyYSpA8pw0Z7lHWEgIAArbIMRvPAWFWZtwmU8KNdzgBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Google-2",
+	// 	logo: "google-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMqaEweq8OrxdAdtYzn7v29eqeCNA4AArfIMRvPAWFWvhjDcMKLCpYBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Samsung",
+	// 	logo: "samsung",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANhaEwmMnie6V_RJmGKK4qBSe1GSQQAAoPJMRvPAWFWPZRLRfX156oBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Samsung-2",
+	// 	logo: "samsung-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANiaEwmSLmtZbhCJReaGcMWjZF3JvgAAoTJMRvPAWFWzq-E022dSQABAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "Microsoft",
+	// 	logo: "microsoft",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANFaEwiWaPXrJhJLPbmO74FisHH3nkAAtzIMRvPAWFWB28sPu4HBUoBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Microsoft-2",
+	// 	logo: "microsoft-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANGaEwim_XZ1IGXGEzbfAjGqq462OIAAt3IMRvPAWFWROWBVylGo2oBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Windows11",
+	// 	logo: "windows11",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANwaEwoPwH0cmSk2kRMzo074UXSnj0AAprJMRvPAWFWRcBQjwSXTn8BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "WindowsXp",
+	// 	logo: "windows-xp",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANxaEwoVcR2S1_JSGI-cmVhF7OAf2wAApvJMRvPAWFW4BrjnLcf5oABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "CCTV",
+	// 	logo: "cctv",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMfaEwdAnJe87IcYXnOLRoV4cg8kTIAAqrIMRvPAWFW9OKBJTyPfhgBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "BBC",
+	// 	logo: "bbc",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMaaEwcUliEQWe7SThnYi9lL3JkgQYAAp_EMRuHymlWPi-hYQMC8-0BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "抖音",
+	// 	logo: "douyin",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMmaEweJ6hbeoL8zEbDNVGG80sr0CUAArLIMRvPAWFWzZxHoJZ0MNwBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "小红书",
+	// 	logo: "xhs",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANyaEwoYCNh-edEZffx9zY7nyVJS9UAApzJMRvPAWFWpwwOxVrx94cBAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "QQ",
+	// 	logo: "qq",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANaaEwk3uYh_u8nbyfu1gqjwYCj_EMAAvfIMRvPAWFWJh0Ft6FO0OgBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "QQ空间",
+	// 	logo: "qzone",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANbaEwlMduBZBE_InEIL-JkmxlrVEsAAnPJMRvPAWFWCRBEKON-vzQBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Java",
+	// 	logo: "java",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM3aEwfmVimC-e6_7rWchBK1jzIKwMAAsjIMRvPAWFWMCYE1W4z-N8BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "Javascript",
+	// 	logo: "javascript",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM4aEwfqqThmjRd9jcupxceLeqgec8AAsrIMRvPAWFWsjqvwmErMlUBAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "nodejs",
+	// 	logo: "nodejs",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANMaEwjF-cf2QsVzBXNZAbSHB4-mPgAAuTIMRvPAWFWlhTF6_w39aMBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "PHP",
+	// 	logo: "php",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANYaEwknyYAAU4wrWd2c6QnxZBeT61gAAL0yDEbzwFhViLPst1aCufSAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "耐克",
+	// 	logo: "nike",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANHaEwiqhNAokQ7oTm0XyKw8_2XMXwAAt_IMRvPAWFWqi77XCnwNLYBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "南极人",
+	// 	logo: "njr",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANLaEwi_C3VWQUlYCCMou6XZnJ9DpYAAuPIMRvPAWFWIbmDCWDYF5YBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "拼多多",
+	// 	logo: "pdd",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANXaEwkjCyHBjRH3r_-PQV9GN2tfEkAAvPIMRvPAWFWKwiw1IQofzABAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "菠萝",
+	// 	logo: "boluo",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMbaEwcZQ-x5E1m-SEVUnghqi3XrXcAAqDEMRuHymlWuCAef-7LP1UBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "和平精英",
+	// 	logo: "hpjy",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMwaEwfG52Nq6vOxta5whed_M2-BUYAAr3IMRvPAWFWolqepGkcMtEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "原神",
+	// 	logo: "yuanshen",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN-aEwpsn226wG1mA55Z6JhPgs2bBQAAqfJMRvPAWFWHoRu0ZjlaPUBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "原神-2",
+	// 	logo: "yuanshen-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN_aEwpw0gu9LqE8qCYUeGBP91At7sAAqjJMRvPAWFWdgk9AAHn9PPTAQADAgADeQADNgQ.png",
+	// },
+	// {
+	// 	name: "原神-2(白)",
+	// 	logo: "yuanshen-2-white",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAOAaEwpzvVs-_3_VXRzMH7MfaYMd9kAAqnJMRvPAWFW5qw5vWsa-3sBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "瑞幸",
+	// 	logo: "luckin",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANBaEwgtJEsAc9BZZYRunSxx4z0mggAAtfIMRvPAWFWb68uQd7dVn4BAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "星巴克",
+	// 	logo: "starbucks",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANqaEwnQkCDFmui5tWtU-bz27VyD_IAAo_JMRvPAWFW6jIop_QxcJgBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "KFC",
+	// 	logo: "kfc",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM5aEwfunD8Seb7c89CRoWYJjdjdB8AAs7IMRvPAWFWXQ9H3fLO8YEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "KFC-2",
+	// 	logo: "kfc-2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM5aEwfunD8Seb7c89CRoWYJjdjdB8AAs7IMRvPAWFWXQ9H3fLO8YEBAAMCAAN5AAM2BA.png",
+	// },
+	// {
+	// 	name: "麦当劳",
+	// 	logo: "mcd",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANEaEwhi4sEvM_vbgUvCoXJfvDye9kAAtrIMRvPAWFWxb36uQRsjXcBAAMCAAN5AAM2BA.png",
+	// },
 	{
 		name: "头像1",
 		logo: "avatar1",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMWaEwbvu8MA0-8EybFVXNJlPH_wEwAApvEMRuHymlWOsCz1Qho2xIBAAMCAAN3AAM2BA.png",
 	},
-	{
-		name: "头像2",
-		logo: "avatar2",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMXaEwbzS98JYHmT2Lx8P1i22UFfEYAApzEMRuHymlWyvRIsOSSKSEBAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "头像3",
-		logo: "avatar3",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMYaEwcLv7I8tT2lEUiMBT-0joaRaMAAp3EMRuHymlWQ7KFD_t3udEBAAMCAAN4AAM2BA.png",
-	},
-	{
-		name: "头像4",
-		logo: "avatar4",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMZaEwcPot69qPChvykxrtqc0RXmwEAAp7EMRuHymlW2NsAAbqTLWOXAQADAgADeAADNgQ.png",
-	},
+	// {
+	// 	name: "头像2",
+	// 	logo: "avatar2",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMXaEwbzS98JYHmT2Lx8P1i22UFfEYAApzEMRuHymlWyvRIsOSSKSEBAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "头像3",
+	// 	logo: "avatar3",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMYaEwcLv7I8tT2lEUiMBT-0joaRaMAAp3EMRuHymlWQ7KFD_t3udEBAAMCAAN4AAM2BA.png",
+	// },
+	// {
+	// 	name: "头像4",
+	// 	logo: "avatar4",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMZaEwcPot69qPChvykxrtqc0RXmwEAAp7EMRuHymlW2NsAAbqTLWOXAQADAgADeAADNgQ.png",
+	// },
 ];
 
 export const watermarkList: WatermarkListBaseItem[] = [
@@ -980,7 +981,7 @@ export const defaultLabelConfig: LabelConfigItem = {
 	text: "请输入文本",
 	x: 100,
 	y: 100,
-	font: "微软雅黑",
+	font: "sans-serif",
 	stroke: false,
 	strokeWidth: 3,
 	draggable: false,
@@ -1038,6 +1039,8 @@ export const defaultConfig: Config = {
 			color: "#000",
 			size: 100,
 			format: "YYYY.MM.DD HH:mm",
+			italic: false,
+			bold: false,
 		},
 		lens: {
 			enable: false,

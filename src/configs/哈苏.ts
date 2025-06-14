@@ -11,7 +11,6 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 	const { params: paramsConfig } = watermark;
 	const { ctx, rect1, rect2 } = context;
 
-
 	// 参数区域的宽度
 	const W = (dividerConfig.margin * 3 * (rect2.x - rect1.x)) / 5;
 	const start_x = rect1.x + (rect2.x - rect1.x) / 2 - W / 2;
@@ -158,7 +157,7 @@ const doDraw: DrawFun = async (img, config, context: Context) => {
 
 	// 绘制型号
 	if (watermark.model.show) {
-		setTextCtx(ctx, watermark.model, 'center');
+		setTextCtx(ctx, watermark.model, "center");
 		ctx.fillText(
 			watermark.model.replaceZ ? replaceZ(img.modelText) : img.modelText,
 			rect1.x + (rect2.x - rect1.x) / 2,
@@ -207,6 +206,8 @@ const config: Config = {
 			color: "#808080",
 			size: 60,
 			format: "YYYY.MM.DD  HH:mm:ss",
+			italic: false,
+			bold: false,
 		},
 		lens: {
 			enable: false,

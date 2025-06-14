@@ -409,9 +409,8 @@ function onMouseUp(event: MouseEvent) {
             const scaleY = imgCanvas.value.height / canvasHeight;
 
 
-            const mouseX = item.x + (event.clientX - mousedownPosition.value.x) * scaleX;
-            const mouseY = item.y + (event.clientY - mousedownPosition.value.y) * scaleY;
-
+            const mouseX = (item.x || 0) + (event.clientX - mousedownPosition.value.x) * scaleX;
+            const mouseY = (item.y || 0) + (event.clientY - mousedownPosition.value.y) * scaleY;
 
             // 更新config
             customTextList[index].x = mouseX;
@@ -607,17 +606,31 @@ const handleDraw = useDebounceFn(() => {
                 : exif?.FocalLength) || exif?.FocalLength;
             img.paramsText = paramsConfig.text || `${exposureTime}s  f/${exif?.FNumber
                 }  iso ${exif?.ISO}  ${focalLength}mm`;
-            // 大写
-            img.paramsText = paramsConfig.letterUpperCase
-                ? img.paramsText.toUpperCase()
-                : img.paramsText;
-
             img.timeText = timeConfig.text || formatDate(
                 new Date(img.exif?.DateTimeOriginal as number),
                 timeConfig.format
             );
-            img.lensText = lens.text || exif?.LensModel || "";
+            img.lensText = lens.text || exif?.LensModel || "--";
             img.locationText = locationConfig?.text || getLocationText(img.exif);
+
+
+            // 大写
+            img.modelText = model.letterUpperCase
+                ? img.modelText.toUpperCase()
+                : img.modelText;
+            img.paramsText = paramsConfig.letterUpperCase
+                ? img.paramsText.toUpperCase()
+                : img.paramsText;
+            img.timeText = timeConfig.letterUpperCase
+                ? img.timeText.toUpperCase()
+                : img.timeText;
+            img.lensText = lens.letterUpperCase
+                ? img.lensText.toUpperCase()
+                : img.lensText;
+            img.locationText = locationConfig?.letterUpperCase
+                ? img.locationText.toUpperCase()
+                : img.locationText;
+
 
             const canvas = imgCanvas.value;
             if (!canvas) {

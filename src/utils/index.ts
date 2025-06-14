@@ -12,7 +12,7 @@ import type {
 	TextAlign,
 	TextVerticalAlign,
 } from "../types";
-import { cameraBrands } from "../assets/tools";
+import { cameraBrands, defaultLabelConfig } from "../assets/tools";
 
 import { useStore } from "../stores/index";
 
@@ -113,7 +113,7 @@ export function deepClone<T>(value: T): T {
  * @param file - 图片文件对象或图片URL字符串
  * @returns 如果输入为字符串则直接返回,否则返回文件的对象URL
  */
-export function getImageSrc(file: File | string) {
+export function getImageSrc(file: File | string, proxy: boolean = false) {
 	if (typeof file === "string") {
 		if (file.startsWith("blob")) {
 			return file;
@@ -128,7 +128,10 @@ export function getImageSrc(file: File | string) {
 			return brand.logo === file;
 		});
 		if (cameraBrand.length && cameraBrand[0].url) {
-			return "/img?url=" + cameraBrand[0].url;
+			if (proxy) {
+				return "/img?url=" + cameraBrand[0].url; // 代理图片地址
+			}
+			return cameraBrand[0].url; // 不使用代理
 		}
 
 		return "./logos/" + file + ".png";
@@ -251,35 +254,35 @@ export function drawCustomLabelsAndImages(
 ) {
 	// 渲染自定义文本
 	if (labels) {
-		for (const label of labels) {
+		for (let label of labels) {
+			label = Object.assign(
+				defaultLabelConfig,
+				label
+			) as Required<LabelConfigItem>; // 合并默认配置
 			if (!label.show) continue;
 
 			ctx.save();
-			ctx.textAlign = label.align;
-			ctx.textBaseline = label.verticalAlign;
-			const font = label.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
-			ctx.font = `${label.bold ? "bold" : ""} ${label.italic ? "italic" : ""} ${
-				label.size
-			}px ${font}`;
+			const font = label?.font?.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
+			setTextCtx(ctx, label, label.align, label.verticalAlign, font);
 
 			// 描边效果
 			if (label.stroke) {
-				ctx.lineWidth = label.strokeWidth;
+				ctx.lineWidth = label.strokeWidth!;
 				ctx.strokeStyle = label.color;
-				ctx.strokeText(label.text, label.x, label.y);
+				ctx.strokeText(label.text!, label.x!, label.y!);
 			} else {
 				ctx.fillStyle = label.color;
-				ctx.fillText(label.text, label.x, label.y);
+				ctx.fillText(label.text!, label.x!, label.y!);
 			}
 
 			if (label?.draggable) {
 				// 绘制边框
-				ctx.lineWidth = 3;
+				ctx.lineWidth = 5;
 				ctx.strokeStyle = "red";
 				ctx.strokeRect(
-					label.x,
-					label.y,
-					ctx.measureText(label.text).width,
+					label.x!,
+					label.y!,
+					ctx.measureText(label.text!).width,
 					label.size
 				);
 			}
@@ -506,7 +509,7 @@ export function getLocationText(exif: any, split: string = " ") {
 			exif?.GPSLongitudeRef
 		}`;
 	} catch (error) {
-		return "";
+		return "未知位置";
 	}
 }
 
@@ -584,29 +587,6 @@ export const blendMode: BlendModeItem[] = [
 	{ mode: "luminosity", desc: "亮度" },
 ];
 
-export function drawText(
-	ctx: CanvasRenderingContext2D,
-	text: string = "",
-	x: number = 0,
-	y: number = 0,
-	align: TextAlign = "left",
-	verticalAlign: TextVerticalAlign = "middle",
-	config: LabelConfigItem,
-	font: string = "sans-serif"
-) {
-	if (!ctx) return;
-
-	ctx.save();
-	ctx.textAlign = align;
-	ctx.textBaseline = verticalAlign;
-	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
-		config.size
-	}px ${config.font || font}`;
-
-	ctx.fillText(text, x, y);
-	ctx.restore();
-}
-
 /**
  * 根据设置返回绘制文本的ctx
  * @param ctx 上下文
@@ -622,13 +602,13 @@ export function setTextCtx(
 		font?: string;
 		bold?: boolean;
 		italic?: boolean;
+		stroke?: boolean;
+		lineWidth?: number;
 	},
 	align: TextAlign = "left",
 	verticalAlign: TextVerticalAlign = "middle",
 	font: string = "sans-serif"
-): void | CanvasRenderingContext2D {
-	if (!ctx) return;
-
+): { ctx: CanvasRenderingContext2D; drawTextFunc: Function } {
 	const store = useStore();
 	ctx.textAlign = align;
 	ctx.textBaseline = verticalAlign;
@@ -636,5 +616,24 @@ export function setTextCtx(
 	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
 		config.size
 	}px ${config.font || store.config.font || font}`;
-	return ctx;
+
+	const drawTextFunc = (
+		text: string,
+		x: number,
+		y: number,
+		offsetX: number = 0,
+		offsetY: number = 0
+	) => {
+		const _x = x + offsetX;
+		const _y = y + offsetY;
+
+		if (config.stroke) {
+			ctx.lineWidth = config.lineWidth || 10;
+			ctx.strokeStyle = config.color;
+			ctx.strokeText(text, _x, _y);
+		} else {
+			ctx.fillText(text, _x, _y);
+		}
+	};
+	return { ctx, drawTextFunc };
 }

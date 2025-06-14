@@ -107,7 +107,8 @@ const config: Config = {
 			size: 80,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
-			italic: true,
+			italic: false,
+			bold: false,
 			text: "Ultra Aperture XMAGE Camera",
 		},
 		time: {
@@ -116,6 +117,8 @@ const config: Config = {
 			color: "#808080",
 			size: 80,
 			format: "YYYY-MM-DD HH:mm",
+			italic: false,
+			bold: false,
 		},
 		lens: {
 			enable: false,

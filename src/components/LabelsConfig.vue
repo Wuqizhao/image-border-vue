@@ -8,7 +8,10 @@
         <el-form :label-width="labelWidth">
             <el-form-item label="显示">
                 <el-switch v-model="props.config.show" style="margin-right: 20px;"></el-switch>
-                <el-checkbox v-if="showMore" label="拖动模式" v-model="props.config.draggable"></el-checkbox>
+                <el-checkbox v-if="showMore" label="可拖动" v-model="props.config.draggable"></el-checkbox>
+            </el-form-item>
+            <el-form-item label="颜色">
+                <el-color-picker v-model="props.config.color" :predefine="preDefineColors" show-alpha></el-color-picker>
             </el-form-item>
             <el-form-item label="文本">
                 <el-input v-model="props.config.text" placeholder="自定义文本，留空不显示~" clearable></el-input>
@@ -22,6 +25,8 @@
                     <el-button size="small"
                         @click="props.config.text = convertExposureTime(injectImg?.exif?.ExposureTime)">快门速度</el-button>
                     <el-button size="small" @click="props.config.text = injectImg?.locationText">位置</el-button>
+                    <el-button size="small" @click="props.config.text = '中国 · 广东'">位置：中国·广东</el-button>
+                    <el-button size="small" @click="props.config.text = injectImg?.exif?.Copyright || '--'">版权</el-button>
                 </HorizontalScroll>
             </el-form-item>
             <el-form-item label="字体">
@@ -44,37 +49,37 @@
                     <el-switch v-model="props.config.italic"></el-switch>
                 </label>
                 <label for="">
-                    <span style="margin: 0px 10px 0px 20px;">颜色</span>
-                    <el-color-picker v-model="props.config.color" :predefine="preDefineColors"
-                        show-alpha></el-color-picker>
+                    <span style="margin: 0px 10px 0px 20px;">大写</span>
+                    <el-switch v-model="props.config.letterUpperCase"></el-switch>
                 </label>
             </el-form-item>
+            <el-form-item label="文字描边" label-width="80px">
+                <el-switch show-input v-model="props.config.stroke"></el-switch>
+            </el-form-item>
+            <el-form-item label="描边宽度" label-width="80px" v-show="props.config.stroke">
+                <el-slider show-input v-model="props.config.lineWidth" :min="1" :max="100"></el-slider>
+            </el-form-item>
+            <el-form-item label="水平偏移" label-width="80px">
+                <el-slider show-input v-model="props.config.x" :min="-5000" :max="5000"></el-slider>
+            </el-form-item>
+            <el-form-item label="垂直偏移" label-width="80px">
+                <el-slider show-input v-model="props.config.y" :min="-5000" :max="5000"></el-slider>
+                <el-button type="default" plain @click="resetPosition">重置位置</el-button>
+            </el-form-item>
             <div v-if="showMore">
-                <el-form-item label="对齐方式">
+                <el-form-item label="对齐方式" label-width="80px">
                     <el-radio-group v-model="props.config.align">
                         <el-radio value="left">左对齐</el-radio>
                         <el-radio value="center">居中</el-radio>
                         <el-radio value="right">右对齐</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="垂直对齐">
+                <el-form-item label="垂直对齐" label-width="80px">
                     <el-radio-group v-model="props.config.verticalAlign">
                         <el-radio value="top">顶部对齐</el-radio>
                         <el-radio value="center">居中</el-radio>
                         <el-radio value="bottom">底部对齐</el-radio>
                     </el-radio-group>
-                </el-form-item>
-                <el-form-item label="水平移动">
-                    <el-slider show-input v-model="props.config.x" :min="-1000" :max="8000"></el-slider>
-                </el-form-item>
-                <el-form-item label="垂直移动">
-                    <el-slider show-input v-model="props.config.y" :min="-1000" :max="5000"></el-slider>
-                </el-form-item>
-                <el-form-item label="文字描边">
-                    <el-switch show-input v-model="props.config.stroke"></el-switch>
-                </el-form-item>
-                <el-form-item label="描边宽度" v-show="props.config.stroke">
-                    <el-slider show-input v-model="props.config.strokeWidth" :min="0" :max="100"></el-slider>
                 </el-form-item>
             </div>
             <slot></slot>
@@ -88,6 +93,7 @@ import { inject } from 'vue';
 import type { Img } from '../types';
 import { convertExposureTime } from '../utils';
 import HorizontalScroll from './HorizontalScroll.vue';
+import { ElMessage } from 'element-plus';
 
 const injectImg = inject<Img>('img');
 
@@ -108,6 +114,9 @@ const props = defineProps({
             x: Number,
             y: Number,
             draggable: Boolean,
+            letterUpperCase: Boolean,
+            stroke: Boolean,
+            lineWidth: Number
         })
     },
     showMore: { type: Boolean, default: true },
@@ -119,6 +128,15 @@ const props = defineProps({
 const fontList = getSupportedFonts()
 
 const emits = defineEmits(['remove'])
+
+const backup = JSON.parse(JSON.stringify(props.config));
+
+function resetPosition() {
+    props.config.x = backup.x;
+    props.config.y = backup.y;
+
+    ElMessage.success('已重置位置');
+}
 </script>
 
 <style lang='less' scoped>

@@ -117,7 +117,8 @@ const config: Config = {
 			size: 130,
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
-			italic: true,
+			italic: false,
+			bold: false,
 		},
 		time: {
 			enable: false,
@@ -125,6 +126,8 @@ const config: Config = {
 			color: "#808080",
 			size: 110,
 			format: "YYYY-MM-DD HH:mm",
+			italic: false,
+			bold: false,
 		},
 		lens: {
 			enable: false,

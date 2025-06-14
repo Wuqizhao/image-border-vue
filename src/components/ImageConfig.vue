@@ -24,7 +24,7 @@
                 <el-select v-model="props.config.name" :disabled="!!props.config?.url?.length">
                     <el-option v-for="item in enhancedCameraBrands" :key="item.name" :value="item.logo">
                         <div style="display: flex;align-items: center;gap: 10px;">
-                            <img :width="24" :height="24" :src="item.thumbnail"
+                            <img :id="`logo-${item.logo}`" :width="24" :height="24" :src="item.thumbnail"
                                 :style="{ background: item.logo.indexOf('white') >= 0 ? 'rgba(0,0,0,0.08)' : '' }" />
                             <span>{{ item.name }}</span>
                             <span style="color:gainsboro;">{{ item.logo }}</span>

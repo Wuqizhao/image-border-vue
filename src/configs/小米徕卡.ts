@@ -22,31 +22,22 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制型号
 	if (modelConfig.show) {
 		ctx.save(); // 保存当前绘图状态
-		ctx.font = `${modelConfig.italic ? "Italic" : ""} ${
-			modelConfig.bold ? "bold" : ""
-		} ${modelConfig.size}px ${config.font}`;
-		ctx.fillStyle = modelConfig.color;
-		ctx.textAlign = "left";
-		ctx.textBaseline = "middle";
+		const { drawTextFunc } = setTextCtx(ctx, modelConfig);
 		let _y = rect1.y + (rect2.y - rect1.y) / 2;
 		if (lensConfig.show || (locationConfig?.show && timeConfig.show)) {
 			_y = rect1.y + (rect2.y - rect1.y) / 3;
 		}
-		// 截取厂商
-		const company = img.modelText?.split(" ")[0];
-		// 计算厂商的宽度
-		const companyWidth = ctx.measureText(company).width;
 
-		ctx.fillText(company, rect1.x + watermarkPaddings.left, _y);
-
-		ctx.font = `${modelConfig.size}px ${config.font || "sans-serif"}`;
-		const modelText = modelConfig.replaceZ
+		let modelText = modelConfig.replaceZ
 			? replaceZ(img.modelText)
 			: img.modelText;
-		ctx.fillText(
-			modelText.replace(company, ""),
-			rect1.x + watermarkPaddings.left + companyWidth,
-			_y
+		if (modelConfig?.letterUpperCase) {
+			modelText = modelText.toUpperCase();
+		}
+		drawTextFunc(
+			modelText,
+			rect1.x + watermarkPaddings.left + (modelConfig.x || 0),
+			_y + (modelConfig.y || 0)
 		);
 		ctx.restore(); // 恢复之前的绘图状态
 	}
@@ -57,37 +48,33 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 	// 绘制参数
 	if (paramsConfig.show) {
-		ctx.textAlign = "right";
-		ctx.textBaseline = "middle";
-		ctx.fillStyle = paramsConfig.color;
-		ctx.font = `bold ${paramsConfig.italic ? "Italic" : ""} ${
-			paramsConfig.size
-		}px ${config.font || "sans-serif"}`;
+		const { drawTextFunc } = setTextCtx(ctx, paramsConfig, "right");
 
 		let paramsText =
 			paramsConfig?.text ||
 			`${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  ISO${img.exif.ISO}`;
-		paramsConfig.letterUpperCase && (paramsText = paramsText.toUpperCase());
+		// 处理大写
+		if (paramsConfig.letterUpperCase) {
+			paramsText = paramsText.toUpperCase();
+		}
+
 		paramsWidth = ctx.measureText(paramsText).width;
 
+		const modelX = rect2.x - watermarkPaddings.right + (paramsConfig?.x || 0);
 		let _y =
 			rect1.y +
-			(rect2.y - rect1.y) / (timeConfig.show || locationConfig?.show ? 3 : 2);
-		ctx.fillText(paramsText, rect2.x - watermarkPaddings.right, _y);
+			(rect2.y - rect1.y) / (timeConfig.show || locationConfig?.show ? 3 : 2) +
+			(paramsConfig?.y || 0);
+
+		drawTextFunc(paramsText, modelX, _y);
 	}
 
 	let lensWidth = 0;
 	// 绘制镜头
 	if (lensConfig.show) {
 		ctx.save();
-		const text = lensConfig.text || img.exif?.LensModel;
-		// ctx.textAlign = "left";
-		// ctx.fillStyle = lensConfig.color;
-		// ctx.font = `${lensConfig.bold ? "bold" : ""} ${
-		// 	lensConfig.italic ? "italic" : ""
-		// } ${lensConfig.size}px ${config.font}`;
-		// ctx.textBaseline = "top";
-		setTextCtx(ctx, lensConfig, "left", 'top');
+		const text = img.lensText;
+		const { drawTextFunc } = setTextCtx(ctx, lensConfig, "left", "top");
 
 		let _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
 		if (!modelConfig.show) {
@@ -95,7 +82,11 @@ const doDraw: DrawFun = async (img, config, context) => {
 			ctx.textBaseline = "middle";
 		}
 		lensWidth = ctx.measureText(text).width;
-		ctx.fillText(text, rect1.x + watermarkPaddings.left, _y);
+		drawTextFunc(
+			text,
+			rect1.x + watermarkPaddings.left + (lensConfig.x || 0),
+			_y + (lensConfig.y || 0)
+		);
 		ctx.restore();
 	}
 
@@ -103,7 +94,6 @@ const doDraw: DrawFun = async (img, config, context) => {
 	let timeWidth = 0;
 	if (timeConfig.show) {
 		ctx.save();
-		ctx.textAlign = paramsConfig.show ? "left" : "right";
 
 		const wPadding = paramsConfig.show
 			? watermarkPaddings.left
@@ -113,13 +103,22 @@ const doDraw: DrawFun = async (img, config, context) => {
 			: rect2.x - wPadding;
 		const _y =
 			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
-		
-		setTextCtx(ctx, timeConfig, "left", paramsConfig.show ? "top" : "middle");
+
+		const { drawTextFunc } = setTextCtx(
+			ctx,
+			timeConfig,
+			paramsConfig.show ? "left" : "right",
+			paramsConfig.show ? "top" : "middle"
+		);
 
 		timeWidth = ctx.measureText(img.timeText).width;
 
 		if (!locationConfig?.show) {
-			ctx.fillText(img.timeText, _x, _y);
+			drawTextFunc(
+				img.timeText,
+				_x + (timeConfig.x || 0),
+				_y + (timeConfig.y || 0)
+			);
 		} else {
 			ctx.textAlign = "left";
 			ctx.textBaseline = "top";
@@ -128,7 +127,11 @@ const doDraw: DrawFun = async (img, config, context) => {
 				const SPACE = 50;
 				_x += lensWidth + SPACE * dividerConfig.margin;
 			}
-			ctx.fillText(img.timeText, _x, _y);
+			drawTextFunc(
+				img.timeText,
+				_x + (timeConfig.x || 0),
+				_y + (timeConfig.y || 0)
+			);
 		}
 		ctx.restore();
 	}
@@ -171,9 +174,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 	// 绘制位置
 	if (locationConfig?.show) {
 		ctx.save();
-		setTextCtx(ctx, locationConfig, "left", "top");
+		const { drawTextFunc } = setTextCtx(ctx, locationConfig, "left", "top");
 
-		const text = locationConfig.text || img.locationText;
+		const text = img.locationText;
 
 		const _x = paramsConfig.show
 			? rect2.x - watermarkPaddings.right - paramsWidth
@@ -181,7 +184,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		const _y =
 			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
 
-		ctx.fillText(text, _x, _y);
+		drawTextFunc(text, _x, _y, locationConfig.x, locationConfig.y);
 		ctx.restore();
 	}
 };
@@ -216,6 +219,9 @@ const config: Config = {
 			useEquivalentFocalLength: true,
 			letterUpperCase: false,
 			italic: false,
+			bold: true,
+			x: 0,
+			y: 0,
 		},
 		time: {
 			enable: true,
@@ -223,6 +229,8 @@ const config: Config = {
 			color: "#808080",
 			size: 60,
 			format: "YYYY.MM.DD  HH:mm:ss",
+			italic: false,
+			bold: false,
 		},
 		lens: {
 			enable: true,
