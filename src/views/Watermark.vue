@@ -263,7 +263,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch, provide, type Component, shallowRef, markRaw, onMounted, computed } from 'vue'
-import { print, getWatermarkList, getSupportedFonts, defaultExif, defaultConfig } from '../assets/tools'
+import { print, getWatermarkList, getSupportedFonts, defaultExif } from '../assets/tools'
 import { download, convertExposureTime, getImageSrc, deepClone, isMobile, drawCustomLabelsAndImages, drawAuxiliaryLines, getLogoName, caculateCanvasSize, getLocationText, drawRoundedRect } from "../utils"
 import { ElMessage, ElNotification } from 'element-plus'
 import { Files, EditPen, FolderChecked, Cellphone, Picture, Notebook } from '@element-plus/icons-vue'
