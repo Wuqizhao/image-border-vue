@@ -851,10 +851,8 @@ const preview = () => {
     const canvasBox = document.getElementById('canvasBox') as HTMLCanvasElement;
     if (!canvasBox) throw '未找到画布容器！';
 
-    if (canvasBox.style.maxHeight === '65vh' && window.innerWidth <= 768) {
-        canvasBox.style.maxHeight = '300px';
-    } else {
-        canvasBox.style.maxHeight = '65vh';
+    if (window.innerWidth <= 768) {
+        canvasBox.style.maxHeight = (canvasBox.style.maxHeight === '65vh') ? '300px' : '65vh';
     }
 }
 
