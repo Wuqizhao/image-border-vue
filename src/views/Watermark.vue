@@ -189,6 +189,7 @@
                         </el-form>
                     </el-tab-pane>
                 </el-tabs>
+
             </div>
 
             <el-backtop :right="10" :bottom="100" />
@@ -935,6 +936,10 @@ onMounted(() => {
             scrollbar-width: thin;
             scrollbar-color: transparent transparent;
 
+            .el-tab-pane{
+                animation: k2 0.3s ease-in-out;
+            }
+
             :deep(.el-tabs__content) {
                 overflow-y: auto;
             }
@@ -972,6 +977,7 @@ onMounted(() => {
     bottom: 0px;
     left: 0;
     z-index: 1;
+    background-color: #FFF;
 
     .el-image {
         cursor: pointer;

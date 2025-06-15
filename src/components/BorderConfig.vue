@@ -1,5 +1,5 @@
 <template>
-    <el-form v-if="store.config.border?.enable" label-width="50px">
+    <el-form v-if="store.config.border?.enable" label-width="50px" style="animation: k1 0.5s ease-in-out forwards;">
         <el-form-item label="显示">
             <el-switch v-model="store.config.border.show"></el-switch>
         </el-form-item>

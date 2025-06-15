@@ -1,6 +1,6 @@
 <template>
-    <el-form label-width="70px">
-        <!-- <h3 style="margin-bottom: 1rem;">背景</h3> -->
+    <el-form label-width="70px" class="blur-config">
+        <h3 style="margin-bottom: 1rem;">背景</h3>
         <el-form-item label="类型">
             <el-radio-group v-model="config.blur.type">
                 <el-radio label="纯色" value="color"></el-radio>
@@ -86,4 +86,8 @@ const addColors = () => {
 }
 </script>
 
-<style lang='less' scoped></style>
+<style lang='less' scoped>
+.blur-config {
+    animation: k1 .5s ease-in-out;
+}
+</style>

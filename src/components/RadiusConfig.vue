@@ -1,6 +1,6 @@
 <template>
-    <div v-if="config.radius.enable">
-        <!-- <h3>圆角</h3> -->
+    <div v-if="config.radius.enable" style="animation: k1 0.5s ease-in-out forwards;">
+        <h3 style="margin-bottom: 1rem;">圆角</h3>
         <el-form label-width="70px">
             <el-form-item label="显示">
                 <el-switch v-model="config.radius.show"></el-switch>

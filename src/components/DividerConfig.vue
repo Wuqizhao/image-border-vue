@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="70" v-if="config.divider.enable">
+    <el-form label-width="70" v-if="config.divider.enable" style="animation: k1 0.5s ease-in-out forwards;">
         <el-form-item label="显示">
             <el-switch v-model="config.divider.show"></el-switch>
         </el-form-item>

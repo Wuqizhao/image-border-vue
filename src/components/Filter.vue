@@ -1,5 +1,5 @@
 <template>
-    <el-form label-width="60px" style="padding-right: 20px;">
+    <el-form label-width="60px" style="padding-right: 20px;animation: k1 0.5s ease-in-out forwards;">
         <el-form-item label="曝光">
             <el-slider v-model="store.config.filter.brightness" :min="0" :max="200"
                 @dblclick="store.config.filter.brightness = 100"></el-slider>
