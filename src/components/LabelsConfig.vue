@@ -33,7 +33,7 @@
                 </HorizontalScroll>
             </el-form-item>
             <el-form-item label="字体">
-                <el-select v-model="props.config.font" :style="{ fontFamily: props.config.font }">
+                <el-select v-model="props.config.font" :style="{ fontFamily: props.config?.font?.replace(/\.(?:ttf|otf|woff|woff2|eot)/i, '') }">
                     <el-option v-for="item in fontList" :key="item" :value="item" :style="{ fontFamily: item }">
                     </el-option>
                 </el-select>

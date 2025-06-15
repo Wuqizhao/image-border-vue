@@ -687,6 +687,8 @@ export const getSupportedFonts = (): string[] => {
 	return [
 		"sans-serif",
 		"Arial",
+		"Satisfaction.ttf",
+		"SCRIPTIN.ttf",
 		"Long Cang",
 		"Zhi Mang Xing",
 		"Liu Jian Mao Cao",
@@ -726,7 +728,6 @@ export const getSupportedFonts = (): string[] => {
 		"叶根友非主流钢笔手写体.ttf",
 		"叶根友风帆特色简体.ttf",
 		"庞中华钢笔字体.TTF",
-		"徐静蕾钢笔字体.fon",
 		"方正剪纸简体.ttf",
 		"方正综艺简体.ttf",
 		"李国夫手写体.TTF",
@@ -751,7 +752,6 @@ export const getSupportedFonts = (): string[] => {
 		"迷你简钢笔谁的字.TTF",
 		"郭小语钢笔楷体.ttf",
 		"Times New Roman",
-		"1000hurt.ttf",
 		"4STAFF__.TTF",
 		"90S.TTF",
 		"9JULIUST.TTF",
@@ -904,8 +904,6 @@ export const getSupportedFonts = (): string[] => {
 		"P22ZanerTwo.ttf",
 		"Pablo.ttf",
 		"PassionsConflictROB.ttf",
-		"PetraScriptEF-Alternate.ttf",
-		"PetraScriptEF-Regular.ttf",
 		"Point-Dexter.ttf",
 		"porc__.ttf",
 		"Rambo Killer.ttf",
@@ -915,10 +913,8 @@ export const getSupportedFonts = (): string[] => {
 		"SaginawBold.ttf",
 		"SaginawLight.ttf",
 		"SaginawMedium.ttf",
-		"Satisfaction.ttf",
 		"schooner.ttf",
 		"SCRIPALT.ttf",
-		"SCRIPTIN.ttf",
 		"SF Burlington Script Bold Italic.ttf",
 		"SF Burlington Script Bold.ttf",
 		"SF Burlington Script Italic.ttf",
@@ -930,7 +926,6 @@ export const getSupportedFonts = (): string[] => {
 		"Shelley Allegro BT.ttf",
 		"Shelley Andante BT.ttf",
 		"Shelley Volante BT.ttf",
-		"ShelleyLTStd-Script.otf",
 		"Sloop-ScriptOne.ttf",
 		"Sloop-ScriptThree.ttf",
 		"Sloop-ScriptTwo.ttf",
@@ -943,7 +938,6 @@ export const getSupportedFonts = (): string[] => {
 		"texhero.ttf",
 		"TheNautiGal ROB.ttf",
 		"VIVACS.TTF",
-		"VolutaScriptPro-Regular.otf",
 		"WaterBrushROB.ttf",
 		"Whitechapel BB.ttf",
 		"Witched.TTF",
@@ -951,11 +945,9 @@ export const getSupportedFonts = (): string[] => {
 		"XinHuaKaiTi-1.ttf",
 		"Yankee Ghosts BB.ttf",
 		"Yelly.ttf",
-		"yevida.otf",
-		"yevidapotens.otf",
 		"YeZiGongChangJiaoKeShuPinYinTi-2.ttf",
 		"Young Love ES.ttf",
-	];
+	].reverse();
 };
 
 export const preDefineColors = [

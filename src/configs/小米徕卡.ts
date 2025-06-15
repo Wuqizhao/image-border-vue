@@ -18,7 +18,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 	} = watermark;
 	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
 
-	config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
+	// config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
 
 	// 绘制型号
 	if (modelConfig.show) {
@@ -35,6 +35,7 @@ const doDraw: DrawFun = async (img, config, context) => {
 		if (modelConfig?.letterUpperCase) {
 			modelText = modelText.toUpperCase();
 		}
+		// console.log('字体',ctx.font,modelConfig.font);
 		drawTextFunc(
 			modelText,
 			rect1.x + watermarkPaddings.left + (modelConfig.x || 0),
@@ -214,6 +215,7 @@ const config: Config = {
 			bold: true,
 			align: "left",
 			verticalAlign: "middle",
+			font:'sans-serif'
 		},
 		params: {
 			enable: true,

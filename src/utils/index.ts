@@ -14,8 +14,6 @@ import type {
 } from "../types";
 import { cameraBrands, defaultLabelConfig } from "../assets/tools";
 
-import { useStore } from "../stores/index";
-
 /**
  * 将曝光时间转换为分数字符串格式
  * @param exposureTime 曝光时间(秒)
@@ -689,14 +687,17 @@ export function setTextCtx(
 	verticalAlign: TextVerticalAlign = "middle",
 	font: string = "sans-serif"
 ): { ctx: CanvasRenderingContext2D; drawTextFunc: Function } {
-	const store = useStore();
-
 	ctx.textAlign = config?.align || align;
 	ctx.textBaseline = config?.verticalAlign || verticalAlign;
 	ctx.fillStyle = config.color;
+	// 清理字体扩展名
+	const _font = (config.font || font).replace(
+		/\.(?:ttf|otf|woff|woff2|eot)/i,
+		""
+	);
 	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
 		config.size
-	}px ${config.font || store.config.font || font}`;
+	}px ${_font}`;
 
 	const drawTextFunc = (
 		text: string,
