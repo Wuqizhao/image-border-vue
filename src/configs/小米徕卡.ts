@@ -18,11 +18,9 @@ const doDraw: DrawFun = async (img, config, context) => {
 	} = watermark;
 	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
 
-	// config.font = config.font.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
-
 	// 绘制型号
 	if (modelConfig.show) {
-		ctx.save(); // 保存当前绘图状态
+		ctx.save();
 		const { drawTextFunc } = setTextCtx(ctx, modelConfig);
 		let _y = rect1.y + (rect2.y - rect1.y) / 2;
 		if (lensConfig.show || (locationConfig?.show && timeConfig.show)) {
@@ -35,13 +33,12 @@ const doDraw: DrawFun = async (img, config, context) => {
 		if (modelConfig?.letterUpperCase) {
 			modelText = modelText.toUpperCase();
 		}
-		// console.log('字体',ctx.font,modelConfig.font);
 		drawTextFunc(
 			modelText,
 			rect1.x + watermarkPaddings.left + (modelConfig.x || 0),
 			_y + (modelConfig.y || 0)
 		);
-		ctx.restore(); // 恢复之前的绘图状态
+		ctx.restore();
 	}
 	// 在水印范围内垂直居中
 	const _y = (rect2.y + rect1.y) / 2;
@@ -196,7 +193,7 @@ const config: Config = {
 	name: "小米徕卡",
 	font: "sans-serif",
 	paddings: {
-		top: 0, // 图片上边距
+		top: 0,
 		right: 0,
 		left: 0,
 		bottom: 0,
@@ -215,7 +212,7 @@ const config: Config = {
 			bold: true,
 			align: "left",
 			verticalAlign: "middle",
-			font:'sans-serif'
+			font: "sans-serif",
 		},
 		params: {
 			enable: true,

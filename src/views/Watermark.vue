@@ -1041,7 +1041,7 @@ onMounted(() => {
         max-width: 100%;
         box-sizing: border-box;
         transition-duration: 1s;
-        max-height: 100vh;
+        max-height: 100%;
     }
 
     &:hover {
