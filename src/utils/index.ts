@@ -12,7 +12,10 @@ import type {
 	TextAlign,
 	TextVerticalAlign,
 } from "../types";
-import { cameraBrands, defaultLabelConfig } from "../assets/tools";
+import {
+	cameraBrands,
+	defaultLabelConfig,
+} from "../assets/tools";
 
 /**
  * 将曝光时间转换为分数字符串格式
@@ -44,6 +47,16 @@ export async function download(canvas: null | HTMLCanvasElement, config: Img) {
 	} = config.export;
 	if (!canvas) throw new Error("canvas不存在");
 	const mimeType = `image/${ext.toLowerCase()}`;
+
+	// 叠加绘制
+	const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+	if (!ctx) throw new Error("canvas ctx不存在");
+
+	const imgCanvas2 = document.getElementById("imgCanvas2") as HTMLCanvasElement;
+	if (!imgCanvas2) throw new Error("imgCanvas2不存在");
+
+	// 叠加
+	ctx.drawImage(imgCanvas2, 0, 0);
 
 	try {
 		// 使用 toBlob 异步生成图片数据
@@ -195,19 +208,22 @@ export function getImageSrc(file: File | string, proxy: boolean = false) {
 		}
 
 		if (file.startsWith("http")) {
-			return "/img?url=" + file;
+			if (proxy) {
+				return "/img?url=" + encodeURIComponent(file);
+			}
+			return file;
 		}
 
 		// 优先返回cameraBrand的url
-		const cameraBrand = cameraBrands.filter((brand) => {
-			return brand.logo === file;
-		});
-		if (cameraBrand.length && cameraBrand[0].url) {
-			if (proxy) {
-				return "/img?url=" + cameraBrand[0].url; // 代理图片地址
-			}
-			return cameraBrand[0].url; // 不使用代理
-		}
+		// const cameraBrand = cameraBrands.filter((brand) => {
+		// 	return brand.logo === file;
+		// });
+		// if (cameraBrand.length && cameraBrand[0].url) {
+		// 	if (proxy) {
+		// 		return "/img?url=" + cameraBrand[0].url; // 代理图片地址
+		// 	}
+		// 	return cameraBrand[0].url; // 不使用代理
+		// }
 
 		return "./logos/" + file + ".png";
 	}
@@ -239,7 +255,12 @@ export async function drawLogo(
 	blendMode: BlendMode = "normal"
 ) {
 	const img = new Image();
+	img.crossOrigin = "anonymous"; // 必须设置
 	img.src = getImageSrc(logoConfig.url || logoConfig.name);
+	// if (!logoConfig.url) {
+	// 	throw new Error("Logo Url为空");
+	// }
+	// img.src = logoConfig.url;
 	img.onload = () => {
 		ctx.save();
 		if (logoConfig.circle) {
@@ -267,10 +288,10 @@ export async function drawLogo(
 
 		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
 		ctx.restore();
-		URL.revokeObjectURL(img.src);
+		// URL.revokeObjectURL(img.src);
 	};
 	img.onerror = (err) => {
-		console.error("Logo加载失败:", err);
+		console.error("Logo加载失败:", err,logoConfig,img,img.src);
 		ElNotification.error({
 			title: "Logo加载失败",
 			message: err.toString(),

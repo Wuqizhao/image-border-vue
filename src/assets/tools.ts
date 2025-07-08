@@ -938,7 +938,7 @@ export const preDefineColors = [
 	"#F00",
 	"#00FF00",
 	"#0000FF",
-	"rgb(255, 213, 0)"
+	"rgb(255, 213, 0)",
 ];
 
 export const defaultLabelConfig: LabelConfigItem = {
@@ -963,7 +963,7 @@ export const defaultLabelConfig: LabelConfigItem = {
 export const defaultImageConfig: ImagesConfigItem = {
 	title: `自定义图片(${new Date().getTime()})`,
 	show: true,
-	url: "",
+	url: "https://img-s.msn.cn/tenant/amp/entityid/BB1msyCK?w=0&h=0&q=60&m=6&f=jpg&u=t",
 	horizontalOffset: 100,
 	verticalOffset: 100,
 	width: 300,
