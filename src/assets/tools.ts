@@ -940,6 +940,25 @@ export const preDefineColors = [
 	"#0000FF",
 	"rgb(255, 213, 0)",
 ];
+export const defaultImgValue: Img = {
+	width: 0,
+	height: 0,
+	fileName: "",
+	size: "",
+	type: "",
+	time: "",
+	export: {
+		name: "",
+		quality: 0.97,
+		ext: "jpeg",
+	},
+	exif: {},
+	modelText: "",
+	paramsText: "",
+	timeText: "",
+	lensText: "",
+	locationText: "",
+};
 
 export const defaultLabelConfig: LabelConfigItem = {
 	name: `文本(${new Date().getTime()})`,

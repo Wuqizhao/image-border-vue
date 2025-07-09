@@ -69,9 +69,9 @@
 						<el-form-item label="悬浮工具">
 							<el-switch v-model="showTools"></el-switch>
 						</el-form-item>
-						<!-- <el-form-item label="叠加层">
-                            <el-switch v-model="showCanvas2"></el-switch>
-                        </el-form-item> -->
+						<el-form-item label="叠加层">
+							<el-switch v-model="showCanvas2"></el-switch>
+						</el-form-item>
 						<el-form-item label="辅助线">
 							<b style="margin-left: 20px">水平中心线：</b>
 							<el-switch v-model="auxiliaryLines.horizontalCenter"></el-switch>
@@ -428,6 +428,7 @@ import {
 	getWatermarkList,
 	getSupportedFonts,
 	defaultExif,
+	defaultImgValue,
 } from "../assets/tools";
 import {
 	download,
@@ -499,7 +500,14 @@ import WatermarkPadding from "../components/WatermarkPadding.vue";
 import { storeToRefs } from "pinia";
 import BorderConfig from "../components/BorderConfig.vue";
 import MarginConfig from "../components/MarginConfig.vue";
-import { Canvas, IText } from "fabric";
+import {
+	Canvas,
+	FabricObject,
+	IText,
+	type FabricObjectProps,
+	type ObjectEvents,
+	type SerializedObjectProps,
+} from "fabric";
 
 const { config } = storeToRefs(store);
 const menuItems = ref([
@@ -595,25 +603,6 @@ const auxiliaryLines = reactive({
 	watermarkRange: false, // 水印范围
 });
 
-const defaultImgValue: Img = {
-	width: 0,
-	height: 0,
-	fileName: "",
-	size: "",
-	type: "",
-	time: "",
-	export: {
-		name: "",
-		quality: 0.97,
-		ext: "jpeg",
-	},
-	exif: {},
-	modelText: "",
-	paramsText: "",
-	timeText: "",
-	lensText: "",
-	locationText: "",
-};
 const img = reactive<Img>({ ...defaultImgValue });
 const curFile = ref<File | null>(null);
 const fileList = ref<File[]>([]);
@@ -628,44 +617,56 @@ const saveConfigDialog = reactive({
 	config: "",
 });
 const showTools = ref(true);
-const showCanvas2 = ref(false);
+const showCanvas2 = ref(true);
 
 const fabricCanvas = ref<Canvas | null>(null);
 
-// let text: any = null;
-// function initFabricCanvas() {
-// 	if (!fabricCanvas.value) return;
-// 	try {
-// 		if (text === null) {
-// 			text = new IText("叠加层文本", {
-// 				backgroundColor: "red",
-// 				left: 500,
-// 				top: 500,
-// 				fontSize: 120,
-// 				fill: "#000",
-// 				evented: true,
-// 				selectable: true,
-// 				hasRotatingPoint: true,
-// 			});
-// 			fabricCanvas.value.add(text);
+const texts: any = [];
+function initFabricCanvas(ret: any) {
+	if (!fabricCanvas.value) return;
+	console.log("initFabricCanvas", ret);
+	try {
+		texts.map(
+			(
+				item: FabricObject<
+					Partial<FabricObjectProps>,
+					SerializedObjectProps,
+					ObjectEvents
+				>
+			) => fabricCanvas?.value?.remove(item)
+		);
 
-// 			const text2 = new IText("叠加层文本2", {
-// 				// backgroundColor: 'blue',
-// 				left: 500,
-// 				top: 800,
-// 				fontSize: 120,
-// 				fill: "#000",
-// 				evented: true,
-// 				selectable: true,
-// 				hasRotatingPoint: true,
-// 			});
-// 			fabricCanvas.value.add(text2);
-// 		}
-// 		fabricCanvas.value.renderAll();
-// 	} catch (e) {
-// 		console.error("绘制fabric canvas失败", e);
-// 	}
-// }
+		console.log('111');
+
+		ret.texts.map((item: any) => {
+			const text = new IText(item?.text, {
+				left: item?._x,
+				top: item?._y,
+				fontSize: item?.size,
+				fill: item?.color,
+				evented: true,
+				selectable: true,
+				hasRotatingPoint: true,
+				// 字体
+				fontFamily: item?.font || "sans-serif",
+				// 加粗
+				fontWeight: item?.bold ? "bold" : "normal",
+				// 斜体
+				fontStyle: item?.italic ? "italic" : "normal",
+				// textAlign: item?.align || "left",
+				// textBaseline: item?.verticalAlign || "middle",
+			});
+			texts.push(text);
+			fabricCanvas.value && fabricCanvas.value.add(text);
+			console.log('***');
+		});
+
+		console.log('222');
+		fabricCanvas.value.renderAll();
+	} catch (e) {
+		console.error("绘制fabric canvas失败", e);
+	}
+}
 
 provide("img", img);
 function deleteWatermark(name: string, event: Event) {
@@ -943,10 +944,10 @@ const handleDraw = useDebounceFn(() => {
 			const canvas2 = document.getElementById(
 				"imgCanvas2"
 			) as HTMLCanvasElement;
-			const dpr = window.devicePixelRatio || 1;
+			// const dpr = window.devicePixelRatio || 1;
 			if (canvas2 && fabricCanvas.value === null) {
-				canvas2.width = canvasWidth / dpr;
-				canvas2.height = canvasHeight / dpr;
+				canvas2.width = canvasWidth;
+				canvas2.height = canvasHeight;
 
 				fabricCanvas.value = new Canvas(canvas2, {
 					selection: true,
@@ -1071,7 +1072,7 @@ const handleDraw = useDebounceFn(() => {
 				""
 			);
 			// 执行模板的绘制函数
-			config.value.draw(img, config.value, {
+			const ret = await config.value.draw(img, config.value, {
 				ctx,
 				canvas,
 				rect1,
@@ -1100,7 +1101,7 @@ const handleDraw = useDebounceFn(() => {
 				ctx.restore();
 			}
 			// 绘制叠加层
-			// initFabricCanvas();
+			initFabricCanvas(ret);
 			// 执行绘制结束后的操作
 			config.value.afterDraw && config.value.afterDraw(ctx);
 
@@ -1376,7 +1377,7 @@ onMounted(() => {
 	background: rgb(255, 255, 255);
 	transition-duration: 1s;
 	width: 100%;
-	padding: 5px 10px;
+	// padding: 5px 10px;
 	position: relative;
 	max-height: 100vh;
 	overflow: hidden;
@@ -1481,6 +1482,7 @@ onMounted(() => {
 		background-color: #fff;
 		border-radius: 10px 10px 0px 0px;
 		animation: flow 1s;
+		flex:1;
 
 		.btns {
 			justify-content: space-between;

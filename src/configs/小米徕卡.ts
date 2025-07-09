@@ -18,6 +18,8 @@ const doDraw: DrawFun = async (img, config, context) => {
 	} = watermark;
 	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
 
+	const texts = [];
+
 	// 绘制型号
 	if (modelConfig.show) {
 		ctx.save();
@@ -33,11 +35,17 @@ const doDraw: DrawFun = async (img, config, context) => {
 		if (modelConfig?.letterUpperCase) {
 			modelText = modelText.toUpperCase();
 		}
-		drawTextFunc(
-			modelText,
-			rect1.x + watermarkPaddings.left + (modelConfig.x || 0),
-			_y + (modelConfig.y || 0)
-		);
+
+		const modelX = rect1.x + watermarkPaddings.left + (modelConfig.x || 0);
+		const modelY = _y + (modelConfig.y || 0);
+		drawTextFunc(modelText, modelX, modelY);
+
+		texts.push({
+			_x: modelX,
+			_y: modelY,
+			...modelConfig,
+			text: modelText,
+		});
 		ctx.restore();
 	}
 	// 在水印范围内垂直居中
@@ -66,6 +74,12 @@ const doDraw: DrawFun = async (img, config, context) => {
 			(paramsConfig?.y || 0);
 
 		drawTextFunc(paramsText, modelX, _y);
+		texts.push({
+			_x: modelX,
+			_y,
+			...paramsConfig,
+			text: paramsText,
+		});
 	}
 
 	let lensWidth = 0;
@@ -87,6 +101,12 @@ const doDraw: DrawFun = async (img, config, context) => {
 			_y + (lensConfig.y || 0)
 		);
 		ctx.restore();
+		texts.push({
+			text: img.lensText,
+			_x: rect1.x + watermarkPaddings.left + (lensConfig.x || 0),
+			_y: _y + (lensConfig.y || 0),
+			...lensConfig,
+		});
 	}
 
 	// 绘制时间
@@ -133,6 +153,12 @@ const doDraw: DrawFun = async (img, config, context) => {
 			);
 		}
 		ctx.restore();
+		texts.push({
+			text: img.timeText,
+			_x: _x + (timeConfig.x || 0),
+			_y: _y + (timeConfig.y || 0),
+			...timeConfig,
+		});
 	}
 
 	const space = paramsConfig.size * dividerConfig.margin;
@@ -185,7 +211,17 @@ const doDraw: DrawFun = async (img, config, context) => {
 
 		drawTextFunc(text, _x, _y, locationConfig.x, locationConfig.y);
 		ctx.restore();
+		texts.push({
+			text: text,
+			_x,
+			_y,
+			...locationConfig,
+		});
 	}
+
+	const retConfig = { texts };
+	console.log("retConfig", retConfig);
+	return retConfig;
 };
 
 const config: Config = {
