@@ -1,18 +1,10 @@
 <template>
 	<div class="box">
 		<div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
-			<canvas ref="imgCanvas" id="imgCanvas" v-if="curFile" @click="preview"
-				>您的浏览器不支持Canvas!</canvas
-			>
-			<canvas
-				id="imgCanvas2"
-				v-if="curFile"
-				v-show="showCanvas2"
-				width="600"
-				height="400"></canvas>
+			<canvas class="leafer" v-show="curFile" ref="imgCanvas"></canvas>
 			<el-empty
 				description="点击添加图片~"
-				v-else
+				v-show="!curFile"
 				@click="selectFile"></el-empty>
 
 			<div class="download" v-show="showTools && fileList.length > 0">
@@ -68,9 +60,6 @@
 						<h3>辅助工具</h3>
 						<el-form-item label="悬浮工具">
 							<el-switch v-model="showTools"></el-switch>
-						</el-form-item>
-						<el-form-item label="叠加层">
-							<el-switch v-model="showCanvas2"></el-switch>
 						</el-form-item>
 						<el-form-item label="辅助线">
 							<b style="margin-left: 20px">水平中心线：</b>
@@ -436,12 +425,8 @@ import {
 	getImageSrc,
 	deepClone,
 	isMobile,
-	drawCustomLabelsAndImages,
-	drawAuxiliaryLines,
-	getLogoName,
 	caculateCanvasSize,
 	getLocationText,
-	drawRoundedRect,
 } from "../utils";
 import { ElMessage, ElNotification } from "element-plus";
 import {
@@ -500,15 +485,8 @@ import WatermarkPadding from "../components/WatermarkPadding.vue";
 import { storeToRefs } from "pinia";
 import BorderConfig from "../components/BorderConfig.vue";
 import MarginConfig from "../components/MarginConfig.vue";
-import {
-	Canvas,
-	FabricObject,
-	IText,
-	type FabricObjectProps,
-	type ObjectEvents,
-	type SerializedObjectProps,
-} from "fabric";
 
+import { Leafer, Rect, Platform, Text, Group } from "leafer-ui";
 const { config } = storeToRefs(store);
 const menuItems = ref([
 	{
@@ -590,8 +568,6 @@ const renderMenuItems = computed(() => {
 });
 const curConfigComponent = shallowRef<Component>(LogoConfig);
 
-// 是否开发环境
-// const isDev = computed(() => import.meta.env.DEV)
 // 画布
 const imgCanvas = ref<HTMLCanvasElement | null>(null);
 const showConfigDrawer = ref(false);
@@ -617,56 +593,6 @@ const saveConfigDialog = reactive({
 	config: "",
 });
 const showTools = ref(true);
-const showCanvas2 = ref(true);
-
-const fabricCanvas = ref<Canvas | null>(null);
-
-const texts: any = [];
-function initFabricCanvas(ret: any) {
-	if (!fabricCanvas.value) return;
-	console.log("initFabricCanvas", ret);
-	try {
-		texts.map(
-			(
-				item: FabricObject<
-					Partial<FabricObjectProps>,
-					SerializedObjectProps,
-					ObjectEvents
-				>
-			) => fabricCanvas?.value?.remove(item)
-		);
-
-		console.log('111');
-
-		ret.texts.map((item: any) => {
-			const text = new IText(item?.text, {
-				left: item?._x,
-				top: item?._y,
-				fontSize: item?.size,
-				fill: item?.color,
-				evented: true,
-				selectable: true,
-				hasRotatingPoint: true,
-				// 字体
-				fontFamily: item?.font || "sans-serif",
-				// 加粗
-				fontWeight: item?.bold ? "bold" : "normal",
-				// 斜体
-				fontStyle: item?.italic ? "italic" : "normal",
-				// textAlign: item?.align || "left",
-				// textBaseline: item?.verticalAlign || "middle",
-			});
-			texts.push(text);
-			fabricCanvas.value && fabricCanvas.value.add(text);
-			console.log('***');
-		});
-
-		console.log('222');
-		fabricCanvas.value.renderAll();
-	} catch (e) {
-		console.error("绘制fabric canvas失败", e);
-	}
-}
 
 provide("img", img);
 function deleteWatermark(name: string, event: Event) {
@@ -838,22 +764,8 @@ const handleDraw = useDebounceFn(() => {
 		const file = curFile.value;
 		if (!file) return;
 
-		const {
-			watermark,
-			paddings: imgPaddings,
-			blur: blurConfig,
-			shadow: shadowConfig,
-			radius: radiusConfig,
-			logo: logoConfig,
-			location: locationConfig,
-		} = config.value;
-		const {
-			model,
-			params: paramsConfig,
-			time: timeConfig,
-			lens,
-			bgColor,
-		} = watermark;
+		const { watermark, location: locationConfig } = config.value;
+		const { model, params: paramsConfig, time: timeConfig, lens } = watermark;
 
 		_img.crossOrigin = "anonymous";
 		_img.src = getImageSrc(file);
@@ -861,6 +773,11 @@ const handleDraw = useDebounceFn(() => {
 			// 更新宽高
 			img.width = _img.width;
 			img.height = _img.height;
+
+			const { canvasWidth, canvasHeight, rect1, rect2 } = caculateCanvasSize(
+				config.value,
+				img
+			);
 
 			// 读取exif信息
 			let exif = exifStore.getExif(file) || (await Exifr.parse(file));
@@ -914,17 +831,6 @@ const handleDraw = useDebounceFn(() => {
 				? img.locationText.toUpperCase()
 				: img.locationText;
 
-			const canvas = imgCanvas.value;
-			if (!canvas) {
-				ElMessage.error("没有找到画布~");
-				return;
-			}
-			const ctx = canvas.getContext("2d");
-			if (!ctx) {
-				ElMessage.error("获取画布上下文失败~");
-				return;
-			}
-
 			const realImgWidth = img.width;
 			const realImgHeight = img.height;
 
@@ -932,179 +838,7 @@ const handleDraw = useDebounceFn(() => {
 				ElMessage.warning("图片尺寸过小，样式可能错乱！");
 			}
 
-			const { rect1, rect2, canvasWidth, canvasHeight } = caculateCanvasSize(
-				config.value,
-				img
-			);
-			// 修改画布大小
-			canvas.width = canvasWidth;
-			canvas.height = canvasHeight;
-
-			// imgCanvas2
-			const canvas2 = document.getElementById(
-				"imgCanvas2"
-			) as HTMLCanvasElement;
-			// const dpr = window.devicePixelRatio || 1;
-			if (canvas2 && fabricCanvas.value === null) {
-				canvas2.width = canvasWidth;
-				canvas2.height = canvasHeight;
-
-				fabricCanvas.value = new Canvas(canvas2, {
-					selection: true,
-					preserveObjectStacking: true,
-				});
-
-				fabricCanvas.value.on("mouse:dblclick", (e) => {
-					if (e.target && e.target.type === "i-text") {
-						const textObj = e.target as IText;
-						fabricCanvas.value?.setActiveObject(textObj);
-						textObj.enterEditing();
-						textObj.selectAll();
-					} else {
-						console.log("没有选中对象", e.target?.type || "type");
-					}
-				});
-			}
-
-			// 根据偏移量计算水印范围
-			rect1.x += watermark.offsetX || 0;
-			rect1.y += watermark.offsetY || 0;
-			rect2.x += watermark.offsetX || 0;
-			rect2.y += watermark.offsetY || 0;
-
-			// 绘制背景
-			if (blurConfig.type === "blur") {
-				ctx.save();
-				ctx.filter = `blur(${blurConfig.size}px)`;
-				ctx.drawImage(_img, 0, 0, canvas.width, canvas.height);
-				ctx.restore();
-			} else if (blurConfig.type === "gradient") {
-				const angle = blurConfig?.gradient?.angle || 0; // 角度值
-				const radians = (angle * Math.PI) / 180;
-				const x1 = Math.cos(radians) * canvas.width;
-				const y1 = Math.sin(radians) * canvas.height;
-				const gradient = ctx.createLinearGradient(0, 0, x1, y1);
-
-				const colors = blurConfig?.gradient?.colors || [
-					"lightblue",
-					"white",
-					"pink",
-				];
-				for (let i = 0; i < colors.length; i++) {
-					gradient.addColorStop((1 / (colors.length - 1)) * i, colors[i]);
-				}
-				ctx.fillStyle = gradient;
-
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-			} else {
-				ctx.fillStyle = bgColor || "#FFF";
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-			}
-			ctx.restore();
-
-			// 绘制圆角和阴影
-			ctx.save();
-			let radius: number | number[] = 0;
-			if (shadowConfig.show) {
-				ctx.shadowBlur = shadowConfig.size;
-				ctx.shadowColor = shadowConfig.color;
-				ctx.shadowOffsetX = shadowConfig.x;
-				ctx.shadowOffsetY = shadowConfig.y;
-			}
-			if (radiusConfig.show) {
-				const rt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rt;
-				const rb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.rb;
-				const lt = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lt;
-				const lb = radiusConfig.uniform ? radiusConfig.size : radiusConfig.lb;
-				radius = radiusConfig.uniform ? radiusConfig.size : [rt, rb, lb, lt];
-			}
-
-			drawRoundedRect(
-				ctx,
-				imgPaddings.left,
-				imgPaddings.top,
-				realImgWidth,
-				realImgHeight,
-				radius
-			);
-			ctx.fill();
-			ctx.restore();
-
-			ctx.save();
-			ctx.clip();
-
-			// 滤镜
-			if (config.value.filter) {
-				ctx.filter = `brightness(${config.value.filter.brightness}%) contrast(${config.value.filter.contrast}%) saturate(${config.value.filter.saturation}%) grayscale(${config.value.filter.grayscale}%) invert(${config.value.filter.invert}%)`;
-			}
-			// 绘制图片
-			ctx.drawImage(
-				_img,
-				imgPaddings.left,
-				imgPaddings.top,
-				realImgWidth,
-				realImgHeight
-			);
-
-			ctx.restore();
-
-			// 自动匹配logo
-			if (logoConfig.enable && logoConfig.auto) {
-				logoConfig.name = getLogoName(exif?.Make);
-			}
-
-			// 执行绘制前的操作
-			config.value.beforeDraw && config.value.beforeDraw(canvas);
-
-			// 绘制水印范围的背景颜色
-			if (watermark.position !== "inner") {
-				ctx.fillStyle = watermark.bg || "rgba(0,0,0,0)";
-				ctx.fillRect(
-					0,
-					rect1.y - watermark.paddings.top,
-					canvas.width,
-					rect2.y - rect1.y + watermark.paddings.top + watermark.paddings.bottom
-				);
-			}
-
-			config.value.font = config.value.font.replace(
-				/\.ttf|\.TTF|\.otf|\.OTF/,
-				""
-			);
-			// 执行模板的绘制函数
-			const ret = await config.value.draw(img, config.value, {
-				ctx,
-				canvas,
-				rect1,
-				rect2,
-				exposureTime,
-				focalLength,
-			});
-
-			// 绘制自定义的文本和图片
-			drawCustomLabelsAndImages(ctx, config.value.labels, config.value.images);
-
-			// 绘制辅助线
-			drawAuxiliaryLines(canvas, auxiliaryLines, rect1, rect2);
-
-			// 绘制边框
-			if (config.value?.border?.enable && config.value?.border?.show) {
-				ctx.save();
-				ctx.strokeStyle = config.value.border.color;
-				ctx.lineWidth = config.value.border.width;
-				ctx.strokeRect(
-					imgPaddings.left,
-					imgPaddings.top,
-					realImgWidth,
-					realImgHeight
-				);
-				ctx.restore();
-			}
-			// 绘制叠加层
-			initFabricCanvas(ret);
-			// 执行绘制结束后的操作
-			config.value.afterDraw && config.value.afterDraw(ctx);
-
+			init({ canvasWidth, canvasHeight, rect1, rect2 });
 			// 释放图片
 			URL.revokeObjectURL(_img.src);
 		};
@@ -1112,6 +846,83 @@ const handleDraw = useDebounceFn(() => {
 		console.error("绘制发生错误：", e);
 	}
 }, 250);
+
+const leafer = ref<any | null>(null);
+
+const cleanup = () => {
+	if (leafer.value) {
+		leafer.value.destroy();
+		leafer.value = null;
+	}
+};
+
+const init = useDebounceFn((cfg) => {
+	const dom = document.querySelector(".leafer");
+	if (!dom) throw new Error("找不到dom元素");
+	if (!curFile.value) return;
+	cleanup();
+
+	const { paddings: imgPaddings, watermark, logo } = config.value;
+	const { model, params, paddings: watermarkPaddings } = watermark;
+	if (leafer.value === null) {
+		leafer.value = new Leafer({
+			view: dom,
+			width: cfg.canvasWidth,
+			height: cfg.canvasHeight,
+			fill: "#FFF",
+		});
+	}
+
+	Platform.image.crossOrigin = "anonymous";
+	const image = new Rect({
+		x: imgPaddings.left,
+		y: imgPaddings.top,
+		width: img?.width,
+		height: img?.height,
+		fill: {
+			type: "image",
+			url: getImageSrc(curFile.value),
+		},
+	});
+
+	const logoImg = new Rect({
+		x: 0,
+		y: cfg.rect1.y + (cfg.rect2.y - cfg.rect1.y) / 2 - logo.height / 2,
+		width: logo.width,
+		height: logo.height,
+		fill: {
+			type: "image",
+			url: getImageSrc(logo.url || logo.name),
+		},
+		draggable: true,
+	});
+	const text = new Text({
+		x: cfg.rect1.x + watermarkPaddings.left,
+		y: cfg.rect1.y + (cfg.rect2.y - cfg.rect1.y) / 2,
+		fill: model?.color,
+		text: img?.modelText || "哈哈哈",
+		verticalAlign: "middle",
+		fontSize: model?.size || 24,
+		draggable: true,
+	});
+	const paramsLabel = new Text({
+		x: cfg.rect2.x - watermarkPaddings.right,
+		y: cfg.rect1.y + (cfg.rect2.y - cfg.rect1.y) / 2,
+		textAlign: "right",
+		verticalAlign: "middle",
+		fill: params?.color,
+		text: img?.paramsText || "哈哈哈",
+		fontSize: params?.size || 24,
+		draggable: true,
+	});
+
+	const group = new Group({ draggable: true });
+	group.add([paramsLabel, logoImg]);
+
+	leafer.value.add(text);
+	leafer.value.add(image);
+	leafer.value.add(group);
+}, 200);
 
 function importConfig(val: number): void {
 	// 获取对应的水印
@@ -1187,16 +998,6 @@ function importConfig(val: number): void {
 		});
 }
 
-const preview = () => {
-	const canvasBox = document.getElementById("canvasBox") as HTMLCanvasElement;
-	if (!canvasBox) throw "未找到画布容器！";
-
-	if (window.innerWidth <= 768) {
-		canvasBox.style.maxHeight =
-			canvasBox.style.maxHeight === "65vh" ? "300px" : "65vh";
-	}
-};
-
 function prev() {
 	const index = fileList.value.findIndex((item) => curFile.value === item);
 	if (index !== -1) {
@@ -1241,6 +1042,37 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+#canvasBox {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	background: rgb(255, 255, 255);
+	transition-duration: 0.8s;
+	width: 100%;
+	position: relative;
+	max-height: 100vh;
+	overflow: hidden;
+	padding: 20px;
+
+	&:hover {
+		.download {
+			transform: translateY(0px);
+			transition-duration: 0.5s;
+		}
+	}
+}
+.leafer {
+	border: 1px solid silver;
+	max-width: 100%;
+	max-height: 100%;
+
+	canvas {
+		max-width: 100%;
+		max-height: 100%;
+	}
+}
 .box {
 	display: flex;
 	justify-content: space-between;
@@ -1367,49 +1199,6 @@ onMounted(() => {
 		}
 	}
 }
-
-#canvasBox {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	background: rgb(255, 255, 255);
-	transition-duration: 1s;
-	width: 100%;
-	// padding: 5px 10px;
-	position: relative;
-	max-height: 100vh;
-	overflow: hidden;
-
-	canvas {
-		border: 1px solid gainsboro;
-		max-width: 100%;
-		box-sizing: border-box;
-		transition-duration: 1s;
-		max-height: 100%;
-	}
-
-	:deep(.canvas-container) {
-		max-width: 100%;
-		max-height: 100%;
-		// border: 5px solid salmon;
-		transform: translateY(-100%);
-
-		> * {
-			max-width: 100%;
-			max-height: 100%;
-		}
-	}
-
-	&:hover {
-		.download {
-			transform: translateY(0px);
-			transition-duration: 0.5s;
-		}
-	}
-}
-
 .float-menu {
 	position: sticky;
 	top: 0px;
@@ -1482,7 +1271,7 @@ onMounted(() => {
 		background-color: #fff;
 		border-radius: 10px 10px 0px 0px;
 		animation: flow 1s;
-		flex:1;
+		flex: 1;
 
 		.btns {
 			justify-content: space-between;

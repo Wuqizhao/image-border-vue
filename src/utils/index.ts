@@ -48,16 +48,6 @@ export async function download(canvas: null | HTMLCanvasElement, config: Img) {
 	if (!canvas) throw new Error("canvas不存在");
 	const mimeType = `image/${ext.toLowerCase()}`;
 
-	// 叠加绘制
-	const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-	if (!ctx) throw new Error("canvas ctx不存在");
-
-	const imgCanvas2 = document.getElementById("imgCanvas2") as HTMLCanvasElement;
-	if (!imgCanvas2) throw new Error("imgCanvas2不存在");
-
-	// 叠加
-	ctx.drawImage(imgCanvas2, 0, 0);
-
 	try {
 		// 使用 toBlob 异步生成图片数据
 		await new Promise<void>((resolve, reject) => {

@@ -18,6 +18,11 @@ const routes = [
 		component: () => import("../views/Grid.vue"),
 	},
 	{
+		path: "/leafer",
+		name: "leafer",
+		component: () => import("../views/Leafer.vue"),
+	},
+	{
 		path: "/:pathMatch(.*)*",
 		redirect: "/",
 	},
