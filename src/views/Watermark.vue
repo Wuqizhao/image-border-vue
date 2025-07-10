@@ -489,34 +489,38 @@ import MarginConfig from "../components/MarginConfig.vue";
 import { Leafer, Rect, Platform } from "leafer-ui";
 import "@leafer-in/export"; // 引入导出元素插件
 import "@leafer-in/find"; // 查找插件
-// import '@leafer-in/editor'; // 引入编辑器插件
+import "@leafer-in/editor"; // 引入编辑器插件
 
-async function exportLeafer(name = "") {
+async function exportLeafer() {
 	try {
 		if (!leafer.value) {
 			ElMessage.warning("请先添加图片");
 			return;
 		}
 
-		// 处理文件名
-		const fileName =
-			name ||
-			(img.export.name || "watermark_" + Date.now()) +
-				"." +
-				(img.export.ext || "png");
-
 		// 使用Leafer的导出功能
-		const result = await leafer.value.export(fileName, {
-			screenshot: true,
-			quality: img.export.ext === "jpeg" ? img.export.quality : 1,
-		});
+		const result = await leafer.value.export(
+			img.export.name + "." + img.export.ext,
+			{
+				quality: img.export.ext === "jpeg" ? img.export.quality : 1,
+				screenshot: true,
+			}
+		);
 
-		console.log("result", result);
+		console.log("导出结果:", result);
 
-		ElMessage.success("导出成功");
+		if (result) {
+			ElMessage.success(`导出成功`);
+		} else {
+			ElMessage.warning("导出操作未完成");
+		}
 	} catch (error) {
 		console.error("导出失败:", error);
-		ElMessage.error("导出失败: " + (error as Error).message);
+		let errorMsg = "导出失败";
+		if (error instanceof Error) {
+			errorMsg += ": " + error.message;
+		}
+		ElMessage.error(errorMsg);
 	}
 }
 
