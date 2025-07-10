@@ -9,6 +9,26 @@ declare interface Model extends LabelConfigItem {
 	 * 型号文字是否替换Z为ℤ
 	 */
 	replaceZ: boolean;
+	/**
+	 * 字体名称
+	 */
+	font?: string;
+	/**
+	 * 是否加粗
+	 */
+	bold?: boolean;
+	/**
+	 * 是否斜体
+	 */
+	italic?: boolean;
+	/**
+	 * 文本对齐方式
+	 */
+	align?: TextAlign;
+	/**
+	 * 垂直对齐方式
+	 */
+	verticalAlign?: TextVerticalAlign;
 }
 declare interface Params extends LabelConfigItem {
 	/**
@@ -390,6 +410,7 @@ export declare interface Config extends BaseConfig {
 	 * 调用draw函数之后执行的操作
 	 */
 	afterDraw?: AfterDrawFun;
+	caculate: Function;
 }
 
 export declare type DrawFun = (

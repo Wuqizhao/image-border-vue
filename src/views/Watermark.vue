@@ -13,7 +13,7 @@
 				<ArrowLeft v-if="fileList.length > 1" @click="prev" />
 				<ArrowRight v-if="fileList.length > 1" @click="next" />
 				<RefreshLeft @click="resetWatermark" />
-				<Download @click="download(imgCanvas, img)" />
+				<Download @click="exportLeafer" />
 			</div>
 		</div>
 
@@ -486,7 +486,40 @@ import { storeToRefs } from "pinia";
 import BorderConfig from "../components/BorderConfig.vue";
 import MarginConfig from "../components/MarginConfig.vue";
 
-import { Leafer, Rect, Platform, Text, Group } from "leafer-ui";
+import { Leafer, Rect, Platform, Text } from "leafer-ui";
+import "@leafer-in/export"; // 引入导出元素插件
+import "@leafer-in/find"; // 查找插件
+// import '@leafer-in/editor'; // 引入编辑器插件
+
+async function exportLeafer(name = "") {
+	try {
+		if (!leafer.value) {
+			ElMessage.warning("请先添加图片");
+			return;
+		}
+
+		// 处理文件名
+		const fileName =
+			name ||
+			(img.export.name || "watermark_" + Date.now()) +
+				"." +
+				(img.export.ext || "png");
+
+		// 使用Leafer的导出功能
+		const result = await leafer.value.export(fileName, {
+			screenshot: true,
+			quality: img.export.ext === "jpeg" ? img.export.quality : 1,
+		});
+
+		console.log("result", result);
+
+		ElMessage.success("导出成功");
+	} catch (error) {
+		console.error("导出失败:", error);
+		ElMessage.error("导出失败: " + (error as Error).message);
+	}
+}
+
 const { config } = storeToRefs(store);
 const menuItems = ref([
 	{
@@ -755,7 +788,7 @@ watchThrottled(
 	() => {
 		handleDraw();
 	},
-	{ throttle: 250, deep: true }
+	{ throttle: 20, deep: true }
 );
 
 const _img = new Image();
@@ -838,91 +871,86 @@ const handleDraw = useDebounceFn(() => {
 				ElMessage.warning("图片尺寸过小，样式可能错乱！");
 			}
 
-			init({ canvasWidth, canvasHeight, rect1, rect2 });
+			init({
+				canvasWidth,
+				canvasHeight,
+				rect1,
+				rect2,
+			});
 			// 释放图片
 			URL.revokeObjectURL(_img.src);
 		};
 	} catch (e) {
 		console.error("绘制发生错误：", e);
 	}
-}, 250);
+}, 20);
 
-const leafer = ref<any | null>(null);
-
-const cleanup = () => {
-	if (leafer.value) {
-		leafer.value.destroy();
-		leafer.value = null;
-	}
-};
-
+const leafer = ref<Leafer | null>(null);
 const init = useDebounceFn((cfg) => {
 	const dom = document.querySelector(".leafer");
 	if (!dom) throw new Error("找不到dom元素");
-	if (!curFile.value) return;
-	cleanup();
 
-	const { paddings: imgPaddings, watermark, logo } = config.value;
-	const { model, params, paddings: watermarkPaddings } = watermark;
+	const { canvasWidth, canvasHeight, rect1, rect2 } = cfg;
+	if (!curFile.value) return;
+
+	const { paddings: imgPaddings, watermark } = config.value;
+	const { paddings: watermarkPaddings } = watermark;
+
+	// 初始化Leafer
 	if (leafer.value === null) {
 		leafer.value = new Leafer({
 			view: dom,
-			width: cfg.canvasWidth,
-			height: cfg.canvasHeight,
+			width: canvasWidth,
+			height: canvasHeight,
 			fill: "#FFF",
 		});
 	}
 
 	Platform.image.crossOrigin = "anonymous";
-	const image = new Rect({
-		x: imgPaddings.left,
-		y: imgPaddings.top,
-		width: img?.width,
-		height: img?.height,
-		fill: {
-			type: "image",
-			url: getImageSrc(curFile.value),
-		},
-	});
 
-	const logoImg = new Rect({
-		x: 0,
-		y: cfg.rect1.y + (cfg.rect2.y - cfg.rect1.y) / 2 - logo.height / 2,
-		width: logo.width,
-		height: logo.height,
-		fill: {
-			type: "image",
-			url: getImageSrc(logo.url || logo.name),
-		},
-		draggable: true,
-	});
-	const text = new Text({
-		x: cfg.rect1.x + watermarkPaddings.left,
-		y: cfg.rect1.y + (cfg.rect2.y - cfg.rect1.y) / 2,
-		fill: model?.color,
-		text: img?.modelText || "哈哈哈",
-		verticalAlign: "middle",
-		fontSize: model?.size || 24,
-		draggable: true,
-	});
-	const paramsLabel = new Text({
-		x: cfg.rect2.x - watermarkPaddings.right,
-		y: cfg.rect1.y + (cfg.rect2.y - cfg.rect1.y) / 2,
-		textAlign: "right",
-		verticalAlign: "middle",
-		fill: params?.color,
-		text: img?.paramsText || "哈哈哈",
-		fontSize: params?.size || 24,
-		draggable: true,
-	});
+	let bg = leafer.value.findOne("#bg");
+	if (!bg) {
+		bg = new Rect({
+			id: "bg",
+			x: imgPaddings.left,
+			y: imgPaddings.top,
+			width: img?.width,
+			height: img?.height,
+			fill: {
+				type: "image",
+				url: getImageSrc(curFile.value),
+			},
+		});
+		leafer.value.add(bg);
+	} else {
+		bg.set({
+			x: imgPaddings.left,
+			y: imgPaddings.top,
+			width: img?.width,
+			height: img?.height,
+			fill: { type: "image", url: getImageSrc(curFile.value) },
+		});
+	}
 
-	const group = new Group({ draggable: true });
-	group.add([paramsLabel, logoImg]);
+	// 绘制水印背景
+	let watermarkBg = leafer.value.findOne("#watermarkBg");
+	if (!watermarkBg) {
+		watermarkBg = new Rect({
+			id: "watermarkBg",
+			x: rect1.x,
+			y: rect1.y - watermarkPaddings.top,
+			width: rect2.x - rect1.x,
+			height:
+				rect2.y - rect1.y + watermarkPaddings.top + watermarkPaddings.bottom,
+			fill: "#FFF",
+		});
+		leafer.value.add(watermarkBg);
+	}
 
-	leafer.value.add(text);
-	leafer.value.add(image);
-	leafer.value.add(group);
-}, 200);
+	console.log("caculate start");
+	config.value?.caculate(leafer.value, config.value, img, cfg);
+	console.log("caculate end");
+}, 20);
 
 function importConfig(val: number): void {
 	// 获取对应的水印
@@ -1019,17 +1047,15 @@ function loadFonts(fonts: string[]) {
 	// 1. 创建<style>元素
 	const style = document.createElement("style");
 	style.id = "dynamic-fonts";
-	fonts.reverse();
+
 	// 2. 生成CSS规则
 	let css = "";
-	fonts.forEach((font) => {
-		let fontName = font.replace(/(\.ttf|\.TTF)$/, "");
-		css += `
-            @font-face {
-                font-family: '${fontName}';
-                src: url('fonts/${font}');
-            }
-    `;
+	fonts.reverse().forEach((font) => {
+		const fontName = font.replace(/(\.ttf|\.TTF)$/, "");
+		css += `@font-face {
+			font-family: '${fontName}';
+			src: url('fonts/${font}');
+		}\n`;
 	});
 
 	style.textContent = css;

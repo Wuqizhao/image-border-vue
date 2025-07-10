@@ -12,10 +12,7 @@ import type {
 	TextAlign,
 	TextVerticalAlign,
 } from "../types";
-import {
-	cameraBrands,
-	defaultLabelConfig,
-} from "../assets/tools";
+import { cameraBrands, defaultLabelConfig } from "../assets/tools";
 
 /**
  * 将曝光时间转换为分数字符串格式
@@ -281,7 +278,7 @@ export async function drawLogo(
 		// URL.revokeObjectURL(img.src);
 	};
 	img.onerror = (err) => {
-		console.error("Logo加载失败:", err,logoConfig,img,img.src);
+		console.error("Logo加载失败:", err, logoConfig, img, img.src);
 		ElNotification.error({
 			title: "Logo加载失败",
 			message: err.toString(),
@@ -520,10 +517,23 @@ export function caculateCanvasSize(config: Config, img: Img) {
 		paddings: watermarkPaddings,
 	} = watermark;
 
+	// 根据图片宽高比调整基础尺寸
+	const isPortrait = img.height > img.width;
 	let canvasWidth = img.width + imgPaddings.left + imgPaddings.right;
 	let canvasHeight = img.height + imgPaddings.top + imgPaddings.bottom;
 
+	// 如果是竖图，调整水印区域计算方式
+	if (isPortrait) {
+		canvasHeight =
+			img.height * (1 + watermarkHeight) +
+			imgPaddings.top +
+			imgPaddings.bottom +
+			watermarkPaddings.top +
+			watermarkPaddings.bottom;
+	}
+
 	if (position === "left" || position === "right") {
+		// 横版水印布局
 		canvasWidth +=
 			watermarkHeight * canvasWidth +
 			watermarkPaddings.left +
@@ -542,16 +552,26 @@ export function caculateCanvasSize(config: Config, img: Img) {
 			rect2.x = canvasWidth;
 		}
 	} else if (position === "inner") {
-		// 画布大小不需要修改
+		// 内嵌水印布局
 		rect1.x = watermarkPaddings.left + imgPaddings.left;
 		rect1.y = watermarkPaddings.top;
 		rect2.x = canvasWidth - watermarkPaddings.right - imgPaddings.right;
 		rect2.y = canvasHeight - watermarkPaddings.bottom - imgPaddings.bottom;
 	} else {
-		canvasHeight +=
-			watermarkHeight * canvasHeight +
-			watermarkPaddings.top +
-			watermarkPaddings.bottom;
+		// 上下水印布局
+		if (isPortrait) {
+			// 竖图特殊处理
+			canvasHeight +=
+				watermarkHeight * img.width +
+				watermarkPaddings.top +
+				watermarkPaddings.bottom;
+		} else {
+			canvasHeight +=
+				watermarkHeight * canvasHeight +
+				watermarkPaddings.top +
+				watermarkPaddings.bottom;
+		}
+
 		rect1.x = imgPaddings.left;
 		rect2.x = canvasWidth - imgPaddings.right;
 
@@ -560,7 +580,9 @@ export function caculateCanvasSize(config: Config, img: Img) {
 			rect2.y =
 				watermarkPaddings.top +
 				watermarkPaddings.bottom +
-				watermarkHeight * canvasHeight;
+				(isPortrait
+					? watermarkHeight * img.width
+					: watermarkHeight * canvasHeight);
 		} else {
 			rect1.y =
 				imgPaddings.top +
@@ -682,6 +704,31 @@ export const blendMode: BlendModeItem[] = [
  * @param font 字体，优先使用config.font
  * @returns
  */
+/**
+ * 创建文本样式配置对象
+ * @param config 文本配置项
+ * @returns 文本样式对象
+ */
+export function createTextStyle(config: {
+	color?: string;
+	size?: number;
+	font?: string;
+	bold?: boolean;
+	italic?: boolean;
+	align?: TextAlign;
+	verticalAlign?: TextVerticalAlign;
+}) {
+	return {
+		fill: config.color || "#000000",
+		fontSize: config.size || 24,
+		fontFamily: config.font || "sans-serif",
+		// fontWeight: config.bold ? "bold" : "normal",
+		fontStyle: config.italic ? "italic" : "normal",
+		textAlign: config.align || "left",
+		verticalAlign: config.verticalAlign || "middle",
+	};
+}
+
 export function setTextCtx(
 	ctx: CanvasRenderingContext2D,
 	config: Pick<LabelConfigItem, "size" | "color"> & {

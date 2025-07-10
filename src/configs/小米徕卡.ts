@@ -1,227 +1,332 @@
+import { Rect, Text, type Leafer, type IImagePaint } from "leafer-ui";
 import { defaultConfig } from "../assets/tools";
-import type { Config, DrawFun } from "../types";
-import { drawLogo, replaceZ, setTextCtx } from "../utils";
+import type { Config, Context, Img } from "../types";
+import { getImageSrc } from "../utils";
+import { draggable } from "element-plus/es/components/color-picker/src/utils/draggable.mjs";
 
-const doDraw: DrawFun = async (img, config, context) => {
-	const {
-		watermark,
-		divider: dividerConfig,
-		logo: logoConfig,
-		location: locationConfig,
-	} = config;
-	const {
-		model: modelConfig,
-		params: paramsConfig,
-		time: timeConfig,
-		lens: lensConfig,
-		paddings: watermarkPaddings,
-	} = watermark;
-	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
+// const doDraw: DrawFun = async (img, config, context) => {
+// 	const {
+// 		watermark,
+// 		divider: dividerConfig,
+// 		logo: logoConfig,
+// 		location: locationConfig,
+// 	} = config;
+// 	const {
+// 		model: modelConfig,
+// 		params: paramsConfig,
+// 		time: timeConfig,
+// 		lens: lensConfig,
+// 		paddings: watermarkPaddings,
+// 	} = watermark;
+// 	const { ctx, rect1, rect2, focalLength, exposureTime } = context;
 
-	const texts = [];
+// 	const texts = [];
 
-	// 绘制型号
-	if (modelConfig.show) {
-		ctx.save();
-		const { drawTextFunc } = setTextCtx(ctx, modelConfig);
-		let _y = rect1.y + (rect2.y - rect1.y) / 2;
-		if (lensConfig.show || (locationConfig?.show && timeConfig.show)) {
-			_y = rect1.y + (rect2.y - rect1.y) / 3;
-		}
+// 	// 绘制型号
+// 	if (modelConfig.show) {
+// 		ctx.save();
+// 		const { drawTextFunc } = setTextCtx(ctx, modelConfig);
+// 		let _y = rect1.y + (rect2.y - rect1.y) / 2;
+// 		if (lensConfig.show || (locationConfig?.show && timeConfig.show)) {
+// 			_y = rect1.y + (rect2.y - rect1.y) / 3;
+// 		}
 
-		let modelText = modelConfig.replaceZ
-			? replaceZ(img.modelText)
-			: img.modelText;
-		if (modelConfig?.letterUpperCase) {
-			modelText = modelText.toUpperCase();
-		}
+// 		let modelText = modelConfig.replaceZ
+// 			? replaceZ(img.modelText)
+// 			: img.modelText;
+// 		if (modelConfig?.letterUpperCase) {
+// 			modelText = modelText.toUpperCase();
+// 		}
 
-		const modelX = rect1.x + watermarkPaddings.left + (modelConfig.x || 0);
-		const modelY = _y + (modelConfig.y || 0);
-		drawTextFunc(modelText, modelX, modelY);
+// 		const modelX = rect1.x + watermarkPaddings.left + (modelConfig.x || 0);
+// 		const modelY = _y + (modelConfig.y || 0);
+// 		drawTextFunc(modelText, modelX, modelY);
 
-		texts.push({
-			_x: modelX,
-			_y: modelY,
-			...modelConfig,
-			text: modelText,
-		});
-		ctx.restore();
-	}
-	// 在水印范围内垂直居中
-	const _y = (rect2.y + rect1.y) / 2;
-	// 参数的宽度
-	let paramsWidth = 0;
+// 		texts.push({
+// 			_x: modelX,
+// 			_y: modelY,
+// 			...modelConfig,
+// 			text: modelText,
+// 		});
+// 		ctx.restore();
+// 	}
+// 	// 在水印范围内垂直居中
+// 	const _y = (rect2.y + rect1.y) / 2;
+// 	// 参数的宽度
+// 	let paramsWidth = 0;
 
-	// 绘制参数
-	if (paramsConfig.show) {
-		const { drawTextFunc } = setTextCtx(ctx, paramsConfig, "right");
+// 	// 绘制参数
+// 	if (paramsConfig.show) {
+// 		const { drawTextFunc } = setTextCtx(ctx, paramsConfig, "right");
 
-		let paramsText =
-			paramsConfig?.text ||
-			`${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  ISO${img.exif.ISO}`;
-		// 处理大写
-		if (paramsConfig.letterUpperCase) {
-			paramsText = paramsText.toUpperCase();
-		}
+// 		let paramsText =
+// 			paramsConfig?.text ||
+// 			`${focalLength}mm  f/${img.exif?.FNumber}  ${exposureTime}s  ISO${img.exif.ISO}`;
+// 		// 处理大写
+// 		if (paramsConfig.letterUpperCase) {
+// 			paramsText = paramsText.toUpperCase();
+// 		}
 
-		paramsWidth = ctx.measureText(paramsText).width;
+// 		paramsWidth = ctx.measureText(paramsText).width;
 
-		const modelX = rect2.x - watermarkPaddings.right + (paramsConfig?.x || 0);
-		let _y =
-			rect1.y +
-			(rect2.y - rect1.y) / (timeConfig.show || locationConfig?.show ? 3 : 2) +
-			(paramsConfig?.y || 0);
+// 		const modelX = rect2.x - watermarkPaddings.right + (paramsConfig?.x || 0);
+// 		let _y =
+// 			rect1.y +
+// 			(rect2.y - rect1.y) / (timeConfig.show || locationConfig?.show ? 3 : 2) +
+// 			(paramsConfig?.y || 0);
 
-		drawTextFunc(paramsText, modelX, _y);
-		texts.push({
-			_x: modelX,
-			_y,
-			...paramsConfig,
-			text: paramsText,
-		});
-	}
+// 		drawTextFunc(paramsText, modelX, _y);
+// 		texts.push({
+// 			_x: modelX,
+// 			_y,
+// 			...paramsConfig,
+// 			text: paramsText,
+// 		});
+// 	}
 
-	let lensWidth = 0;
-	// 绘制镜头
-	if (lensConfig.show) {
-		ctx.save();
-		const text = img.lensText;
-		const { drawTextFunc } = setTextCtx(ctx, lensConfig, "left", "top");
+// 	let lensWidth = 0;
+// 	// 绘制镜头
+// 	if (lensConfig.show) {
+// 		ctx.save();
+// 		const text = img.lensText;
+// 		const { drawTextFunc } = setTextCtx(ctx, lensConfig, "left", "top");
 
-		let _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
-		if (!modelConfig.show) {
-			_y = rect1.y + (rect2.y - rect1.y) / 2;
-			ctx.textBaseline = "middle";
-		}
-		lensWidth = ctx.measureText(text).width;
-		drawTextFunc(
-			text,
-			rect1.x + watermarkPaddings.left + (lensConfig.x || 0),
-			_y + (lensConfig.y || 0)
-		);
-		ctx.restore();
-		texts.push({
-			text: img.lensText,
-			_x: rect1.x + watermarkPaddings.left + (lensConfig.x || 0),
-			_y: _y + (lensConfig.y || 0),
-			...lensConfig,
-		});
-	}
+// 		let _y = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
+// 		if (!modelConfig.show) {
+// 			_y = rect1.y + (rect2.y - rect1.y) / 2;
+// 			ctx.textBaseline = "middle";
+// 		}
+// 		lensWidth = ctx.measureText(text).width;
+// 		drawTextFunc(
+// 			text,
+// 			rect1.x + watermarkPaddings.left + (lensConfig.x || 0),
+// 			_y + (lensConfig.y || 0)
+// 		);
+// 		ctx.restore();
+// 		texts.push({
+// 			text: img.lensText,
+// 			_x: rect1.x + watermarkPaddings.left + (lensConfig.x || 0),
+// 			_y: _y + (lensConfig.y || 0),
+// 			...lensConfig,
+// 		});
+// 	}
 
-	// 绘制时间
-	let timeWidth = 0;
-	if (timeConfig.show) {
-		ctx.save();
+// 	// 绘制时间
+// 	let timeWidth = 0;
+// 	if (timeConfig.show) {
+// 		ctx.save();
 
-		const wPadding = paramsConfig.show
-			? watermarkPaddings.left
-			: watermarkPaddings.right;
-		let _x = paramsConfig.show
-			? rect2.x - wPadding - paramsWidth
-			: rect2.x - wPadding;
-		const _y =
-			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
+// 		const wPadding = paramsConfig.show
+// 			? watermarkPaddings.left
+// 			: watermarkPaddings.right;
+// 		let _x = paramsConfig.show
+// 			? rect2.x - wPadding - paramsWidth
+// 			: rect2.x - wPadding;
+// 		const _y =
+// 			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
 
-		const { drawTextFunc } = setTextCtx(
-			ctx,
-			timeConfig,
-			paramsConfig.show ? "left" : "right",
-			paramsConfig.show ? "top" : "middle"
-		);
+// 		const { drawTextFunc } = setTextCtx(
+// 			ctx,
+// 			timeConfig,
+// 			paramsConfig.show ? "left" : "right",
+// 			paramsConfig.show ? "top" : "middle"
+// 		);
 
-		timeWidth = ctx.measureText(img.timeText).width;
+// 		timeWidth = ctx.measureText(img.timeText).width;
 
-		if (!locationConfig?.show) {
-			drawTextFunc(
-				img.timeText,
-				_x + (timeConfig.x || 0),
-				_y + (timeConfig.y || 0)
-			);
+// 		if (!locationConfig?.show) {
+// 			drawTextFunc(
+// 				img.timeText,
+// 				_x + (timeConfig.x || 0),
+// 				_y + (timeConfig.y || 0)
+// 			);
+// 		} else {
+// 			ctx.textAlign = "left";
+// 			ctx.textBaseline = "top";
+// 			let _x = rect1.x + watermarkPaddings.left;
+// 			if (lensConfig.show) {
+// 				const SPACE = 50;
+// 				_x += lensWidth + SPACE * dividerConfig.margin;
+// 			}
+// 			drawTextFunc(
+// 				img.timeText,
+// 				_x + (timeConfig.x || 0),
+// 				_y + (timeConfig.y || 0)
+// 			);
+// 		}
+// 		ctx.restore();
+// 		texts.push({
+// 			text: img.timeText,
+// 			_x: _x + (timeConfig.x || 0),
+// 			_y: _y + (timeConfig.y || 0),
+// 			...timeConfig,
+// 		});
+// 	}
+
+// 	const space = paramsConfig.size * dividerConfig.margin;
+
+// 	// 计算横坐标
+// 	const _x =
+// 		rect2.x -
+// 		watermarkPaddings.right -
+// 		Math.max(paramsWidth, timeWidth) -
+// 		space;
+// 	const logoX = _x - space - logoConfig.width;
+// 	// 计算纵坐标
+// 	const logoY =
+// 		_y -
+// 		logoConfig.height / 2 -
+// 		(logoConfig.verticalOffset - 1) * logoConfig.height;
+
+// 	// 绘制LOGO
+// 	if (logoConfig.show) {
+// 		drawLogo(logoConfig, ctx, logoX, logoY);
+// 	}
+
+// 	// 绘制分割线
+// 	const centerY = rect1.y + (rect2.y - rect1.y) / 2;
+// 	if (dividerConfig.show) {
+// 		ctx.strokeStyle = dividerConfig.color;
+// 		ctx.lineWidth = dividerConfig.width;
+
+// 		const _h =
+// 			Math.min(logoConfig.height, paramsConfig.size) * dividerConfig.scale;
+
+// 		ctx.beginPath();
+// 		ctx.moveTo(_x, centerY - _h / 2);
+// 		ctx.lineTo(_x, centerY + _h / 2);
+// 		ctx.stroke();
+// 	}
+
+// 	// 绘制位置
+// 	if (locationConfig?.show) {
+// 		ctx.save();
+// 		const { drawTextFunc } = setTextCtx(ctx, locationConfig, "left", "top");
+
+// 		const text = img.locationText;
+
+// 		const _x = paramsConfig.show
+// 			? rect2.x - watermarkPaddings.right - paramsWidth
+// 			: rect2.x - watermarkPaddings.right;
+// 		const _y =
+// 			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
+
+// 		drawTextFunc(text, _x, _y, locationConfig.x, locationConfig.y);
+// 		ctx.restore();
+// 		texts.push({
+// 			text: text,
+// 			_x,
+// 			_y,
+// 			...locationConfig,
+// 		});
+// 	}
+
+// 	const retConfig = { texts };
+// 	console.log("retConfig", retConfig);
+// 	return retConfig;
+// };
+
+const caculate = async (
+	leafer: Leafer,
+	config: Config,
+	img: Img,
+	context: Context
+) => {
+	if (!leafer) throw new Error("leafer is null");
+	const { logo, watermark } = config;
+	const { model, params, paddings: watermarkPaddings } = watermark;
+	const { rect1, rect2 } = context;
+	const centerY = (rect1.y + rect2.y) / 2; // 修正中心点计算
+
+	// 计算型号
+	const modelEl = leafer.findOne("#model");
+	if (model.enable && model.show) {
+		const modelConfig = {
+			text: img.modelText,
+			x: rect1.x + watermarkPaddings.left,
+			y: centerY,
+			fill: model.color,
+			textAlign: model.align || "left",
+			verticalAlign: model.verticalAlign || "middle",
+			fontFamily: model.font || config.font,
+			fontSize: model.size,
+			// fontWeight: model.bold ? "bold" : "normal",
+			fontStyle: model.italic ? "italic" : "normal",
+			draggable: true,
+		};
+
+		if (modelEl) {
+			modelEl.set(modelConfig);
 		} else {
-			ctx.textAlign = "left";
-			ctx.textBaseline = "top";
-			let _x = rect1.x + watermarkPaddings.left;
-			if (lensConfig.show) {
-				const SPACE = 50;
-				_x += lensWidth + SPACE * dividerConfig.margin;
-			}
-			drawTextFunc(
-				img.timeText,
-				_x + (timeConfig.x || 0),
-				_y + (timeConfig.y || 0)
-			);
+			const modelLabel = new Text({
+				...modelConfig,
+				id: "model",
+			});
+			leafer.add(modelLabel);
 		}
-		ctx.restore();
-		texts.push({
-			text: img.timeText,
-			_x: _x + (timeConfig.x || 0),
-			_y: _y + (timeConfig.y || 0),
-			...timeConfig,
-		});
+	} else if (modelEl) {
+		leafer.remove(modelEl);
 	}
 
-	const space = paramsConfig.size * dividerConfig.margin;
+	// 计算参数
+	const paramsEl = leafer.findOne("#params");
+	if (params.enable && params.show) {
+		const paramsConfig = {
+			text: img.paramsText,
+			x: rect2.x - watermarkPaddings.right,
+			y: centerY,
+			fill: params.color,
+			textAlign: params.align || "right",
+			verticalAlign: params.verticalAlign || "middle",
+			fontFamily: params.font || config.font,
+			fontSize: params.size,
+			fontStyle: params.italic ? "italic" : "normal",
+			draggable: true,
+		};
 
-	// 计算横坐标
-	const _x =
-		rect2.x -
-		watermarkPaddings.right -
-		Math.max(paramsWidth, timeWidth) -
-		space;
-	const logoX = _x - space - logoConfig.width;
-	// 计算纵坐标
-	const logoY =
-		_y -
-		logoConfig.height / 2 -
-		(logoConfig.verticalOffset - 1) * logoConfig.height;
-
-	// 绘制LOGO
-	if (logoConfig.show) {
-		drawLogo(logoConfig, ctx, logoX, logoY);
+		if (paramsEl) {
+			paramsEl.set(paramsConfig);
+		} else {
+			const paramsLabel = new Text({
+				...paramsConfig,
+				id: "params",
+			});
+			leafer.add(paramsLabel);
+		}
+	} else if (paramsEl) {
+		leafer.remove(paramsEl);
 	}
 
-	// 绘制分割线
-	const centerY = rect1.y + (rect2.y - rect1.y) / 2;
-	if (dividerConfig.show) {
-		ctx.strokeStyle = dividerConfig.color;
-		ctx.lineWidth = dividerConfig.width;
+	// 计算logo
+	let logoEl = leafer.findOne("#logo");
+	if (logo.enable && logo.show) {
+		const logoConfig = {
+			x: 0,
+			y: 0,
+			width: logo.width,
+			height: logo.height,
+			fill: {
+				type: "image" as const,
+				url: "/logos/canon-circle.png",
+				mode: "cover" as const,
+			} as IImagePaint,
+			draggable: true,
+		};
 
-		const _h =
-			Math.min(logoConfig.height, paramsConfig.size) * dividerConfig.scale;
-
-		ctx.beginPath();
-		ctx.moveTo(_x, centerY - _h / 2);
-		ctx.lineTo(_x, centerY + _h / 2);
-		ctx.stroke();
+		if (!logoEl) {
+			logoEl = new Rect({
+				...logoConfig,
+				id: "logo",
+			});
+			leafer.add(logoEl);
+		} else {
+			logoEl.set(logoConfig);
+		}
+	} else {
+		leafer.remove(logoEl);
 	}
 
-	// 绘制位置
-	if (locationConfig?.show) {
-		ctx.save();
-		const { drawTextFunc } = setTextCtx(ctx, locationConfig, "left", "top");
-
-		const text = img.locationText;
-
-		const _x = paramsConfig.show
-			? rect2.x - watermarkPaddings.right - paramsWidth
-			: rect2.x - watermarkPaddings.right;
-		const _y =
-			rect1.y + (2 * (rect2.y - rect1.y)) / (paramsConfig.show ? 3 : 4);
-
-		drawTextFunc(text, _x, _y, locationConfig.x, locationConfig.y);
-		ctx.restore();
-		texts.push({
-			text: text,
-			_x,
-			_y,
-			...locationConfig,
-		});
-	}
-
-	const retConfig = { texts };
-	console.log("retConfig", retConfig);
-	return retConfig;
+	return [modelEl, paramsEl, logoEl];
 };
 
 const config: Config = {
@@ -266,7 +371,7 @@ const config: Config = {
 		},
 		time: {
 			enable: true,
-			show: false,
+			show: true,
 			color: "#808080",
 			size: 60,
 			format: "YYYY.MM.DD  HH:mm:ss",
@@ -350,7 +455,8 @@ const config: Config = {
 		grayscale: 0,
 		invert: 0,
 	},
-	draw: doDraw,
+	caculate: caculate,
+	// draw: doDraw,
 };
 
 export default config;

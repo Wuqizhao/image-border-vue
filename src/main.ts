@@ -11,6 +11,7 @@ import "element-plus/dist/index.css";
 import { zhCn } from "element-plus/es/locales.mjs";
 
 import router from "./routers";
+import "./assets/proxyData"; // 重写 proxyData，全局只需引入一次
 
 const app = createApp(App);
 app.use(router);
