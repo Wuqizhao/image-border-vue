@@ -235,7 +235,7 @@ const caculate = async (
 	const { logo, watermark, divider } = config;
 	const { model, params, paddings: watermarkPaddings, time, lens } = watermark;
 	const { rect1, rect2 } = context;
-	const centerY = (rect1.y + rect2.y) / 2; // 修正中心点计算
+	const centerY = (rect1.y + rect2.y) / 2;
 
 	// 计算型号
 	const modelEl = leafer.findOne("#model");
