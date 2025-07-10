@@ -486,7 +486,7 @@ import { storeToRefs } from "pinia";
 import BorderConfig from "../components/BorderConfig.vue";
 import MarginConfig from "../components/MarginConfig.vue";
 
-import { Leafer, Rect, Platform, Text } from "leafer-ui";
+import { Leafer, Rect, Platform } from "leafer-ui";
 import "@leafer-in/export"; // 引入导出元素插件
 import "@leafer-in/find"; // 查找插件
 // import '@leafer-in/editor'; // 引入编辑器插件
@@ -704,6 +704,7 @@ function changeCurFile(file: File | null) {
 	if (!file) {
 		curFile.value = null;
 		activeName.value = "info";
+		leafer.value && leafer.value.clear();
 		return;
 	}
 	// 更新基本信息
@@ -891,6 +892,7 @@ const init = useDebounceFn((cfg) => {
 	if (!dom) throw new Error("找不到dom元素");
 
 	const { canvasWidth, canvasHeight, rect1, rect2 } = cfg;
+	console.log("cfg", cfg.rect1, cfg.rect2);
 	if (!curFile.value) return;
 
 	const { paddings: imgPaddings, watermark } = config.value;
@@ -900,11 +902,13 @@ const init = useDebounceFn((cfg) => {
 	if (leafer.value === null) {
 		leafer.value = new Leafer({
 			view: dom,
-			width: canvasWidth,
-			height: canvasHeight,
-			fill: "#FFF",
 		});
 	}
+	leafer.value.set({
+		width: canvasWidth,
+		height: canvasHeight,
+		fill: "#FFF",
+	});
 
 	Platform.image.crossOrigin = "anonymous";
 
@@ -934,17 +938,22 @@ const init = useDebounceFn((cfg) => {
 
 	// 绘制水印背景
 	let watermarkBg = leafer.value.findOne("#watermarkBg");
+	const rectConfig = {
+		x: rect1.x,
+		y: rect1.y - watermarkPaddings.top,
+		width: rect2.x - rect1.x,
+		height:
+			rect2.y - rect1.y + watermarkPaddings.top + watermarkPaddings.bottom,
+		fill: "#FFFFFF",
+	};
 	if (!watermarkBg) {
 		watermarkBg = new Rect({
+			...rectConfig,
 			id: "watermarkBg",
-			x: rect1.x,
-			y: rect1.y - watermarkPaddings.top,
-			width: rect2.x - rect1.x,
-			height:
-				rect2.y - rect1.y + watermarkPaddings.top + watermarkPaddings.bottom,
-			fill: "#FFF",
 		});
 		leafer.value.add(watermarkBg);
+	} else {
+		watermarkBg.set(rectConfig);
 	}
 
 	console.log("caculate start");
@@ -1093,11 +1102,10 @@ onMounted(() => {
 	border: 1px solid silver;
 	max-width: 100%;
 	max-height: 100%;
-
-	canvas {
-		max-width: 100%;
-		max-height: 100%;
-	}
+	width: fit-content !important;
+	height: fit-content !important;
+	box-shadow: 0px 0px 20px rgba(194, 194, 194, 0.934);
+	transition: all 0.5s ease-in-out;
 }
 .box {
 	display: flex;

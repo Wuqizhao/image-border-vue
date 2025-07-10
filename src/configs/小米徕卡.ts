@@ -1,8 +1,7 @@
-import { Rect, Text, type Leafer, type IImagePaint } from "leafer-ui";
+import { Rect, Text, type Leafer, type IImagePaint, Line } from "leafer-ui";
 import { defaultConfig } from "../assets/tools";
 import type { Config, Context, Img } from "../types";
 import { getImageSrc } from "../utils";
-import { draggable } from "element-plus/es/components/color-picker/src/utils/draggable.mjs";
 
 // const doDraw: DrawFun = async (img, config, context) => {
 // 	const {
@@ -233,18 +232,19 @@ const caculate = async (
 	context: Context
 ) => {
 	if (!leafer) throw new Error("leafer is null");
-	const { logo, watermark } = config;
-	const { model, params, paddings: watermarkPaddings } = watermark;
+	const { logo, watermark, divider } = config;
+	const { model, params, paddings: watermarkPaddings, time, lens } = watermark;
 	const { rect1, rect2 } = context;
 	const centerY = (rect1.y + rect2.y) / 2; // 修正中心点计算
 
 	// 计算型号
 	const modelEl = leafer.findOne("#model");
 	if (model.enable && model.show) {
+		const _y = lens.show ? rect1.y + (rect2.y - rect1.y) / 4 : centerY;
 		const modelConfig = {
 			text: img.modelText,
 			x: rect1.x + watermarkPaddings.left,
-			y: centerY,
+			y: _y,
 			fill: model.color,
 			textAlign: model.align || "left",
 			verticalAlign: model.verticalAlign || "middle",
@@ -271,10 +271,11 @@ const caculate = async (
 	// 计算参数
 	const paramsEl = leafer.findOne("#params");
 	if (params.enable && params.show) {
+		const _y = time.show ? rect1.y + (rect2.y - rect1.y) / 4 : centerY;
 		const paramsConfig = {
 			text: img.paramsText,
 			x: rect2.x - watermarkPaddings.right,
-			y: centerY,
+			y: _y,
 			fill: params.color,
 			textAlign: params.align || "right",
 			verticalAlign: params.verticalAlign || "middle",
@@ -301,13 +302,17 @@ const caculate = async (
 	let logoEl = leafer.findOne("#logo");
 	if (logo.enable && logo.show) {
 		const logoConfig = {
-			x: 0,
-			y: 0,
+			x:
+				rect2.x -
+				watermarkPaddings.right -
+				(paramsEl?.boxBounds?.width || 0) -
+				300,
+			y: centerY - logo.height / 2,
 			width: logo.width,
 			height: logo.height,
 			fill: {
 				type: "image" as const,
-				url: "/logos/canon-circle.png",
+				url: getImageSrc(logo.url || logo.name),
 				mode: "cover" as const,
 			} as IImagePaint,
 			draggable: true,
@@ -326,7 +331,102 @@ const caculate = async (
 		leafer.remove(logoEl);
 	}
 
-	return [modelEl, paramsEl, logoEl];
+	// 计算时间
+	let timeEl = leafer.findOne("#time");
+	if (time.enable && time.show) {
+		const _x =
+			rect2.x - watermarkPaddings.right - (paramsEl?.boxBounds.width || 0);
+		const _y = params.show ? rect1.y + (3 * (rect2.y - rect1.y)) / 4 : centerY;
+
+		const timeConfig = {
+			text: img.timeText,
+			x: _x,
+			y: _y,
+			fill: time.color,
+			textAlign: time.align || (paramsEl ? "left" : "right"),
+			verticalAlign: time.verticalAlign || "middle",
+			fontFamily: time.font || config.font,
+			fontSize: time.size,
+			fontStyle: time.italic ? "italic" : "normal",
+			draggable: true,
+		};
+
+		if (!timeEl) {
+			timeEl = new Text({
+				...timeConfig,
+				id: "time",
+			});
+			leafer.add(timeEl);
+		} else {
+			timeEl.set(timeConfig);
+		}
+	} else {
+		leafer.remove(timeEl);
+	}
+
+	// 计算镜头
+	let lensEl = leafer.findOne("#lens");
+	if (lens.enable && lens.show) {
+		const _y = params.show ? rect1.y + (3 * (rect2.y - rect1.y)) / 4 : centerY;
+		const lensConfig = {
+			text: img.lensText,
+			x: rect1.x + watermarkPaddings.left,
+			y: _y,
+			fill: lens.color,
+			textAlign: lens.align || "left",
+			verticalAlign: lens.verticalAlign || "middle",
+			fontFamily: lens.font || config.font,
+			fontSize: lens.size,
+			fontStyle: lens.italic ? "italic" : "normal",
+			draggable: true,
+		};
+
+		if (!lensEl) {
+			lensEl = new Text({
+				...lensConfig,
+				id: "lens",
+			});
+			leafer.add(lensEl);
+		} else {
+			lensEl.set(lensConfig);
+		}
+	} else {
+		leafer.remove(lensEl);
+	}
+
+	// 计算分割线
+	let dividerEl = leafer.findOne("#divider");
+	if (divider.enable && divider.show) {
+		const _x =
+			rect2.x -
+			watermarkPaddings.right -
+			(paramsEl?.width ?? 0) -
+			divider.width -
+			50;
+		const dividerConfig = {
+			rotation: 90,
+			x: _x,
+			y: centerY - logo.height / 2,
+			width: logo.height,
+			strokeWidth: divider.width,
+			stroke: divider.color,
+			fill: divider.color,
+		};
+
+		if (!dividerEl) {
+			dividerEl = new Line({
+				...dividerConfig,
+				id: "divider",
+			});
+			leafer.add(dividerEl);
+		} else {
+			dividerEl.set(dividerConfig);
+		}
+	} else {
+		leafer.remove(dividerEl);
+	}
+
+	return [modelEl, paramsEl, logoEl, timeEl, lensEl];
 };
 
 const config: Config = {
@@ -371,7 +471,7 @@ const config: Config = {
 		},
 		time: {
 			enable: true,
-			show: true,
+			show: false,
 			color: "#808080",
 			size: 60,
 			format: "YYYY.MM.DD  HH:mm:ss",
@@ -380,7 +480,7 @@ const config: Config = {
 		},
 		lens: {
 			enable: true,
-			show: false,
+			show: true,
 			color: "#808080",
 			size: 60,
 			italic: false,
