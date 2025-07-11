@@ -523,14 +523,14 @@ export function caculateCanvasSize(config: Config, img: Img) {
 	let canvasHeight = img.height + imgPaddings.top + imgPaddings.bottom;
 
 	// 如果是竖图，调整水印区域计算方式
-	if (isPortrait) {
-		canvasHeight =
-			img.height * (1 + watermarkHeight) +
-			imgPaddings.top +
-			imgPaddings.bottom +
-			watermarkPaddings.top +
-			watermarkPaddings.bottom;
-	}
+	// if (isPortrait) {
+	// 	canvasHeight =
+	// 		img.height * (1 + watermarkHeight) +
+	// 		imgPaddings.top +
+	// 		imgPaddings.bottom +
+	// 		watermarkPaddings.top +
+	// 		watermarkPaddings.bottom;
+	// }
 
 	if (position === "left" || position === "right") {
 		// 横版水印布局
@@ -826,4 +826,8 @@ export function setTextCtx(
 
 function randomColor() {
 	return `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
+}
+
+export function formatFont(font: string) {
+	return font.replace(/\.(?:ttf|otf|woff|woff2|eot)/i, "");
 }

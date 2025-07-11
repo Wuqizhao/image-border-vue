@@ -1,7 +1,14 @@
-import { Rect, Text, type Leafer, type IImagePaint, Line } from "leafer-ui";
+import {
+	Rect,
+	Text,
+	type Leafer,
+	type IImagePaint,
+	Line,
+	type IText,
+} from "leafer-ui";
 import { defaultConfig } from "../assets/tools";
 import type { Config, Context, Img } from "../types";
-import { getImageSrc } from "../utils";
+import { formatFont, getImageSrc } from "../utils";
 
 // const doDraw: DrawFun = async (img, config, context) => {
 // 	const {
@@ -232,28 +239,38 @@ const caculate = async (
 	context: Context
 ) => {
 	if (!leafer) throw new Error("leafer is null");
-	const { logo, watermark, divider } = config;
+	const { logo, watermark, divider, location } = config;
 	const { model, params, paddings: watermarkPaddings, time, lens } = watermark;
 	const { rect1, rect2 } = context;
 	const centerY = (rect1.y + rect2.y) / 2;
+	const font = formatFont(config.font);
+	const SPACE = 100;
 
 	// 计算型号
 	const modelEl = leafer.findOne("#model");
 	if (model.enable && model.show) {
-		const _y = lens.show ? rect1.y + (rect2.y - rect1.y) / 4 : centerY;
-		const modelConfig = {
+		const _y = lens.show ? rect1.y + (rect2.y - rect1.y) / 3 : centerY;
+		const modelConfig: Partial<IText> = {
 			text: img.modelText,
 			x: rect1.x + watermarkPaddings.left,
 			y: _y,
 			fill: model.color,
 			textAlign: model.align || "left",
 			verticalAlign: model.verticalAlign || "middle",
-			fontFamily: model.font || config.font,
+			fontFamily: formatFont(model.font || font),
 			fontSize: model.size,
-			// fontWeight: model.bold ? "bold" : "normal",
-			fontStyle: model.italic ? "italic" : "normal",
-			draggable: true,
+			draggable: model.draggable || false,
+			italic: model.italic,
+			fontWeight: model.bold ? "bold" : "normal",
+			textCase: model.letterUpperCase ? "upper" : "none",
 		};
+		if (model.showRect) {
+			modelConfig.boxStyle = {
+				fill: "#32cd79",
+				stroke: "red",
+				cornerRadius: 6,
+			};
+		}
 
 		if (modelEl) {
 			modelEl.set(modelConfig);
@@ -271,7 +288,8 @@ const caculate = async (
 	// 计算参数
 	const paramsEl = leafer.findOne("#params");
 	if (params.enable && params.show) {
-		const _y = time.show ? rect1.y + (rect2.y - rect1.y) / 4 : centerY;
+		const _y =
+			time.show || location?.show ? rect1.y + (rect2.y - rect1.y) / 3 : centerY;
 		const paramsConfig = {
 			text: img.paramsText,
 			x: rect2.x - watermarkPaddings.right,
@@ -279,7 +297,7 @@ const caculate = async (
 			fill: params.color,
 			textAlign: params.align || "right",
 			verticalAlign: params.verticalAlign || "middle",
-			fontFamily: params.font || config.font,
+			fontFamily: formatFont(params.font || font),
 			fontSize: params.size,
 			fontStyle: params.italic ? "italic" : "normal",
 			draggable: true,
@@ -294,22 +312,28 @@ const caculate = async (
 			});
 			leafer.add(paramsLabel);
 		}
-	} else if (paramsEl) {
+	} else {
 		leafer.remove(paramsEl);
 	}
 
 	// 计算logo
 	let logoEl = leafer.findOne("#logo");
+
+	console.log("参数宽度", paramsEl?.getBounds("content", "inner"));
 	if (logo.enable && logo.show) {
+		const radius = logo.circle ? logo.width / 2 : 0;
 		const logoConfig = {
 			x:
 				rect2.x -
 				watermarkPaddings.right -
 				(paramsEl?.boxBounds?.width || 0) -
-				300,
+				logo.width -
+				2 * SPACE * divider.margin -
+				divider.width,
 			y: centerY - logo.height / 2,
 			width: logo.width,
 			height: logo.height,
+			cornerRadius: [radius, radius, radius, radius],
 			fill: {
 				type: "image" as const,
 				url: getImageSrc(logo.url || logo.name),
@@ -345,7 +369,7 @@ const caculate = async (
 			fill: time.color,
 			textAlign: time.align || (paramsEl ? "left" : "right"),
 			verticalAlign: time.verticalAlign || "middle",
-			fontFamily: time.font || config.font,
+			fontFamily: formatFont(time.font || font),
 			fontSize: time.size,
 			fontStyle: time.italic ? "italic" : "normal",
 			draggable: true,
@@ -364,6 +388,38 @@ const caculate = async (
 		leafer.remove(timeEl);
 	}
 
+	// 计算地理位置
+	let locationEl = leafer.findOne("#location");
+	if (location && location.enable) {
+		const _x = time.show
+			? rect2.x - watermarkPaddings.right
+			: rect2.x - watermarkPaddings.right - (paramsEl?.width || 0);
+		const _y = params.show ? rect1.y + (3 * (rect2.y - rect1.y)) / 4 : centerY;
+		const locationConfig = {
+			text: img.locationText,
+			x: _x,
+			y: _y,
+			fill: location.color,
+			textAlign: location.align || (time.show ? "right" : "left"),
+			verticalAlign: location.verticalAlign || "middle",
+			fontFamily: formatFont(location.font || font),
+			visible: location.show,
+			fontSize: location.size,
+		};
+
+		if (locationEl) {
+			locationEl.set(locationConfig);
+		} else {
+			locationEl = new Text({
+				...locationConfig,
+				id: "location",
+			});
+			leafer.add(locationEl);
+		}
+	} else {
+		leafer.remove(locationEl);
+	}
+
 	// 计算镜头
 	let lensEl = leafer.findOne("#lens");
 	if (lens.enable && lens.show) {
@@ -375,7 +431,7 @@ const caculate = async (
 			fill: lens.color,
 			textAlign: lens.align || "left",
 			verticalAlign: lens.verticalAlign || "middle",
-			fontFamily: lens.font || config.font,
+			fontFamily: formatFont(lens.font || font),
 			fontSize: lens.size,
 			fontStyle: lens.italic ? "italic" : "normal",
 			draggable: true,
@@ -402,16 +458,17 @@ const caculate = async (
 			watermarkPaddings.right -
 			(paramsEl?.width ?? 0) -
 			divider.width -
-			50;
+			SPACE * divider.margin;
 		const dividerConfig = {
 			rotation: 90,
+			width: logo.height * divider.scale,
 			x: _x,
-			y: centerY - logo.height / 2,
-			width: logo.height,
+			y: centerY - logo.width / 2,
 			strokeWidth: divider.width,
 			stroke: divider.color,
 			fill: divider.color,
 		};
+		dividerConfig.y = centerY - dividerConfig.width / 2;
 
 		if (!dividerEl) {
 			dividerEl = new Line({
@@ -480,7 +537,7 @@ const config: Config = {
 		},
 		lens: {
 			enable: true,
-			show: true,
+			show: false,
 			color: "#808080",
 			size: 60,
 			italic: false,
@@ -527,7 +584,7 @@ const config: Config = {
 		show: true,
 		color: "rgb(208, 208, 208)",
 		width: 10,
-		scale: 2,
+		scale: 1,
 		margin: 1,
 	},
 	shadow: {

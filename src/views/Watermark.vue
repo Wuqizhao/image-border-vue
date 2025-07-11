@@ -427,6 +427,7 @@ import {
 	isMobile,
 	caculateCanvasSize,
 	getLocationText,
+	replaceZ,
 } from "../utils";
 import { ElMessage, ElNotification } from "element-plus";
 import {
@@ -833,6 +834,7 @@ const handleDraw = useDebounceFn(() => {
 
 			img.exif = exif;
 			img.modelText = model.text ?? img.exif?.Model ?? "--";
+			model.replaceZ && (img.modelText = replaceZ(img.modelText));
 			// 曝光时间
 			const exposureTime = convertExposureTime(exif?.ExposureTime);
 			// 焦距
@@ -896,10 +898,9 @@ const init = useDebounceFn((cfg) => {
 	if (!dom) throw new Error("找不到dom元素");
 
 	const { canvasWidth, canvasHeight, rect1, rect2 } = cfg;
-	console.log("cfg", cfg.rect1, cfg.rect2);
 	if (!curFile.value) return;
 
-	const { paddings: imgPaddings, watermark } = config.value;
+	const { paddings: imgPaddings, watermark, radius } = config.value;
 	const { paddings: watermarkPaddings } = watermark;
 
 	// 初始化Leafer
@@ -911,11 +912,19 @@ const init = useDebounceFn((cfg) => {
 	leafer.value.set({
 		width: canvasWidth,
 		height: canvasHeight,
-		fill: "#FFF",
+		fill: watermark.bgColor,
 	});
 
 	Platform.image.crossOrigin = "anonymous";
 
+	let imgRadius = [0, 0, 0, 0];
+	if (radius.enable && radius.show) {
+		if (radius.uniform) {
+			imgRadius = [radius.size, radius.size, radius.size, radius.size];
+		} else {
+			imgRadius = [radius.lt, radius.rt, radius.rb, radius.lb];
+		}
+	}
 	let bg = leafer.value.findOne("#bg");
 	if (!bg) {
 		bg = new Rect({
@@ -924,6 +933,7 @@ const init = useDebounceFn((cfg) => {
 			y: imgPaddings.top,
 			width: img?.width,
 			height: img?.height,
+			cornerRadius: imgRadius,
 			fill: {
 				type: "image",
 				url: getImageSrc(curFile.value),
@@ -936,6 +946,7 @@ const init = useDebounceFn((cfg) => {
 			y: imgPaddings.top,
 			width: img?.width,
 			height: img?.height,
+			cornerRadius: imgRadius,
 			fill: { type: "image", url: getImageSrc(curFile.value) },
 		});
 	}
@@ -948,7 +959,7 @@ const init = useDebounceFn((cfg) => {
 		width: rect2.x - rect1.x,
 		height:
 			rect2.y - rect1.y + watermarkPaddings.top + watermarkPaddings.bottom,
-		fill: "#FFFFFF",
+		fill: watermark.bg,
 	};
 	if (!watermarkBg) {
 		watermarkBg = new Rect({
@@ -963,6 +974,26 @@ const init = useDebounceFn((cfg) => {
 	console.log("caculate start");
 	config.value?.caculate(leafer.value, config.value, img, cfg);
 	console.log("caculate end");
+
+	// 绘制水印范围
+	const watermarkRangeConfig = {
+		x: rect1.x,
+		y: rect1.y,
+		width: rect2.x - rect1.x,
+		height: rect2.y - rect1.y,
+		fill: "#FF000040",
+		visible: auxiliaryLines.watermarkRange,
+	};
+	let watermarkRange = leafer.value.findOne("#watermarkRange");
+	if (!watermarkRange) {
+		watermarkRange = new Rect({
+			...watermarkRangeConfig,
+			id: "watermarkRange",
+		});
+		leafer.value.add(watermarkRange);
+	} else {
+		watermarkRange.set(watermarkRangeConfig);
+	}
 }, 20);
 
 function importConfig(val: number): void {
