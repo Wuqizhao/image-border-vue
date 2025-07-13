@@ -1,6 +1,14 @@
 import type { Exifr, Tags } from "exifr";
+import type {
+	IColor,
+	ILine,
+	IRect,
+	IText,
+	ITextAlign,
+	ITextDecoration,
+} from "leafer-ui";
 
-declare interface Model extends LabelConfigItem {
+declare interface Model extends Partial<IText> {
 	/**
 	 * 是否支持显示型号
 	 */
@@ -9,28 +17,8 @@ declare interface Model extends LabelConfigItem {
 	 * 型号文字是否替换Z为ℤ
 	 */
 	replaceZ: boolean;
-	/**
-	 * 字体名称
-	 */
-	font?: string;
-	/**
-	 * 是否加粗
-	 */
-	bold?: boolean;
-	/**
-	 * 是否斜体
-	 */
-	italic?: boolean;
-	/**
-	 * 文本对齐方式
-	 */
-	align?: TextAlign;
-	/**
-	 * 垂直对齐方式
-	 */
-	verticalAlign?: TextVerticalAlign;
 }
-declare interface Params extends LabelConfigItem {
+declare interface Params extends Partial<IText> {
 	/**
 	 * 是否支持
 	 */
@@ -38,7 +26,7 @@ declare interface Params extends LabelConfigItem {
 	/**
 	 * 是否使用等效焦距
 	 */
-	useEquivalentFocalLength: boolean;
+	useEquivalentFocalLength?: boolean;
 	/**
 	 * 样式索引
 	 */
@@ -48,7 +36,7 @@ declare interface Params extends LabelConfigItem {
 	 */
 	styles?: Array<string>;
 }
-declare interface Time extends LabelConfigItem {
+declare interface Time extends Partial<IText> {
 	/**
 	 * 是否支持时间
 	 */
@@ -58,7 +46,7 @@ declare interface Time extends LabelConfigItem {
 	 */
 	format: string;
 }
-declare interface Lens extends LabelConfigItem {
+declare interface Lens extends Partial<IText> {
 	/**
 	 * 是否支持镜头信息
 	 */
@@ -103,6 +91,8 @@ declare interface Blur {
 		colors: string[];
 	};
 }
+
+export type TextAlign = "left" | "center" | "right";
 export declare interface Logo {
 	/**
 	 * 是否支持logo
@@ -249,7 +239,7 @@ declare interface Margin {
 	left: number;
 }
 
-export declare type TextAlign = "left" | "center" | "right";
+// export declare type TextAlign = "left" | "center" | "right";
 export declare type TextVerticalAlign = "top" | "middle" | "bottom";
 
 declare interface BaseLabelConfig {
@@ -264,7 +254,7 @@ export declare interface LabelConfigItem extends BaseLabelConfig {
 	name?: string;
 	x?: number;
 	y?: number;
-	align?: TextAlign;
+	align?: ITextAlign;
 	verticalAlign?: TextVerticalAlign;
 	font?: string;
 	stroke?: boolean;
@@ -278,6 +268,12 @@ export declare interface LabelConfigItem extends BaseLabelConfig {
 	 * 显示范围
 	 */
 	showRect?: boolean;
+	// 文字背景
+	bg?: string;
+	// 背景圆角
+	corner?: number;
+	bgStroke?: string;
+	textDecoration?: ITextDecoration;
 }
 export declare interface ImagesConfigItem {
 	title: string;
@@ -322,77 +318,123 @@ export declare type BlendModeItem = {
 	desc: string;
 };
 
+// declare interface BaseConfig {
+// 	/**
+// 	 * 水印名称，和文件名一致
+// 	 */
+// 	readonly name: string;
+// 	/**
+// 	 * 全局字体，移动端不一定支持某些字体
+// 	 */
+// 	font: string;
+// 	/**
+// 	 * 图片外边距，会影响整个图片的高度
+// 	 */
+// 	paddings: {
+// 		/**
+// 		 * 图片上边距
+// 		 */
+// 		top: number;
+// 		/**
+// 		 * 图片右边距
+// 		 */
+// 		right: number;
+// 		/**
+// 		 * 图片下边距
+// 		 */
+// 		left: number;
+// 		/**
+// 		 * 图片下边距
+// 		 */
+// 		bottom: number;
+// 	};
+// 	watermark: {
+// 		/**
+// 		 * 水印所在的位置,用于调整水印高（宽）度
+// 		 */
+// 		position?: "bottom" | "top" | "left" | "right" | "inner";
+// 		/**
+// 		 * 水印的基础高度，水印在上下对应高度的倍数，水印在左右对应宽度的倍数
+// 		 */
+// 		height: number;
+// 		model: Model;
+// 		params: Params;
+// 		time: Time;
+// 		lens: Lens;
+// 		marign: {
+// 			top: number;
+// 			right: number;
+// 			bottom: number;
+// 			left: number;
+// 		};
+// 		/**
+// 		 * 整体背景颜色（包含水印绘制部分和图片的边距空位的颜色）
+// 		 */
+// 		bgColor: string;
+// 		/**
+// 		 * 水印范围的颜色（仅仅在水印范围内生效）
+// 		 */
+// 		bg?: string;
+// 		offsetX?: number;
+// 		offsetY?: number;
+// 	};
+// 	radius: Radius;
+// 	blur: Blur;
+// 	logo: Logo;
+// 	divider: Divider;
+// 	shadow: Shadow;
+// 	location?: Location;
+// 	filter: Filter;
+// 	border?: Border;
+// 	margin?: Margin;
+// 	labels?: Array<IText>;
+// 	images?: Array<ImagesConfigItem>;
+// }
+
 declare interface BaseConfig {
-	/**
-	 * 水印名称，和文件名一致
-	 */
-	readonly name: string;
-	/**
-	 * 全局字体，移动端不一定支持某些字体
-	 */
-	font: string;
-	/**
-	 * 图片外边距，会影响整个图片的高度
-	 */
-	paddings: {
-		/**
-		 * 图片上边距
-		 */
-		top: number;
-		/**
-		 * 图片右边距
-		 */
-		right: number;
-		/**
-		 * 图片下边距
-		 */
-		left: number;
-		/**
-		 * 图片下边距
-		 */
-		bottom: number;
-	};
-	watermark: {
-		/**
-		 * 水印所在的位置,用于调整水印高（宽）度
-		 */
-		position?: "bottom" | "top" | "left" | "right" | "inner";
-		/**
-		 * 水印的基础高度，水印在上下对应高度的倍数，水印在左右对应宽度的倍数
-		 */
-		height: number;
-		model: Model;
-		params: Params;
-		time: Time;
-		lens: Lens;
+	fill?: string;
+	global: {
 		paddings: {
 			top: number;
 			right: number;
 			bottom: number;
 			left: number;
 		};
-		/**
-		 * 整体背景颜色（包含水印绘制部分和图片的边距空位的颜色）
-		 */
-		bgColor: string;
-		/**
-		 * 水印范围的颜色（仅仅在水印范围内生效）
-		 */
-		bg?: string;
-		offsetX?: number;
-		offsetY?: number;
 	};
-	radius: Radius;
-	blur: Blur;
-	logo: Logo;
-	divider: Divider;
-	shadow: Shadow;
-	location?: Location;
-	filter: Filter;
-	border?: Border;
-	margin?: Margin;
-	labels?: Array<LabelConfigItem>;
-	images?: Array<ImagesConfigItem>;
+	img: {
+		margin: {
+			top: number;
+			bottom: number;
+			left: number;
+			right: number;
+		};
+		cornerRadius: [number, number, number, number];
+		shadow?: {
+			x: number;
+			y: number;
+			blur: number;
+			color: string;
+		}
+	};
+	watermark: {
+		height: number;
+		paddings: {
+			top: number;
+			bottom: number;
+			left: number;
+			right: number;
+		};
+		model: Model;
+		params: Params;
+		time: Time;
+		lens: Lens;
+		// params: IText;
+		// time: IText;
+		// lens: IText;
+		// location: IText;
+		// divider: ILine;
+		// logo: IRect;
+	};
 }
 
 export declare type AfterDrawFun = (ctx: CanvasRenderingContext2D) => void;
@@ -400,19 +442,38 @@ export declare interface Config extends BaseConfig {
 	/**
 	 * 绘制函数，从配置到最终图片的具体实现。
 	 */
-	draw: DrawFun;
+	// draw?: DrawFun;
 	/**
 	 * 调用draw函数之前调用的函数，执行一些操作
-	 * @param canvas 画布元素
 	 */
-	beforeDraw?: (canvas: HTMLCanvasElement) => void;
+	// beforeDraw?: (canvas: HTMLCanvasElement) => void;
 	/**
 	 * 调用draw函数之后执行的操作
 	 */
-	afterDraw?: AfterDrawFun;
-	caculate: Function;
+	// afterDraw?: AfterDrawFun;
+	caculate: CaculateFun;
 }
 
+export declare type CaculateFun = (x: number, y: number) => DrawConfig;
+export declare type DrawConfig = {
+	rect1: {
+		x: number;
+		y: number;
+	};
+	rect2: {
+		x: number;
+		y: number;
+	};
+	width: number;
+	height: number;
+	imgX: number;
+	imgY: number;
+	modelText?: string;
+	paramsText?: string;
+	timeText?: string;
+	lensText?: string;
+	locationText?: string;
+};
 export declare type DrawFun = (
 	img: Img,
 	config: Config,

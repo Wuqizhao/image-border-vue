@@ -6,13 +6,10 @@ import type {
 	Config,
 	ImagesConfigItem,
 	Img,
-	LabelConfigItem,
 	Logo,
 	Point,
-	TextAlign,
-	TextVerticalAlign,
 } from "../types";
-import { cameraBrands, defaultLabelConfig } from "../assets/tools";
+import { cameraBrands } from "../assets/tools";
 
 /**
  * 将曝光时间转换为分数字符串格式
@@ -330,68 +327,68 @@ export function isMobile() {
 	return isMobile;
 }
 
-export function drawCustomLabelsAndImages(
-	ctx: CanvasRenderingContext2D,
-	labels: LabelConfigItem[] | undefined,
-	images: ImagesConfigItem[] | undefined
-) {
-	// 渲染自定义文本
-	if (labels) {
-		for (let label of labels) {
-			label = Object.assign(
-				defaultLabelConfig,
-				label
-			) as Required<LabelConfigItem>; // 合并默认配置
-			if (!label.show) continue;
+// export function drawCustomLabelsAndImages(
+// 	ctx: CanvasRenderingContext2D,
+// 	labels: LabelConfigItem[] | undefined,
+// 	images: ImagesConfigItem[] | undefined
+// ) {
+// 	// 渲染自定义文本
+// 	if (labels) {
+// 		for (let label of labels) {
+// 			label = Object.assign(
+// 				defaultLabelConfig,
+// 				label
+// 			) as Required<LabelConfigItem>; // 合并默认配置
+// 			if (!label.show) continue;
 
-			ctx.save();
-			const font = label?.font?.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
-			setTextCtx(ctx, label, label.align, label.verticalAlign, font);
+// 			ctx.save();
+// 			const font = label?.font?.replace(/\.ttf|\.TTF|\.otf|\.OTF/, "");
+// 			setTextCtx(ctx, label, label.align, label.verticalAlign, font);
 
-			// 描边效果
-			if (label.stroke) {
-				ctx.lineWidth = label.strokeWidth!;
-				ctx.strokeStyle = label.color;
-				ctx.strokeText(label.text!, label.x!, label.y!);
-			} else {
-				ctx.fillStyle = label.color;
-				ctx.fillText(label.text!, label.x!, label.y!);
-			}
+// 			// 描边效果
+// 			if (label.stroke) {
+// 				ctx.lineWidth = label.strokeWidth!;
+// 				ctx.strokeStyle = label.color;
+// 				ctx.strokeText(label.text!, label.x!, label.y!);
+// 			} else {
+// 				ctx.fillStyle = label.color;
+// 				ctx.fillText(label.text!, label.x!, label.y!);
+// 			}
 
-			if (label?.draggable) {
-				// 绘制边框
-				ctx.lineWidth = 5;
-				ctx.strokeStyle = "red";
-				ctx.strokeRect(
-					label.x!,
-					label.y!,
-					ctx.measureText(label.text!).width,
-					label.size
-				);
-			}
+// 			if (label?.draggable) {
+// 				// 绘制边框
+// 				ctx.lineWidth = 5;
+// 				ctx.strokeStyle = "red";
+// 				ctx.strokeRect(
+// 					label.x!,
+// 					label.y!,
+// 					ctx.measureText(label.text!).width,
+// 					label.size
+// 				);
+// 			}
 
-			ctx.restore();
-		}
-	}
+// 			ctx.restore();
+// 		}
+// 	}
 
-	// 绘制自定义图片
-	if (images) {
-		for (const image of images) {
-			if (!image.show) continue;
-			ctx.save();
-			drawLogo(
-				image,
-				ctx,
-				image.horizontalOffset,
-				image.verticalOffset,
-				image.alpha,
-				image.rotate,
-				image.blendMode
-			);
-			ctx.restore();
-		}
-	}
-}
+// 	// 绘制自定义图片
+// 	if (images) {
+// 		for (const image of images) {
+// 			if (!image.show) continue;
+// 			ctx.save();
+// 			drawLogo(
+// 				image,
+// 				ctx,
+// 				image.horizontalOffset,
+// 				image.verticalOffset,
+// 				image.alpha,
+// 				image.rotate,
+// 				image.blendMode
+// 			);
+// 			ctx.restore();
+// 		}
+// 	}
+// }
 
 export function replaceZ(text: string) {
 	return text.replace(/z|Z/g, "ℤ");
@@ -704,130 +701,150 @@ export const blendMode: BlendModeItem[] = [
  * @param font 字体，优先使用config.font
  * @returns
  */
-/**
- * 创建文本样式配置对象
- * @param config 文本配置项
- * @returns 文本样式对象
- */
-export function createTextStyle(config: {
-	color?: string;
-	size?: number;
-	font?: string;
-	bold?: boolean;
-	italic?: boolean;
-	align?: TextAlign;
-	verticalAlign?: TextVerticalAlign;
-}) {
-	return {
-		fill: config.color || "#000000",
-		fontSize: config.size || 24,
-		fontFamily: config.font || "sans-serif",
-		// fontWeight: config.bold ? "bold" : "normal",
-		fontStyle: config.italic ? "italic" : "normal",
-		textAlign: config.align || "left",
-		verticalAlign: config.verticalAlign || "middle",
-	};
-}
+// export function setTextCtx(
+// 	ctx: CanvasRenderingContext2D,
+// 	config: Pick<LabelConfigItem, "size" | "color"> & {
+// 		font?: string;
+// 		bold?: boolean;
+// 		italic?: boolean;
+// 		stroke?: boolean;
+// 		lineWidth?: number;
+// 		align?: TextAlign;
+// 		verticalAlign?: TextVerticalAlign;
+// 		showRect?: boolean;
+// 	},
+// 	align: TextAlign = "left",
+// 	verticalAlign: TextVerticalAlign = "middle",
+// 	font: string = "sans-serif"
+// ): { ctx: CanvasRenderingContext2D; drawTextFunc: Function } {
+// 	ctx.textAlign = config?.align || align;
+// 	ctx.textBaseline = config?.verticalAlign || verticalAlign;
+// 	ctx.fillStyle = config.color;
+// 	// 清理字体扩展名
+// 	const _font = (config.font || font).replace(
+// 		/\.(?:ttf|otf|woff|woff2|eot)/i,
+// 		""
+// 	);
+// 	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
+// 		config.size
+// 	}px ${_font}`;
 
-export function setTextCtx(
-	ctx: CanvasRenderingContext2D,
-	config: Pick<LabelConfigItem, "size" | "color"> & {
-		font?: string;
-		bold?: boolean;
-		italic?: boolean;
-		stroke?: boolean;
-		lineWidth?: number;
-		align?: TextAlign;
-		verticalAlign?: TextVerticalAlign;
-		showRect?: boolean;
-	},
-	align: TextAlign = "left",
-	verticalAlign: TextVerticalAlign = "middle",
-	font: string = "sans-serif"
-): { ctx: CanvasRenderingContext2D; drawTextFunc: Function } {
-	ctx.textAlign = config?.align || align;
-	ctx.textBaseline = config?.verticalAlign || verticalAlign;
-	ctx.fillStyle = config.color;
-	// 清理字体扩展名
-	const _font = (config.font || font).replace(
-		/\.(?:ttf|otf|woff|woff2|eot)/i,
-		""
-	);
-	ctx.font = `${config.bold ? "bold" : ""} ${config.italic ? "italic" : ""} ${
-		config.size
-	}px ${_font}`;
+// 	const drawTextFunc = (
+// 		text: string,
+// 		x: number,
+// 		y: number,
+// 		offsetX: number = 0,
+// 		offsetY: number = 0
+// 	) => {
+// 		const _x = x + offsetX;
+// 		const _y = y + offsetY;
 
-	const drawTextFunc = (
-		text: string,
-		x: number,
-		y: number,
-		offsetX: number = 0,
-		offsetY: number = 0
-	) => {
-		const _x = x + offsetX;
-		const _y = y + offsetY;
+// 		if (config.stroke) {
+// 			ctx.lineWidth = config.lineWidth || 10;
+// 			ctx.strokeStyle = config.color;
+// 			ctx.strokeText(text, _x, _y);
+// 		} else {
+// 			ctx.fillText(text, _x, _y);
+// 		}
 
-		if (config.stroke) {
-			ctx.lineWidth = config.lineWidth || 10;
-			ctx.strokeStyle = config.color;
-			ctx.strokeText(text, _x, _y);
-		} else {
-			ctx.fillText(text, _x, _y);
-		}
+// 		if (config?.showRect) {
+// 			const _config = deepClone(config);
+// 			const _color = randomColor();
+// 			_config.color = _color;
+// 			const _size = 10 * Math.random() + 1;
+// 			_config.size = _size;
+// 			// 设置虚线
+// 			// ctx.setLineDash([5, 20]);
+// 			// 绘制十字基准点位置
+// 			drawLine(ctx, _x, 0, _x, ctx.canvas.height, _config);
+// 			drawLine(ctx, 0, _y, ctx.canvas.width, _y, _config);
+// 			// 绘制方框，考虑对齐方式
+// 			const rect = {
+// 				x: _x,
+// 				y: _y,
+// 			};
+// 			const textWidth = ctx.measureText(text).width;
+// 			switch (config?.align) {
+// 				case "left":
+// 					rect.x = _x;
+// 					break;
+// 				case "center":
+// 					rect.x = _x - textWidth / 2;
+// 					break;
+// 				case "right":
+// 					rect.x = _x - textWidth;
+// 					break;
+// 			}
+// 			const textHeight = config.size;
+// 			switch (config?.verticalAlign) {
+// 				case "top":
+// 					rect.y = _y;
+// 					break;
+// 				case "middle":
+// 					rect.y = _y - textHeight / 2;
+// 					break;
+// 				case "bottom":
+// 					rect.y = _y - textHeight;
+// 					break;
+// 			}
 
-		if (config?.showRect) {
-			const _config = deepClone(config);
-			const _color = randomColor();
-			_config.color = _color;
-			const _size = 10 * Math.random() + 1;
-			_config.size = _size;
-			// 设置虚线
-			// ctx.setLineDash([5, 20]);
-			// 绘制十字基准点位置
-			drawLine(ctx, _x, 0, _x, ctx.canvas.height, _config);
-			drawLine(ctx, 0, _y, ctx.canvas.width, _y, _config);
-			// 绘制方框，考虑对齐方式
-			const rect = {
-				x: _x,
-				y: _y,
-			};
-			const textWidth = ctx.measureText(text).width;
-			switch (config?.align) {
-				case "left":
-					rect.x = _x;
-					break;
-				case "center":
-					rect.x = _x - textWidth / 2;
-					break;
-				case "right":
-					rect.x = _x - textWidth;
-					break;
-			}
-			const textHeight = config.size;
-			switch (config?.verticalAlign) {
-				case "top":
-					rect.y = _y;
-					break;
-				case "middle":
-					rect.y = _y - textHeight / 2;
-					break;
-				case "bottom":
-					rect.y = _y - textHeight;
-					break;
-			}
+// 			ctx.strokeStyle = _color;
+// 			ctx.lineWidth = 10;
+// 			ctx.strokeRect(rect.x, rect.y, textWidth, config.size);
+// 		}
+// 	};
+// 	return { ctx, drawTextFunc };
+// }
 
-			ctx.strokeStyle = _color;
-			ctx.lineWidth = 10;
-			ctx.strokeRect(rect.x, rect.y, textWidth, config.size);
-		}
-	};
-	return { ctx, drawTextFunc };
-}
-
-function randomColor() {
-	return `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
-}
+// function randomColor() {
+// 	return `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
+// }
 
 export function formatFont(font: string) {
 	return font.replace(/\.(?:ttf|otf|woff|woff2|eot)/i, "");
+}
+
+export function selectFile(): Promise<File[]> {
+	return new Promise((resolve) => {
+		console.log("触发文件选择");
+		const input = document.createElement("input");
+		input.type = "file";
+		input.multiple = true;
+		input.accept = "image/*";
+		input.click();
+
+		input.onchange = (e) => {
+			const target = e.target as HTMLInputElement;
+			if (target === null || !target.files) {
+				resolve([]);
+				return;
+			}
+			const files = Array.from(target.files);
+			console.log("files", files);
+			resolve(files);
+		};
+	});
+}
+
+export function formatTime(
+	time: number,
+	format: string = "yyyy-MM-dd hh:mm:ss"
+): string {
+	const date = new Date(time);
+
+	const padZero = (num: number): string => (num < 10 ? `0${num}` : `${num}`);
+
+	const replacements: Record<string, string> = {
+		yyyy: date.getFullYear().toString(),
+		MM: padZero(date.getMonth() + 1),
+		dd: padZero(date.getDate()),
+		hh: padZero(date.getHours()),
+		mm: padZero(date.getMinutes()),
+		ss: padZero(date.getSeconds()),
+	};
+
+	return format.replace(
+		/(yyyy|MM|dd|hh|mm|ss)/g,
+		(match) => replacements[match]
+	);
 }

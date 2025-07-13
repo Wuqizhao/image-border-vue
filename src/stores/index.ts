@@ -1,10 +1,9 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import type { Config, LocalWaterMarkItem } from "../types";
+import type { Config, Img, LocalWaterMarkItem } from "../types";
 import { ElMessage } from "element-plus";
 
 import { deepClone } from "../utils";
-import { defaultConfig } from "../assets/tools";
 
 export const useStore = defineStore(
 	"store",
@@ -26,12 +25,20 @@ export const useStore = defineStore(
 			return true;
 		}
 
-		const config = ref<Config>(deepClone(defaultConfig));
+		const config = ref<Config>();
 
 		function setConfig(cfg: Config) {
-			const a = deepClone({ ...defaultConfig, ...cfg });
+			const a = deepClone(cfg);
 			config.value = a;
 		}
+
+		const fileList = ref<Array<File>>([]);
+		const curFile = ref<null | File>(null);
+		if (fileList.value.length === 0) {
+			curFile.value = null;
+		}
+
+		const img = ref<null | Img>(null);
 
 		return {
 			localWatermarks,
@@ -39,6 +46,9 @@ export const useStore = defineStore(
 			deleteLocalWatermark,
 			config,
 			setConfig,
+			curFile,
+			fileList,
+			img,
 		};
 	},
 	{

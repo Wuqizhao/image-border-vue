@@ -1,4 +1,6 @@
-<template>
+<template></template>
+
+<!-- <template>
     <h3 style="margin-bottom: 10px;">自定义文本</h3>
 
     <div style="padding: 10px 0px;">
@@ -36,4 +38,4 @@ function clear() {
 }
 </script>
 
-<style lang='less' scoped></style>
+<style lang='less' scoped></style> -->

@@ -1,10 +1,11 @@
 <template>
 	<div class="box">
-		<div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
+		<LeaferCanvas />
+		<!-- <div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
 			<canvas class="leafer" v-show="curFile" ref="imgCanvas"></canvas>
 			<el-empty
 				description="点击添加图片~"
-				v-show="!curFile"
+				v-show="!curFile" 
 				@click="selectFile"></el-empty>
 
 			<div class="download" v-show="showTools && fileList.length > 0">
@@ -15,10 +16,11 @@
 				<RefreshLeft @click="resetWatermark" />
 				<Download @click="exportLeafer" />
 			</div>
-		</div>
+		</div> -->
 
 		<div class="config-box">
-			<div class="tabs-container">
+			<ConfigView />
+			<!-- <div class="tabs-container">
 				<el-tabs
 					v-model="activeName"
 					:tab-position="isMobile() ? 'bottom' : 'right'"
@@ -34,7 +36,6 @@
 						<HorizontalScroll class="img-list" style="margin-bottom: 20px">
 							<el-button
 								plain
-								@click="selectFile(true)"
 								style="height: 64px; position: sticky; left: 0px; z-index: 1"
 								>添加</el-button
 							>
@@ -260,7 +261,7 @@
 						</el-form>
 					</el-tab-pane>
 				</el-tabs>
-			</div>
+			</div> -->
 
 			<el-backtop :right="10" :bottom="100" />
 		</div>
@@ -280,12 +281,12 @@
 			</el-table>
 
 			<template #footer>
-				<el-button type="primary" @click="batchExport">全部导出</el-button>
+				<el-button type="primary">全部导出</el-button>
 			</template>
 		</el-dialog>
 
 		<!-- 保存配置 -->
-		<el-dialog
+		<!-- <el-dialog
 			title="保存配置"
 			v-model="saveConfigDialog.show"
 			style="width: 500px; max-width: 90%">
@@ -308,7 +309,7 @@
 			<template #footer>
 				<el-button type="primary" @click="saveConfig">保存</el-button>
 			</template>
-		</el-dialog>
+		</el-dialog> -->
 
 		<!-- 选择模板抽屉 -->
 		<el-drawer
@@ -401,6 +402,7 @@
 </template>
 
 <script setup lang="ts">
+import ConfigView from "../components/ConfigView.vue";
 import {
 	reactive,
 	ref,
@@ -491,119 +493,88 @@ import { Leafer, Rect, Platform } from "leafer-ui";
 import "@leafer-in/export"; // 引入导出元素插件
 import "@leafer-in/find"; // 查找插件
 import "@leafer-in/editor"; // 引入编辑器插件
-
-async function exportLeafer() {
-	try {
-		if (!leafer.value) {
-			ElMessage.warning("请先添加图片");
-			return;
-		}
-
-		// 使用Leafer的导出功能
-		const result = await leafer.value.export(
-			img.export.name + "." + img.export.ext,
-			{
-				quality: img.export.ext === "jpeg" ? img.export.quality : 1,
-				screenshot: true,
-			}
-		);
-
-		console.log("导出结果:", result);
-
-		if (result) {
-			ElMessage.success(`导出成功`);
-		} else {
-			ElMessage.warning("导出操作未完成");
-		}
-	} catch (error) {
-		console.error("导出失败:", error);
-		let errorMsg = "导出失败";
-		if (error instanceof Error) {
-			errorMsg += ": " + error.message;
-		}
-		ElMessage.error(errorMsg);
-	}
-}
+import LeaferCanvas from "../components/LeaferCanvas.vue";
+// import '@leafer-in/animate' // 导入动画插件 //
 
 const { config } = storeToRefs(store);
-const menuItems = ref([
-	{
-		label: "Logo",
-		value: "logo",
-		component: markRaw(LogoConfig),
-		show: config.value.logo.enable,
-	},
-	{
-		label: "型号",
-		value: "model",
-		component: markRaw(ModelConfig),
-		show: config.value.watermark.model.enable,
-	},
-	{
-		label: "参数",
-		value: "params",
-		component: markRaw(ParamsConfig),
-		show: config.value.watermark.model.enable,
-	},
-	{
-		label: "时间",
-		value: "time",
-		component: markRaw(TimeConfig),
-		show: config.value.watermark.time.enable,
-	},
-	{
-		label: "背景",
-		value: "background",
-		component: markRaw(BlurConfig),
-		show: true,
-	},
-	{
-		label: "图片边框",
-		value: "border",
-		component: markRaw(BorderConfig),
-		show: config.value?.border?.enable,
-	},
-	{
-		label: "外边距",
-		value: "margin",
-		component: markRaw(MarginConfig),
-		show: false,
-	}, // 未实现
-	{
-		label: "地理位置",
-		value: "location",
-		component: markRaw(LocationConfig),
-		show: config.value.location?.enable,
-	},
-	{
-		label: "镜头",
-		value: "lens",
-		component: markRaw(LensConfig),
-		show: config.value.watermark.lens.enable,
-	},
-	{
-		label: "分割线",
-		value: "divider",
-		component: markRaw(DividerConfig),
-		show: config.value.divider.enable,
-	},
-	{
-		label: "图片圆角",
-		value: "radius",
-		component: markRaw(RadiusConfig),
-		show: true,
-	},
-	{
-		label: "图片阴影",
-		value: "shadow",
-		component: markRaw(ShadowConfig),
-		show: true,
-	},
-	{ label: "滤镜", value: "filter", component: markRaw(Filter), show: true },
-]);
-const renderMenuItems = computed(() => {
-	return menuItems.value.filter((item) => item?.show === true);
-});
+// const menuItems = ref([
+// 	{
+// 		label: "Logo",
+// 		value: "logo",
+// 		component: markRaw(LogoConfig),
+// 		show: config.value.logo.enable,
+// 	},
+// 	{
+// 		label: "型号",
+// 		value: "model",
+// 		component: markRaw(ModelConfig),
+// 		show: config.value.watermark.model.enable,
+// 	},
+// 	{
+// 		label: "参数",
+// 		value: "params",
+// 		component: markRaw(ParamsConfig),
+// 		show: config.value.watermark.model.enable,
+// 	},
+// 	{
+// 		label: "时间",
+// 		value: "time",
+// 		component: markRaw(TimeConfig),
+// 		show: config.value.watermark.time.enable,
+// 	},
+// 	{
+// 		label: "背景",
+// 		value: "background",
+// 		component: markRaw(BlurConfig),
+// 		show: true,
+// 	},
+// 	{
+// 		label: "图片边框",
+// 		value: "border",
+// 		component: markRaw(BorderConfig),
+// 		show: config.value?.border?.enable,
+// 	},
+// 	{
+// 		label: "外边距",
+// 		value: "margin",
+// 		component: markRaw(MarginConfig),
+// 		show: false,
+// 	}, // 未实现
+// 	{
+// 		label: "地理位置",
+// 		value: "location",
+// 		component: markRaw(LocationConfig),
+// 		show: config.value.location?.enable,
+// 	},
+// 	{
+// 		label: "镜头",
+// 		value: "lens",
+// 		component: markRaw(LensConfig),
+// 		show: config.value.watermark.lens.enable,
+// 	},
+// 	{
+// 		label: "分割线",
+// 		value: "divider",
+// 		component: markRaw(DividerConfig),
+// 		show: config.value.divider.enable,
+// 	},
+// 	{
+// 		label: "图片圆角",
+// 		value: "radius",
+// 		component: markRaw(RadiusConfig),
+// 		show: true,
+// 	},
+// 	{
+// 		label: "图片阴影",
+// 		value: "shadow",
+// 		component: markRaw(ShadowConfig),
+// 		show: true,
+// 	},
+// 	{ label: "滤镜", value: "filter", component: markRaw(Filter), show: true },
+// ]);
+// const renderMenuItems = computed(() => {
+// 	return menuItems.value.filter((item) => item?.show === true);
+// });
 const curConfigComponent = shallowRef<Component>(LogoConfig);
 
 // 画布
@@ -642,57 +613,6 @@ function deleteWatermark(name: string, event: Event) {
 		curWatermarkIndex.value = 0;
 	}
 }
-
-const onDrop = (event: DragEvent) => {
-	event.preventDefault();
-	const files = event.dataTransfer?.files;
-	if (files) {
-		const validImages: File[] = [];
-		for (let i = 0; i < files.length; i++) {
-			const file = files[i];
-			if (file.type.startsWith("image/")) {
-				validImages.push(file);
-			}
-		}
-		if (validImages.length > 0) {
-			fileList.value = validImages;
-			changeCurFile(validImages[0]);
-		}
-	}
-};
-const selectFile = (append = false) => {
-	const input = document.createElement("input");
-	input.type = "file";
-	input.multiple = true;
-	input.accept = "image/*";
-	input.click();
-
-	input.onchange = (e) => {
-		const target = e.target as HTMLInputElement;
-		if (target === null || !target.files) throw new Error("图片不存在...");
-		const files = Array.from(target.files);
-
-		// 追加
-		if (append) {
-			fileList.value = [...fileList.value, ...files];
-		} else {
-			fileList.value = files;
-		}
-		const file = fileList.value[0];
-		if (file !== curFile.value) {
-			changeCurFile(file);
-		}
-	};
-};
-
-const batchExport = () => {
-	if (fileList.value.length === 0) {
-		ElMessage.warning("请先选择图片~");
-		return;
-	}
-
-	ElMessage.success("开发中...");
-};
 
 const enhancedFileList = computedAsync(async () => {
 	return await Promise.all(
@@ -736,31 +656,31 @@ const showConfigDialog = () => {
 	saveConfigDialog.config = JSON.stringify(config.value, null, 4);
 };
 
-const saveConfig = () => {
-	if (saveConfigDialog.name.trim() === "") {
-		ElMessage.error("请输入配置名称~");
-		return;
-	}
+// const saveConfig = () => {
+// 	if (saveConfigDialog.name.trim() === "") {
+// 		ElMessage.error("请输入配置名称~");
+// 		return;
+// 	}
 
-	try {
-		const temp_config = JSON.parse(saveConfigDialog.config);
+// 	try {
+// 		const temp_config = JSON.parse(saveConfigDialog.config);
 
-		const watermark: LocalWaterMarkItem = {
-			name: saveConfigDialog.name,
-			config: temp_config,
-			config_name: config.value.name,
-		};
+// 		const watermark: LocalWaterMarkItem = {
+// 			name: saveConfigDialog.name,
+// 			config: temp_config,
+// 			config_name: config.value.name,
+// 		};
 
-		// 保存到pinia
-		store.addWatermark(watermark);
+// 		// 保存到pinia
+// 		store.addWatermark(watermark);
 
-		saveConfigDialog.show = false;
-		ElMessage.success("保存成功~");
-		watermarks.value = getWatermarkList();
-	} catch (e) {
-		ElMessage.error("保存失败:格式错误！" + e);
-	}
-};
+// 		saveConfigDialog.show = false;
+// 		ElMessage.success("保存成功~");
+// 		watermarks.value = getWatermarkList();
+// 	} catch (e) {
+// 		ElMessage.error("保存失败:格式错误！" + e);
+// 	}
+// };
 
 function removeImg(index?: number) {
 	index =
@@ -789,212 +709,212 @@ watch(
 	}
 );
 
-watchThrottled(
-	[() => config, () => curFile, () => auxiliaryLines],
-	() => {
-		handleDraw();
-	},
-	{ throttle: 20, deep: true }
-);
+// watchThrottled(
+// 	[() => config, () => curFile, () => auxiliaryLines],
+// 	() => {
+// 		handleDraw();
+// 	},
+// 	{ throttle: 20, deep: true }
+// );
 
 const _img = new Image();
-const handleDraw = useDebounceFn(() => {
-	try {
-		const file = curFile.value;
-		if (!file) return;
+// const handleDraw = useDebounceFn(() => {
+// 	try {
+// 		const file = curFile.value;
+// 		if (!file) return;
 
-		const { watermark, location: locationConfig } = config.value;
-		const { model, params: paramsConfig, time: timeConfig, lens } = watermark;
+// 		const { watermark, location: locationConfig } = config.value;
+// 		const { model, params: paramsConfig, time: timeConfig, lens } = watermark;
 
-		_img.crossOrigin = "anonymous";
-		_img.src = getImageSrc(file);
-		_img.onload = async () => {
-			// 更新宽高
-			img.width = _img.width;
-			img.height = _img.height;
+// 		_img.crossOrigin = "anonymous";
+// 		_img.src = getImageSrc(file);
+// 		_img.onload = async () => {
+// 			// 更新宽高
+// 			img.width = _img.width;
+// 			img.height = _img.height;
 
-			const { canvasWidth, canvasHeight, rect1, rect2 } = caculateCanvasSize(
-				config.value,
-				img
-			);
+// 			const { canvasWidth, canvasHeight, rect1, rect2 } = caculateCanvasSize(
+// 				config.value,
+// 				img
+// 			);
 
-			// 读取exif信息
-			let exif = exifStore.getExif(file) || (await Exifr.parse(file));
+// 			// 读取exif信息
+// 			let exif = exifStore.getExif(file) || (await Exifr.parse(file));
 
-			if (exif === undefined) {
-				ElNotification({
-					title: "错误",
-					message:
-						"未读取到Exif信息，请手动更改参数或者更换图片！(比如相机或者原相机拍摄的原图)",
-					type: "error",
-				});
-				exif = defaultExif;
-			}
-			exifStore.addExif(file, exif);
+// 			if (exif === undefined) {
+// 				ElNotification({
+// 					title: "错误",
+// 					message:
+// 						"未读取到Exif信息，请手动更改参数或者更换图片！(比如相机或者原相机拍摄的原图)",
+// 					type: "error",
+// 				});
+// 				exif = defaultExif;
+// 			}
+// 			exifStore.addExif(file, exif);
 
-			img.exif = exif;
-			img.modelText = model.text ?? img.exif?.Model ?? "--";
-			model.replaceZ && (img.modelText = replaceZ(img.modelText));
-			// 曝光时间
-			const exposureTime = convertExposureTime(exif?.ExposureTime);
-			// 焦距
-			const focalLength =
-				(paramsConfig.useEquivalentFocalLength
-					? exif?.FocalLengthIn35mmFormat
-					: exif?.FocalLength) || exif?.FocalLength;
-			img.paramsText =
-				paramsConfig.text ||
-				`${exposureTime}s  f/${exif?.FNumber}  iso ${exif?.ISO}  ${focalLength}mm`;
-			img.timeText =
-				timeConfig.text ||
-				formatDate(
-					new Date(img.exif?.DateTimeOriginal as number),
-					timeConfig.format
-				);
-			img.lensText = lens.text || exif?.LensModel || "--";
-			img.locationText = locationConfig?.text || getLocationText(img.exif);
+// 			img.exif = exif;
+// 			img.modelText = model.text ?? img.exif?.Model ?? "--";
+// 			model.replaceZ && (img.modelText = replaceZ(img.modelText));
+// 			// 曝光时间
+// 			const exposureTime = convertExposureTime(exif?.ExposureTime);
+// 			// 焦距
+// 			const focalLength =
+// 				(paramsConfig.useEquivalentFocalLength
+// 					? exif?.FocalLengthIn35mmFormat
+// 					: exif?.FocalLength) || exif?.FocalLength;
+// 			img.paramsText =
+// 				paramsConfig.text ||
+// 				`${exposureTime}s  f/${exif?.FNumber}  iso ${exif?.ISO}  ${focalLength}mm`;
+// 			img.timeText =
+// 				timeConfig.text ||
+// 				formatDate(
+// 					new Date(img.exif?.DateTimeOriginal as number),
+// 					timeConfig.format
+// 				);
+// 			img.lensText = lens.text || exif?.LensModel || "--";
+// 			img.locationText = locationConfig?.text || getLocationText(img.exif);
 
-			// 大写
-			img.modelText = model.letterUpperCase
-				? img.modelText.toUpperCase()
-				: img.modelText;
-			img.paramsText = paramsConfig.letterUpperCase
-				? img.paramsText.toUpperCase()
-				: img.paramsText;
-			img.timeText = timeConfig.letterUpperCase
-				? img.timeText.toUpperCase()
-				: img.timeText;
-			img.lensText = lens.letterUpperCase
-				? img.lensText.toUpperCase()
-				: img.lensText;
-			img.locationText = locationConfig?.letterUpperCase
-				? img.locationText.toUpperCase()
-				: img.locationText;
+// 			// 大写
+// 			// img.modelText = model.letterUpperCase
+// 			// 	? img.modelText.toUpperCase()
+// 			// 	: img.modelText;
+// 			img.paramsText = paramsConfig.letterUpperCase
+// 				? img.paramsText.toUpperCase()
+// 				: img.paramsText;
+// 			img.timeText = timeConfig.letterUpperCase
+// 				? img.timeText.toUpperCase()
+// 				: img.timeText;
+// 			img.lensText = lens.letterUpperCase
+// 				? img.lensText.toUpperCase()
+// 				: img.lensText;
+// 			img.locationText = locationConfig?.letterUpperCase
+// 				? img.locationText.toUpperCase()
+// 				: img.locationText;
 
-			const realImgWidth = img.width;
-			const realImgHeight = img.height;
+// 			const realImgWidth = img.width;
+// 			const realImgHeight = img.height;
 
-			if (realImgWidth <= 800 || realImgHeight <= 800) {
-				ElMessage.warning("图片尺寸过小，样式可能错乱！");
-			}
+// 			if (realImgWidth <= 800 || realImgHeight <= 800) {
+// 				ElMessage.warning("图片尺寸过小，样式可能错乱！");
+// 			}
 
-			init({
-				canvasWidth,
-				canvasHeight,
-				rect1,
-				rect2,
-			});
-			// 释放图片
-			URL.revokeObjectURL(_img.src);
-		};
-	} catch (e) {
-		console.error("绘制发生错误：", e);
-	}
-}, 20);
+// 			init({
+// 				canvasWidth,
+// 				canvasHeight,
+// 				rect1,
+// 				rect2,
+// 			});
+// 			// 释放图片
+// 			URL.revokeObjectURL(_img.src);
+// 		};
+// 	} catch (e) {
+// 		console.error("绘制发生错误：", e);
+// 	}
+// }, 20);
 
 const leafer = ref<Leafer | null>(null);
-const init = useDebounceFn((cfg) => {
-	const dom = document.querySelector(".leafer");
-	if (!dom) throw new Error("找不到dom元素");
+// const init = useDebounceFn((cfg) => {
+// 	const dom = document.querySelector(".leafer");
+// 	if (!dom) throw new Error("找不到dom元素");
 
-	const { canvasWidth, canvasHeight, rect1, rect2 } = cfg;
-	if (!curFile.value) return;
+// 	const { canvasWidth, canvasHeight, rect1, rect2 } = cfg;
+// 	if (!curFile.value) return;
 
-	const { paddings: imgPaddings, watermark, radius } = config.value;
-	const { paddings: watermarkPaddings } = watermark;
+// 	const { paddings: imgPaddings, watermark, radius } = config.value;
+// 	const { paddings: watermarkPaddings } = watermark;
 
-	// 初始化Leafer
-	if (leafer.value === null) {
-		leafer.value = new Leafer({
-			view: dom,
-		});
-	}
-	leafer.value.set({
-		width: canvasWidth,
-		height: canvasHeight,
-		fill: watermark.bgColor,
-	});
+// 	// 初始化Leafer
+// 	if (leafer.value === null) {
+// 		leafer.value = new Leafer({
+// 			view: dom,
+// 		});
+// 	}
+// 	leafer.value.set({
+// 		width: canvasWidth,
+// 		height: canvasHeight,
+// 		fill: watermark.bgColor,
+// 	});
 
-	Platform.image.crossOrigin = "anonymous";
+// 	Platform.image.crossOrigin = "anonymous";
 
-	let imgRadius = [0, 0, 0, 0];
-	if (radius.enable && radius.show) {
-		if (radius.uniform) {
-			imgRadius = [radius.size, radius.size, radius.size, radius.size];
-		} else {
-			imgRadius = [radius.lt, radius.rt, radius.rb, radius.lb];
-		}
-	}
-	let bg = leafer.value.findOne("#bg");
-	if (!bg) {
-		bg = new Rect({
-			id: "bg",
-			x: imgPaddings.left,
-			y: imgPaddings.top,
-			width: img?.width,
-			height: img?.height,
-			cornerRadius: imgRadius,
-			fill: {
-				type: "image",
-				url: getImageSrc(curFile.value),
-			},
-		});
-		leafer.value.add(bg);
-	} else {
-		bg.set({
-			x: imgPaddings.left,
-			y: imgPaddings.top,
-			width: img?.width,
-			height: img?.height,
-			cornerRadius: imgRadius,
-			fill: { type: "image", url: getImageSrc(curFile.value) },
-		});
-	}
+// 	let imgRadius = [0, 0, 0, 0];
+// 	if (radius.enable && radius.show) {
+// 		if (radius.uniform) {
+// 			imgRadius = [radius.size, radius.size, radius.size, radius.size];
+// 		} else {
+// 			imgRadius = [radius.lt, radius.rt, radius.rb, radius.lb];
+// 		}
+// 	}
+// 	let bg = leafer.value.findOne("#bg");
+// 	if (!bg) {
+// 		bg = new Rect({
+// 			id: "bg",
+// 			x: imgPaddings.left,
+// 			y: imgPaddings.top,
+// 			width: img?.width,
+// 			height: img?.height,
+// 			cornerRadius: imgRadius,
+// 			fill: {
+// 				type: "image",
+// 				url: getImageSrc(curFile.value),
+// 			},
+// 		});
+// 		leafer.value.add(bg);
+// 	} else {
+// 		bg.set({
+// 			x: imgPaddings.left,
+// 			y: imgPaddings.top,
+// 			width: img?.width,
+// 			height: img?.height,
+// 			cornerRadius: imgRadius,
+// 			fill: { type: "image", url: getImageSrc(curFile.value) },
+// 		});
+// 	}
 
-	// 绘制水印背景
-	let watermarkBg = leafer.value.findOne("#watermarkBg");
-	const rectConfig = {
-		x: rect1.x,
-		y: rect1.y - watermarkPaddings.top,
-		width: rect2.x - rect1.x,
-		height:
-			rect2.y - rect1.y + watermarkPaddings.top + watermarkPaddings.bottom,
-		fill: watermark.bg,
-	};
-	if (!watermarkBg) {
-		watermarkBg = new Rect({
-			...rectConfig,
-			id: "watermarkBg",
-		});
-		leafer.value.add(watermarkBg);
-	} else {
-		watermarkBg.set(rectConfig);
-	}
+// 	// 绘制水印背景
+// 	let watermarkBg = leafer.value.findOne("#watermarkBg");
+// 	const rectConfig = {
+// 		x: rect1.x,
+// 		y: rect1.y - watermarkPaddings.top,
+// 		width: rect2.x - rect1.x,
+// 		height:
+// 			rect2.y - rect1.y + watermarkPaddings.top + watermarkPaddings.bottom,
+// 		fill: watermark.bg,
+// 	};
+// 	if (!watermarkBg) {
+// 		watermarkBg = new Rect({
+// 			...rectConfig,
+// 			id: "watermarkBg",
+// 		});
+// 		leafer.value.add(watermarkBg);
+// 	} else {
+// 		watermarkBg.set(rectConfig);
+// 	}
 
-	console.log("caculate start");
-	config.value?.caculate(leafer.value, config.value, img, cfg);
-	console.log("caculate end");
+// 	console.log("caculate start");
+// 	config.value?.caculate(leafer.value, config.value, img, cfg);
+// 	console.log("caculate end");
 
-	// 绘制水印范围
-	const watermarkRangeConfig = {
-		x: rect1.x,
-		y: rect1.y,
-		width: rect2.x - rect1.x,
-		height: rect2.y - rect1.y,
-		fill: "#FF000040",
-		visible: auxiliaryLines.watermarkRange,
-	};
-	let watermarkRange = leafer.value.findOne("#watermarkRange");
-	if (!watermarkRange) {
-		watermarkRange = new Rect({
-			...watermarkRangeConfig,
-			id: "watermarkRange",
-		});
-		leafer.value.add(watermarkRange);
-	} else {
-		watermarkRange.set(watermarkRangeConfig);
-	}
-}, 20);
+// 	// 绘制水印范围
+// 	const watermarkRangeConfig = {
+// 		x: rect1.x,
+// 		y: rect1.y,
+// 		width: rect2.x - rect1.x,
+// 		height: rect2.y - rect1.y,
+// 		fill: "#FF000040",
+// 		visible: auxiliaryLines.watermarkRange,
+// 	};
+// 	let watermarkRange = leafer.value.findOne("#watermarkRange");
+// 	if (!watermarkRange) {
+// 		watermarkRange = new Rect({
+// 			...watermarkRangeConfig,
+// 			id: "watermarkRange",
+// 		});
+// 		leafer.value.add(watermarkRange);
+// 	} else {
+// 		watermarkRange.set(watermarkRangeConfig);
+// 	}
+// }, 20);
 
 function importConfig(val: number): void {
 	// 获取对应的水印
@@ -1070,23 +990,6 @@ function importConfig(val: number): void {
 		});
 }
 
-function prev() {
-	const index = fileList.value.findIndex((item) => curFile.value === item);
-	if (index !== -1) {
-		// 找到上一张的坐标，支持循环
-		changeCurFile(
-			fileList.value[
-				(index - 1 + fileList.value.length) % fileList.value.length
-			]
-		);
-	}
-}
-function next() {
-	const index = fileList.value.findIndex((item) => curFile.value === item);
-	if (index === -1) return;
-	changeCurFile(fileList.value[(index + 1) % fileList.value.length]);
-}
-
 function loadFonts(fonts: string[]) {
 	// 1. 创建<style>元素
 	const style = document.createElement("style");
@@ -1112,36 +1015,6 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-#canvasBox {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	background: rgb(255, 255, 255);
-	transition-duration: 0.8s;
-	width: 100%;
-	position: relative;
-	max-height: 100vh;
-	overflow: hidden;
-	padding: 20px;
-
-	&:hover {
-		.download {
-			transform: translateY(0px);
-			transition-duration: 0.5s;
-		}
-	}
-}
-.leafer {
-	border: 1px solid silver;
-	max-width: 100%;
-	max-height: 100%;
-	width: fit-content !important;
-	height: fit-content !important;
-	box-shadow: 0px 0px 20px rgba(194, 194, 194, 0.934);
-	transition: all 0.5s ease-in-out;
-}
 .box {
 	display: flex;
 	justify-content: space-between;
@@ -1298,41 +1171,10 @@ onMounted(() => {
 	}
 }
 
-.download {
-	background-color: rgba(0, 0, 0, 0.2);
-	position: absolute;
-	display: flex;
-	align-items: center;
-	gap: 5px;
-	padding: 3px;
-	border-radius: 3px;
-	transform: translateY(-200%);
-
-	> * {
-		color: #fff;
-		width: 20px;
-		height: 20px;
-
-		&:hover {
-			color: var(--el-color-primary);
-		}
-	}
-
-	cursor: pointer;
-}
-
 @media screen and (max-width: 768px) {
 	.box {
 		gap: 5px;
 		flex-direction: column;
-	}
-
-	#canvasBox {
-		max-height: 300px;
-
-		canvas {
-			max-height: 100%;
-		}
 	}
 
 	.config-box {
@@ -1359,10 +1201,6 @@ onMounted(() => {
 				display: none;
 			}
 		}
-	}
-
-	.download {
-		transform: translateY(0px);
 	}
 }
 

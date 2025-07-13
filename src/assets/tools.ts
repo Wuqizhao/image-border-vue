@@ -4,7 +4,7 @@ import type {
 	ImagesConfigItem,
 	Img,
 	LabelConfigItem,
-	TextAlign,
+	
 	TextVerticalAlign,
 	WatermarkListBaseItem,
 	WatermarkListItem,
@@ -960,24 +960,24 @@ export const defaultImgValue: Img = {
 	locationText: "",
 };
 
-export const defaultLabelConfig: LabelConfigItem = {
-	name: `文本(${new Date().getTime()})`,
-	show: true,
-	align: "left" as TextAlign,
-	verticalAlign: "top" as TextVerticalAlign,
-	color: "#F00",
-	size: 160,
-	italic: false,
-	bold: false,
-	text: "请输入文本",
-	x: 100,
-	y: 100,
-	font: "sans-serif",
-	stroke: false,
-	strokeWidth: 3,
-	draggable: false,
-	showRect: false,
-};
+// export const defaultLabelConfig: LabelConfigItem = {
+// 	name: `文本(${new Date().getTime()})`,
+// 	show: true,
+// 	align: "left" as TextAlign,
+// 	verticalAlign: "top" as TextVerticalAlign,
+// 	color: "#F00",
+// 	size: 160,
+// 	italic: false,
+// 	bold: false,
+// 	text: "请输入文本",
+// 	x: 100,
+// 	y: 100,
+// 	font: "sans-serif",
+// 	stroke: false,
+// 	strokeWidth: 3,
+// 	draggable: false,
+// 	showRect: false,
+// };
 
 export const defaultImageConfig: ImagesConfigItem = {
 	title: `自定义图片(${new Date().getTime()})`,
@@ -994,118 +994,122 @@ export const defaultImageConfig: ImagesConfigItem = {
 	blendMode: "normal",
 };
 
-export const defaultConfig: Required<Config> = {
-	name: "默认",
-	font: "sans-serif",
-	paddings: {
-		top: 0,
-		right: 0,
-		left: 0,
-		bottom: 0,
-	},
-	watermark: {
-		position: "bottom",
-		height: 0,
-		model: { ...defaultLabelConfig, enable: false, replaceZ: false },
-		params: {
-			...defaultLabelConfig,
-			enable: false,
-			useEquivalentFocalLength: true,
-			styleIndex: 0,
-			styles: [],
-		},
-		time: {
-			...defaultLabelConfig,
-			enable: false,
-			format: "YYYY.MM.DD HH:mm",
-		},
-		lens: {
-			...defaultLabelConfig,
-			enable: false,
-		},
-		paddings: {
-			top: 0,
-			right: 0,
-			left: 0,
-			bottom: 0,
-		},
-		bgColor: "#ffffff",
-		bg: "rgba(0,0,0,0)",
-	},
-	radius: {
-		enable: false,
-		show: false,
-		size: 100,
-		uniform: true,
-		lt: 100,
-		rt: 100,
-		lb: 100,
-		rb: 100,
-	},
-	blur: {
-		type: "color",
-		size: 200,
-		gradient: {
-			angle: 0,
-			colors: ["lightblue", "#FFF", "pink"],
-		},
-	},
-	logo: {
-		enable: false,
-		show: false,
-		auto: true,
-		name: "nikon",
-		width: 300,
-		height: 300,
-		verticalOffset: 1,
-		circle: false,
-		url: "",
-	},
-	divider: {
-		enable: false,
-		show: false,
-		color: "#808080",
-		width: 5,
-		scale: 1,
-		margin: 1,
-	},
-	shadow: {
-		show: false,
-		color: "#000",
-		size: 100,
-		x: 0,
-		y: 0,
-	},
-	location: {
-		...defaultLabelConfig,
-		enable: false,
-	},
-	filter: {
-		saturation: 100,
-		brightness: 100,
-		contrast: 100,
-		grayscale: 0,
-		invert: 0,
-	},
-	border: {
-		enable: true,
-		show: false,
-		width: 50,
-		color: "rgb(128,128,128)",
-	},
-	margin: {
-		show: false,
-		top: 0,
-		bottom: 0,
-		left: 0,
-		right: 0,
-	},
-	labels: [],
-	images: [],
-	draw: () => {},
-	beforeDraw: () => {},
-	afterDraw: () => {},
-};
+export const defaultITextConfig = {
+	
+}
+
+// export const defaultConfig: Required<Config> = {
+// 	name: "默认",
+// 	font: "sans-serif",
+// 	paddings: {
+// 		top: 0,
+// 		right: 0,
+// 		left: 0,
+// 		bottom: 0,
+// 	},
+// 	watermark: {
+// 		position: "bottom",
+// 		height: 0,
+// 		model: { ...defaultLabelConfig, enable: false, replaceZ: false },
+// 		params: {
+// 			...defaultLabelConfig,
+// 			enable: false,
+// 			useEquivalentFocalLength: true,
+// 			styleIndex: 0,
+// 			styles: [],
+// 		},
+// 		time: {
+// 			...defaultLabelConfig,
+// 			enable: false,
+// 			format: "YYYY.MM.DD HH:mm",
+// 		},
+// 		lens: {
+// 			...defaultLabelConfig,
+// 			enable: false,
+// 		},
+// 		paddings: {
+// 			top: 0,
+// 			right: 0,
+// 			left: 0,
+// 			bottom: 0,
+// 		},
+// 		bgColor: "#ffffff",
+// 		bg: "rgba(0,0,0,0)",
+// 	},
+// 	radius: {
+// 		enable: false,
+// 		show: false,
+// 		size: 100,
+// 		uniform: true,
+// 		lt: 100,
+// 		rt: 100,
+// 		lb: 100,
+// 		rb: 100,
+// 	},
+// 	blur: {
+// 		type: "color",
+// 		size: 200,
+// 		gradient: {
+// 			angle: 0,
+// 			colors: ["lightblue", "#FFF", "pink"],
+// 		},
+// 	},
+// 	logo: {
+// 		enable: false,
+// 		show: false,
+// 		auto: true,
+// 		name: "nikon",
+// 		width: 300,
+// 		height: 300,
+// 		verticalOffset: 1,
+// 		circle: false,
+// 		url: "",
+// 	},
+// 	divider: {
+// 		enable: false,
+// 		show: false,
+// 		color: "#808080",
+// 		width: 5,
+// 		scale: 1,
+// 		margin: 1,
+// 	},
+// 	shadow: {
+// 		show: false,
+// 		color: "#000",
+// 		size: 100,
+// 		x: 0,
+// 		y: 0,
+// 	},
+// 	location: {
+// 		...defaultLabelConfig,
+// 		enable: false,
+// 	},
+// 	filter: {
+// 		saturation: 100,
+// 		brightness: 100,
+// 		contrast: 100,
+// 		grayscale: 0,
+// 		invert: 0,
+// 	},
+// 	border: {
+// 		enable: true,
+// 		show: false,
+// 		width: 50,
+// 		color: "rgb(128,128,128)",
+// 	},
+// 	margin: {
+// 		show: false,
+// 		top: 0,
+// 		bottom: 0,
+// 		left: 0,
+// 		right: 0,
+// 	},
+// 	labels: [],
+// 	images: [],
+// 	draw: () => {},
+// 	beforeDraw: () => {},
+// 	afterDraw: () => {},
+// };
 
 export const defaultExif = {
 	Make: "NIKON CORPORATION",
@@ -1180,3 +1184,5 @@ export const defaultExif = {
 	LensSerialNumber: "20322022",
 	GPSVersionID: "2.3.0.0",
 };
+
+
