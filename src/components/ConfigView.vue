@@ -2,7 +2,10 @@
 	<div>
 		<el-button @click="selectFile" type="primary">添加文件</el-button>
 		<el-button @click="clearFileList" type="danger" plain>清空文件</el-button>
-		<el-button @click="store.exportLeafer" type="success">导出</el-button>
+		<el-button @click="store.exportImg" type="success">导出</el-button>
+		<el-button type="warning" plain @click="store.resetStyle"
+			>重置样式</el-button
+		>
 	</div>
 
 	<el-tabs tab-position="right">
@@ -27,15 +30,13 @@
 		<el-tab-pane label="镜头">
 			<LeaferLensConfig />
 		</el-tab-pane>
+		<el-tab-pane label="Logo">
+			<LeaferLogoConfig />
+		</el-tab-pane>
 		<el-tab-pane label="导出">
 			<LeaferExportConfig />
 		</el-tab-pane>
 	</el-tabs>
-	<!-- <p>文件名：{{ store.curFile?.name }}</p>
-		<p>img:{{ store.img }}</p>
-		<p>curFile:{{ store.curFile }}</p>
-		<p>config:{{ store.config }}</p>
-		<p>fileList:{{ store.fileList }}</p> -->
 </template>
 
 <script setup>
@@ -52,14 +53,13 @@ import LeaferTimeConfig from "./LeaferTimeConfig.vue";
 import LeaferLensConfig from "./LeaferLensConfig.vue";
 import LeaferEXIF from "./LeaferEXIF.vue";
 import LeaferExportConfig from "./LeaferExportConfig.vue";
+import LeaferLogoConfig from "./LeaferLogoConfig.vue";
 const store = useStore();
 
 function clearFileList() {
 	store.fileList = [];
 	store.curFile = null;
 }
-
-const leafer = inject("leafer");
 </script>
 
 <style lang="less" scoped>
@@ -72,6 +72,5 @@ const leafer = inject("leafer");
 	&::-webkit-scrollbar {
 		display: none;
 	}
-
 }
 </style>

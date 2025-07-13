@@ -8,6 +8,50 @@ import type {
 	ITextDecoration,
 } from "leafer-ui";
 
+declare interface BaseConfig {
+	fill?: string;
+	global: {
+		paddings: {
+			top: number;
+			right: number;
+			bottom: number;
+			left: number;
+		};
+	};
+	img: {
+		margin: {
+			top: number;
+			bottom: number;
+			left: number;
+			right: number;
+		};
+		cornerRadius: [number, number, number, number];
+		shadow?: {
+			x: number;
+			y: number;
+			blur: number;
+			color: string;
+		};
+	};
+	watermark: {
+		height: number;
+		fill: string;
+		paddings: {
+			top: number;
+			bottom: number;
+			left: number;
+			right: number;
+		};
+		model: Model;
+		params: Params;
+		time: Time;
+		lens: Lens;
+		logo?: Logo;
+		// location: IText;
+		// divider: ILine;
+	};
+}
+
 declare interface Model extends Partial<IText> {
 	/**
 	 * 是否支持显示型号
@@ -93,15 +137,11 @@ declare interface Blur {
 }
 
 export type TextAlign = "left" | "center" | "right";
-export declare interface Logo {
+export declare interface Logo extends Partial<IRect> {
 	/**
 	 * 是否支持logo
 	 */
 	enable: boolean;
-	/**
-	 * 是否显示logo
-	 */
-	show: boolean;
 	/**
 	 * 是否自动匹配logo
 	 */
@@ -110,22 +150,6 @@ export declare interface Logo {
 	 * logo名称
 	 */
 	name: string;
-	/**
-	 * logo宽度
-	 */
-	width: number;
-	/**
-	 * logo高度
-	 */
-	height: number;
-	/**
-	 * 垂直偏移
-	 */
-	verticalOffset: number;
-	/**
-	 * 是否圆形LOGO
-	 */
-	circle: boolean;
 	/**
 	 * 自定义的logo地址（可选），此选项可能导致无法导出图片
 	 */
@@ -390,52 +414,6 @@ export declare type BlendModeItem = {
 // 	labels?: Array<IText>;
 // 	images?: Array<ImagesConfigItem>;
 // }
-
-declare interface BaseConfig {
-	fill?: string;
-	global: {
-		paddings: {
-			top: number;
-			right: number;
-			bottom: number;
-			left: number;
-		};
-	};
-	img: {
-		margin: {
-			top: number;
-			bottom: number;
-			left: number;
-			right: number;
-		};
-		cornerRadius: [number, number, number, number];
-		shadow?: {
-			x: number;
-			y: number;
-			blur: number;
-			color: string;
-		}
-	};
-	watermark: {
-		height: number;
-		paddings: {
-			top: number;
-			bottom: number;
-			left: number;
-			right: number;
-		};
-		model: Model;
-		params: Params;
-		time: Time;
-		lens: Lens;
-		// params: IText;
-		// time: IText;
-		// lens: IText;
-		// location: IText;
-		// divider: ILine;
-		// logo: IRect;
-	};
-}
 
 export declare type AfterDrawFun = (ctx: CanvasRenderingContext2D) => void;
 export declare interface Config extends BaseConfig {

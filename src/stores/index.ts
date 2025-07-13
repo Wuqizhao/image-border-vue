@@ -4,6 +4,7 @@ import type { Config, Img, LocalWaterMarkItem } from "../types";
 import { ElMessage } from "element-plus";
 
 import { deepClone } from "../utils";
+import type { Leafer } from "leafer-ui";
 
 export const useStore = defineStore(
 	"store",
@@ -40,6 +41,45 @@ export const useStore = defineStore(
 
 		const img = ref<null | Img>(null);
 
+		async function resetStyle() {
+			const cfg = (await import("../configs/小米徕卡")).default;
+			if (cfg) {
+				setConfig(cfg);
+				ElMessage.success("重置样式成功~");
+			}
+		}
+
+		const leafer = ref<null | Leafer>(null);
+
+		function exportImg() {
+			console.log("【exportImg】", img.value?.export);
+			if (!leafer.value) {
+				// ElMessage.error("找不到leafer实例！");
+				console.log('111');
+				return;
+			}
+			if (img.value?.export === undefined) {
+				// ElMessage.error("请先设置导出配置！");
+				console.log('222');
+				return;
+			}
+			console.log('333');
+			const {
+				ext = "jpeg",
+				quality = 1,
+				name = "leafer_export",
+			} = img.value?.export;
+
+			console.log("【aaa】",`${name.split(".")[0]}.${ext}`, {
+				screenshot: true,
+				quality: ext === "png" ? 1 : quality,
+			});
+			leafer.value?.export(`${name.split(".")[0]}.${ext}`, {
+				screenshot: true,
+				quality: ext === "png" ? 1 : quality,
+			});
+		}
+
 		return {
 			localWatermarks,
 			addWatermark,
@@ -49,6 +89,9 @@ export const useStore = defineStore(
 			curFile,
 			fileList,
 			img,
+			resetStyle,
+			leafer,
+			exportImg,
 		};
 	},
 	{

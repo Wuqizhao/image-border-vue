@@ -7,41 +7,47 @@
 			</div>
 		</template>
 		<el-form label-width="80px">
-		<el-form-item label="背景颜色">
-			<el-color-picker
-				v-model="store.config.fill"
-				show-alpha
-				:predefine="preDefineColors"></el-color-picker>
-		</el-form-item>
-		<h4>内边距</h4>
-		<el-form-item label="上边距">
-			<el-slider
-				v-model="store.config.global.paddings.top"
-				:max="500"
-				:step="1"
-				show-input></el-slider>
-		</el-form-item>
-		<el-form-item label="下边距">
-			<el-slider
-				v-model="store.config.global.paddings.bottom"
-				:max="500"
-				:step="1"
-				show-input></el-slider>
-		</el-form-item>
-		<el-form-item label="左边距">
-			<el-slider
-				v-model="store.config.global.paddings.left"
-				:max="500"
-				:step="1"
-				show-input></el-slider>
-		</el-form-item>
-		<el-form-item label="右边距">
-			<el-slider
-				v-model="store.config.global.paddings.right"
-				:max="500"
-				:step="1"
-				show-input></el-slider>
-		</el-form-item>
+			<el-form-item label="背景颜色">
+				<el-color-picker
+					v-model="store.config.fill"
+					show-alpha
+					:predefine="preDefineColors"></el-color-picker>
+			</el-form-item>
+			<el-form-item label="水印背景" label-width="80px">
+				<el-color-picker
+					v-model="store.config.watermark.fill"
+					show-alpha
+					:predefine="preDefineColors"></el-color-picker>
+			</el-form-item>
+			<h4>内边距</h4>
+			<el-form-item label="上边距">
+				<el-slider
+					v-model="store.config.global.paddings.top"
+					:max="500"
+					:step="1"
+					show-input></el-slider>
+			</el-form-item>
+			<el-form-item label="下边距">
+				<el-slider
+					v-model="store.config.global.paddings.bottom"
+					:max="500"
+					:step="1"
+					show-input></el-slider>
+			</el-form-item>
+			<el-form-item label="左边距">
+				<el-slider
+					v-model="store.config.global.paddings.left"
+					:max="500"
+					:step="1"
+					show-input></el-slider>
+			</el-form-item>
+			<el-form-item label="右边距">
+				<el-slider
+					v-model="store.config.global.paddings.right"
+					:max="500"
+					:step="1"
+					show-input></el-slider>
+			</el-form-item>
 		</el-form>
 	</el-card>
 </template>
@@ -49,7 +55,7 @@
 <script setup>
 import { preDefineColors } from "../assets/tools";
 import { useStore } from "../stores";
-import { Setting } from '@element-plus/icons-vue';
+import { Setting } from "@element-plus/icons-vue";
 const store = useStore();
 </script>
 

@@ -94,6 +94,7 @@ const config: Config = {
 	},
 	watermark: {
 		height: 0.1,
+		fill: "#FFF",
 		model: {
 			enable: true,
 			visible: true,
@@ -161,6 +162,15 @@ const config: Config = {
 			bottom: 0,
 			left: 0,
 			right: 0,
+		},
+		logo: {
+			enable: true,
+			auto: false,
+			visible: true,
+			name: "nikon",
+			width: 180,
+			height: 180,
+			cornerRadius: [0, 0, 0, 0],
 		},
 	},
 	caculate: caculate,

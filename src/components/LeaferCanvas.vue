@@ -1,17 +1,14 @@
 <template>
 	<div id="canvasBox" @dragover.prevent @dragenter.prevent @drop="onDrop">
-		<canvas
-			class="leafer"
-			v-show="store.fileList.length > 0"
-			ref="imgCanvas"></canvas>
+		<canvas class="leafer" v-show="store.curFile" ref="imgCanvas"></canvas>
 		<el-empty
 			description="点击添加图片~"
-			v-show="store.fileList.length == 0"
+			v-show="!store.curFile"
 			@click="select"></el-empty>
 
-		<el-button type="primary" size="default" @click="exportLeafer"
+		<!-- <el-button type="primary" size="default" @click="exportLeafer"
 			>导出</el-button
-		>
+		> -->
 
 		<!-- <div class="download" v-show="showTools && fileList.length > 0">
 			<Plus @click="selectFile(true)" />
@@ -25,20 +22,22 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, provide, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useStore } from "../stores";
 import { getImageSrc, selectFile } from "../utils";
 import { Leafer, Rect, Text, type IRect, type IText } from "leafer-ui";
-import type { Img } from "../types";
+import type { Img, Logo } from "../types";
 import { useExifStore } from "../stores/exif";
 import Exifr from "exifr";
 import { watchThrottled } from "@vueuse/core";
+import { storeToRefs } from "pinia";
 const exifStore = useExifStore();
 
 const store = useStore();
 const imgCanvas = ref<HTMLCanvasElement | null>(null);
-const leafer = ref<Leafer | null>(null);
-provide("leafer", leafer.value);
+// const leafer = ref<Leafer | null>(null);
+const { leafer } = storeToRefs(store);
+// provide("leafer", leafer.value);
 
 function onDrop() {}
 async function select() {
@@ -46,15 +45,12 @@ async function select() {
 
 	if (files.length > 0) {
 		store.curFile = files[0];
-		store.fileList.push(files[0]);
+		store.fileList.push(...files);
 	}
 }
 
-async function importConfig() {
-	const cfg = (await import("../configs/小米徕卡")).default;
-	console.log("【导入配置】", cfg);
-
-	store.config = cfg;
+function importConfig() {
+	store.resetStyle();
 }
 
 function changeCurFile(file: File | null) {
@@ -131,7 +127,7 @@ function initLeafer(context: Img) {
 	const {
 		img,
 		fill,
-		watermark: { model, params, time, lens },
+		watermark: { model, params, time, lens, logo, fill: watermarkFill },
 	} = store.config;
 	const {
 		width,
@@ -197,7 +193,7 @@ function initLeafer(context: Img) {
 		height: rect2.y - rect1.y,
 		fill: {
 			type: "solid",
-			color: "#FFF",
+			color: watermarkFill || "#FFF",
 		},
 	};
 	if (bgEl) {
@@ -281,6 +277,29 @@ function initLeafer(context: Img) {
 		text: lens.text || lensText,
 	} as IText;
 	updateLeaferText(leafer.value as Leafer, "lens", lensConfig);
+
+	let logoEl = leafer.value?.findOne("#logo");
+	if (logo && logo?.enable) {
+		const logoConfig = {
+			...logo,
+			x: (rect2.x - rect1.x) / 2 - (logo.width || 0) / 2,
+			y: centerY - (logo.height || 0) / 2,
+			fill: {
+				type: "image",
+				url: getImageSrc(logo.url || logo.name),
+				mode: "fit",
+			},
+		} as Logo;
+
+		if (logoEl) {
+			logoEl.set(logoConfig);
+			console.log("更新logo");
+		} else {
+			logoEl = new Rect({ ...logoConfig, id: "logo" });
+			leafer.value?.add(logoEl);
+			console.log("新建logo");
+		}
+	}
 }
 
 function updateLeaferText(leafer: Leafer, id: string = "", config: IText) {
@@ -297,10 +316,6 @@ function updateLeaferText(leafer: Leafer, id: string = "", config: IText) {
 		leafer.add(el);
 	}
 	return el;
-}
-
-function exportLeafer() {
-	leafer.value?.export("aaaa.jpeg", { screenshot: true });
 }
 
 // function prev() {
@@ -357,6 +372,12 @@ onMounted(() => {
 	// 清空文件
 	store.curFile = null;
 	store.fileList = [];
+	try {
+		// leafer.value?.destroy();
+		leafer.value = null;
+	} catch (e) {
+		console.log('清理画布失败');
+	}
 	importConfig();
 });
 
@@ -364,7 +385,7 @@ onUnmounted(() => {
 	// 清空文件
 	store.curFile = null;
 	store.fileList = [];
-	leafer.value?.destroy();
+	leafer && leafer.value?.destroy();
 });
 </script>
 

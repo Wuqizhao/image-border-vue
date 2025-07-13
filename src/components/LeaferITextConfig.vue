@@ -6,14 +6,14 @@
 				<span>{{ props.title }}</span>
 			</div>
 		</template>
-		<el-form label-width="80px">
+		<el-form label-width="60px">
 			<el-form-item label="显示">
 				<el-switch v-model="props.config.visible"></el-switch>
 			</el-form-item>
 			<el-form-item label="文字">
 				<el-input
 					v-model="props.config.text"
-					placeholder="请输入文字~"
+					placeholder="请输入文字，留空自动读取~"
 					clearable></el-input>
 			</el-form-item>
 			<el-form-item label="颜色">
@@ -109,7 +109,7 @@ const props = defineProps({
 
 <style lang="less" scoped>
 .text-config-card {
-	margin: 20px 5px;
+	margin: 20px 0px;
 	border-radius: 8px;
 	transition: all 0.3s ease;
 
@@ -128,10 +128,6 @@ const props = defineProps({
 			font-size: 1.2em;
 			color: var(--el-color-primary);
 		}
-	}
-
-	.el-form {
-		padding: 10px 0px;
 	}
 }
 </style>

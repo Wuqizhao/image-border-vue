@@ -1,4 +1,13 @@
 <template>
+	<div>
+		<h2>文件列表</h2>
+		<el-button
+			v-for="item in store.fileList"
+			:type="store.curFile.name == item.name ? 'primary' : ''"
+			plain>
+			{{ item.name }}
+		</el-button>
+	</div>
 	<el-card class="info-card" shadow="hover">
 		<template #header>
 			<div class="card-header">
@@ -6,7 +15,7 @@
 				<span>基础信息</span>
 			</div>
 		</template>
-		<el-form label-width="100px" label-position="left">
+		<el-form label-width="100px" label-position="left" v-if="store.curFile">
 			<el-form-item label="文件名">
 				<el-tag type="info">{{ store.img.fileName }}</el-tag>
 			</el-form-item>
@@ -25,6 +34,7 @@
 				}}</el-tag>
 			</el-form-item>
 		</el-form>
+		<el-empty description="配置不可用，请先添加图片" v-else></el-empty>
 	</el-card>
 	<el-card class="exif-card" shadow="hover">
 		<template #header>
@@ -33,7 +43,7 @@
 				<span>EXIF信息</span>
 			</div>
 		</template>
-		<div class="exif-grid">
+		<div class="exif-grid" v-if="store.curFile">
 			<div class="exif-item">
 				<span class="exif-label">参数</span>
 				<span class="exif-value">
@@ -105,12 +115,13 @@
 				}}</span>
 			</div>
 		</div>
+		<el-empty description="配置不可用，请先添加图片" v-else></el-empty>
 	</el-card>
 </template>
 
 <script setup>
 import { useStore } from "../stores";
-import { convertExposureTime } from "../utils";
+import { convertExposureTime, selectFile } from "../utils";
 import { CameraFilled, InfoFilled } from "@element-plus/icons-vue";
 const store = useStore();
 </script>

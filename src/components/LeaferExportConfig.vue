@@ -6,7 +6,7 @@
 				<span>导出设置</span>
 			</div>
 		</template>
-		<el-form label-width="100px" label-position="left">
+		<el-form label-width="50px" label-position="left">
 			<el-form-item label="名称">
 				<el-input v-model="store.img.export.name" readonly></el-input>
 			</el-form-item>
@@ -20,24 +20,25 @@
 				<el-slider
 					v-model="store.img.export.quality"
 					:min="0.1"
-					:max="1"
+					:max="0.97"
 					:step="0.01"
 					show-input>
 				</el-slider>
 			</el-form-item>
+			<el-button type="primary" plain @click="store.exportImg">导 出</el-button>
 		</el-form>
 	</el-card>
 </template>
 
 <script setup>
 import { useStore } from "../stores";
-import { UploadFilled } from '@element-plus/icons-vue';
+import { UploadFilled } from "@element-plus/icons-vue";
 const store = useStore();
 </script>
 
 <style lang="less" scoped>
 .export-card {
-	margin: 10px;
+	margin: 20px 5px;
 	border-radius: 8px;
 	transition: all 0.3s ease;
 
@@ -53,29 +54,9 @@ const store = useStore();
 		font-weight: bold;
 
 		.el-icon {
-			font-size: 1.2em;
+			font-size: 1.5em;
 			color: var(--el-color-primary);
 		}
-	}
-
-	.el-form {
-		padding: 15px;
-
-		.el-form-item {
-			margin-bottom: 18px;
-		}
-	}
-
-	.el-input {
-		width: 100%;
-	}
-
-	.el-radio-group {
-		width: 100%;
-	}
-
-	.el-slider {
-		width: 100%;
 	}
 }
 </style>
