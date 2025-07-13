@@ -7,6 +7,7 @@
 	<h1>配置</h1>
 
 	<div style="overflow: auto">
+		<LeaferEXIF />
 		<LeaferLensConfig />
 		<LeaferBgConfig />
 		<LeaferTimeConfig />
@@ -33,6 +34,7 @@ import { inject } from "vue";
 import { ElMessage } from "element-plus";
 import LeaferTimeConfig from "./LeaferTimeConfig.vue";
 import LeaferLensConfig from "./LeaferLensConfig.vue";
+import LeaferEXIF from "./LeaferEXIF.vue";
 const store = useStore();
 
 function clearFileList() {
