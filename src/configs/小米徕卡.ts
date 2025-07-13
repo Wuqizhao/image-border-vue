@@ -89,7 +89,7 @@ const config: Config = {
 			x: 10,
 			y: 10,
 			blur: 50,
-			color: "gray",
+			color: "#666",
 		},
 	},
 	watermark: {

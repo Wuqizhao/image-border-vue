@@ -6,7 +6,7 @@
 					<el-icon>
 						<Setting />
 					</el-icon>
-					<span>配置</span>
+					<span>主图配置</span>
 				</div>
 			</template>
 			<el-form label-width="60px">
@@ -87,117 +87,6 @@
 						:predefine="preDefineColors"
 						show-alpha
 						v-model="store.config.img.shadow.color"></el-color-picker>
-				</el-form-item>
-			</el-form>
-		</el-card>
-		<el-card class="info-card" shadow="hover">
-			<template #header>
-				<div class="card-header">
-					<el-icon><InfoFilled /></el-icon>
-					<span>基础信息</span>
-				</div>
-			</template>
-			<el-form label-width="100px" label-position="left">
-				<el-form-item label="文件名">
-					<el-tag type="info">{{ store.img.fileName }}</el-tag>
-				</el-form-item>
-				<el-form-item label="分辨率">
-					<el-tag>{{ store.img.width }} × {{ store.img.height }}</el-tag>
-				</el-form-item>
-				<el-form-item label="大小">
-					<el-tag>{{ (store.img.size / 1024 / 1024).toFixed(2) }} MB</el-tag>
-				</el-form-item>
-				<el-form-item label="格式">
-					<el-tag type="success">{{ store.img.type }}</el-tag>
-				</el-form-item>
-				<el-form-item label="时间">
-					<el-tag type="warning">{{
-						Date(store.img.time).toLocaleString()
-					}}</el-tag>
-				</el-form-item>
-			</el-form>
-		</el-card>
-
-		<el-card class="exif-card" shadow="hover">
-			<template #header>
-				<div class="card-header">
-					<el-icon><CameraFilled /></el-icon>
-					<span>EXIF信息</span>
-				</div>
-			</template>
-			<div class="exif-grid">
-				<div class="exif-item">
-					<span class="exif-label">参数</span>
-					<span class="exif-value">
-						<span
-							>{{
-								convertExposureTime(store.img.exif.ExposureTime) || "--"
-							}}s</span
-						>
-						<span>f/{{ store.img.exif.FNumber.toFixed(1) || "--" }}</span>
-						<span>
-							{{ store.img.exif.FocalLength || "--" }}mm
-							<span v-if="store.img.exif.FocalLengthIn35mmFormat">
-								(等效{{ store.img.exif.FocalLengthIn35mmFormat }}mm)
-							</span>
-						</span>
-						<span>ISO {{ store.img.exif.ISO || "--" }}</span>
-					</span>
-				</div>
-
-				<div class="exif-divider"></div>
-				<div class="exif-item">
-					<span class="exif-label">镜头</span>
-					<span class="exif-value">{{ store.img.exif.LensModel || "--" }}</span>
-				</div>
-				<div class="exif-divider"></div>
-				<div class="exif-item">
-					<span class="exif-label">制造商</span>
-					<span class="exif-value">{{ store.img.exif.Make || "--" }}</span>
-				</div>
-				<div class="exif-divider"></div>
-				<div class="exif-item">
-					<span class="exif-label">型号</span>
-					<span class="exif-value">{{ store.img.exif.Model || "--" }}</span>
-				</div>
-				<div class="exif-divider"></div>
-				<div class="exif-item">
-					<span class="exif-label">版权</span>
-					<span class="exif-value">{{ store.img.exif.Copyright || "--" }}</span>
-				</div>
-				<div class="exif-divider"></div>
-				<div class="exif-item">
-					<span class="exif-label">作者</span>
-					<span class="exif-value">{{ store.img.exif.Artist || "--" }}</span>
-				</div>
-			</div>
-		</el-card>
-
-		<el-card class="export-card" shadow="hover">
-			<template #header>
-				<div class="card-header">
-					<el-icon><UploadFilled /></el-icon>
-					<span>导出设置</span>
-				</div>
-			</template>
-			<el-form label-width="100px" label-position="left">
-				<el-form-item label="名称">
-					<el-input v-model="store.img.export.name" readonly></el-input>
-				</el-form-item>
-				<el-form-item label="格式">
-					<el-radio-group v-model="store.img.export.ext">
-						<el-radio-button label="png">PNG</el-radio-button>
-						<el-radio-button label="jpeg">JPEG</el-radio-button>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="质量" v-if="store.img.export.ext === 'jpeg'">
-					<el-slider
-						v-model="store.img.export.quality"
-						:min="0.1"
-						:max="1"
-						:step="0.01"
-						show-input>
-					</el-slider>
 				</el-form-item>
 			</el-form>
 		</el-card>

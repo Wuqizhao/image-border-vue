@@ -1,6 +1,12 @@
 <template>
-	<h3>全局配置</h3>
-	<el-form label-width="80px">
+	<el-card class="global-config-card" shadow="hover">
+		<template #header>
+			<div class="card-header">
+				<el-icon><Setting /></el-icon>
+				<span>全局配置</span>
+			</div>
+		</template>
+		<el-form label-width="80px">
 		<el-form-item label="背景颜色">
 			<el-color-picker
 				v-model="store.config.fill"
@@ -36,13 +42,52 @@
 				:step="1"
 				show-input></el-slider>
 		</el-form-item>
-	</el-form>
+		</el-form>
+	</el-card>
 </template>
 
 <script setup>
 import { preDefineColors } from "../assets/tools";
 import { useStore } from "../stores";
+import { Setting } from '@element-plus/icons-vue';
 const store = useStore();
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.global-config-card {
+	margin: 10px;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+
+	&:hover {
+		box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+		transform: translateY(-2px);
+	}
+
+	.card-header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-weight: bold;
+
+		.el-icon {
+			font-size: 1.2em;
+			color: var(--el-color-primary);
+		}
+	}
+
+	.el-form {
+		padding: 10px 15px;
+	}
+
+	h4 {
+		margin: 15px 0 10px;
+		color: var(--el-text-color-primary);
+		font-size: 16px;
+	}
+
+	.el-form-item {
+		margin-bottom: 18px;
+	}
+}
+</style>

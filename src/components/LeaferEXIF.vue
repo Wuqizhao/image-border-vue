@@ -1,4 +1,31 @@
 <template>
+	<el-card class="info-card" shadow="hover">
+		<template #header>
+			<div class="card-header">
+				<el-icon><InfoFilled /></el-icon>
+				<span>基础信息</span>
+			</div>
+		</template>
+		<el-form label-width="100px" label-position="left">
+			<el-form-item label="文件名">
+				<el-tag type="info">{{ store.img.fileName }}</el-tag>
+			</el-form-item>
+			<el-form-item label="分辨率">
+				<el-tag>{{ store.img.width }} × {{ store.img.height }}</el-tag>
+			</el-form-item>
+			<el-form-item label="大小">
+				<el-tag>{{ (store.img.size / 1024 / 1024).toFixed(2) }} MB</el-tag>
+			</el-form-item>
+			<el-form-item label="格式">
+				<el-tag type="success">{{ store.img.type }}</el-tag>
+			</el-form-item>
+			<el-form-item label="时间">
+				<el-tag type="warning">{{
+					Date(store.img.time).toLocaleString()
+				}}</el-tag>
+			</el-form-item>
+		</el-form>
+	</el-card>
 	<el-card class="exif-card" shadow="hover">
 		<template #header>
 			<div class="card-header">
@@ -84,11 +111,34 @@
 <script setup>
 import { useStore } from "../stores";
 import { convertExposureTime } from "../utils";
-import { CameraFilled } from "@element-plus/icons-vue";
+import { CameraFilled, InfoFilled } from "@element-plus/icons-vue";
 const store = useStore();
 </script>
 
 <style lang="less" scoped>
+.info-card {
+	margin: 20px 10px;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+
+	&:hover {
+		box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+		transform: translateY(-2px);
+	}
+
+	.card-header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-weight: bold;
+
+		.el-icon {
+			font-size: 1.2em;
+			color: var(--el-color-primary);
+		}
+	}
+}
+
 .exif-card {
 	margin: 10px;
 	border-radius: 8px;
