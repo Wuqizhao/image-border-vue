@@ -1,12 +1,14 @@
 <template>
 	<div>
 		<h2>文件列表</h2>
-		<el-button
-			v-for="item in store.fileList"
-			:type="store.curFile.name == item.name ? 'primary' : ''"
-			plain>
-			{{ item.name }}
-		</el-button>
+		<div v-for="item in store.fileList">
+			<el-button
+				@click="store.curFile = item"
+				:type="store.curFile.name == item.name ? 'primary' : ''"
+				plain>
+				{{ item.name }}
+			</el-button>
+		</div>
 	</div>
 	<el-card class="info-card" shadow="hover">
 		<template #header>

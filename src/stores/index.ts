@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import type { Config, Img, LocalWaterMarkItem } from "../types";
 import { ElMessage } from "element-plus";
 
-import { deepClone } from "../utils";
+import { deepClone, selectFile } from "../utils";
 import type { Leafer } from "leafer-ui";
 
 export const useStore = defineStore(
@@ -55,22 +55,22 @@ export const useStore = defineStore(
 			console.log("【exportImg】", img.value?.export);
 			if (!leafer.value) {
 				// ElMessage.error("找不到leafer实例！");
-				console.log('111');
+				console.log("111");
 				return;
 			}
 			if (img.value?.export === undefined) {
 				// ElMessage.error("请先设置导出配置！");
-				console.log('222');
+				console.log("222");
 				return;
 			}
-			console.log('333');
+			console.log("333");
 			const {
 				ext = "jpeg",
 				quality = 1,
 				name = "leafer_export",
 			} = img.value?.export;
 
-			console.log("【aaa】",`${name.split(".")[0]}.${ext}`, {
+			console.log("【aaa】", `${name.split(".")[0]}.${ext}`, {
 				screenshot: true,
 				quality: ext === "png" ? 1 : quality,
 			});
@@ -78,6 +78,21 @@ export const useStore = defineStore(
 				screenshot: true,
 				quality: ext === "png" ? 1 : quality,
 			});
+		}
+
+		async function addFile() {
+			const files = await selectFile();
+			console.log('[addfile files]',files);
+			if (Array.isArray(files) && files.length > 0) {
+				fileList.value.push(...files);
+
+				// 当前没有图片，设置成第一张
+				if (!curFile.value) {
+					curFile.value = files[0];
+				}
+			}
+
+			console.log('filelist',fileList.value);
 		}
 
 		return {
@@ -92,6 +107,7 @@ export const useStore = defineStore(
 			resetStyle,
 			leafer,
 			exportImg,
+			addFile,
 		};
 	},
 	{

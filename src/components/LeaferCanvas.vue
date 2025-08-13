@@ -4,8 +4,9 @@
 		<el-empty
 			description="点击添加图片~"
 			v-show="!store.curFile"
-			@click="select"></el-empty>
+			@click="store.addFile"></el-empty>
 
+		<el-button @click="leafer && leafer.forceRender()">刷新</el-button>
 		<!-- <el-button type="primary" size="default" @click="exportLeafer"
 			>导出</el-button
 		> -->
@@ -24,7 +25,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 import { useStore } from "../stores";
-import { getImageSrc, selectFile } from "../utils";
+import { getImageSrc } from "../utils";
 import { Leafer, Rect, Text, type IRect, type IText } from "leafer-ui";
 import type { Img, Logo } from "../types";
 import { useExifStore } from "../stores/exif";
@@ -35,19 +36,18 @@ const exifStore = useExifStore();
 
 const store = useStore();
 const imgCanvas = ref<HTMLCanvasElement | null>(null);
-// const leafer = ref<Leafer | null>(null);
 const { leafer } = storeToRefs(store);
-// provide("leafer", leafer.value);
 
 function onDrop() {}
-async function select() {
-	const files = await selectFile();
+// async function select() {
+// 	const files = await selectFile();
 
-	if (files.length > 0) {
-		store.curFile = files[0];
-		store.fileList.push(...files);
-	}
-}
+// 	if (files.length > 0) {
+// 		store.curFile = files[0];
+// 		console.log('[files]',files);
+// 		store.fileList.push(...files);
+// 	}
+// }
 
 function importConfig() {
 	store.resetStyle();
@@ -113,9 +113,12 @@ async function draw(file: File = store.curFile as File) {
 
 		initLeafer(info);
 	};
+	img.onerror = () => {
+		console.log("【image加载失败】");
+	};
 }
 
-function initLeafer(context: Img) {
+async function initLeafer(context: Img) {
 	if (!imgCanvas.value) throw "找不到画布";
 	if (!store.curFile) throw "请先选择图片~";
 
@@ -152,6 +155,7 @@ function initLeafer(context: Img) {
 		});
 	} else {
 		leafer.value?.set({
+			// view: imgCanvas.value,
 			fill: fill || "#FFF",
 			width: width,
 			height: height,
@@ -160,28 +164,29 @@ function initLeafer(context: Img) {
 
 	// 绘制主图
 	let imgEl = leafer.value?.findOne("#img");
+	const url = getImageSrc(store.curFile).toString();
+	const imgConfig = {
+		x: imgX,
+		y: imgY,
+		fill: {
+			type: "image",
+			url: url,
+			// type: "solid",
+			// color: "#FF0000",
+		},
+		cornerRadius: img.cornerRadius,
+		shadow: img.shadow,
+	} as Partial<IRect>;
 	if (imgEl) {
-		imgEl.set({
-			x: imgX,
-			y: imgY,
-			fill: {
-				type: "image",
-				url: getImageSrc(store.curFile),
-			},
-			cornerRadius: img.cornerRadius,
-			shadow: img.shadow,
-		});
+		imgEl.set(imgConfig);
+		console.log("【更新主图】", store.curFile?.name, url);
 	} else {
 		imgEl = new Rect({
+			...imgConfig,
 			id: "img",
-			x: imgX,
-			y: imgY,
-			fill: {
-				type: "image",
-				url: getImageSrc(store.curFile),
-			},
 		});
 		leafer.value.add(imgEl);
+		console.log("【新建主图】", store.curFile?.name, url);
 	}
 
 	// 绘制的水印范围的背景
@@ -300,6 +305,16 @@ function initLeafer(context: Img) {
 			console.log("新建logo");
 		}
 	}
+
+	// leafer.value.forceUpdate();
+	setTimeout(() => {
+		imgEl.set({
+			fill: {
+				type: "image",
+				url: url,
+			},
+		});
+	}, 1000);
 }
 
 function updateLeaferText(leafer: Leafer, id: string = "", config: IText) {
@@ -376,7 +391,7 @@ onMounted(() => {
 		// leafer.value?.destroy();
 		leafer.value = null;
 	} catch (e) {
-		console.log('清理画布失败');
+		console.log("清理画布失败");
 	}
 	importConfig();
 });

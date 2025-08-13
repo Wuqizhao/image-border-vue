@@ -3,9 +3,6 @@ import type {
 	Config,
 	ImagesConfigItem,
 	Img,
-	LabelConfigItem,
-	
-	TextVerticalAlign,
 	WatermarkListBaseItem,
 	WatermarkListItem,
 } from "../types";

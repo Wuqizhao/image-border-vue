@@ -83,13 +83,21 @@
 			<el-form-item label="可编辑">
 				<el-switch v-model="props.config.editable"></el-switch>
 			</el-form-item>
+			<el-form-item label="字体">
+				<el-select v-model="props.config.fontFamily" placeholder="请选择字体">
+					<el-option
+						v-for="item in getSupportedFonts()"
+						:label="item"
+						:value="item.split('.')[0]"></el-option>
+				</el-select>
+			</el-form-item>
 			<slot></slot>
 		</el-form>
 	</el-card>
 </template>
 
 <script setup>
-import { preDefineColors } from "../assets/tools";
+import { getSupportedFonts, preDefineColors } from "../assets/tools";
 import { Edit } from "@element-plus/icons-vue";
 const props = defineProps({
 	config: {
@@ -98,6 +106,7 @@ const props = defineProps({
 			text: "Leafer",
 			fill: "#FF0000",
 			fontSize: 100,
+			fontFamily: "arial",
 		}),
 	},
 	title: {

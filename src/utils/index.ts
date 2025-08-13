@@ -822,6 +822,7 @@ export function selectFile(): Promise<File[]> {
 			const files = Array.from(target.files);
 			console.log("files", files);
 			resolve(files);
+			return files;
 		};
 	});
 }

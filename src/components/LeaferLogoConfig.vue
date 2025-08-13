@@ -1,6 +1,5 @@
 <template>
-	<h1>logo</h1>
-	<LeaferRectConfig :config="store.config.watermark.logo" />
+	<LeaferRectConfig :config="store.config.watermark.logo" title="LOGO配置" />
 </template>
 
 <script setup>
