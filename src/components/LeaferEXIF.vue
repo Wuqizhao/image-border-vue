@@ -38,7 +38,7 @@
 		</el-form>
 		<el-empty description="配置不可用，请先添加图片" v-else></el-empty>
 	</el-card>
-	<el-card class="exif-card" shadow="hover">
+	<el-card class="exif-card" shadow="hover" v-show="store.curFile">
 		<template #header>
 			<div class="card-header">
 				<el-icon><CameraFilled /></el-icon>

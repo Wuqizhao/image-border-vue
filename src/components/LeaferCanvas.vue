@@ -6,19 +6,84 @@
 			v-show="!store.curFile"
 			@click="store.addFile"></el-empty>
 
-		<el-button @click="leafer && leafer.forceRender()">刷新</el-button>
-		<!-- <el-button type="primary" size="default" @click="exportLeafer"
-			>导出</el-button
-		> -->
+		<div>
+			<el-dropdown style="margin-right: 12px">
+				<el-button circle title="图片列表" v-show="store.fileList.length > 0">
+					<el-icon>
+						<Picture />
+					</el-icon>
+				</el-button>
 
-		<!-- <div class="download" v-show="showTools && fileList.length > 0">
-			<Plus @click="selectFile(true)" />
-			<Delete @click="removeImg" />
-			<ArrowLeft v-if="fileList.length > 1" @click="prev" />
-			<ArrowRight v-if="fileList.length > 1" @click="next" />
-			<RefreshLeft @click="resetWatermark" />
-			<Download @click="exportLeafer" />
-		</div> -->
+				<template #dropdown>
+					<el-dropdown-menu>
+						<el-dropdown-item v-for="f in store.fileList" :key="f.name" @click="store.curFile = f">{{
+							f.name
+						}}</el-dropdown-item>
+					</el-dropdown-menu>
+				</template>
+			</el-dropdown>
+			<el-button
+				@click="store.resetStyle()"
+				circle
+				title="重置样式"
+				v-show="store.fileList.length > 0">
+				<el-icon>
+					<Refresh />
+				</el-icon>
+			</el-button>
+			<el-dropdown style="margin: 0px 12px">
+				<el-button circle title="样式预设">
+					<el-icon>
+						<Files />
+					</el-icon>
+				</el-button>
+
+				<template #dropdown>
+					<el-dropdown-menu>
+						<el-dropdown-item v-for="s in getWatermarkList()" @click="store.resetStyle(s.name)">{{
+							s.name
+						}}</el-dropdown-item>
+					</el-dropdown-menu>
+				</template>
+			</el-dropdown>
+
+			<el-button circle @click="store.addFile" title="添加图片">
+				<el-icon>
+					<Plus />
+				</el-icon>
+			</el-button>
+			<el-button
+				circle
+				@click="store.exportImg"
+				title="导出图片"
+				v-show="store.fileList.length > 0">
+				<el-icon>
+					<Download />
+				</el-icon>
+			</el-button>
+			<el-button circle @click="store.clearFileList" title="清空图片">
+				<el-icon>
+					<Delete />
+				</el-icon>
+			</el-button>
+			<el-button
+				circle
+				title="绘制上一张图片"
+				v-show="store.fileList.length > 1">
+				<el-icon>
+					<ArrowLeft />
+				</el-icon>
+			</el-button>
+			<el-button
+				circle
+				@click="store.drawNextImage"
+				title="绘制下一张图片"
+				v-show="store.fileList.length > 1">
+				<el-icon>
+					<ArrowRight />
+				</el-icon>
+			</el-button>
+		</div>
 	</div>
 </template>
 
@@ -32,6 +97,17 @@ import { useExifStore } from "../stores/exif";
 import Exifr from "exifr";
 import { watchThrottled } from "@vueuse/core";
 import { storeToRefs } from "pinia";
+import {
+	ArrowLeft,
+	ArrowRight,
+	Delete,
+	Download,
+	Files,
+	Plus,
+	Refresh,
+	Picture,
+} from "@element-plus/icons-vue";
+import { getWatermarkList } from "../assets/tools";
 const exifStore = useExifStore();
 
 const store = useStore();
@@ -39,15 +115,6 @@ const imgCanvas = ref<HTMLCanvasElement | null>(null);
 const { leafer } = storeToRefs(store);
 
 function onDrop() {}
-// async function select() {
-// 	const files = await selectFile();
-
-// 	if (files.length > 0) {
-// 		store.curFile = files[0];
-// 		console.log('[files]',files);
-// 		store.fileList.push(...files);
-// 	}
-// }
 
 function importConfig() {
 	store.resetStyle();
@@ -211,39 +278,6 @@ async function initLeafer(context: Img) {
 		leafer.value.add(bgEl);
 	}
 
-	// box
-	// const boxConfig = {
-	// 	width: 1000,
-	// 	height: 1000,
-	// 	fill: "#FF4B4B33",
-	// 	hoverStyle: {
-	// 		// // hover 样式
-	// 		fill: "#F00",
-	// 	},
-	// };
-	// let boxEl = leafer.value?.findOne("#box");
-	// if (!boxEl) {
-	// 	boxEl = new Box({
-	// 		...boxConfig,
-	// 		id: "box",
-	// 		zIndex: 1,
-	// 	});
-	// 	leafer.value.add(boxEl);
-	// } else {
-	// 	boxEl.set(boxConfig);
-	// }
-	// const circle = new Ellipse({
-	// 	x: 60,
-	// 	y: 60,
-	// 	width: 500,
-	// 	height: 500,
-	// 	fill: "#FEB027",
-	// 	draggable: true,
-	// 	zIndex: 2,
-	// });
-	// leafer.value.add(boxEl);
-	// boxEl.add(circle);
-
 	// 绘制型号
 	const centerY = rect1.y + (rect2.y - rect1.y) / 2;
 	const y_1_3 = rect1.y + (rect2.y - rect1.y) / 3;
@@ -333,56 +367,6 @@ function updateLeaferText(leafer: Leafer, id: string = "", config: IText) {
 	return el;
 }
 
-// function prev() {
-// 	const index = fileList.findIndex((item) => curFile === item);
-// 	if (index !== -1) {
-// 		// 找到上一张的坐标，支持循环
-// 		// changeCurFile(
-// 		// 	fileList[
-// 		// 		(index - 1 + fileList.length) % fileList.length
-// 		// 	]
-// 		// );
-// 	}
-// }
-// function next() {
-// 	const index = fileList.findIndex((item) => curFile === item);
-// 	if (index === -1) return;
-// 	// changeCurFile(fileList[(index + 1) % fileList.length]);
-// }
-
-// async function exportLeafer() {
-// 	try {
-// 		if (!leafer.value) {
-// 			ElMessage.warning("请先添加图片");
-// 			return;
-// 		}
-
-// 		// 使用Leafer的导出功能
-// 		const result = await leafer.value.export(
-// 			img.export.name + "." + img.export.ext,
-// 			{
-// 				quality: img.export.ext === "jpeg" ? img.export.quality : 1,
-// 				screenshot: true,
-// 			}
-// 		);
-
-// 		console.log("导出结果:", result);
-
-// 		if (result) {
-// 			ElMessage.success(`导出成功`);
-// 		} else {
-// 			ElMessage.warning("导出操作未完成");
-// 		}
-// 	} catch (error) {
-// 		console.error("导出失败:", error);
-// 		let errorMsg = "导出失败";
-// 		if (error instanceof Error) {
-// 			errorMsg += ": " + error.message;
-// 		}
-// 		ElMessage.error(errorMsg);
-// 	}
-// }
-
 onMounted(() => {
 	// 清空文件
 	store.curFile = null;
@@ -418,14 +402,6 @@ onUnmounted(() => {
 	max-height: 100vh;
 	overflow: hidden;
 	padding: 20px;
-	// border: 5px dashed salmon;
-
-	&:hover {
-		.download {
-			transform: translateY(0px);
-			transition-duration: 0.5s;
-		}
-	}
 
 	.leafer {
 		border: 1px solid silver;
@@ -439,29 +415,6 @@ onUnmounted(() => {
 		&:hover {
 			box-shadow: 0px 5px 20px gray;
 		}
-	}
-
-	.download {
-		background-color: rgba(0, 0, 0, 0.2);
-		position: absolute;
-		display: flex;
-		align-items: center;
-		gap: 5px;
-		padding: 3px;
-		border-radius: 3px;
-		transform: translateY(-200%);
-
-		> * {
-			color: #fff;
-			width: 20px;
-			height: 20px;
-
-			&:hover {
-				color: var(--el-color-primary);
-			}
-		}
-
-		cursor: pointer;
 	}
 }
 
@@ -477,10 +430,6 @@ onUnmounted(() => {
 		canvas {
 			max-height: 100%;
 		}
-	}
-
-	.download {
-		transform: translateY(0px);
 	}
 }
 </style>

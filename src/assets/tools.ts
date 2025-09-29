@@ -585,8 +585,8 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMEZ_5rRw5CVPpsGb88YlmJczm3178AAn3DMRs4AAH4V7vXffdQ9OpZAQADAgADdwADNgQ.jpeg",
 	},
 	{
-		name: "哈苏",
-		config: "哈苏",
+		name: "小米徕卡3",
+		config: "小米徕卡3",
 		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
 	},
 	// {
@@ -991,9 +991,7 @@ export const defaultImageConfig: ImagesConfigItem = {
 	blendMode: "normal",
 };
 
-export const defaultITextConfig = {
-	
-}
+export const defaultITextConfig = {};
 
 // export const defaultConfig: Required<Config> = {
 // 	name: "默认",
@@ -1181,5 +1179,3 @@ export const defaultExif = {
 	LensSerialNumber: "20322022",
 	GPSVersionID: "2.3.0.0",
 };
-
-

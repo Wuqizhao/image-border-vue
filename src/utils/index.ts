@@ -821,6 +821,10 @@ export function selectFile(): Promise<File[]> {
 			}
 			const files = Array.from(target.files);
 			console.log("files", files);
+
+			// 添加到pinia
+			
+
 			resolve(files);
 			return files;
 		};

@@ -84,12 +84,12 @@ const config: Config = {
 			left: 100,
 			right: 100,
 		},
-		cornerRadius: [40, 40, 40, 40],
+		cornerRadius: [0, 0, 0, 0],
 		shadow: {
 			x: 10,
 			y: 10,
-			blur: 50,
-			color: "#666",
+			blur: 10,
+			color: "#d2d2d200",
 		},
 	},
 	watermark: {

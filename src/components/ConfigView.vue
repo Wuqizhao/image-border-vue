@@ -1,13 +1,4 @@
 <template>
-	<div>
-		<el-button @click="selectFile" type="primary">添加文件</el-button>
-		<el-button @click="clearFileList" type="danger" plain>清空文件</el-button>
-		<el-button @click="store.exportImg" type="success" plain>导出</el-button>
-		<el-button type="warning" plain @click="store.resetStyle"
-			>重置样式</el-button
-		>
-	</div>
-
 	<el-tabs tab-position="right">
 		<el-tab-pane label="信息">
 			<LeaferEXIF />

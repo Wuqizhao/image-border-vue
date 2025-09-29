@@ -41,8 +41,8 @@ export const useStore = defineStore(
 
 		const img = ref<null | Img>(null);
 
-		async function resetStyle() {
-			const cfg = (await import("../configs/小米徕卡")).default;
+		async function resetStyle(name = "小米徕卡") {
+			const cfg = (await import("../configs/" + name)).default;
 			if (cfg) {
 				setConfig(cfg);
 				ElMessage.success("重置样式成功~");
@@ -52,28 +52,22 @@ export const useStore = defineStore(
 		const leafer = ref<null | Leafer>(null);
 
 		function exportImg() {
-			console.log("【exportImg】", img.value?.export);
+			// console.log("【exportImg】", img.value?.export);
 			if (!leafer.value) {
-				// ElMessage.error("找不到leafer实例！");
-				console.log("111");
+				ElMessage.error("导出失败：没有绘制的图片");
 				return;
 			}
 			if (img.value?.export === undefined) {
-				// ElMessage.error("请先设置导出配置！");
-				console.log("222");
+				ElMessage.error("请先设置导出配置！");
 				return;
 			}
-			console.log("333");
+
 			const {
 				ext = "jpeg",
 				quality = 1,
 				name = "leafer_export",
 			} = img.value?.export;
 
-			console.log("【aaa】", `${name.split(".")[0]}.${ext}`, {
-				screenshot: true,
-				quality: ext === "png" ? 1 : quality,
-			});
 			leafer.value?.export(`${name.split(".")[0]}.${ext}`, {
 				screenshot: true,
 				quality: ext === "png" ? 1 : quality,
@@ -82,7 +76,7 @@ export const useStore = defineStore(
 
 		async function addFile() {
 			const files = await selectFile();
-			console.log('[addfile files]',files);
+			console.log("[addfile files]", files);
 			if (Array.isArray(files) && files.length > 0) {
 				fileList.value.push(...files);
 
@@ -92,7 +86,34 @@ export const useStore = defineStore(
 				}
 			}
 
-			console.log('filelist',fileList.value);
+			console.log("filelist", fileList.value);
+		}
+
+		function clearFileList() {
+			fileList.value = [];
+			curFile.value = null;
+		}
+
+		function drawNextImage() {
+			console.log("drawNextImage");
+			if (fileList.value.length === 0) {
+				ElMessage.error("请先添加图片！");
+				return;
+			}
+			// 获取当前的图片的index
+			const curIndex = fileList.value.findIndex(
+				(item) => item.name === curFile.value?.name
+			);
+
+			if (!curFile.value || curIndex === -1) {
+				ElMessage.error("当前图片不在列表中，使用第一张！");
+				// 切换成第一张
+				curFile.value = fileList.value[0];
+				return;
+			}
+
+			// 循环切换到下一张
+			curFile.value = fileList.value[(curIndex + 1) % fileList.value.length];
 		}
 
 		return {
@@ -108,6 +129,8 @@ export const useStore = defineStore(
 			leafer,
 			exportImg,
 			addFile,
+			clearFileList,
+			drawNextImage,
 		};
 	},
 	{
