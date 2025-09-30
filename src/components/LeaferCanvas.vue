@@ -440,7 +440,7 @@ onUnmounted(() => {
 	}
 
 	#canvasBox {
-		max-height: 300px;
+		max-height: 360px;
 
 		canvas {
 			max-height: 100%;
