@@ -45,7 +45,7 @@ function caculate(imgW: number, imgH: number) {
 	const timeText = formatTime(store.img?.exif?.DateTimeOriginal || Date.now());
 	// 镜头
 	const lensText = store.img?.exif?.LensModel || "未获取到镜头信息";
-	console.log("exif", store.img?.exif);
+	console.log("exif:::", store.img?.exif);
 
 	return {
 		width: w,

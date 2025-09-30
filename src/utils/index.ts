@@ -796,7 +796,6 @@ export function formatFont(font: string) {
 
 export function selectFile(): Promise<File[]> {
 	return new Promise((resolve) => {
-		console.log("触发文件选择");
 		const input = document.createElement("input");
 		input.type = "file";
 		input.multiple = true;
@@ -810,9 +809,6 @@ export function selectFile(): Promise<File[]> {
 				return;
 			}
 			const files = Array.from(target.files);
-			console.log("files", files);
-
-			// 添加到pinia
 
 			resolve(files);
 			return files;

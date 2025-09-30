@@ -22,6 +22,7 @@
 			<h4>内边距</h4>
 			<el-form-item label="上边距">
 				<el-slider
+					disabled
 					v-model="store.config.global.paddings.top"
 					:max="500"
 					:step="1"
@@ -29,6 +30,7 @@
 			</el-form-item>
 			<el-form-item label="下边距">
 				<el-slider
+					disabled
 					v-model="store.config.global.paddings.bottom"
 					:max="500"
 					:step="1"
@@ -36,6 +38,7 @@
 			</el-form-item>
 			<el-form-item label="左边距">
 				<el-slider
+					disabled
 					v-model="store.config.global.paddings.left"
 					:max="500"
 					:step="1"
@@ -43,6 +46,7 @@
 			</el-form-item>
 			<el-form-item label="右边距">
 				<el-slider
+					disabled
 					v-model="store.config.global.paddings.right"
 					:max="500"
 					:step="1"

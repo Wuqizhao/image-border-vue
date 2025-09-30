@@ -85,7 +85,7 @@ export const useStore = defineStore(
 
 		async function addFile() {
 			const files = await selectFile();
-			console.log("[addfile files]", files);
+			// console.log("[addfile files]", files);
 			if (Array.isArray(files) && files.length > 0) {
 				fileList.value.push(...files);
 
@@ -95,7 +95,7 @@ export const useStore = defineStore(
 				}
 			}
 
-			console.log("filelist", fileList.value);
+			// console.log("filelist", fileList.value);
 		}
 
 		function clearFileList() {
@@ -104,7 +104,7 @@ export const useStore = defineStore(
 		}
 
 		function drawNextImage() {
-			console.log("drawNextImage");
+			// console.log("drawNextImage");
 			if (fileList.value.length === 0) {
 				ElMessage.error("请先添加图片！");
 				return;

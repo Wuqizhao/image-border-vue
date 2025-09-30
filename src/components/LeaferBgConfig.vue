@@ -13,24 +13,28 @@
 				<h3>图片边距</h3>
 				<el-form-item label="上边距">
 					<el-slider
+						disabled
 						:max="5000"
 						v-model="store.config.img.margin.top"
 						show-input></el-slider>
 				</el-form-item>
 				<el-form-item label="下边距">
 					<el-slider
+						disabled
 						:max="5000"
 						v-model="store.config.img.margin.bottom"
 						show-input></el-slider>
 				</el-form-item>
 				<el-form-item label="左边距">
 					<el-slider
+						disabled
 						:max="5000"
 						v-model="store.config.img.margin.left"
 						show-input></el-slider>
 				</el-form-item>
 				<el-form-item label="右边距">
 					<el-slider
+						disabled
 						:max="5000"
 						v-model="store.config.img.margin.right"
 						show-input></el-slider>

@@ -36,7 +36,7 @@
 					:max="1000"></el-slider>
 			</el-form-item>
 			<el-form-item label="拖动">
-				<el-switch v-model="props.config.draggable"></el-switch>
+				<el-switch v-model="props.config.draggable" disabled></el-switch>
 			</el-form-item>
 			<h3>圆角</h3>
 			<el-form-item label="左上角">

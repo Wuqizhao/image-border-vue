@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<!-- <div>
 		<h2>文件列表</h2>
 		<div v-for="item in store.fileList">
 			<el-button
@@ -9,7 +9,7 @@
 				{{ item.name }}
 			</el-button>
 		</div>
-	</div>
+	</div> -->
 	<el-card class="info-card" shadow="hover">
 		<template #header>
 			<div class="card-header">

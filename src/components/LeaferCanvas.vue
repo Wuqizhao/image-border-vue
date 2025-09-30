@@ -145,12 +145,10 @@ watchThrottled(
 );
 
 async function draw(file: File = store.curFile as File) {
-	// console.log("绘制");
 	if (!store.curFile) {
 		return;
 	}
 
-	console.log("【绘制】");
 	const img = new Image();
 	img.crossOrigin = "anonymous";
 	img.src = getImageSrc(file);
@@ -246,14 +244,14 @@ async function initLeafer(context: Img) {
 	} as Partial<IRect>;
 	if (imgEl) {
 		imgEl.set(imgConfig);
-		console.log("【更新主图】", store.curFile?.name, url);
+		// console.log("【更新主图】", store.curFile?.name, url);
 	} else {
 		imgEl = new Rect({
 			...imgConfig,
 			id: "img",
 		});
 		leafer.value.add(imgEl);
-		console.log("【新建主图】", store.curFile?.name, url);
+		// console.log("【新建主图】", store.curFile?.name, url);
 	}
 
 	// 绘制的水印范围的背景
@@ -332,11 +330,11 @@ async function initLeafer(context: Img) {
 
 		if (logoEl) {
 			logoEl.set(logoConfig);
-			console.log("更新logo");
+			// console.log("更新logo");
 		} else {
 			logoEl = new Rect({ ...logoConfig, id: "logo" });
 			leafer.value?.add(logoEl);
-			console.log("新建logo");
+			// console.log("新建logo");
 		}
 	}
 

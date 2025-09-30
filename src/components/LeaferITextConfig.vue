@@ -77,12 +77,6 @@
 					:max="1"
 					show-input></el-slider>
 			</el-form-item>
-			<el-form-item label="可拖动">
-				<el-switch v-model="props.config.draggable"></el-switch>
-			</el-form-item>
-			<el-form-item label="可编辑">
-				<el-switch v-model="props.config.editable"></el-switch>
-			</el-form-item>
 			<el-form-item label="字体">
 				<el-select v-model="props.config.fontFamily" placeholder="请选择字体">
 					<el-option
@@ -90,6 +84,12 @@
 						:label="item"
 						:value="item.split('.')[0]"></el-option>
 				</el-select>
+			</el-form-item>
+			<el-form-item label="可拖动">
+				<el-switch v-model="props.config.draggable" disabled></el-switch>
+			</el-form-item>
+			<el-form-item label="可编辑">
+				<el-switch v-model="props.config.editable" disabled></el-switch>
 			</el-form-item>
 			<slot></slot>
 		</el-form>
