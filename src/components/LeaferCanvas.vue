@@ -6,8 +6,13 @@
 			v-show="!store.curFile"
 			@click="store.addFile"></el-empty>
 
-		<div>
-			<el-dropdown style="margin-right: 12px">
+		<div class="toolbar">
+			<el-button circle @click="store.addFile" title="添加图片">
+				<el-icon>
+					<Plus />
+				</el-icon>
+			</el-button>
+			<el-dropdown v-show="store.fileList.length > 0">
 				<el-button circle title="图片列表" v-show="store.fileList.length > 0">
 					<el-icon>
 						<Picture />
@@ -16,9 +21,12 @@
 
 				<template #dropdown>
 					<el-dropdown-menu>
-						<el-dropdown-item v-for="f in store.fileList" :key="f.name" @click="store.curFile = f">{{
-							f.name
-						}}</el-dropdown-item>
+						<el-dropdown-item
+							v-for="f in store.fileList"
+							:key="f.name"
+							@click="store.curFile = f"
+							>{{ f.name }}</el-dropdown-item
+						>
 					</el-dropdown-menu>
 				</template>
 			</el-dropdown>
@@ -31,7 +39,7 @@
 					<Refresh />
 				</el-icon>
 			</el-button>
-			<el-dropdown style="margin: 0px 12px">
+			<el-dropdown>
 				<el-button circle title="样式预设">
 					<el-icon>
 						<Files />
@@ -40,27 +48,15 @@
 
 				<template #dropdown>
 					<el-dropdown-menu>
-						<el-dropdown-item v-for="s in getWatermarkList()" @click="store.resetStyle(s.name)">{{
-							s.name
-						}}</el-dropdown-item>
+						<el-dropdown-item
+							v-for="s in getWatermarkList()"
+							@click="store.resetStyle(s.name)"
+							>{{ s.name }}</el-dropdown-item
+						>
 					</el-dropdown-menu>
 				</template>
 			</el-dropdown>
 
-			<el-button circle @click="store.addFile" title="添加图片">
-				<el-icon>
-					<Plus />
-				</el-icon>
-			</el-button>
-			<el-button
-				circle
-				@click="store.exportImg"
-				title="导出图片"
-				v-show="store.fileList.length > 0">
-				<el-icon>
-					<Download />
-				</el-icon>
-			</el-button>
 			<el-button circle @click="store.clearFileList" title="清空图片">
 				<el-icon>
 					<Delete />
@@ -81,6 +77,15 @@
 				v-show="store.fileList.length > 1">
 				<el-icon>
 					<ArrowRight />
+				</el-icon>
+			</el-button>
+			<el-button
+				circle
+				@click="store.exportImg"
+				title="导出图片"
+				v-show="store.fileList.length > 0">
+				<el-icon>
+					<Download />
 				</el-icon>
 			</el-button>
 		</div>
@@ -116,10 +121,6 @@ const { leafer } = storeToRefs(store);
 
 function onDrop() {}
 
-function importConfig() {
-	store.resetStyle();
-}
-
 function changeCurFile(file: File | null) {
 	if (!file) {
 		store.curFile = null;
@@ -141,7 +142,7 @@ watchThrottled(
 		}
 		draw();
 	},
-	{ deep: true, throttle: 50 }
+	{ deep: true, throttle: 200 }
 );
 
 async function draw(file: File = store.curFile as File) {
@@ -346,7 +347,7 @@ async function initLeafer(context: Img) {
 				url: url,
 			},
 		});
-	}, 1000);
+	}, 800);
 }
 
 function updateLeaferText(leafer: Leafer, id: string = "", config: IText) {
@@ -375,7 +376,7 @@ onMounted(() => {
 	} catch (e) {
 		console.log("清理画布失败");
 	}
-	importConfig();
+	store.resetStyle();
 });
 
 onUnmounted(() => {
@@ -399,7 +400,9 @@ onUnmounted(() => {
 	position: relative;
 	max-height: 100vh;
 	overflow: hidden;
-	padding: 20px;
+	padding: 1rem;
+	// border: 3px dashed lightgreen;
+	box-sizing: border-box;
 
 	.leafer {
 		border: 1px solid silver;
@@ -412,6 +415,20 @@ onUnmounted(() => {
 
 		&:hover {
 			box-shadow: 0px 5px 20px gray;
+		}
+	}
+
+	.toolbar {
+		position: sticky;
+		bottom: 10px;
+		z-index: 2;
+		box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.2);
+		padding: 5px 10px;
+		border-radius: 50px;
+		display: flex;
+
+		> .el-dropdown {
+			margin: 0px 12px;
 		}
 	}
 }

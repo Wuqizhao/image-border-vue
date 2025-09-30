@@ -6,139 +6,6 @@
 			<ConfigView />
 			<el-backtop :right="10" :bottom="100" />
 		</div>
-
-		<!-- 批量导出 -->
-		<el-dialog
-			title="批量导出"
-			v-model="batchExportVisible"
-			style="max-width: 95%; width: fit-content; min-width: 300px">
-			<el-table :data="fileList" style="width: 100%">
-				<el-table-column prop="name" label="文件名"></el-table-column>
-				<el-table-column prop="size" label="文件大小">
-					<template #default="scope">
-						{{ (scope.row.size / 1024 / 1024).toFixed(2) }}M
-					</template>
-				</el-table-column>
-			</el-table>
-
-			<template #footer>
-				<el-button type="primary">全部导出</el-button>
-			</template>
-		</el-dialog>
-
-		<!-- 保存配置 -->
-		<!-- <el-dialog
-			title="保存配置"
-			v-model="saveConfigDialog.show"
-			style="width: 500px; max-width: 90%">
-			<el-form label-width="80px">
-				<el-form-item label="配置名称">
-					<el-input
-						v-model="saveConfigDialog.name"
-						placeholder="请输入配置名称"
-						clearable></el-input>
-				</el-form-item>
-				<el-form-item label="配置描述">
-					<el-input
-						v-model="saveConfigDialog.config"
-						placeholder="请输入配置描述"
-						disabled
-						type="textarea"
-						:rows="20"></el-input>
-				</el-form-item>
-			</el-form>
-			<template #footer>
-				<el-button type="primary" @click="saveConfig">保存</el-button>
-			</template>
-		</el-dialog> -->
-
-		<!-- 选择模板抽屉 -->
-		<el-drawer
-			v-model="showConfigDrawer"
-			:with-header="false"
-			title="模板列表"
-			:direction="isMobile() ? 'btt' : 'rtl'"
-			size="50%">
-			<h3
-				style="
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-				">
-				<b>样式模板</b>
-				<el-button
-					:text="true"
-					@click="showConfigDrawer = false"
-					style="font-size: 1.5rem"
-					>&times;</el-button
-				>
-			</h3>
-			<HorizontalScroll style="gap: 10px">
-				<div
-					v-for="(item, index) in watermarks"
-					:key="item.name"
-					style="
-						display: flex;
-						flex-direction: column;
-						justify-content: space-between;
-						align-items: center;
-						margin-top: 1rem;
-						gap: 20px;
-					">
-					<el-image
-						:width="240"
-						:height="180"
-						fit="cover"
-						@click="curWatermarkIndex = index"
-						style="
-							width: 240px;
-							max-height: 180px;
-							border: 1px solid #ccc;
-							cursor: pointer;
-							box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.3);
-						"
-						:style="{
-							border:
-								index === curWatermarkIndex
-									? '2px solid gray'
-									: '2px solid #ccc',
-						}"
-						:src="item?.url">
-						<template #placeholder>
-							<el-icon>
-								<Loading
-									style="
-										width: 48px;
-										height: 48px;
-										animation: rotate 1s linear infinite;
-									"
-									>加载中...
-								</Loading>
-							</el-icon>
-						</template>
-						<template #error>
-							<div
-								class="flex-center"
-								style="width: 240px; height: 180px; color: #ccc">
-								图片加载失败
-							</div>
-						</template>
-					</el-image>
-
-					<b
-						:style="{ color: index === curWatermarkIndex ? 'salmon' : 'black' }"
-						>{{ item.name }}</b
-					>
-					<el-button
-						:text="true"
-						type="danger"
-						v-if="item?.is_local"
-						@click="deleteWatermark(item.name, $event)"
-						>删除</el-button
-					>
-				</div>
-			</HorizontalScroll>
-		</el-drawer>
 	</div>
 </template>
 
@@ -150,11 +17,9 @@ import {
 	getSupportedFonts,
 	defaultImgValue,
 } from "../assets/tools";
-import { deepClone, isMobile } from "../utils";
+import { deepClone } from "../utils";
 import { ElMessage, ElNotification } from "element-plus";
-import { Loading } from "@element-plus/icons-vue";
 import type { Config, Img, WatermarkListItem } from "../types";
-import HorizontalScroll from "../components/HorizontalScroll.vue";
 import { useStore } from "../stores";
 const store = useStore();
 
@@ -164,25 +29,13 @@ import "@leafer-in/editor"; // 引入编辑器插件
 import LeaferCanvas from "../components/LeaferCanvas.vue";
 
 // 画布
-const showConfigDrawer = ref(false);
 
 const img = reactive<Img>({ ...defaultImgValue });
-const fileList = ref<File[]>([]);
 
 const watermarks = ref<WatermarkListItem[]>(getWatermarkList());
 const curWatermarkIndex = ref<number>(0);
-const batchExportVisible = ref(false);
 
 provide("img", img);
-function deleteWatermark(name: string, event: Event) {
-	// 阻止事件冒泡
-	event.stopPropagation();
-
-	if (store.deleteLocalWatermark(name)) {
-		watermarks.value = getWatermarkList();
-		curWatermarkIndex.value = 0;
-	}
-}
 
 // 监听
 watch(

@@ -315,7 +315,9 @@ export function isMobile() {
 		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
 			navigator.userAgent
 		);
-	return isMobile;
+	// 屏幕宽度
+	const screenWidth = window.screen.width < 768;
+	return isMobile || screenWidth;
 }
 
 // export function drawCustomLabelsAndImages(

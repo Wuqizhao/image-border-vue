@@ -1,5 +1,5 @@
 <template>
-	<el-tabs tab-position="right">
+	<el-tabs :tab-position="isMobile() ? 'top' : 'right'">
 		<el-tab-pane label="信息">
 			<LeaferEXIF />
 		</el-tab-pane>
@@ -34,7 +34,7 @@
 import ImageInfo from "./ImageInfo.vue";
 import { useStore } from "../stores";
 import LeaferBgConfig from "./LeaferBgConfig.vue";
-import { selectFile } from "../utils";
+import { isMobile, selectFile } from "../utils";
 import LeaferGlobalConfig from "./LeaferGlobalConfig.vue";
 import LeaferModelConfig from "./LeaferModelConfig.vue";
 import LeaferParamsConfig from "./LeaferParamsConfig.vue";
@@ -54,9 +54,13 @@ function clearFileList() {
 </script>
 
 <style lang="less" scoped>
+.el-tabs {
+	// border: 5px dashed rgb(173, 216, 230);
+	overflow: scroll;
+}
 .el-tab-pane {
 	overflow: scroll;
-	// border: 10px solid salmon;
+	// border: 5px solid salmon;
 	max-height: 100%;
 
 	// 隐藏滚动条
