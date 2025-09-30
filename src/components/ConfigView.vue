@@ -54,10 +54,6 @@ function clearFileList() {
 </script>
 
 <style lang="less" scoped>
-.el-tabs {
-	// border: 5px dashed rgb(173, 216, 230);
-	overflow: scroll;
-}
 .el-tab-pane {
 	overflow: scroll;
 	// border: 5px solid salmon;
@@ -66,6 +62,12 @@ function clearFileList() {
 	// 隐藏滚动条
 	&::-webkit-scrollbar {
 		display: none;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.el-tabs {
+		overflow: scroll;
 	}
 }
 </style>
