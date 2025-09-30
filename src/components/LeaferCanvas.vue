@@ -400,7 +400,7 @@ onUnmounted(() => {
 	position: relative;
 	max-height: 100vh;
 	overflow: hidden;
-	padding: 1rem;
+	padding: 5px;
 	// border: 3px dashed lightgreen;
 	box-sizing: border-box;
 
@@ -421,7 +421,7 @@ onUnmounted(() => {
 	.toolbar {
 		position: sticky;
 		bottom: 10px;
-		z-index: 2;
+		// z-index: 2;
 		box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.2);
 		padding: 5px 10px;
 		border-radius: 50px;
