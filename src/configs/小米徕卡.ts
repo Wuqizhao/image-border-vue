@@ -94,7 +94,7 @@ const config: Config = {
 	},
 	watermark: {
 		height: 0.1,
-		fill: "#FFF",
+		fill: "#FFFFFF00",
 		model: {
 			enable: true,
 			visible: true,

@@ -204,7 +204,7 @@
 
 <script setup lang="ts">
 import { preDefineColors, getSupportedFonts } from "../assets/tools";
-import { inject, onMounted } from "vue";
+import { inject } from "vue";
 import type { Img } from "../types";
 import { convertExposureTime } from "../utils";
 import HorizontalScroll from "./HorizontalScroll.vue";

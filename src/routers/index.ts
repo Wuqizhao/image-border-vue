@@ -8,11 +8,6 @@ const routes = [
 		component: () => import("../views/Watermark.vue"),
 	},
 	{
-		path: "/fabric",
-		name: "watermark2",
-		component: () => import("../views/Fabric.vue"),
-	},
-	{
 		path: "/grid",
 		name: "grid",
 		component: () => import("../views/Grid.vue"),

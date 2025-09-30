@@ -42,7 +42,16 @@ export const useStore = defineStore(
 		const img = ref<null | Img>(null);
 
 		async function resetStyle(name = "小米徕卡") {
-			const cfg = (await import("../configs/" + name)).default;
+			let cfg = null;
+			switch (name) {
+				case "小米徕卡3":
+					cfg = (await import("../configs/小米徕卡3")).default;
+					break;
+				default:
+					cfg = (await import("../configs/小米徕卡")).default;
+					break;
+			}
+
 			if (cfg) {
 				setConfig(cfg);
 				ElMessage.success("重置样式成功~");

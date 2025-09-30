@@ -1,14 +1,5 @@
-import { ElMessage, ElNotification } from "element-plus";
-import type {
-	AuxiliaryLines,
-	BlendMode,
-	BlendModeItem,
-	Config,
-	ImagesConfigItem,
-	Img,
-	Logo,
-	Point,
-} from "../types";
+import { ElMessage } from "element-plus";
+import type { AuxiliaryLines, BlendModeItem, Img, Point } from "../types";
 import { cameraBrands } from "../assets/tools";
 
 /**
@@ -229,59 +220,59 @@ export function getImageSrc(file: File | string, proxy: boolean = false) {
  *
  * @throws 当Logo图片加载失败时，会通过ElNotification显示错误信息
  */
-export async function drawLogo(
-	logoConfig: Logo | ImagesConfigItem,
-	ctx: CanvasRenderingContext2D,
-	x: number,
-	y: number,
-	opacity: number = 1,
-	rotate: number = 0,
-	blendMode: BlendMode = "normal"
-) {
-	const img = new Image();
-	img.crossOrigin = "anonymous"; // 必须设置
-	img.src = getImageSrc(logoConfig.url || logoConfig.name);
-	// if (!logoConfig.url) {
-	// 	throw new Error("Logo Url为空");
-	// }
-	// img.src = logoConfig.url;
-	img.onload = () => {
-		ctx.save();
-		if (logoConfig.circle) {
-			// 绘制圆形LOGO
-			ctx.beginPath();
-			ctx.arc(
-				x + logoConfig.width / 2,
-				y + logoConfig.height / 2,
-				logoConfig.width / 2,
-				0,
-				Math.PI * 2
-			);
-			ctx.clip();
-		}
-		ctx.globalAlpha = opacity;
+// export async function drawLogo(
+// 	logoConfig: Logo | ImagesConfigItem,
+// 	ctx: CanvasRenderingContext2D,
+// 	x: number,
+// 	y: number,
+// 	opacity: number = 1,
+// 	rotate: number = 0,
+// 	blendMode: BlendMode = "normal"
+// ) {
+// 	const img = new Image();
+// 	img.crossOrigin = "anonymous"; // 必须设置
+// 	img.src = getImageSrc(logoConfig.url || logoConfig.name);
+// 	// if (!logoConfig.url) {
+// 	// 	throw new Error("Logo Url为空");
+// 	// }
+// 	// img.src = logoConfig.url;
+// 	img.onload = () => {
+// 		ctx.save();
+// 		if (logoConfig.circle) {
+// 			// 绘制圆形LOGO
+// 			ctx.beginPath();
+// 			ctx.arc(
+// 				x + logoConfig.width / 2,
+// 				y + logoConfig.height / 2,
+// 				logoConfig.width / 2,
+// 				0,
+// 				Math.PI * 2
+// 			);
+// 			ctx.clip();
+// 		}
+// 		ctx.globalAlpha = opacity;
 
-		// 旋转角度
-		ctx.translate(x + logoConfig.width / 2, y + logoConfig.height / 2);
-		ctx.rotate((rotate * Math.PI) / 180);
-		ctx.translate(-(x + logoConfig.width / 2), -(y + logoConfig.height / 2));
+// 		// 旋转角度
+// 		ctx.translate(x + logoConfig.width / 2, y + logoConfig.height / 2);
+// 		ctx.rotate((rotate * Math.PI) / 180);
+// 		ctx.translate(-(x + logoConfig.width / 2), -(y + logoConfig.height / 2));
 
-		// 混合模式
-		ctx.globalCompositeOperation =
-			blendMode as CanvasRenderingContext2D["globalCompositeOperation"];
+// 		// 混合模式
+// 		ctx.globalCompositeOperation =
+// 			blendMode as CanvasRenderingContext2D["globalCompositeOperation"];
 
-		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
-		ctx.restore();
-		// URL.revokeObjectURL(img.src);
-	};
-	img.onerror = (err) => {
-		console.error("Logo加载失败:", err, logoConfig, img, img.src);
-		ElNotification.error({
-			title: "Logo加载失败",
-			message: err.toString(),
-		});
-	};
-}
+// 		ctx.drawImage(img, x, y, logoConfig.width, logoConfig.height);
+// 		ctx.restore();
+// 		// URL.revokeObjectURL(img.src);
+// 	};
+// 	img.onerror = (err) => {
+// 		console.error("Logo加载失败:", err, logoConfig, img, img.src);
+// 		ElNotification.error({
+// 			title: "Logo加载失败",
+// 			message: err.toString(),
+// 		});
+// 	};
+// }
 
 /**
  * 在画布上绘制一条直线
@@ -504,99 +495,98 @@ export function getLogoName(make: string = ""): string {
  * - rect1: 水印起始点坐标 {x, y}
  * - rect2: 水印终点坐标 {x, y}
  */
-export function caculateCanvasSize(config: Config, img: Img) {
-	const rect1 = { x: 0, y: 0 };
-	const rect2 = { x: 0, y: 0 };
-	const { paddings: imgPaddings, watermark, margin } = config;
-	const {
-		position,
-		height: watermarkHeight,
-		paddings: watermarkPaddings,
-	} = watermark;
+// export function caculateCanvasSize(config: Config, img: Img) {
+// 	const rect1 = { x: 0, y: 0 };
+// 	const rect2 = { x: 0, y: 0 };
+// 	const { paddings: imgPaddings, watermark, margin } = config;
+// 	const {
+// 		height: watermarkHeight,
+// 		paddings: watermarkPaddings,
+// 	} = watermark;
 
-	// 根据图片宽高比调整基础尺寸
-	const isPortrait = img.height > img.width;
-	let canvasWidth = img.width + imgPaddings.left + imgPaddings.right;
-	let canvasHeight = img.height + imgPaddings.top + imgPaddings.bottom;
+// 	// 根据图片宽高比调整基础尺寸
+// 	const isPortrait = img.height > img.width;
+// 	let canvasWidth = img.width + imgPaddings.left + imgPaddings.right;
+// 	let canvasHeight = img.height + imgPaddings.top + imgPaddings.bottom;
 
-	// 如果是竖图，调整水印区域计算方式
-	// if (isPortrait) {
-	// 	canvasHeight =
-	// 		img.height * (1 + watermarkHeight) +
-	// 		imgPaddings.top +
-	// 		imgPaddings.bottom +
-	// 		watermarkPaddings.top +
-	// 		watermarkPaddings.bottom;
-	// }
+// 	// 如果是竖图，调整水印区域计算方式
+// 	// if (isPortrait) {
+// 	// 	canvasHeight =
+// 	// 		img.height * (1 + watermarkHeight) +
+// 	// 		imgPaddings.top +
+// 	// 		imgPaddings.bottom +
+// 	// 		watermarkPaddings.top +
+// 	// 		watermarkPaddings.bottom;
+// 	// }
 
-	if (position === "left" || position === "right") {
-		// 横版水印布局
-		canvasWidth +=
-			watermarkHeight * canvasWidth +
-			watermarkPaddings.left +
-			watermarkPaddings.right;
-		rect1.y = imgPaddings.top;
-		rect2.y = canvasHeight - imgPaddings.bottom;
+// 	if (position === "left" || position === "right") {
+// 		// 横版水印布局
+// 		canvasWidth +=
+// 			watermarkHeight * canvasWidth +
+// 			watermarkPaddings.left +
+// 			watermarkPaddings.right;
+// 		rect1.y = imgPaddings.top;
+// 		rect2.y = canvasHeight - imgPaddings.bottom;
 
-		if (position === "left") {
-			rect1.x = 0;
-			rect2.x =
-				watermarkHeight * canvasWidth +
-				watermarkPaddings.left +
-				watermarkPaddings.right;
-		} else {
-			rect1.x = imgPaddings.left + img.width;
-			rect2.x = canvasWidth;
-		}
-	} else if (position === "inner") {
-		// 内嵌水印布局
-		rect1.x = watermarkPaddings.left + imgPaddings.left;
-		rect1.y = watermarkPaddings.top;
-		rect2.x = canvasWidth - watermarkPaddings.right - imgPaddings.right;
-		rect2.y = canvasHeight - watermarkPaddings.bottom - imgPaddings.bottom;
-	} else {
-		// 上下水印布局
-		if (isPortrait) {
-			// 竖图特殊处理
-			canvasHeight +=
-				watermarkHeight * img.width +
-				watermarkPaddings.top +
-				watermarkPaddings.bottom;
-		} else {
-			canvasHeight +=
-				watermarkHeight * canvasHeight +
-				watermarkPaddings.top +
-				watermarkPaddings.bottom;
-		}
+// 		if (position === "left") {
+// 			rect1.x = 0;
+// 			rect2.x =
+// 				watermarkHeight * canvasWidth +
+// 				watermarkPaddings.left +
+// 				watermarkPaddings.right;
+// 		} else {
+// 			rect1.x = imgPaddings.left + img.width;
+// 			rect2.x = canvasWidth;
+// 		}
+// 	} else if (position === "inner") {
+// 		// 内嵌水印布局
+// 		rect1.x = watermarkPaddings.left + imgPaddings.left;
+// 		rect1.y = watermarkPaddings.top;
+// 		rect2.x = canvasWidth - watermarkPaddings.right - imgPaddings.right;
+// 		rect2.y = canvasHeight - watermarkPaddings.bottom - imgPaddings.bottom;
+// 	} else {
+// 		// 上下水印布局
+// 		if (isPortrait) {
+// 			// 竖图特殊处理
+// 			canvasHeight +=
+// 				watermarkHeight * img.width +
+// 				watermarkPaddings.top +
+// 				watermarkPaddings.bottom;
+// 		} else {
+// 			canvasHeight +=
+// 				watermarkHeight * canvasHeight +
+// 				watermarkPaddings.top +
+// 				watermarkPaddings.bottom;
+// 		}
 
-		rect1.x = imgPaddings.left;
-		rect2.x = canvasWidth - imgPaddings.right;
+// 		rect1.x = imgPaddings.left;
+// 		rect2.x = canvasWidth - imgPaddings.right;
 
-		if (position === "top") {
-			rect1.y = watermarkPaddings.top;
-			rect2.y =
-				watermarkPaddings.top +
-				watermarkPaddings.bottom +
-				(isPortrait
-					? watermarkHeight * img.width
-					: watermarkHeight * canvasHeight);
-		} else {
-			rect1.y =
-				imgPaddings.top +
-				img.height +
-				imgPaddings.bottom +
-				watermarkPaddings.top;
-			rect2.y = canvasHeight - watermarkPaddings.bottom;
-		}
-	}
+// 		if (position === "top") {
+// 			rect1.y = watermarkPaddings.top;
+// 			rect2.y =
+// 				watermarkPaddings.top +
+// 				watermarkPaddings.bottom +
+// 				(isPortrait
+// 					? watermarkHeight * img.width
+// 					: watermarkHeight * canvasHeight);
+// 		} else {
+// 			rect1.y =
+// 				imgPaddings.top +
+// 				img.height +
+// 				imgPaddings.bottom +
+// 				watermarkPaddings.top;
+// 			rect2.y = canvasHeight - watermarkPaddings.bottom;
+// 		}
+// 	}
 
-	if (margin) {
-		canvasWidth += margin.left + margin.right;
-		canvasHeight += margin.top + margin.bottom;
-	}
+// 	if (margin) {
+// 		canvasWidth += margin.left + margin.right;
+// 		canvasHeight += margin.top + margin.bottom;
+// 	}
 
-	return { rect1, rect2, canvasWidth, canvasHeight };
-}
+// 	return { rect1, rect2, canvasWidth, canvasHeight };
+// }
 
 /**
  * 将 EXIF 中的 GPS 坐标信息拼接成经纬度
@@ -823,7 +813,6 @@ export function selectFile(): Promise<File[]> {
 			console.log("files", files);
 
 			// 添加到pinia
-			
 
 			resolve(files);
 			return files;

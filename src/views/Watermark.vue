@@ -211,38 +211,8 @@ function importConfig(val: number): void {
 		: watermark.config;
 	let configPromise = null;
 	switch (filename) {
-		case "哈苏":
-			configPromise = import("../configs/哈苏");
-			break;
-		case "小米徕卡2":
-			configPromise = import("../configs/小米徕卡2");
-			break;
-		case "默认样式":
-			configPromise = import("../configs/默认样式");
-			break;
-		case "纯图标":
-			configPromise = import("../configs/纯图标");
-			break;
-		case "经典模式":
-			configPromise = import("../configs/经典模式");
-			break;
-		case "经典模糊":
-			configPromise = import("../configs/经典模糊");
-			break;
-		case "印象毛玻璃":
-			configPromise = import("../configs/印象毛玻璃");
-			break;
-		case "时间+型号":
-			configPromise = import("../configs/时间+型号");
-			break;
-		case "蔡司水印":
-			configPromise = import("../configs/蔡司水印");
-			break;
-		case "XMAGE":
-			configPromise = import("../configs/XMAGE");
-			break;
-		case "Lumix":
-			configPromise = import("../configs/Lumix");
+		case "小米徕卡3":
+			configPromise = import("../configs/小米徕卡3");
 			break;
 		default:
 			configPromise = import("../configs/小米徕卡");

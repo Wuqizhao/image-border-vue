@@ -113,10 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IText } from "leafer-ui";
 import { getSupportedFonts } from "../assets/tools";
-import { onMounted, ref } from "vue";
-import { useStore } from "../stores/index";
 
 const { config, showMore, maxSize, labelWidth } = defineProps({
 	config: { type: Object, required: true, default: () => ({}) },
