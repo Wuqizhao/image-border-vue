@@ -10,55 +10,51 @@
 				</div>
 			</template>
 			<el-form label-width="60px">
-				<h3>图片边距</h3>
+				<h3>图片外边距</h3>
 				<el-form-item label="上边距">
 					<el-slider
-						disabled
-						:max="5000"
-						v-model="store.config.img.margin.top"
-						show-input></el-slider>
+						:max="100"
+						:step="0.1"
+						v-model="store.config.img.margin.top"></el-slider>
 				</el-form-item>
 				<el-form-item label="下边距">
 					<el-slider
-						disabled
-						:max="5000"
-						v-model="store.config.img.margin.bottom"
-						show-input></el-slider>
+						:max="100"
+						:step="0.1"
+						v-model="store.config.img.margin.bottom"></el-slider>
 				</el-form-item>
 				<el-form-item label="左边距">
 					<el-slider
-						disabled
-						:max="5000"
-						v-model="store.config.img.margin.left"
-						show-input></el-slider>
+						:max="100"
+						:step="0.1"
+						v-model="store.config.img.margin.left"></el-slider>
 				</el-form-item>
 				<el-form-item label="右边距">
 					<el-slider
-						disabled
-						:max="5000"
-						v-model="store.config.img.margin.right"
-						show-input></el-slider>
+						:max="100"
+						:step="0.1"
+						v-model="store.config.img.margin.right"></el-slider>
 				</el-form-item>
 				<h3>圆角</h3>
-				<el-form-item label="左上">
+				<el-form-item label="左上" label-width="50">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[0]"
 						show-input></el-slider>
 				</el-form-item>
-				<el-form-item label="右上">
+				<el-form-item label="右上" label-width="50">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[1]"
 						show-input></el-slider>
 				</el-form-item>
-				<el-form-item label="右下">
+				<el-form-item label="右下" label-width="50">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[2]"
 						show-input></el-slider>
 				</el-form-item>
-				<el-form-item label="左下">
+				<el-form-item label="左下" label-width="50">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[3]"

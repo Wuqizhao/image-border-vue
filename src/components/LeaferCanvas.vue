@@ -193,6 +193,7 @@ async function initLeafer(context: Img) {
 		return;
 	}
 
+	console.log('store.config',store.config);
 	const {
 		img,
 		fill,

@@ -3,26 +3,41 @@ import { useStore } from "../stores";
 import { convertExposureTime, formatTime, replaceZ } from "../utils";
 
 function caculate(imgW: number, imgH: number) {
+	const store = useStore();
 	const {
 		global: { paddings: globalPaddings },
 		img: { margin: imgMargin },
 		watermark: { height, model, params },
-	} = config;
+	} = store.config || config;
+
+	// 计算实际的画布内边距
+	const canvasPaddings = {
+		top: (globalPaddings.top * imgH) / 100,
+		bottom: (globalPaddings.bottom * imgH) / 100,
+		left: (globalPaddings.left * imgW) / 100,
+		right: (globalPaddings.right * imgW) / 100,
+	};
+	// 计算实际的图片外边距
+	const realImgMargin = {
+		top: (imgMargin.top * imgH) / 100,
+		bottom: (imgMargin.bottom * imgH) / 100,
+		left: (imgMargin.left * imgW) / 100,
+		right: (imgMargin.right * imgW) / 100,
+	};
 
 	const w =
 		imgW +
-		imgMargin.left +
-		imgMargin.right +
-		globalPaddings.left +
-		globalPaddings.right;
+		realImgMargin.left +
+		realImgMargin.right +
+		canvasPaddings.left +
+		canvasPaddings.right;
 	const h =
 		imgH +
-		imgMargin.top +
-		imgMargin.bottom +
+		realImgMargin.top +
+		realImgMargin.bottom +
 		height * imgH +
-		globalPaddings.top +
-		globalPaddings.bottom;
-	const store = useStore();
+		canvasPaddings.top +
+		canvasPaddings.bottom;
 
 	let modelText = model.text || store.img?.exif?.Model || "未知型号";
 	model.replaceZ && (modelText = replaceZ(modelText));
@@ -45,20 +60,19 @@ function caculate(imgW: number, imgH: number) {
 	const timeText = formatTime(store.img?.exif?.DateTimeOriginal || Date.now());
 	// 镜头
 	const lensText = store.img?.exif?.LensModel || "未获取到镜头信息";
-	console.log("exif:::", store.img?.exif);
 
 	return {
 		width: w,
 		height: h,
-		imgX: globalPaddings.left + imgMargin.left,
-		imgY: globalPaddings.top + imgMargin.top,
+		imgX: canvasPaddings.left + realImgMargin.left,
+		imgY: canvasPaddings.top + realImgMargin.top,
 		rect1: {
-			x: imgMargin.left + globalPaddings.left,
-			y: imgMargin.top + globalPaddings.top + imgH + imgMargin.bottom,
+			x: realImgMargin.left + canvasPaddings.left,
+			y: realImgMargin.top + canvasPaddings.top + imgH + realImgMargin.bottom,
 		},
 		rect2: {
-			x: w - imgMargin.right - globalPaddings.right,
-			y: h - globalPaddings.bottom,
+			x: w - realImgMargin.right - canvasPaddings.right,
+			y: h - canvasPaddings.bottom,
 		},
 		modelText: modelText.toString(),
 		paramsText: paramsText.toString(),
@@ -71,18 +85,18 @@ const config: Config = {
 	fill: "#FFF",
 	global: {
 		paddings: {
-			top: 0,
-			bottom: 100,
-			left: 0,
-			right: 0,
+			top: 2,
+			bottom: 0,
+			left: 2,
+			right: 2,
 		},
 	},
 	img: {
 		margin: {
-			top: 100,
-			bottom: 100,
-			left: 100,
-			right: 100,
+			top: 0,
+			bottom: 0,
+			left: 0,
+			right: 0,
 		},
 		cornerRadius: [0, 0, 0, 0],
 		shadow: {
