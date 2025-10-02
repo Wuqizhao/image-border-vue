@@ -589,6 +589,16 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		config: "小米徕卡3",
 		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
 	},
+	{
+		name: "样式1",
+		config: "样式1",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
+	},
+	{
+		name: "样式2",
+		config: "样式2",
+		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
+	},
 	// {
 	// 	name: "Lumix",
 	// 	config: "Lumix",

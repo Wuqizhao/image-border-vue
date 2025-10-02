@@ -47,6 +47,12 @@ export const useStore = defineStore(
 				case "小米徕卡3":
 					cfg = (await import("../configs/小米徕卡3")).default;
 					break;
+				case "样式1":
+					cfg = (await import("../configs/样式1")).default;
+					break;
+				case "样式2":
+					cfg = (await import("../configs/样式2")).default;
+					break;
 				default:
 					cfg = (await import("../configs/小米徕卡")).default;
 					break;

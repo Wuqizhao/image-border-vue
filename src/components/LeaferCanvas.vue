@@ -193,7 +193,7 @@ async function initLeafer(context: Img) {
 		return;
 	}
 
-	console.log('store.config',store.config);
+	console.log("store.config", store.config);
 	const {
 		img,
 		fill,
@@ -290,14 +290,20 @@ async function initLeafer(context: Img) {
 	} as IText;
 	updateLeaferText(leafer.value as Leafer, "model", modelConfig);
 
-	// 绘制参数
-	const paramsConfig = {
-		...params,
-		y: time.visible ? y_1_3 : centerY,
-		x: rect2.x,
-		text: params.text || paramsText,
-	} as IText;
-	updateLeaferText(leafer.value as Leafer, "params", paramsConfig);
+	if (params.enable && params.visible) {
+		// 绘制参数
+		const paramsConfig = {
+			...params,
+			y: time.visible ? y_1_3 : centerY,
+			x: rect2.x,
+			text: params.text || paramsText,
+		} as IText;
+		updateLeaferText(leafer.value as Leafer, "params", paramsConfig);
+	}
+	else {
+		const paramsEl = leafer.value?.findOne("#params");
+		paramsEl && paramsEl.remove();
+	}
 
 	// 绘制时间
 	const timeConfig = {

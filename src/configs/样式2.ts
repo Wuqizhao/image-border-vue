@@ -35,7 +35,6 @@ function caculate(imgW: number, imgH: number) {
 		imgH +
 		realImgMargin.top +
 		realImgMargin.bottom +
-		height * imgH +
 		canvasPaddings.top +
 		canvasPaddings.bottom;
 
@@ -68,11 +67,11 @@ function caculate(imgW: number, imgH: number) {
 		imgY: canvasPaddings.top + realImgMargin.top,
 		rect1: {
 			x: realImgMargin.left + canvasPaddings.left,
-			y: realImgMargin.top + canvasPaddings.top + imgH + realImgMargin.bottom,
+			y: h - realImgMargin.bottom - canvasPaddings.bottom - (imgH * height),
 		},
 		rect2: {
 			x: w - realImgMargin.right - canvasPaddings.right,
-			y: h - canvasPaddings.bottom,
+			y: h - realImgMargin.bottom - canvasPaddings.bottom,
 		},
 		modelText: modelText.toString(),
 		paramsText: paramsText.toString(),
@@ -85,16 +84,16 @@ const config: Config = {
 	fill: "#FFF",
 	global: {
 		paddings: {
-			top: 3,
-			bottom: 2,
-			left: 2,
-			right: 2,
+			top: 0,
+			bottom: 0,
+			left: 0,
+			right: 0,
 		},
 	},
 	img: {
 		margin: {
 			top: 0,
-			bottom: 2,
+			bottom: 0,
 			left: 0,
 			right: 0,
 		},
@@ -128,7 +127,7 @@ const config: Config = {
 		},
 		params: {
 			enable: true,
-			visible: true,
+			visible: false,
 			text: "",
 			fontSize: 100,
 			fill: "#888",
@@ -160,12 +159,12 @@ const config: Config = {
 			editable: true,
 		},
 		lens: {
-			enable: true,
+			enable: false,
 			text: "",
 			fontSize: 80,
 			draggable: true,
 			verticalAlign: "middle",
-			visible: true,
+			visible: false,
 			fill: "#888",
 			fontWeight: "normal",
 			textDecoration: "none",
@@ -184,7 +183,7 @@ const config: Config = {
 			name: "nikon",
 			width: 200,
 			height: 200,
-			cornerRadius: [0, 0, 0, 0],
+			cornerRadius: [500, 500, 500, 500],
 		},
 	},
 	caculate: caculate,

@@ -29,15 +29,27 @@
 					v-model="props.config.width"
 					:max="1000"></el-slider>
 			</el-form-item>
-			<el-form-item label="长度">
+			<el-form-item label="高度">
 				<el-slider
 					show-input
 					v-model="props.config.height"
 					:max="1000"></el-slider>
 			</el-form-item>
-			<el-form-item label="拖动">
-				<el-switch v-model="props.config.draggable" disabled></el-switch>
+			<el-form-item label="同步">
+				<el-button
+					size="small"
+					@click="props.config.height = props.config.width">
+					高度
+				</el-button>
+				<el-button
+					size="small"
+					@click="props.config.width = props.config.height">
+					宽度
+				</el-button>
 			</el-form-item>
+			<!-- <el-form-item label="拖动">
+				<el-switch v-model="props.config.draggable" disabled></el-switch>
+			</el-form-item> -->
 			<h3>圆角</h3>
 			<el-form-item label="左上角">
 				<el-slider
