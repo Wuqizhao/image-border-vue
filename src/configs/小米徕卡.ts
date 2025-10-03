@@ -1,29 +1,16 @@
 import type { Config } from "../types";
 import { useStore } from "../stores";
 import { convertExposureTime, formatTime, replaceZ } from "../utils";
+import { commonCaculate } from "../assets/tools";
 
 function caculate(imgW: number, imgH: number) {
 	const store = useStore();
 	const {
-		global: { paddings: globalPaddings },
-		img: { margin: imgMargin },
 		watermark: { height, model, params },
 	} = store.config || config;
 
-	// 计算实际的画布内边距
-	const canvasPaddings = {
-		top: (globalPaddings.top * imgH) / 100,
-		bottom: (globalPaddings.bottom * imgH) / 100,
-		left: (globalPaddings.left * imgW) / 100,
-		right: (globalPaddings.right * imgW) / 100,
-	};
-	// 计算实际的图片外边距
-	const realImgMargin = {
-		top: (imgMargin.top * imgH) / 100,
-		bottom: (imgMargin.bottom * imgH) / 100,
-		left: (imgMargin.left * imgW) / 100,
-		right: (imgMargin.right * imgW) / 100,
-	};
+	const { canvasPaddings, realImgMargin, realWatermarkPaddings } =
+		commonCaculate(store.config || config, imgW, imgH);
 
 	const w =
 		imgW +
@@ -67,12 +54,21 @@ function caculate(imgW: number, imgH: number) {
 		imgX: canvasPaddings.left + realImgMargin.left,
 		imgY: canvasPaddings.top + realImgMargin.top,
 		rect1: {
-			x: realImgMargin.left + canvasPaddings.left,
-			y: realImgMargin.top + canvasPaddings.top + imgH + realImgMargin.bottom,
+			x: realImgMargin.left + canvasPaddings.left + realWatermarkPaddings.left,
+			y:
+				realImgMargin.top +
+				canvasPaddings.top +
+				imgH +
+				realImgMargin.bottom +
+				realWatermarkPaddings.top,
 		},
 		rect2: {
-			x: w - realImgMargin.right - canvasPaddings.right,
-			y: h - canvasPaddings.bottom,
+			x:
+				w -
+				realImgMargin.right -
+				canvasPaddings.right -
+				realWatermarkPaddings.right,
+			y: h - canvasPaddings.bottom - realWatermarkPaddings.bottom,
 		},
 		modelText: modelText.toString(),
 		paramsText: paramsText.toString(),

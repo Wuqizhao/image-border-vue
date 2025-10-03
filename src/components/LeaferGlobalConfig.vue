@@ -26,11 +26,23 @@
 					show-alpha
 					:predefine="preDefineColors"></el-color-picker>
 			</el-form-item>
-			<el-form-item label="水印内边距" label-width="84px">
-				
-			</el-form-item>
 			<el-divider></el-divider>
+			<h4>水印内边距</h4>
+			<el-form-item label="上边距" label-width="55px">
+				<el-slider v-model="store.config.watermark.paddings.top"></el-slider>
+			</el-form-item>
+			<el-form-item label="下边距" label-width="55px">
+				<el-slider v-model="store.config.watermark.paddings.bottom"></el-slider>
+			</el-form-item>
+			<el-form-item label="左边距" label-width="55px">
+				<el-slider v-model="store.config.watermark.paddings.left"></el-slider>
+			</el-form-item>
+			<el-form-item label="右边距" label-width="55px">
+				<el-slider v-model="store.config.watermark.paddings.right"></el-slider>
+			</el-form-item>
 			
+			<el-divider></el-divider>
+
 			<h4>画布内边距</h4>
 			<el-form-item label="上边距">
 				<el-slider
@@ -61,6 +73,7 @@
 					show-input></el-slider>
 			</el-form-item>
 			<el-button size="small" @click="syncPaddings">从上边距同步</el-button>
+			<el-button size="small" @click="resetPaddings">归 零</el-button>
 		</el-form>
 	</el-card>
 </template>
@@ -71,11 +84,19 @@ import { useStore } from "../stores";
 import { Setting } from "@element-plus/icons-vue";
 const store = useStore();
 
-
 function syncPaddings() {
 	store.config.global.paddings.right = store.config.global.paddings.top;
 	store.config.global.paddings.bottom = store.config.global.paddings.top;
 	store.config.global.paddings.left = store.config.global.paddings.top;
+}
+
+function resetPaddings() {
+	store.config.global.paddings = {
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
+	};
 }
 </script>
 

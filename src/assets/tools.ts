@@ -1189,3 +1189,39 @@ export const defaultExif = {
 	LensSerialNumber: "20322022",
 	GPSVersionID: "2.3.0.0",
 };
+
+export function commonCaculate(config: Config, imgW: number, imgH: number) {
+	const {
+		global: { paddings: globalPaddings },
+		img: { margin: imgMargin },
+		watermark: { paddings: watermarkPaddings },
+	} = config;
+
+	// 计算实际的画布内边距
+	const canvasPaddings = {
+		top: (globalPaddings.top * imgH) / 100,
+		bottom: (globalPaddings.bottom * imgH) / 100,
+		left: (globalPaddings.left * imgW) / 100,
+		right: (globalPaddings.right * imgW) / 100,
+	};
+	// 计算实际的图片外边距
+	const realImgMargin = {
+		top: (imgMargin.top * imgH) / 100,
+		bottom: (imgMargin.bottom * imgH) / 100,
+		left: (imgMargin.left * imgW) / 100,
+		right: (imgMargin.right * imgW) / 100,
+	};
+	// 计算水印实际内边距
+	const realWatermarkPaddings = {
+		top: (watermarkPaddings.top * imgH) / 100,
+		bottom: (watermarkPaddings.bottom * imgH) / 100,
+		left: (watermarkPaddings.left * imgW) / 100,
+		right: (watermarkPaddings.right * imgW) / 100,
+	};
+
+	return {
+		canvasPaddings,
+		realImgMargin,
+		realWatermarkPaddings
+	}
+}

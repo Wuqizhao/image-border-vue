@@ -22,6 +22,7 @@
 				<template #dropdown>
 					<el-dropdown-menu>
 						<el-dropdown-item
+							:disabled="store.curFile === f"
 							v-for="f in store.fileList"
 							:key="f.name"
 							@click="store.curFile = f"
@@ -185,6 +186,7 @@ async function draw(file: File = store.curFile as File) {
 }
 
 async function initLeafer(context: Img) {
+	const _t1 = performance.now();
 	if (!imgCanvas.value) throw "找不到画布";
 	if (!store.curFile) throw "请先选择图片~";
 
@@ -299,8 +301,7 @@ async function initLeafer(context: Img) {
 			text: params.text || paramsText,
 		} as IText;
 		updateLeaferText(leafer.value as Leafer, "params", paramsConfig);
-	}
-	else {
+	} else {
 		const paramsEl = leafer.value?.findOne("#params");
 		paramsEl && paramsEl.remove();
 	}
@@ -355,6 +356,7 @@ async function initLeafer(context: Img) {
 			},
 		});
 	}, 800);
+	console.log("【绘制耗时】", performance.now() - _t1);
 }
 
 function updateLeaferText(leafer: Leafer, id: string = "", config: IText) {

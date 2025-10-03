@@ -1,29 +1,21 @@
 import type { Config } from "../types";
 import { useStore } from "../stores";
 import { formatTime, replaceZ } from "../utils";
+import { commonCaculate } from "../assets/tools";
 
 function caculate(imgW: number, imgH: number) {
 	const store = useStore();
 	const {
-		global: { paddings: globalPaddings },
-		img: { margin: imgMargin },
-		watermark: { height, model,time },
+		watermark: { height, model, time },
 	} = store.config || config;
-
-	// 计算实际的画布内边距
-	const canvasPaddings = {
-		top: (globalPaddings.top * imgH) / 100,
-		bottom: (globalPaddings.bottom * imgH) / 100,
-		left: (globalPaddings.left * imgW) / 100,
-		right: (globalPaddings.right * imgW) / 100,
-	};
-	// 计算实际的图片外边距
-	const realImgMargin = {
-		top: (imgMargin.top * imgH) / 100,
-		bottom: (imgMargin.bottom * imgH) / 100,
-		left: (imgMargin.left * imgW) / 100,
-		right: (imgMargin.right * imgW) / 100,
-	};
+	const { canvasPaddings, realImgMargin, realWatermarkPaddings } =
+		commonCaculate(store.config || config, imgW, imgH);
+	console.log(
+		"realWatermarkPaddings",
+		canvasPaddings,
+		realImgMargin,
+		realWatermarkPaddings
+	);
 
 	const w =
 		imgW +
@@ -42,7 +34,10 @@ function caculate(imgW: number, imgH: number) {
 	model.replaceZ && (modelText = replaceZ(modelText));
 
 	// 时间
-	const timeText = formatTime(store.img?.exif?.DateTimeOriginal || Date.now(),time.format);
+	const timeText = formatTime(
+		store.img?.exif?.DateTimeOriginal || Date.now(),
+		time.format
+	);
 
 	return {
 		width: w,
@@ -50,12 +45,30 @@ function caculate(imgW: number, imgH: number) {
 		imgX: canvasPaddings.left + realImgMargin.left,
 		imgY: canvasPaddings.top + realImgMargin.top,
 		rect1: {
-			x: realImgMargin.left + canvasPaddings.left + imgW / 100,
-			y: h - realImgMargin.bottom - canvasPaddings.bottom - imgH * height,
+			x:
+				realImgMargin.left +
+				canvasPaddings.left +
+				imgW / 100 +
+				realWatermarkPaddings.left,
+			y:
+				h -
+				realImgMargin.bottom -
+				canvasPaddings.bottom -
+				imgH * height +
+				realWatermarkPaddings.top,
 		},
 		rect2: {
-			x: w - realImgMargin.right - canvasPaddings.right - imgW / 100,
-			y: h - realImgMargin.bottom - canvasPaddings.bottom,
+			x:
+				w -
+				realImgMargin.right -
+				canvasPaddings.right -
+				imgW / 100 -
+				realWatermarkPaddings.right,
+			y:
+				h -
+				realImgMargin.bottom -
+				canvasPaddings.bottom +
+				realWatermarkPaddings.bottom,
 		},
 		modelText: modelText.toString(),
 		// paramsText: paramsText.toString(),

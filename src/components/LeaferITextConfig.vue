@@ -15,8 +15,13 @@
 					v-model="props.config.text"
 					placeholder="请输入文字，留空自动读取~"
 					clearable></el-input>
-				<HorizontalScroll style="padding: 5px 0px;">
-					<el-button size="small" v-for="item in textList" @click="props.config.text = item">{{ item }}</el-button>
+				<HorizontalScroll style="padding: 5px 0px">
+					<el-button
+						size="small"
+						v-for="item in textList"
+						@click="props.config.text = item"
+						>{{ item }}</el-button
+					>
 				</HorizontalScroll>
 			</el-form-item>
 			<el-form-item label="颜色">
@@ -71,8 +76,8 @@
 					:min="0.1"
 					:max="10"
 					show-input></el-slider>
-			</el-form-item>
-			<el-form-item label="字间距">
+			</el-form-item> -->
+			<!-- <el-form-item label="字间距">
 				<el-slider
 					v-model="props.config.letterSpacing"
 					:min="0"
@@ -121,7 +126,7 @@ const props = defineProps({
 	},
 });
 
-const textList = ref(['型号', '参数', '时间', '镜头', '广东·惠州']);
+const textList = ref(["型号", "参数", "时间", "镜头", "广东·惠州"]);
 </script>
 
 <style lang="less" scoped>
