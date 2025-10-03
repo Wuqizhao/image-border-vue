@@ -25,9 +25,9 @@
 							:disabled="store.curFile === f"
 							v-for="f in store.fileList"
 							:key="f.name"
-							@click="store.curFile = f"
-							>{{ f.name }}</el-dropdown-item
-						>
+							@click="store.curFile = f">
+							<span> {{ f.name }}</span>
+						</el-dropdown-item>
 					</el-dropdown-menu>
 				</template>
 			</el-dropdown>
@@ -215,20 +215,16 @@ async function initLeafer(context: Img) {
 	} = store.config.caculate(context.width, context.height);
 
 	// 更新画布
+	const canvasConfig = {
+		width: width,
+		height: height,
+		fill: fill || "#FFF",
+		view: imgCanvas.value,
+	}
 	if (!leafer.value) {
-		leafer.value = new Leafer({
-			view: imgCanvas.value,
-			fill: fill || "#FFF",
-			width: width,
-			height: height,
-		});
+		leafer.value = new Leafer(canvasConfig);
 	} else {
-		leafer.value?.set({
-			// view: imgCanvas.value,
-			fill: fill || "#FFF",
-			width: width,
-			height: height,
-		});
+		leafer.value?.set(canvasConfig);
 	}
 
 	// 绘制主图

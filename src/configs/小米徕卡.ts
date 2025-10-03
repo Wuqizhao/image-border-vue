@@ -100,7 +100,7 @@ const config: Config = {
 			y: 10,
 			blur: 10,
 			color: "#d2d2d200",
-		},
+		}
 	},
 	watermark: {
 		height: 0.1,

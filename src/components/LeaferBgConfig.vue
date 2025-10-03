@@ -10,7 +10,7 @@
 				</div>
 			</template>
 			<el-form label-width="60px">
-				<h3>图片外边距</h3>
+				<h4>图片外边距</h4>
 				<el-form-item label="上边距">
 					<el-slider
 						:max="100"
@@ -35,41 +35,52 @@
 						:step="0.1"
 						v-model="store.config.img.margin.right"></el-slider>
 				</el-form-item>
-				<h3>圆角</h3>
-				<el-form-item label="左上" label-width="50">
+				<el-divider></el-divider>
+				<h4>圆角</h4>
+				<!-- <el-form-item label="单独控制" label-width="77">
+					<el-switch
+						v-model="store.config.img.cornerRadius.uniform"
+						active-color="#13ce66"
+						inactive-color="#ff4949"
+						active-text="开启"
+						inactive-text="关闭"></el-switch>
+				</el-form-item> -->
+				<el-form-item label="左上" label-width="40">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[0]"
 						show-input></el-slider>
 				</el-form-item>
-				<el-form-item label="右上" label-width="50">
+				<el-form-item label="右上" label-width="40">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[1]"
 						show-input></el-slider>
 				</el-form-item>
-				<el-form-item label="右下" label-width="50">
+				<el-form-item label="右下" label-width="40">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[2]"
 						show-input></el-slider>
 				</el-form-item>
-				<el-form-item label="左下" label-width="50">
+				<el-form-item label="左下" label-width="40">
 					<el-slider
 						:max="500"
 						v-model="store.config.img.cornerRadius[3]"
 						show-input></el-slider>
 				</el-form-item>
 
-				<h3>阴影</h3>
-				<el-form-item label="X偏移量" label-width="70px">
+				<el-divider></el-divider>
+
+				<h4>阴影</h4>
+				<el-form-item label="X偏移量" label-width="64px">
 					<el-slider
 						show-input
 						:min="-200"
 						:max="200"
 						v-model="store.config.img.shadow.x"></el-slider>
 				</el-form-item>
-				<el-form-item label="Y偏移量" label-width="70px">
+				<el-form-item label="Y偏移量" label-width="64px">
 					<el-slider
 						show-input
 						:min="-200"
@@ -191,6 +202,10 @@ const store = useStore();
 
 	.el-tag {
 		margin-right: 8px;
+	}
+
+	h4{
+		padding: 0px 0px 10px 0px;
 	}
 
 	@media (max-width: 768px) {
