@@ -1,13 +1,13 @@
 import type { Config } from "../types";
 import { useStore } from "../stores";
-import { convertExposureTime, formatTime, replaceZ } from "../utils";
+import { formatTime, replaceZ } from "../utils";
 
 function caculate(imgW: number, imgH: number) {
 	const store = useStore();
 	const {
 		global: { paddings: globalPaddings },
 		img: { margin: imgMargin },
-		watermark: { height, model, params },
+		watermark: { height, model },
 	} = store.config || config;
 
 	// 计算实际的画布内边距
@@ -42,24 +42,8 @@ function caculate(imgW: number, imgH: number) {
 	let modelText = model.text || store.img?.exif?.Model || "未知型号";
 	model.replaceZ && (modelText = replaceZ(modelText));
 
-	// 参数
-	const FNumber = store.img?.exif?.FNumber || 0.95;
-	const ISO = store.img?.exif?.ISO || 100;
-	const shutterSpeed = store.img?.exif?.ShutterSpeedValue || 0.08;
-	const focalLength = store.img?.exif?.FocalLength || 135;
-	const focalLength35mm = store.img?.exif?.FocalLengthIn35mmFormat || 135;
-
-	const paramsText =
-		params.text ||
-		`${focalLength35mm || focalLength}mm f/${FNumber} ${convertExposureTime(
-			shutterSpeed
-		)}s ISO${ISO}` ||
-		"未知参数";
-
 	// 时间
 	const timeText = formatTime(store.img?.exif?.DateTimeOriginal || Date.now());
-	// 镜头
-	const lensText = store.img?.exif?.LensModel || "未获取到镜头信息";
 
 	return {
 		width: w,
@@ -75,9 +59,7 @@ function caculate(imgW: number, imgH: number) {
 			y: h - canvasPaddings.bottom,
 		},
 		modelText: modelText.toString(),
-		paramsText: paramsText.toString(),
 		timeText: timeText.toString(),
-		lensText: lensText.toString(),
 	};
 }
 

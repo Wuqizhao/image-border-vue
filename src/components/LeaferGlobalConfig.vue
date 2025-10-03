@@ -26,6 +26,9 @@
 					show-alpha
 					:predefine="preDefineColors"></el-color-picker>
 			</el-form-item>
+			<el-form-item label="水印内边距" label-width="84px">
+				
+			</el-form-item>
 			<el-divider></el-divider>
 			
 			<h4>画布内边距</h4>
@@ -57,6 +60,7 @@
 					:step="0.01"
 					show-input></el-slider>
 			</el-form-item>
+			<el-button size="small" @click="syncPaddings">从上边距同步</el-button>
 		</el-form>
 	</el-card>
 </template>
@@ -66,6 +70,13 @@ import { preDefineColors } from "../assets/tools";
 import { useStore } from "../stores";
 import { Setting } from "@element-plus/icons-vue";
 const store = useStore();
+
+
+function syncPaddings() {
+	store.config.global.paddings.right = store.config.global.paddings.top;
+	store.config.global.paddings.bottom = store.config.global.paddings.top;
+	store.config.global.paddings.left = store.config.global.paddings.top;
+}
 </script>
 
 <style lang="less" scoped>

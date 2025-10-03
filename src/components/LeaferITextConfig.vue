@@ -15,6 +15,9 @@
 					v-model="props.config.text"
 					placeholder="请输入文字，留空自动读取~"
 					clearable></el-input>
+				<HorizontalScroll style="padding: 5px 0px;">
+					<el-button size="small" v-for="item in textList" @click="props.config.text = item">{{ item }}</el-button>
+				</HorizontalScroll>
 			</el-form-item>
 			<el-form-item label="颜色">
 				<el-color-picker
@@ -62,7 +65,7 @@
 				</el-radio-group>
 			</el-form-item>
 			<!-- 行间距 lineHeight -->
-			<el-form-item label="行间距">
+			<!-- <el-form-item label="行间距">
 				<el-slider
 					v-model="props.config.lineHeight"
 					:min="0.1"
@@ -76,7 +79,7 @@
 					:step="0.01"
 					:max="1"
 					show-input></el-slider>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="字体">
 				<el-select v-model="props.config.fontFamily" placeholder="请选择字体">
 					<el-option
@@ -85,12 +88,12 @@
 						:value="item.split('.')[0]"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="可拖动">
+			<!-- <el-form-item label="可拖动">
 				<el-switch v-model="props.config.draggable" disabled></el-switch>
 			</el-form-item>
 			<el-form-item label="可编辑">
 				<el-switch v-model="props.config.editable" disabled></el-switch>
-			</el-form-item>
+			</el-form-item> -->
 			<slot></slot>
 		</el-form>
 	</el-card>
@@ -99,6 +102,9 @@
 <script setup>
 import { getSupportedFonts, preDefineColors } from "../assets/tools";
 import { Edit } from "@element-plus/icons-vue";
+import HorizontalScroll from "./HorizontalScroll.vue";
+import { ref } from "vue";
+
 const props = defineProps({
 	config: {
 		typeof: Object,
@@ -114,6 +120,8 @@ const props = defineProps({
 		default: "配置",
 	},
 });
+
+const textList = ref(['型号', '参数', '时间', '镜头', '广东·惠州']);
 </script>
 
 <style lang="less" scoped>

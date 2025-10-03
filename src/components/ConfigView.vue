@@ -9,19 +9,19 @@
 		<el-tab-pane label="主图">
 			<LeaferBgConfig />
 		</el-tab-pane>
-		<el-tab-pane label="型号">
+		<el-tab-pane label="型号" v-if="config.watermark.model.enable">
 			<LeaferModelConfig />
 		</el-tab-pane>
-		<el-tab-pane label="参数">
+		<el-tab-pane label="参数" v-if="config.watermark.params.enable">
 			<LeaferParamsConfig />
 		</el-tab-pane>
-		<el-tab-pane label="时间">
+		<el-tab-pane label="时间" v-if="config.watermark.time.enable">
 			<LeaferTimeConfig />
 		</el-tab-pane>
-		<el-tab-pane label="镜头">
+		<el-tab-pane label="镜头" v-if="config.watermark.lens.enable">
 			<LeaferLensConfig />
 		</el-tab-pane>
-		<el-tab-pane label="Logo">
+		<el-tab-pane label="Logo" v-if="config.watermark.logo.enable">
 			<LeaferLogoConfig />
 		</el-tab-pane>
 		<el-tab-pane label="导出">
@@ -38,14 +38,17 @@ import { isMobile, selectFile } from "../utils";
 import LeaferGlobalConfig from "./LeaferGlobalConfig.vue";
 import LeaferModelConfig from "./LeaferModelConfig.vue";
 import LeaferParamsConfig from "./LeaferParamsConfig.vue";
-import { inject } from "vue";
+import { computed, inject } from "vue";
 import { ElMessage } from "element-plus";
 import LeaferTimeConfig from "./LeaferTimeConfig.vue";
 import LeaferLensConfig from "./LeaferLensConfig.vue";
 import LeaferEXIF from "./LeaferEXIF.vue";
 import LeaferExportConfig from "./LeaferExportConfig.vue";
 import LeaferLogoConfig from "./LeaferLogoConfig.vue";
+import { storeToRefs } from "pinia";
 const store = useStore();
+
+const { config } = storeToRefs(store);
 
 function clearFileList() {
 	store.fileList = [];

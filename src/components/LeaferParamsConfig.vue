@@ -1,5 +1,8 @@
 <template>
-	<LeaferITextConfig :config="store.config.watermark.params" title="参数设置" />
+	<LeaferITextConfig
+		:config="store.config.watermark.params"
+		title="参数设置"
+		v-if="store.config.watermark.params" />
 </template>
 
 <script setup>
