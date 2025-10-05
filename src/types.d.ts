@@ -451,6 +451,7 @@ export declare type DrawConfig = {
 	timeText?: string;
 	lensText?: string;
 	locationText?: string;
+	domList?: Array<Partial<Model | Params | Time | Lens>>;
 };
 export declare type DrawFun = (
 	img: Img,

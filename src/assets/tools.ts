@@ -1222,6 +1222,6 @@ export function commonCaculate(config: Config, imgW: number, imgH: number) {
 	return {
 		canvasPaddings,
 		realImgMargin,
-		realWatermarkPaddings
-	}
+		realWatermarkPaddings,
+	};
 }

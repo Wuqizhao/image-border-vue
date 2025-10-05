@@ -94,11 +94,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "../stores";
 import { getImageSrc } from "../utils";
-import { Leafer, Rect, Text, type IRect, type IText } from "leafer-ui";
-import type { Img, Logo } from "../types";
+import { Leafer, Rect, Text, type IRect } from "leafer-ui";
+import type { Img, Lens, Logo, Model, Params, Time } from "../types";
 import { useExifStore } from "../stores/exif";
 import Exifr from "exifr";
 import { watchThrottled } from "@vueuse/core";
@@ -135,12 +135,20 @@ function changeCurFile(file: File | null) {
 	// draw(file);
 }
 
-watchThrottled(
-	[() => store.curFile, () => store.config],
-	([newFile, _]) => {
+watch(
+	() => store.curFile,
+	(newFile, _) => {
 		if (newFile) {
 			changeCurFile(newFile);
 		}
+		draw();
+	}
+);
+
+watchThrottled(
+	[() => store.config],
+	() => {
+		console.log('watchThrottled','重绘监听');
 		draw();
 	},
 	{ deep: true, throttle: 200 }
@@ -199,20 +207,10 @@ async function initLeafer(context: Img) {
 	const {
 		img,
 		fill,
-		watermark: { model, params, time, lens, logo, fill: watermarkFill },
+		watermark: { logo, fill: watermarkFill },
 	} = store.config;
-	const {
-		width,
-		height,
-		rect1,
-		rect2,
-		imgX,
-		imgY,
-		modelText,
-		paramsText,
-		lensText,
-		timeText,
-	} = store.config.caculate(context.width, context.height);
+	const { width, height, rect1, rect2, imgX, imgY, domList } =
+		store.config.caculate(context.width, context.height);
 
 	// 更新画布
 	const canvasConfig = {
@@ -220,7 +218,7 @@ async function initLeafer(context: Img) {
 		height: height,
 		fill: fill || "#FFF",
 		view: imgCanvas.value,
-	}
+	};
 	if (!leafer.value) {
 		leafer.value = new Leafer(canvasConfig);
 	} else {
@@ -278,47 +276,10 @@ async function initLeafer(context: Img) {
 
 	// 绘制型号
 	const centerY = rect1.y + (rect2.y - rect1.y) / 2;
-	const y_1_3 = rect1.y + (rect2.y - rect1.y) / 3;
-	const y_2_3 = rect1.y + (2 * (rect2.y - rect1.y)) / 3;
-	const modelConfig = {
-		...model,
-		x: rect1.x,
-		y: lens.visible ? y_1_3 : centerY,
-		text: model.text || modelText,
-	} as IText;
-	updateLeaferText(leafer.value as Leafer, "model", modelConfig);
 
-	if (params.enable && params.visible) {
-		// 绘制参数
-		const paramsConfig = {
-			...params,
-			y: time.visible ? y_1_3 : centerY,
-			x: rect2.x,
-			text: params.text || paramsText,
-		} as IText;
-		updateLeaferText(leafer.value as Leafer, "params", paramsConfig);
-	} else {
-		const paramsEl = leafer.value?.findOne("#params");
-		paramsEl && paramsEl.remove();
-	}
-
-	// 绘制时间
-	const timeConfig = {
-		...time,
-		x: rect2.x,
-		y: params.visible ? y_2_3 : centerY,
-		text: time.text || timeText,
-	} as IText;
-	updateLeaferText(leafer.value as Leafer, "time", timeConfig);
-
-	// 镜头信息
-	const lensConfig = {
-		...lens,
-		x: rect1.x,
-		y: model.visible ? y_2_3 : centerY,
-		text: lens.text || lensText,
-	} as IText;
-	updateLeaferText(leafer.value as Leafer, "lens", lensConfig);
+	domList?.map((item) => {
+		updateLeaferText(leafer.value as Leafer, item.id, item);
+	});
 
 	let logoEl = leafer.value?.findOne("#logo");
 	if (logo && logo?.enable) {
@@ -355,12 +316,26 @@ async function initLeafer(context: Img) {
 	console.log("【绘制耗时】", performance.now() - _t1);
 }
 
-function updateLeaferText(leafer: Leafer, id: string = "", config: IText) {
+// function updateTextDoms(list:Partial<Model | Params | Time | Lens>[]) {
+// 	list.map((item) => {
+// 		updateLeaferText(leafer.value as Leafer, item.id, item);
+// 	});
+// }
+
+function updateLeaferText(
+	leafer: Leafer,
+	id: string = "",
+	config: Partial<Model | Params | Time | Lens>
+) {
 	if (!leafer || !id) return;
 
 	let el = leafer.findOne("#" + id);
 	if (el) {
-		el.set(config);
+		if (!config?.enable) {
+			el.remove();
+		} else {
+			el.set(config);
+		}
 	} else {
 		el = new Text({
 			...config,
