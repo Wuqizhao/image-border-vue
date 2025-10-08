@@ -81,10 +81,10 @@ const config: Config = {
 	fill: "#FFF",
 	global: {
 		paddings: {
-			top: 4,
-			bottom: 4,
-			left: 3,
-			right: 3,
+			top: 2,
+			bottom: 3,
+			left: 1.5,
+			right: 1.5,
 		},
 	},
 	img: {
@@ -110,7 +110,7 @@ const config: Config = {
 			visible: false,
 			replaceZ: true,
 			text: "",
-			fill: "#FFF",
+			fill: "#FFFFFF00",
 			fontSize: 120,
 			textAlign: "left",
 			verticalAlign: "middle",
@@ -124,6 +124,9 @@ const config: Config = {
 		},
 		params: {
 			enable: false,
+			visible: false,
+			text: "",
+			fill: "#FFFFFF00",
 		},
 		time: {
 			enable: false,
