@@ -298,6 +298,14 @@ async function initLeafer(context: Img) {
 				url: getImageSrc(logo.url || logo.name),
 				mode: "fit",
 			},
+			draggable: true,
+			editable: true,
+			// 边框
+			// stroke: {
+			// 	type: "solid",
+			// 	color: "#F00",
+			// 	width: 50
+			// },
 		} as Logo;
 
 		if (logoEl) {

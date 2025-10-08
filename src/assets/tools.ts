@@ -26,6 +26,16 @@ export const cameraBrands: CameraBrands[] = [
 		logo: "canon",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMcaEwcgAABOGyKi_uwmPMeIUpdI1PcAAKhxDEbh8ppVv8B2VpqpmVdAQADAgADeQADNgQ.png",
 	},
+	{
+		name: "签名1",
+		logo: "sign1",
+		url: "https://s21.ax1x.com/2025/10/08/pVHCljA.png",
+	},
+	{
+		name: "签名2",
+		logo: "sign2",
+		url: "https://s21.ax1x.com/2025/10/09/pVHC8Bt.png",
+	},
 	// {
 	// 	name: "佳能(白)",
 	// 	logo: "canon-white",
