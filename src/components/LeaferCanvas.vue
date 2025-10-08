@@ -120,7 +120,14 @@ const store = useStore();
 const imgCanvas = ref<HTMLCanvasElement | null>(null);
 const { leafer } = storeToRefs(store);
 
-function onDrop() {}
+function onDrop(e: DragEvent) {
+	console.log("onDrop", e.dataTransfer?.files);
+
+	if (e.dataTransfer?.files.length) {
+		changeCurFile(e.dataTransfer?.files[0]);
+	}
+	e.preventDefault();
+}
 
 function changeCurFile(file: File | null) {
 	if (!file) {
@@ -148,10 +155,11 @@ watch(
 watchThrottled(
 	[() => store.config],
 	() => {
-		console.log('watchThrottled','重绘监听');
-		draw();
+		console.log("watchThrottled", "重绘监听");
+		// draw();
+		initLeafer(store.img as Img);
 	},
-	{ deep: true, throttle: 200 }
+	{ deep: true, throttle: 1000 }
 );
 
 async function draw(file: File = store.curFile as File) {
@@ -242,14 +250,12 @@ async function initLeafer(context: Img) {
 	} as Partial<IRect>;
 	if (imgEl) {
 		imgEl.set(imgConfig);
-		// console.log("【更新主图】", store.curFile?.name, url);
 	} else {
 		imgEl = new Rect({
 			...imgConfig,
 			id: "img",
 		});
 		leafer.value.add(imgEl);
-		// console.log("【新建主图】", store.curFile?.name, url);
 	}
 
 	// 绘制的水印范围的背景
@@ -296,15 +302,14 @@ async function initLeafer(context: Img) {
 
 		if (logoEl) {
 			logoEl.set(logoConfig);
-			// console.log("更新logo");
 		} else {
 			logoEl = new Rect({ ...logoConfig, id: "logo" });
 			leafer.value?.add(logoEl);
-			// console.log("新建logo");
 		}
 	}
 
 	// leafer.value.forceUpdate();
+
 	setTimeout(() => {
 		imgEl.set({
 			fill: {
@@ -313,14 +318,9 @@ async function initLeafer(context: Img) {
 			},
 		});
 	}, 800);
+
 	console.log("【绘制耗时】", performance.now() - _t1);
 }
-
-// function updateTextDoms(list:Partial<Model | Params | Time | Lens>[]) {
-// 	list.map((item) => {
-// 		updateLeaferText(leafer.value as Leafer, item.id, item);
-// 	});
-// }
 
 function updateLeaferText(
 	leafer: Leafer,
