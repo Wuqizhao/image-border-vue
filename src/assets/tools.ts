@@ -36,6 +36,16 @@ export const cameraBrands: CameraBrands[] = [
 		logo: "sign2",
 		url: "https://s21.ax1x.com/2025/10/09/pVHC8Bt.png",
 	},
+	{
+		name: "文字-1",
+		logo: "text-1",
+		url: "https://s21.ax1x.com/2025/10/09/pVHeW80.png",
+	},
+	{
+		name: "文字-2",
+		logo: "text-2",
+		url: "https://s21.ax1x.com/2025/10/09/pVHeob4.png",
+	},
 	// {
 	// 	name: "佳能(白)",
 	// 	logo: "canon-white",
@@ -1207,10 +1217,10 @@ export function commonCaculate(config: Config, imgW: number, imgH: number) {
 		watermark: { paddings: watermarkPaddings },
 	} = config;
 
-	// 计算实际的画布内边距
+	// 计算实际的画布内边距，以宽度为准
 	const canvasPaddings = {
-		top: (globalPaddings.top * imgH) / 100,
-		bottom: (globalPaddings.bottom * imgH) / 100,
+		top: (globalPaddings.top * imgW) / 100,
+		bottom: (globalPaddings.bottom * imgW) / 100,
 		left: (globalPaddings.left * imgW) / 100,
 		right: (globalPaddings.right * imgW) / 100,
 	};

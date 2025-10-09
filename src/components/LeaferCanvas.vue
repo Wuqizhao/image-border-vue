@@ -98,7 +98,7 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "../stores";
 import { getImageSrc } from "../utils";
 import { Leafer, Rect, Text, type IRect } from "leafer-ui";
-import type { Img, Lens, Logo, Model, Params, Time } from "../types";
+import type { Img, Lens, Model, Params, Time } from "../types";
 import { useExifStore } from "../stores/exif";
 import Exifr from "exifr";
 import { watchThrottled } from "@vueuse/core";
@@ -215,9 +215,9 @@ async function initLeafer(context: Img) {
 	const {
 		img,
 		fill,
-		watermark: { logo, fill: watermarkFill },
+		watermark: { fill: watermarkFill },
 	} = store.config;
-	const { width, height, rect1, rect2, imgX, imgY, domList } =
+	const { width, height, rect1, rect2, imgX, imgY, domList, imgList } =
 		store.config.caculate(context.width, context.height);
 
 	// 更新画布
@@ -280,41 +280,44 @@ async function initLeafer(context: Img) {
 		leafer.value.add(bgEl);
 	}
 
-	// 绘制型号
-	const centerY = rect1.y + (rect2.y - rect1.y) / 2;
-
 	domList?.map((item) => {
 		updateLeaferText(leafer.value as Leafer, item.id, item);
 	});
 
-	let logoEl = leafer.value?.findOne("#logo");
-	if (logo && logo?.enable) {
-		const logoConfig = {
-			...logo,
-			x: (rect2.x - rect1.x) / 2 - (logo.width || 0) / 2,
-			y: centerY - (logo.height || 0) / 2,
-			fill: {
-				type: "image",
-				url: getImageSrc(logo.url || logo.name),
-				mode: "fit",
-			},
-			draggable: true,
-			editable: true,
-			// 边框
-			// stroke: {
-			// 	type: "solid",
-			// 	color: "#F00",
-			// 	width: 50
-			// },
-		} as Logo;
+	console.log("imgList", imgList);
+	imgList?.map((item) => {
+		updateLeaferText(leafer.value as Leafer, item.id, item, "Rect");
+	});
 
-		if (logoEl) {
-			logoEl.set(logoConfig);
-		} else {
-			logoEl = new Rect({ ...logoConfig, id: "logo" });
-			leafer.value?.add(logoEl);
-		}
-	}
+	// const centerY = rect1.y + (rect2.y - rect1.y) / 2;
+	// let logoEl = leafer.value?.findOne("#logo");
+	// if (logo && logo?.enable) {
+	// 	const logoConfig = {
+	// 		...logo,
+	// 		x: rect1.x + (rect2.x - rect1.x) / 2 - (logo.width || 0) / 2,
+	// 		y: centerY - (logo.height || 0) / 2,
+	// 		fill: {
+	// 			type: "image",
+	// 			url: getImageSrc(logo.url || logo.name),
+	// 			mode: "fit",
+	// 		},
+	// 		draggable: true,
+	// 		editable: true,
+	// 		// 边框
+	// 		// stroke: {
+	// 		// 	type: "solid",
+	// 		// 	color: "#F00",
+	// 		// 	width: 50
+	// 		// },
+	// 	} as Logo;
+
+	// 	if (logoEl) {
+	// 		logoEl.set(logoConfig);
+	// 	} else {
+	// 		logoEl = new Rect({ ...logoConfig, id: "logo" });
+	// 		leafer.value?.add(logoEl);
+	// 	}
+	// }
 
 	// leafer.value.forceUpdate();
 
@@ -333,7 +336,8 @@ async function initLeafer(context: Img) {
 function updateLeaferText(
 	leafer: Leafer,
 	id: string = "",
-	config: Partial<Model | Params | Time | Lens>
+	config: Partial<Model | Params | Time | Lens>,
+	domType = "Text"
 ) {
 	if (!leafer || !id) return;
 
@@ -345,10 +349,17 @@ function updateLeaferText(
 			el.set(config);
 		}
 	} else {
-		el = new Text({
-			...config,
-			id: id,
-		});
+		if (domType !== "Text") {
+			el = new Rect({
+				...config,
+				id: id,
+			});
+		} else {
+			el = new Text({
+				...config,
+				id: id,
+			});
+		}
 		leafer.add(el);
 	}
 	return el;

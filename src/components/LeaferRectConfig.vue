@@ -27,13 +27,13 @@
 				<el-slider
 					show-input
 					v-model="props.config.width"
-					:max="1000"></el-slider>
+					:max="1500"></el-slider>
 			</el-form-item>
 			<el-form-item label="高度">
 				<el-slider
 					show-input
 					v-model="props.config.height"
-					:max="1000"></el-slider>
+					:max="1500"></el-slider>
 			</el-form-item>
 			<el-form-item label="同步">
 				<el-button

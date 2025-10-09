@@ -1,21 +1,16 @@
 import type { Config } from "../types";
 import { useStore } from "../stores";
-import { formatTime, replaceZ } from "../utils";
 import { commonCaculate } from "../assets/tools";
+import { getImageSrc } from "../utils";
+import type { IRect } from "leafer-ui";
 
 function caculate(imgW: number, imgH: number) {
 	const store = useStore();
 	const {
-		watermark: { height, model, time },
+		watermark: { height, logo },
 	} = store.config || config;
 	const { canvasPaddings, realImgMargin, realWatermarkPaddings } =
 		commonCaculate(store.config || config, imgW, imgH);
-	console.log(
-		"realWatermarkPaddings",
-		canvasPaddings,
-		realImgMargin,
-		realWatermarkPaddings
-	);
 
 	const w =
 		imgW +
@@ -30,50 +25,62 @@ function caculate(imgW: number, imgH: number) {
 		canvasPaddings.top +
 		canvasPaddings.bottom;
 
-	let modelText = model.text || store.img?.exif?.Model || "未知型号";
-	model.replaceZ && (modelText = replaceZ(modelText));
+	const rect1 = {
+		x:
+			realImgMargin.left +
+			canvasPaddings.left +
+			imgW / 100 +
+			realWatermarkPaddings.left,
+		y:
+			h -
+			realImgMargin.bottom -
+			canvasPaddings.bottom -
+			imgH * height +
+			realWatermarkPaddings.top,
+	};
+	const rect2 = {
+		x:
+			w -
+			realImgMargin.right -
+			canvasPaddings.right -
+			imgW / 100 -
+			realWatermarkPaddings.right,
+		y:
+			h -
+			realImgMargin.bottom -
+			canvasPaddings.bottom +
+			realWatermarkPaddings.bottom,
+	};
 
-	// 时间
-	const timeText = formatTime(
-		store.img?.exif?.DateTimeOriginal || Date.now(),
-		time.format
-	);
+	// logo
+	const logoX = rect1.x + (rect2.x - rect1.x) / 2 - (logo?.width || 0) / 2;
+	const logoY = rect1.y + (rect2.y - rect1.y) / 2 - (logo?.height || 0) / 2;
+
+	const imgList: Partial<IRect>[] = [
+		{
+			...logo,
+			id: "logo",
+			x: logoX,
+			y: logoY,
+			fill: {
+				type: "image",
+				url: getImageSrc(logo?.url || logo?.name || "nikon"),
+				mode: "fit",
+			},
+			draggable: true,
+			editable: true,
+		},
+	];
 
 	return {
 		width: w,
 		height: h,
 		imgX: canvasPaddings.left + realImgMargin.left,
 		imgY: canvasPaddings.top + realImgMargin.top,
-		rect1: {
-			x:
-				realImgMargin.left +
-				canvasPaddings.left +
-				imgW / 100 +
-				realWatermarkPaddings.left,
-			y:
-				h -
-				realImgMargin.bottom -
-				canvasPaddings.bottom -
-				imgH * height +
-				realWatermarkPaddings.top,
-		},
-		rect2: {
-			x:
-				w -
-				realImgMargin.right -
-				canvasPaddings.right -
-				imgW / 100 -
-				realWatermarkPaddings.right,
-			y:
-				h -
-				realImgMargin.bottom -
-				canvasPaddings.bottom +
-				realWatermarkPaddings.bottom,
-		},
-		modelText: modelText.toString(),
-		// paramsText: paramsText.toString(),
-		timeText: timeText.toString(),
-		// lensText: lensText.toString(),
+		rect1: rect1,
+		rect2: rect2,
+		domList: [],
+		imgList: imgList,
 	};
 }
 
@@ -82,9 +89,9 @@ const config: Config = {
 	global: {
 		paddings: {
 			top: 2,
-			bottom: 3,
-			left: 1.5,
-			right: 1.5,
+			bottom: 2,
+			left: 2,
+			right: 2,
 		},
 	},
 	img: {
@@ -130,6 +137,7 @@ const config: Config = {
 		},
 		time: {
 			enable: false,
+			format: "yyyy-MM-dd hh:mm",
 			visible: false,
 			text: "",
 			fontSize: 80,
@@ -139,7 +147,6 @@ const config: Config = {
 			fontWeight: "normal",
 			textDecoration: "none",
 			textCase: "none",
-			format: "yyyy-MM-dd hh:mm",
 			letterSpacing: 0,
 			lineHeight: 1,
 			draggable: true,

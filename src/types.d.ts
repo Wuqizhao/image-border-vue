@@ -452,6 +452,7 @@ export declare type DrawConfig = {
 	lensText?: string;
 	locationText?: string;
 	domList?: Array<Partial<Model | Params | Time | Lens>>;
+	imgList?: Array<Partial<IRect>>;
 };
 export declare type DrawFun = (
 	img: Img,

@@ -1,12 +1,18 @@
 import type { Config } from "../types";
 import { useStore } from "../stores";
-import { convertExposureTime, formatTime, replaceZ } from "../utils";
+import {
+	convertExposureTime,
+	formatTime,
+	getImageSrc,
+	replaceZ,
+} from "../utils";
 import { commonCaculate } from "../assets/tools";
+import type { IRect } from "leafer-ui";
 
 function caculate(imgW: number, imgH: number) {
 	const store = useStore();
 	const {
-		watermark: { height, model, params, lens, time },
+		watermark: { height, model, params, lens, time, logo },
 	} = store.config || config;
 
 	const { canvasPaddings, realImgMargin, realWatermarkPaddings } =
@@ -109,7 +115,24 @@ function caculate(imgW: number, imgH: number) {
 			id: "lens",
 		},
 	];
+	const imgList: Partial<IRect>[] = [
+		{
+			...logo,
+			id: "logo",
+			x: rect1.x + (rect2.x - rect1.x) / 2 - (logo?.width || 0) / 2,
+			y: rect1.y + (rect2.y - rect1.y) / 2 - (logo?.height || 0) / 2,
+			fill: {
+				type: "image",
+				url: getImageSrc(logo?.url || logo?.name || "nikon"),
+				mode: "fit",
+			},
+			draggable: true,
+			editable: true,
+		},
+	];
+
 	return {
+		imgList: imgList,
 		domList: domList,
 		width: w,
 		height: h,

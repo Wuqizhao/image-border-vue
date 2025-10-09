@@ -69,6 +69,19 @@
 						v-model="store.config.img.cornerRadius[3]"
 						show-input></el-slider>
 				</el-form-item>
+				<el-form-item label="同步" label-width="40">
+					<el-button
+						size="small"
+						plain
+						@click="
+							store.config.img.cornerRadius[3] =
+								store.config.img.cornerRadius[1] =
+								store.config.img.cornerRadius[2] =
+									store.config.img.cornerRadius[0]
+						"
+						>同步左上</el-button
+					>
+				</el-form-item>
 
 				<el-divider></el-divider>
 
@@ -204,7 +217,7 @@ const store = useStore();
 		margin-right: 8px;
 	}
 
-	h4{
+	h4 {
 		padding: 0px 0px 10px 0px;
 	}
 
