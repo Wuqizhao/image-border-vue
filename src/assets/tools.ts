@@ -604,19 +604,14 @@ export const watermarkList: WatermarkListBaseItem[] = [
 		config: "小米徕卡",
 		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMEZ_5rRw5CVPpsGb88YlmJczm3178AAn3DMRs4AAH4V7vXffdQ9OpZAQADAgADdwADNgQ.jpeg",
 	},
+	// {
+	// 	name: "小米徕卡3",
+	// 	config: "小米徕卡3",
+	// 	url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
+	// },
 	{
-		name: "小米徕卡3",
-		config: "小米徕卡3",
-		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
-	},
-	{
-		name: "样式1",
-		config: "样式1",
-		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
-	},
-	{
-		name: "样式2",
-		config: "样式2",
+		name: "单图标",
+		config: "单图标",
 		url: "https://img.lsfd.asia/file/BQACAgUAAyEGAASWuELpAAMRaEr1wmrgpNOyv3yr9p4ahx_SGu8AAm0WAAKHyllWJ0IWgzCtAv42BA.jpeg",
 	},
 	// {

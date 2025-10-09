@@ -280,46 +280,24 @@ async function initLeafer(context: Img) {
 		leafer.value.add(bgEl);
 	}
 
-	domList?.map((item) => {
-		updateLeaferText(leafer.value as Leafer, item.id, item);
-	});
+	console.log("domList", domList, imgList);
+	if (domList?.length) {
+		domList?.map((item) => {
+			updateLeaferText(leafer.value as Leafer, item.id, item);
+		});
+	}
+	else {
+		// 清理所有文本对象
+		const rectDoms = leafer.value?.find("Text");
+		rectDoms?.map((item) => {
+			item.remove();
+		});
+	}
 
 	console.log("imgList", imgList);
 	imgList?.map((item) => {
 		updateLeaferText(leafer.value as Leafer, item.id, item, "Rect");
 	});
-
-	// const centerY = rect1.y + (rect2.y - rect1.y) / 2;
-	// let logoEl = leafer.value?.findOne("#logo");
-	// if (logo && logo?.enable) {
-	// 	const logoConfig = {
-	// 		...logo,
-	// 		x: rect1.x + (rect2.x - rect1.x) / 2 - (logo.width || 0) / 2,
-	// 		y: centerY - (logo.height || 0) / 2,
-	// 		fill: {
-	// 			type: "image",
-	// 			url: getImageSrc(logo.url || logo.name),
-	// 			mode: "fit",
-	// 		},
-	// 		draggable: true,
-	// 		editable: true,
-	// 		// 边框
-	// 		// stroke: {
-	// 		// 	type: "solid",
-	// 		// 	color: "#F00",
-	// 		// 	width: 50
-	// 		// },
-	// 	} as Logo;
-
-	// 	if (logoEl) {
-	// 		logoEl.set(logoConfig);
-	// 	} else {
-	// 		logoEl = new Rect({ ...logoConfig, id: "logo" });
-	// 		leafer.value?.add(logoEl);
-	// 	}
-	// }
-
-	// leafer.value.forceUpdate();
 
 	setTimeout(() => {
 		imgEl.set({

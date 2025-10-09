@@ -88,7 +88,7 @@ declare interface Time extends Partial<IText> {
 	/**
 	 * 时间格式(YYYY-MM-DD HH:mm:ss)
 	 */
-	format: string;
+	format?: string;
 }
 declare interface Lens extends Partial<IText> {
 	/**

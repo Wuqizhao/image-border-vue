@@ -50,8 +50,8 @@ export const useStore = defineStore(
 				case "样式1":
 					cfg = (await import("../configs/样式1")).default;
 					break;
-				case "样式2":
-					cfg = (await import("../configs/样式2")).default;
+				case "单图标":
+					cfg = (await import("../configs/单图标")).default;
 					break;
 				default:
 					cfg = (await import("../configs/小米徕卡")).default;
@@ -59,8 +59,9 @@ export const useStore = defineStore(
 			}
 
 			if (cfg) {
+				config.value = undefined;
 				setConfig(cfg);
-				ElMessage.success("重置样式成功~");
+				ElMessage.success(`【${name}】样式导入成功~`);
 			}
 		}
 
