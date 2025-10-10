@@ -41,15 +41,15 @@ export const useStore = defineStore(
 
 		const img = ref<null | Img>(null);
 
-		async function resetStyle(name = "小米徕卡") {
+		async function resetStyle(name = config.value?.name) {
 			let cfg = null;
 			switch (name) {
-				case "小米徕卡3":
-					cfg = (await import("../configs/小米徕卡3")).default;
-					break;
-				case "样式1":
-					cfg = (await import("../configs/样式1")).default;
-					break;
+				// case "小米徕卡3":
+				// 	cfg = (await import("../configs/小米徕卡3")).default;
+				// 	break;
+				// case "样式1":
+				// 	cfg = (await import("../configs/样式1")).default;
+				// 	break;
 				case "单图标":
 					cfg = (await import("../configs/单图标")).default;
 					break;

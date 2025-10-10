@@ -285,8 +285,7 @@ async function initLeafer(context: Img) {
 		domList?.map((item) => {
 			updateLeaferText(leafer.value as Leafer, item.id, item);
 		});
-	}
-	else {
+	} else {
 		// 清理所有文本对象
 		const rectDoms = leafer.value?.find("Text");
 		rectDoms?.map((item) => {
@@ -403,6 +402,17 @@ onUnmounted(() => {
 		padding: 5px 10px;
 		border-radius: 50px;
 		display: flex;
+		animation: toolbar 1s ease-in-out;
+
+		@keyframes toolbar {
+			0% {
+				transform: translateY(100%);
+				opacity: 0;
+			}
+			60% {
+				opacity: 0.9;
+			}
+		}
 
 		> .el-dropdown {
 			margin: 0px 12px;

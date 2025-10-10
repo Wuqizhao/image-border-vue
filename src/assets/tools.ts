@@ -160,11 +160,11 @@ export const cameraBrands: CameraBrands[] = [
 	// 	logo: "hyperos",
 	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM0aEwfb45UjenAnf9yCDWJWkEubIoAAsXIMRvPAWFWNkigTPnNHKABAAMCAAN5AAM2BA.png",
 	// },
-	{
-		name: "红米(彩色)",
-		logo: "redmi",
-		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANeaEwlnhcKIeoOUI1hDO-9x099JKEAAnvJMRvPAWFWTfzyfcv7sa4BAAMCAAN5AAM2BA.png",
-	},
+	// {
+	// 	name: "红米(彩色)",
+	// 	logo: "redmi",
+	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAANeaEwlnhcKIeoOUI1hDO-9x099JKEAAnvJMRvPAWFWTfzyfcv7sa4BAAMCAAN5AAM2BA.png",
+	// },
 	// {
 	// 	name: "红米(黑)",
 	// 	logo: "redmi-black",
@@ -205,22 +205,22 @@ export const cameraBrands: CameraBrands[] = [
 	// 	logo: "honor",
 	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMvaEwfBqr9CKShtT7lpWZvJzMBcc0AArzIMRvPAWFWKcDeRwwAAdehAQADAgADeQADNgQ.png",
 	// },
-	// {
-	// 	name: "苹果(黑)",
-	// 	logo: "apple",
-	// 	make: ["Apple"],
-	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMTaEwbUeTy-mvMMaOawfA4BCevYeEAApfEMRuHymlWc-vEQqIdiIEBAAMCAAN5AAM2BA.png",
-	// },
-	// {
-	// 	name: "苹果(灰)",
-	// 	logo: "apple-gray",
-	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMUaEwbc-sZDSS-nnEZLQx-vB-tD4UAApnEMRuHymlWvAABTbrFxzUTAQADAgADeQADNgQ.png",
-	// },
-	// {
-	// 	name: "苹果(白)",
-	// 	logo: "apple-white",
-	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMVaEwbheDFRHhzwN_Xgv1mMSJf5tAAAprEMRuHymlWsrHR-aYB4MABAAMCAAN5AAM2BA.png",
-	// },
+	{
+		name: "苹果(黑)",
+		logo: "apple",
+		make: ["Apple"],
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMTaEwbUeTy-mvMMaOawfA4BCevYeEAApfEMRuHymlWc-vEQqIdiIEBAAMCAAN5AAM2BA.png",
+	},
+	{
+		name: "苹果(灰)",
+		logo: "apple-gray",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMUaEwbc-sZDSS-nnEZLQx-vB-tD4UAApnEMRuHymlWvAABTbrFxzUTAQADAgADeQADNgQ.png",
+	},
+	{
+		name: "苹果(白)",
+		logo: "apple-white",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMVaEwbheDFRHhzwN_Xgv1mMSJf5tAAAprEMRuHymlWsrHR-aYB4MABAAMCAAN5AAM2BA.png",
+	},
 	// {
 	// 	name: "OPPO",
 	// 	logo: "oppo",
@@ -376,21 +376,21 @@ export const cameraBrands: CameraBrands[] = [
 	// 	logo: "kodak-2",
 	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAM8aEwgB1X5XMxpyRaiHcE6xXD24mQAAtHIMRvPAWFW07Ueth7i4MABAAMCAAN4AAM2BA.png",
 	// },
-	// {
-	// 	name: "央视新闻",
-	// 	logo: "ysxw",
-	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN9aEwpk6aTszjQgAQCJLhR2xgVRUIAAqbJMRvPAWFW7OxveIw69ScBAAMCAAN5AAM2BA.png",
-	// },
-	// {
-	// 	name: "中国国家地理(黑)",
-	// 	logo: "cng",
-	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMgaEwdL6ARWtPViwvhzmsDyyAjELcAAqvIMRvPAWFWHneFJboCFYkBAAMCAAN5AAM2BA.png",
-	// },
-	// {
-	// 	name: "中国国家地理(白)",
-	// 	logo: "cng-white",
-	// 	url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMhaEwdQWBeQmXnnKl36OVMUgQwvTsAAqzIMRvPAWFWP3oePYH-9aUBAAMCAAN5AAM2BA.png",
-	// },
+	{
+		name: "央视新闻",
+		logo: "ysxw",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAN9aEwpk6aTszjQgAQCJLhR2xgVRUIAAqbJMRvPAWFW7OxveIw69ScBAAMCAAN5AAM2BA.png",
+	},
+	{
+		name: "中国国家地理(黑)",
+		logo: "cng",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMgaEwdL6ARWtPViwvhzmsDyyAjELcAAqvIMRvPAWFWHneFJboCFYkBAAMCAAN5AAM2BA.png",
+	},
+	{
+		name: "中国国家地理(白)",
+		logo: "cng-white",
+		url: "https://img.lsfd.asia/file/AgACAgUAAyEGAASWuELpAAMhaEwdQWBeQmXnnKl36OVMUgQwvTsAAqzIMRvPAWFWP3oePYH-9aUBAAMCAAN5AAM2BA.png",
+	},
 	// {
 	// 	name: "视觉中国(黑)",
 	// 	logo: "vcg",

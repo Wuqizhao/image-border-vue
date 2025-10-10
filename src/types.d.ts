@@ -9,6 +9,7 @@ import type {
 } from "leafer-ui";
 
 declare interface BaseConfig {
+	name: string;
 	fill?: string;
 	global: {
 		paddings: {

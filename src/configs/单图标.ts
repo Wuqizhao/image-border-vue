@@ -85,6 +85,7 @@ function caculate(imgW: number, imgH: number) {
 }
 
 const config: Config = {
+	name: "单图标",
 	fill: "#FFF",
 	global: {
 		paddings: {
