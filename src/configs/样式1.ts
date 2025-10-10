@@ -64,6 +64,7 @@ function caculate(imgW: number, imgH: number) {
 }
 
 const config: Config = {
+	name: "样式1",
 	fill: "#FFF",
 	global: {
 		paddings: {

@@ -93,6 +93,7 @@ function caculate(imgW: number, imgH: number) {
 }
 
 const config: Config = {
+	name: "小米徕卡3",
 	fill: "#FFF",
 	global: {
 		paddings: {
