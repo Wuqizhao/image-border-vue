@@ -12,7 +12,7 @@
 					<Plus />
 				</el-icon>
 			</el-button>
-			<el-dropdown v-show="store.fileList.length > 0">
+			<el-dropdown v-show="store?.fileList?.length > 0 && store?.curFile">
 				<el-button circle title="图片列表" v-show="store.fileList.length > 0">
 					<el-icon>
 						<Picture />
@@ -26,7 +26,23 @@
 							v-for="f in store.fileList"
 							:key="f.name"
 							@click="store.curFile = f">
-							<span> {{ f.name }}</span>
+							<div
+								style="
+									display: flex;
+									flex-direction: column;
+									gap: 10px;
+									align-items: center;
+								">
+								<img
+									:src="getImageSrc(f)"
+									style="
+										width: 200px;
+										height: 150px;
+										object-fit: cover;
+										border-radius: 5px;
+									" />
+								<b> {{ f.name }}</b>
+							</div>
 						</el-dropdown-item>
 					</el-dropdown-menu>
 				</template>

@@ -1240,3 +1240,33 @@ export function commonCaculate(config: Config, imgW: number, imgH: number) {
 		realWatermarkPaddings,
 	};
 }
+
+export const BLEND_MODES = [
+	{ label: "穿透（性能最好）", value: "pass-through" },
+	{ label: "正常", value: "normal" },
+	{ label: "正片叠底", value: "multiply" },
+	{ label: "变暗", value: "darken" },
+	{ label: "颜色加深", value: "color-burn" },
+	{ label: "变亮", value: "lighten" },
+	{ label: "颜色减淡", value: "color-dodge" },
+	{ label: "滤色", value: "screen" },
+	{ label: "叠加", value: "overlay" },
+	{ label: "强光", value: "hard-light" },
+	{ label: "柔光", value: "soft-light" },
+	{ label: "差集", value: "difference" },
+	{ label: "排除", value: "exclusion" },
+	{ label: "色相", value: "hue" },
+	{ label: "饱和度", value: "saturation" },
+	{ label: "颜色", value: "color" },
+	{ label: "明度", value: "luminosity" },
+	{ label: "在现有画布上绘制新图形", value: "source-over" },
+	{ label: "仅在新旧重叠处绘制", value: "source-in" },
+	{ label: "仅在不重叠处绘制新图形", value: "source-out" },
+	{ label: "仅重叠处绘制新图形", value: "source-atop" },
+	{ label: "在现有内容后绘制新图形", value: "destination-over" },
+	{ label: "仅保留重叠部分", value: "destination-in" },
+	{ label: "仅保留现有内容且不重叠部分透明", value: "destination-out" },
+	{ label: "仅保留重叠部分，新图形在后", value: "destination-atop" },
+	{ label: "重叠处透明，其他正常", value: "xor" },
+	{ label: "只显示新图形", value: "copy" },
+] as const;
