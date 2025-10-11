@@ -17,7 +17,7 @@
 				<span>基础信息</span>
 			</div>
 		</template>
-		<el-form label-width="100px" label-position="left" v-if="store.curFile">
+		<el-form label-width="60px" label-position="left" v-if="store.curFile">
 			<el-form-item label="文件名">
 				<el-tag type="info">{{ store.img.fileName }}</el-tag>
 			</el-form-item>
@@ -190,7 +190,7 @@ const store = useStore();
 	.exif-label {
 		font-size: 14px;
 		color: "#000";
-		min-width: 100px;
+		min-width: 60px;
 		font-weight: bold;
 	}
 

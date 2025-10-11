@@ -67,7 +67,7 @@ const tabs = computed(() => [
 		component: LeaferLogoConfig,
 		enable: store?.config?.watermark?.logo?.enable,
 	},
-	{ label: "导出", component: LeaferExportConfig, enable: !!store.curFile },
+	{ label: "导出", component: LeaferExportConfig, enable: false },
 ]);
 </script>
 

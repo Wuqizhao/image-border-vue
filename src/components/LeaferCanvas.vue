@@ -129,6 +129,11 @@ import {
 	Refresh,
 	Picture,
 } from "@element-plus/icons-vue";
+
+import "@leafer-in/export"; // 引入导出元素插件
+import "@leafer-in/find"; // 查找插件
+import "@leafer-in/editor"; // 引入编辑器插件
+
 import { getWatermarkList } from "../assets/tools";
 const exifStore = useExifStore();
 
@@ -137,8 +142,6 @@ const imgCanvas = ref<HTMLCanvasElement | null>(null);
 const { leafer } = storeToRefs(store);
 
 function onDrop(e: DragEvent) {
-	console.log("onDrop", e.dataTransfer?.files);
-
 	if (e.dataTransfer?.files.length) {
 		changeCurFile(e.dataTransfer?.files[0]);
 	}
@@ -242,6 +245,7 @@ async function initLeafer(context: Img) {
 		height: height,
 		fill: fill || "#FFF",
 		view: imgCanvas.value,
+		hittable: true,
 	};
 	if (!leafer.value) {
 		leafer.value = new Leafer(canvasConfig);
@@ -296,7 +300,7 @@ async function initLeafer(context: Img) {
 		leafer.value.add(bgEl);
 	}
 
-	console.log("domList", domList, imgList);
+	console.log("domList", domList, "imgList", imgList);
 	if (domList?.length) {
 		domList?.map((item) => {
 			updateLeaferText(leafer.value as Leafer, item.id, item);
@@ -309,7 +313,6 @@ async function initLeafer(context: Img) {
 		});
 	}
 
-	console.log("imgList", imgList);
 	imgList?.map((item) => {
 		updateLeaferText(leafer.value as Leafer, item.id, item, "Rect");
 	});
@@ -368,7 +371,6 @@ onMounted(() => {
 	} catch (e) {
 		console.log("清理画布失败");
 	}
-	store.resetStyle();
 });
 
 onUnmounted(() => {

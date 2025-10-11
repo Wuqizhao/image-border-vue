@@ -5,11 +5,11 @@
 				<span>{{ title }}</span>
 			</div>
 		</template>
-		<el-form label-width="80px">
+		<el-form label-width="40px">
 			<el-form-item label="显示">
 				<el-switch v-model="props.config.visible"></el-switch>
 			</el-form-item>
-			<el-form-item label="自动匹配">
+			<el-form-item label="自动">
 				<el-switch v-model="props.config.auto" disabled></el-switch>
 			</el-form-item>
 			<el-form-item label="名称">
@@ -50,30 +50,42 @@
 			<!-- <el-form-item label="拖动">
 				<el-switch v-model="props.config.draggable" disabled></el-switch>
 			</el-form-item> -->
-			<h3>圆角</h3>
-			<el-form-item label="左上角">
+			<h4>圆角</h4>
+			<el-form-item label="左上角" label-width="55px">
 				<el-slider
 					show-input
 					v-model="props.config.cornerRadius[0]"
 					:max="500"></el-slider>
 			</el-form-item>
-			<el-form-item label="右上角">
+			<el-form-item label="右上角" label-width="55px">
 				<el-slider
 					show-input
 					v-model="props.config.cornerRadius[1]"
 					:max="500"></el-slider>
 			</el-form-item>
-			<el-form-item label="右下角">
+			<el-form-item label="右下角" label-width="55px">
 				<el-slider
 					show-input
 					v-model="props.config.cornerRadius[2]"
 					:max="500"></el-slider>
 			</el-form-item>
-			<el-form-item label="左下角">
+			<el-form-item label="左下角" label-width="55px">
 				<el-slider
 					show-input
 					v-model="props.config.cornerRadius[3]"
 					:max="500"></el-slider>
+			</el-form-item>
+			<el-form-item label="同步" label-width="55px">
+				<el-button
+					size="small"
+					@click="
+						props.config.cornerRadius[3] =
+							props.config.cornerRadius[1] =
+							props.config.cornerRadius[2] =
+								props.config.cornerRadius[0]
+					">
+					同步
+				</el-button>
 			</el-form-item>
 		</el-form>
 	</el-card>
@@ -118,5 +130,8 @@ const props = defineProps({
 			color: var(--el-color-primary);
 		}
 	}
+}
+h4 {
+	margin-bottom: 10px;
 }
 </style>

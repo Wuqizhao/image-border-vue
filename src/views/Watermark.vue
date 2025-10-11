@@ -17,15 +17,11 @@ import {
 	getSupportedFonts,
 	defaultImgValue,
 } from "../assets/tools";
-import { deepClone } from "../utils";
-import { ElMessage, ElNotification } from "element-plus";
-import type { Config, Img, WatermarkListItem } from "../types";
+import { ElMessage } from "element-plus";
+import type { Img, WatermarkListItem } from "../types";
 import { useStore } from "../stores";
 const store = useStore();
 
-import "@leafer-in/export"; // 引入导出元素插件
-import "@leafer-in/find"; // 查找插件
-import "@leafer-in/editor"; // 引入编辑器插件
 import LeaferCanvas from "../components/LeaferCanvas.vue";
 
 // 画布
@@ -41,56 +37,22 @@ provide("img", img);
 watch(
 	curWatermarkIndex,
 	(newIndex) => {
-		importConfig(newIndex);
+		// 获取对应的水印
+		const watermark: WatermarkListItem | undefined = watermarks.value
+			.filter((item) => item.index == newIndex)
+			.shift();
+
+		if (watermark === undefined) {
+			ElMessage.error("未找到匹配的水印配置！");
+			return;
+		}
+
+		store.resetStyle(watermark.name);
 	},
 	{
 		immediate: true,
 	}
 );
-
-function importConfig(val: number): void {
-	// 获取对应的水印
-	const watermark: WatermarkListItem | undefined = watermarks.value
-		.filter((item) => item.index == val)
-		.shift();
-
-	if (watermark === undefined) {
-		ElMessage.error("未找到匹配的水印配置！");
-		return;
-	}
-
-	const filename = watermark.is_local
-		? watermark.config_name
-		: watermark.config;
-	let configPromise = null;
-	switch (filename) {
-		case "小米徕卡3":
-			configPromise = import("../configs/小米徕卡3");
-			break;
-		default:
-			configPromise = import("../configs/小米徕卡");
-			break;
-	}
-	configPromise
-		.then((res) => {
-			// 内置配置
-			const config_value = deepClone(res.default as Config);
-
-			if (watermark.is_local) {
-				let local_value = JSON.parse(watermark.config) as Config;
-				Object.assign(config_value, local_value);
-			}
-
-			store.setConfig(config_value);
-			ElMessage.success(`配置【${watermark.name}】导入成功~`);
-		})
-		.catch((err) => {
-			ElNotification.error({
-				title: "导入水印配置失败",
-				message: err.message,
-			});
-		});
-}
 
 function loadFonts(fonts: string[]) {
 	// 1. 创建<style>元素

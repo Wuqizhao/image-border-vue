@@ -28,9 +28,7 @@ function caculate(imgW: number, imgH: number) {
 	const rect1 = {
 		x:
 			realImgMargin.left +
-			canvasPaddings.left +
-			imgW / 100 +
-			realWatermarkPaddings.left,
+			canvasPaddings.left,
 		y:
 			h -
 			realImgMargin.bottom -
@@ -42,9 +40,7 @@ function caculate(imgW: number, imgH: number) {
 		x:
 			w -
 			realImgMargin.right -
-			canvasPaddings.right -
-			imgW / 100 -
-			realWatermarkPaddings.right,
+			canvasPaddings.right,
 		y:
 			h -
 			realImgMargin.bottom -

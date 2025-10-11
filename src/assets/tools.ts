@@ -6,7 +6,6 @@ import type {
 	WatermarkListBaseItem,
 	WatermarkListItem,
 } from "../types";
-import { useStore } from "../stores";
 
 export const print = (config: Config, img: Img) => {
 	console.log("当前配置：", config);
@@ -681,23 +680,8 @@ export function getWatermarkList(): WatermarkListItem[] {
 		return { ...item, index: index };
 	});
 
-	// 获取本地的配置
-	const store = useStore();
-	const localNames: WatermarkListItem[] = store.localWatermarks.map(
-		(item, index) => {
-			let watermark_item: WatermarkListItem = {
-				index: list.length + index,
-				is_local: true,
-				name: item.name,
-				config: JSON.stringify(item.config),
-				config_name: item?.config_name,
-			};
-			return watermark_item;
-		}
-	);
-
 	// 根据index属性升序
-	return [...localNames, ...list].sort((a, b) => a.index - b.index);
+	return list.sort((a, b) => a.index - b.index);
 }
 
 /**
@@ -1221,8 +1205,8 @@ export function commonCaculate(config: Config, imgW: number, imgH: number) {
 	};
 	// 计算实际的图片外边距
 	const realImgMargin = {
-		top: (imgMargin.top * imgH) / 100,
-		bottom: (imgMargin.bottom * imgH) / 100,
+		top: (imgMargin.top * imgW) / 100,
+		bottom: (imgMargin.bottom * imgW) / 100,
 		left: (imgMargin.left * imgW) / 100,
 		right: (imgMargin.right * imgW) / 100,
 	};

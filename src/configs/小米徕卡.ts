@@ -144,12 +144,12 @@ function caculate(imgW: number, imgH: number) {
 }
 
 const config: Config = {
-	name:"小米徕卡",
+	name: "小米徕卡",
 	fill: "#FFF",
 	global: {
 		paddings: {
-			top: 3,
-			bottom: 2,
+			top: 2,
+			bottom: 1,
 			left: 2,
 			right: 2,
 		},
